@@ -45,7 +45,7 @@ public final class ElmConnectionManager implements ConnectionManager {
     //private final long timeout;
     //private long readTimeout;
 
-    private  ElmConnectionManager(String portName, ConnectionProperties connectionProperties) {
+    private ElmConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
        

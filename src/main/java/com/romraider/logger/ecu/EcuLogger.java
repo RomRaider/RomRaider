@@ -1997,8 +1997,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         refresher.setRefreshMode(refreshMode);
     }
     
-	public void setElmEnabled(Boolean value) {
-		
+	public void setElmEnabled(Boolean value) {		
         getSettings().setElm327Enabled(value);
 	}
 
