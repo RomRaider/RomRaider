@@ -20,7 +20,11 @@
 	<classpathentry kind="lib" path="lib/common/cmutimelex.jar"/>
 	<classpathentry kind="lib" path="lib/common/en_us.jar"/>
 	<classpathentry kind="lib" path="lib/common/freetts.jar"/>
-	<classpathentry kind="lib" path="lib/common/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="lib/common/RXTXcomm.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://users.frii.com/jarvi/rxtx/doc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/windows/jdic_stub.jar"/>
 	<classpathentry kind="lib" path="lib/common/jdic.jar"/>
 	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>
