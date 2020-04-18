@@ -26,11 +26,6 @@ public final class Transport {
     private final String name;
     private final String description;
     
-    private int baudRateOverride = 500000;
-    private boolean extendedCANID = false; //11 or 29 
-    private boolean saePWM = true; //PWM or VPW
-    private boolean isoKWPFast = false; //Fast or 5 Baud init
-
     public Transport(String id, String name, String description) {
         checkNotNull(name, "id");
         checkNotNull(name, "name");
@@ -56,74 +51,4 @@ public final class Transport {
     public String toString() {
         return name;
     }
-    
-    
-    /*
-     * 
-     * These settings are used by the ELM327 Connection to define the protocol further
-     * 
-     */
-    
-    public boolean isExtendedCANID() {
-		return extendedCANID;
-	}
-
-	public void setExtendedCANID(String value) {
-		if(value == null) return;
-		
-		if(value.trim().equals("11")) this.extendedCANID = false;
-		else
-			this.extendedCANID = true;
-	}
-	
-	public void setExtendedCANID(boolean extendedCANID) {
-		this.extendedCANID = extendedCANID;
-	}
-	public int getBaudRateOverride() {
-		return baudRateOverride;
-	}
-
-	public void setBaudRateOverride(String baudRateOverride) {
-		if(baudRateOverride == null) return;
-		
-		int rate = Integer.parseInt(baudRateOverride);
-		this.baudRateOverride = rate;
-	}
-	
-	public void setBaudRateOverride(int baudRateOverride) {
-		this.baudRateOverride = baudRateOverride;
-	}
-	
-	public boolean isSaePWM() {
-		return saePWM;
-	}
-
-	public void setSaePWM(String saePWM) {
-		if(saePWM == null) return;
-		
-		if(saePWM.toLowerCase().trim().equals("pwm")) this.saePWM = true;
-		else 
-			this.saePWM = false;
-	}
-	
-	public void setSaePWM(boolean saePWM) {
-		this.saePWM = saePWM;
-	}
-
-
-	public boolean isIsoKWPFast() {
-		return isoKWPFast;
-	}
-
-	public void setIsoKWPFast(String isoKWPFast) {
-		if(isoKWPFast == null )return;
-		
-		if(isoKWPFast.toLowerCase().trim().equals("fast")) this.isoKWPFast = true;
-		else 
-			this.isoKWPFast = false;
-	}
-    
-	public void setIsoKWPFast(boolean isoKWPFast) {
-		this.isoKWPFast = isoKWPFast;
-	}
 }

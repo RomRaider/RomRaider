@@ -21,7 +21,6 @@
 	<classpathentry kind="lib" path="lib/common/en_us.jar"/>
 	<classpathentry kind="lib" path="lib/common/freetts.jar"/>
 	<classpathentry kind="lib" path="lib/common/RXTXcomm.jar">
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/windows/jdic_stub.jar"/>
 	<classpathentry kind="lib" path="lib/common/jdic.jar"/>
 	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>

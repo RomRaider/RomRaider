@@ -208,10 +208,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             desc = attributes.getValue(ATTR_DESC);
             transport = new Transport(id, name, desc);
             moduleList = new ArrayList<Module>();
-            transport.setBaudRateOverride(attributes.getValue(ATTR_BAUD));
-            transport.setExtendedCANID(attributes.getValue(ATTR_CANID));
-            transport.setIsoKWPFast(attributes.getValue(ATTR_KWP));
-            transport.setSaePWM(attributes.getValue(ATTR_SAE));
         } else if (TAG_MODULE.equals(qName)) {
             id = attributes.getValue(ATTR_ID);
             final String modAddr = attributes.getValue(ATTR_ADDRESS);
