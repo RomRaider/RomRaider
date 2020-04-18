@@ -75,7 +75,7 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
-       <property name="bootclasspath.dir" value="D:\Documents\EclipseProjects\RomRaider"/>
+       <property name="bootclasspath.dir" value="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib"/>
         <property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />

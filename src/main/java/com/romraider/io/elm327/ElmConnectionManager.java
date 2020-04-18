@@ -33,7 +33,6 @@ import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 
 import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 public final class ElmConnectionManager implements ConnectionManager {
@@ -41,56 +40,52 @@ public final class ElmConnectionManager implements ConnectionManager {
 	
     private static final Logger LOGGER = getLogger(ElmConnectionManager.class);
     private final ElmConnection connection;
-    private final ConnectionProperties connectionProperties;
+   // private final ConnectionProperties connectionProperties;
     private int elmMode = 0;
-    private final long timeout;
-    private long readTimeout;
+    //private final long timeout;
+    //private long readTimeout;
 
     private  ElmConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
        
-        this.connectionProperties = connectionProperties;
-        timeout = connectionProperties.getConnectTimeout();
-        readTimeout = timeout;
+       // this.connectionProperties = connectionProperties;
+       // timeout = connectionProperties.getConnectTimeout();
+       // readTimeout = timeout;
         connection = new ElmConnection(portName);
     }
     
     private int parseProtocolType(String protocol) {
-    	String s = protocol.toLowerCase();
+    	String s = protocol.toLowerCase().trim();
     	
-    	switch(s) {
-	    	case "automatic":
+    	if(s.equals("automatic"))
 	    		return 0;
-	    	case "saej1850-pwm":
+    	else if(s.equals("saej1850-pwm"))
 	    		return 1;
-	    	case "sae1850-vpw":
+    	else if(s.equals("sae1850-vpw"))
 	    		return 2;
-	    	case "iso9141-2":
+	    else if(s.equals("iso9141-2"))
 	    		return 3;
-	    	case "iso4230-4kwp-5":
+	    else if(s.equals("iso4230-4kwp-5"))
 	    		return 4;
-	    	case "iso14230-4kwp-fast":
+	    else if(s.equals("iso14230-4kwp-fast"))
 	    		return 5;
-	    		
-	    	//Fallthrough, so it works with the default CAN OBD setting
-	    	case "iso15765":
-	    	case "iso15765-4can11-500":
+	    else if(s.equals("iso15765") || s.equals("iso15765-4can11-500"))
 	    		return 6;
-	    	case "iso15765-4can29-500":
+	    else if(s.equals("iso15765-4can29-500"))
 	    		return 7;
-	    	case "iso15765-4can11-250":
+	    else if(s.equals("iso15765-4can11-250"))
 	    		return 8;
-	    	case "iso15765-4can29-250":
+	    else if(s.equals("iso15765-4can29-250"))
 	    		return 9;
-	    	case "isoj1939-250":
-	    		return 10;	    		
-    	}	
-    	
-    	return -1;
+	    else if(s.equals("isoj1939-250"))
+	    		return 10;	    			
+	    else
+	    	return -1;
     }
     
-    public static ElmConnectionManager getInstance(String portName, ConnectionProperties connectionProperties) {
+    public static ElmConnectionManager getInstance(String portName,
+    		ConnectionProperties connectionProperties) {
     	if(instance == null) {
     		instance = new ElmConnectionManager(portName, connectionProperties);
     	}
@@ -141,7 +136,8 @@ public final class ElmConnectionManager implements ConnectionManager {
             elmMode = parseProtocolType(transportProtcol);
         	
             if(elmMode == -1) {
-            	LOGGER.error("Unknown ELM Protocol, check xml for available modes! Supplied mode: " + transportProtcol);
+            	LOGGER.error("Unknown ELM Protocol, check xml for"
+            			+ " available modes! Supplied mode: " + transportProtcol);
             	return false;
             }
          
@@ -298,12 +294,14 @@ public final class ElmConnectionManager implements ConnectionManager {
 
 	@Override
 	public void send(byte[] request, byte[] response, PollingState pollState) {
-		throw new java.lang.UnsupportedOperationException("Send does not work with bytes on ELM Connection");
+		throw new java.lang.UnsupportedOperationException("Send does not work"
+				+ " with bytes on ELM Connection");
 		
 	}
 
 	@Override
 	public byte[] send(byte[] bytes) {
-		throw new java.lang.UnsupportedOperationException("Send does not work with bytes on ELM Connection");
+		throw new java.lang.UnsupportedOperationException("Send does not work"
+				+ " with bytes on ELM Connection");
 	}
 }

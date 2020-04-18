@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,14 +38,18 @@ public final class LoggerConnectionFactory {
         return instantiateConnection(protocolName, manager);
     }
 
-    private static LoggerConnection instantiateConnection(String protocolName, ConnectionManager manager) {
-    	if(manager.getClass() == ElmConnectionManager.class && protocolName.equals("OBD")) {
+    private static LoggerConnection instantiateConnection(String protocolName,
+    		ConnectionManager manager) {
+    	if(manager.getClass() == ElmConnectionManager.class &&
+    			protocolName.equals("OBD")) {
         	return new ELMOBDLoggerConnection((ElmConnectionManager)manager);
     	}
     	else {
 	        try {
-	        	Class<?> cls = Class.forName(LoggerConnectionFactory.class.getPackage().getName() +  "." + protocolName + "LoggerConnection");
-	            return (LoggerConnection) cls.getConstructor(ConnectionManager.class).newInstance(manager);
+	        	Class<?> cls = Class.forName(LoggerConnectionFactory.
+	        			class.getPackage().getName() +  "." + protocolName + "LoggerConnection");
+	            return (LoggerConnection) cls.getConstructor(
+	            		ConnectionManager.class).newInstance(manager);
 	        } catch (Exception e) {
 	            manager.close();
 	            throw new UnsupportedProtocolException(protocolName, e);

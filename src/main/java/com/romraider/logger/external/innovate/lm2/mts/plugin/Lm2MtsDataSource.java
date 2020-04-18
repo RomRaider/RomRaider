@@ -43,9 +43,6 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSConnector;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
 
-import sun.misc.ExtensionInstallationException;
-
-
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
     private Map<Integer, Lm2MtsDataItem> dataItems = new HashMap<Integer, Lm2MtsDataItem>();

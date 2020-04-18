@@ -22,21 +22,37 @@ package com.romraider.io.serial.port;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
 import static gnu.io.CommPortIdentifier.getPortIdentifiers;
+import static org.apache.log4j.Logger.getLogger;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
 public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
+    private static final Logger LOGGER = getLogger(SerialPortDiscovererImpl.class);
+
     @SuppressWarnings({"unchecked"})
     public List<CommPortIdentifier> listPorts() {
         List<CommPortIdentifier> serialPortIdentifiers = new ArrayList<CommPortIdentifier>();
-        Enumeration<CommPortIdentifier> portEnum = getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {
-            CommPortIdentifier portIdentifier = portEnum.nextElement();
-            if (portIdentifier.getPortType() == PORT_SERIAL) {
-                serialPortIdentifiers.add(portIdentifier);
-            }
+        
+        try {
+	        Enumeration<CommPortIdentifier> portEnum = getPortIdentifiers();
+	        while (portEnum.hasMoreElements()) {
+	            CommPortIdentifier portIdentifier = portEnum.nextElement();
+	            
+	            if (portIdentifier.getPortType() == PORT_SERIAL) {
+	                serialPortIdentifiers.add(portIdentifier);
+	            }
+	     }
         }
+        catch(NoClassDefFoundError e) {
+        	LOGGER.error("Could not load RXTX library!");
+        }
+        catch(UnsatisfiedLinkError e) {
+        	LOGGER.error("Could not load RXTX library!");
+        }
+        
         return serialPortIdentifiers;
     }
 }

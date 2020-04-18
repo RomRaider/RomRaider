@@ -178,17 +178,20 @@ public final class ElmConnection {
         try {
             return (SerialPort) portIdentifier.open(this.getClass().getName(), connectTimeout);
         } catch (PortInUseException e) {
-            throw new SerialCommunicationException("Port is currently in use: " + portIdentifier.getName());
+            throw new SerialCommunicationException("Port is currently in use: " 
+        + portIdentifier.getName());
         }
     }
 
     private void checkIsSerialPort(CommPortIdentifier portIdentifier) {
         if (portIdentifier.getPortType() != PORT_SERIAL) {
-            throw new UnsupportedPortTypeException("Port type " + portIdentifier.getPortType() + " not supported - must be serial.");
+            throw new UnsupportedPortTypeException("Port type "
+        + portIdentifier.getPortType() + " not supported - must be serial.");
         }
     }
 
-    private void initSerialPort(SerialPort serialPort, int baudrate, int dataBits, int stopBits, int parity) {
+    private void initSerialPort(SerialPort serialPort, int baudrate, int dataBits,
+    		int stopBits, int parity) {
         try {
             serialPort.setFlowControlMode(FLOWCONTROL_NONE);
             serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
