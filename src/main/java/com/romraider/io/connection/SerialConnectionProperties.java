@@ -43,7 +43,6 @@ public final class SerialConnectionProperties implements ConnectionProperties {
     }
 
 	public void setBaudRate(int b) {
-		baudRate = b;
 		
 	}
 	
