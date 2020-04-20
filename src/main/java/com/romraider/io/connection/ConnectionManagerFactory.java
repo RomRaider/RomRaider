@@ -150,7 +150,7 @@ public final class ConnectionManagerFactory {
             
             if(SettingsManager.getSettings().getElm327Enabled()) {           
 	            LOGGER.info(String.format("%s, trying to connect to ELM327...", t.getMessage()));
-	            return ElmConnectionManager.getInstance(portName, connectionProperties);	
+	            return new ElmConnectionManager(portName, connectionProperties);	
             }
             else {
               LOGGER.info(String.format("%s, trying serial connection...", t.getMessage()));

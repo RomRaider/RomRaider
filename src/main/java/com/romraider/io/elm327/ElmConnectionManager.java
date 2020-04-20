@@ -36,23 +36,27 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 public final class ElmConnectionManager implements ConnectionManager {
-	private static ElmConnectionManager instance;
-	
+    private ElmConnection connection;
+    
     private static final Logger LOGGER = getLogger(ElmConnectionManager.class);
-    private final ElmConnection connection;
-   // private final ConnectionProperties connectionProperties;
+    private static int currentBaudrate = 38400;
+    private final int baudrates[] = {currentBaudrate, 9600};    
+
     private int elmMode = 0;
+    private String portName;
+
     //private final long timeout;
     //private long readTimeout;
 
-    private ElmConnectionManager(String portName, ConnectionProperties connectionProperties) {
+    public ElmConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
        
+        this.portName = portName;
+    	this.connection = new ElmConnection(this.portName, currentBaudrate);
        // this.connectionProperties = connectionProperties;
        // timeout = connectionProperties.getConnectTimeout();
        // readTimeout = timeout;
-        connection = new ElmConnection(portName);
     }
     
     private int parseProtocolType(String protocol) {
@@ -84,15 +88,7 @@ public final class ElmConnectionManager implements ConnectionManager {
 	    	return -1;
     }
     
-    public static ElmConnectionManager getInstance(String portName,
-    		ConnectionProperties connectionProperties) {
-    	if(instance == null) {
-    		instance = new ElmConnectionManager(portName, connectionProperties);
-    	}
-    	
-    	return instance;
-    }
-  
+ 
     public String getCurrentProtcol() {
         String result = "";
         
@@ -132,79 +128,91 @@ public final class ElmConnectionManager implements ConnectionManager {
     }
     
     public boolean resetAndInit(String transportProtcol, String moduleString, String testerString) {
-        try {
-            elmMode = parseProtocolType(transportProtcol);
-        	
-            if(elmMode == -1) {
-            	LOGGER.error("Unknown ELM Protocol, check xml for"
-            			+ " available modes! Supplied mode: " + transportProtcol);
-            	return false;
-            }
-         
-            String result = "";
-              
-            clearLine(); //Clear input buffer
-            send("");	//Clear buffer of ELM incase there is some data
-            
-            //Check if ELM is even there
-            result = sendAndWaitForResponse("ATZ", 2500, 15);
 
-            if(!result.contains("ELM327")) {
-                return false;
-            }
-            
-            result = result.replace(">", "");
-            LOGGER.info(result.trim()  + " found!");
-            
-            //Set the correct protocol
-            result = sendAndWaitForNewLine("ATSP " + elmMode, 2500); 
-            
-            if(!result.contains("OK")) {
-            	LOGGER.error("ELM327 rejected Protocol Init!");
-            	return false;
-            }
-            else
-            	LOGGER.debug("ELM327 accepted Protocol Init!");
-            
-            
-            LOGGER.info("Current Protocol: " + getCurrentProtcol().replace(">", "").trim());
-                       
-            String reqATSH = "";
-            
-            //If CAN Modes
-            if((elmMode >= 6 && elmMode <= 9) || elmMode > 10) {
-            	reqATSH = "ATSH " + testerString;
-            }
-            else {
-            	//Also set init address for K-Line
-                result = sendAndWaitForNewLine("ATIIA " + moduleString, 2500);
-                
-                if(!result.contains("OK")) {
-                	LOGGER.error("ELM327 rejected ATIIA Init (Only K-Line)!");
-                	return false;
-                }
-                else
-                	Log.debug("ELM327 accepted ATIIA Init!");
-                
-            	
-                reqATSH = "ATSH 82" +  moduleString + " " +  testerString; 
-            }
-            
-            
-            result = sendAndWaitForNewLine(reqATSH, 2500);
-            
-            if(!result.contains("OK")) {
-            	LOGGER.error("ELM327 rejected ATSH Init!");
-            	return false;
-            }
-            else
-            	Log.debug("ELM327 accepted ATSH Init!");
-            
-            return true;
-            
-        } catch (Exception e) {
-            throw new SerialCommunicationException(e);
+        elmMode = parseProtocolType(transportProtcol);
+    	
+        if(elmMode == -1) {
+        	LOGGER.error("Unknown ELM Protocol, check xml for"
+        			+ " available modes! Supplied mode: " + transportProtcol);
+        	return false;
         }
+        
+        for(int baudrate: baudrates) {
+            try {
+            	if(this.connection != null) this.connection.close();
+	        	this.connection = new ElmConnection(this.portName, baudrate);
+	        	
+	            String result = "";
+	              
+	            clearLine(); //Clear input buffer
+	            send("");	//Clear buffer of ELM incase there is some data
+	            
+	            //Check if ELM is even there
+	            result = sendAndWaitForResponse("ATZ", 2500, 15);
+	
+	            if(!result.contains("ELM327")) {
+	            	LOGGER.error("Tried settings: " +  this.portName +
+	            			", Baudrate: " + baudrate);
+                	continue;
+	            }
+	            
+	            result = result.replace(">", "");
+	            LOGGER.info(result.trim()  + " found with Baudrate: " + baudrate + "!");
+	            
+	            //Set the correct protocol
+	            result = sendAndWaitForNewLine("ATSP " + elmMode, 2500); 
+	            
+	            if(!result.contains("OK")) {
+	            	LOGGER.error("ELM327 rejected Protocol Init!");
+                	continue;
+	            }
+	            else
+	            	LOGGER.debug("ELM327 accepted Protocol Init!");
+	            
+	            
+	            LOGGER.info("Current Protocol: " + getCurrentProtcol().replace(">", "").trim());
+	                       
+	            String reqATSH = "";
+	            
+	            //If CAN Modes
+	            if((elmMode >= 6 && elmMode <= 9) || elmMode > 10) {
+	            	reqATSH = "ATSH " + testerString;
+	            }
+	            else {
+	            	//Also set init address for K-Line
+	                result = sendAndWaitForNewLine("ATIIA " + moduleString, 2500);
+	                
+	                if(!result.contains("OK")) {
+	                	LOGGER.error("ELM327 rejected ATIIA Init (Only K-Line)!");
+	                	continue;
+	                }
+	                else
+	                	Log.debug("ELM327 accepted ATIIA Init!");
+	                
+	            	
+	                reqATSH = "ATSH 82" +  moduleString + " " +  testerString; 
+	            }
+	            
+	            
+	            result = sendAndWaitForNewLine(reqATSH, 2500);
+	            
+	            if(!result.contains("OK")) {
+	            	LOGGER.error("ELM327 rejected ATSH Init!");
+                	continue;
+	            }
+	            else
+	            	Log.debug("ELM327 accepted ATSH Init!");
+	            
+	            
+	            currentBaudrate = baudrate;
+	            return true;
+            
+	        } catch (Exception e) {
+	            throw new SerialCommunicationException(e);
+	        }
+        }
+        
+        return false;
     }
     
     // Send request 
@@ -289,7 +297,6 @@ public final class ElmConnectionManager implements ConnectionManager {
     @Override
     public void close() {
         connection.close();
-        instance = null;
     }
 
 	@Override

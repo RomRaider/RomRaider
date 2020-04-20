@@ -45,12 +45,12 @@ public final class ElmConnection {
     private final SerialPort serialPort;
     private final PrintWriter os;
     private final BufferedInputStream is;
-
-    public ElmConnection(String portName) {
+    
+    public ElmConnection(String portName, int baudrate) {
         checkNotNullOrEmpty(portName, "portName");
 
         try {      	
-            serialPort = connect(portName);
+            serialPort = connect(portName, baudrate);
             os = new PrintWriter(serialPort.getOutputStream());
             is = new BufferedInputStream (serialPort.getInputStream());
         } catch (Exception e) {
@@ -163,12 +163,12 @@ public final class ElmConnection {
             throw new SerialCommunicationException(e);
         }
     }
-
-    private SerialPort connect(String portName) {
+    
+    private SerialPort connect(String portName, int baudrate) {
         CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
         SerialPort serialPort = openPort(portIdentifier, 3000);
         
-        initSerialPort(serialPort, 38400, 8, 1 ,0);
+        initSerialPort(serialPort, baudrate, 8, 1 ,0);
         LOGGER.info("Connected to: " + portName);      
         return serialPort;
     }
