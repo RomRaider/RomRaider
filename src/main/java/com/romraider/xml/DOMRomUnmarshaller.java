@@ -591,6 +591,11 @@ public final class DOMRomUnmarshaller {
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "data", "0.0"));
                                       
+                } else if (n.getNodeName().equalsIgnoreCase("bit")) {
+                    ((TableBitwiseSwitch) table).setValues(
+                            unmarshallAttribute(n, "name", ""),
+                            unmarshallAttribute(n, "position", "0"));
+
                 } else if (n.getNodeName().equalsIgnoreCase("maskedPreset")) {
                     ((Table2DMaskedSwitchable) table).setPredefinedOption(
                             unmarshallAttribute(n, "presetName", ""),
