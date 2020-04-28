@@ -116,7 +116,8 @@ public final class ElmConnection {
     //Reads everything that is available
     public String readAvailable() {
         String response = "";
-        response = read(available());
+        
+        response += read(available());
         return response;
     }
 
@@ -149,11 +150,18 @@ public final class ElmConnection {
         if (serialPort != null) {
             try {
                 serialPort.close();
+                
             } catch (Exception e) {
                 LOGGER.error("Error closing serial port", e);
             }
         }
         LOGGER.info("Connection closed.");
+        try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void sendBreak(int duration) {

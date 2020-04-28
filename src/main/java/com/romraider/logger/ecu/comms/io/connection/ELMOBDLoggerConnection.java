@@ -106,6 +106,17 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
            	result = result.trim();
            	
            	String[] resultSplit = result.split("\r");
+           	
+           	if(result.contains("BUS INIT"))
+           	{
+           		LOGGER.warn("ELM 327 still initializing bus while querying!");
+           		continue;
+           	}
+           	else if(result.contains("STOPPED")) {
+            	LOGGER.warn("ELM327 returned stopped!");
+            	continue;
+            }
+           	
            	String moduleStr = concatBytes(module.getAddress());         	
            	         	
            	for(String s : resultSplit) {
