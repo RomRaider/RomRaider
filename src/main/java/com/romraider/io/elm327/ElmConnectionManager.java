@@ -39,8 +39,7 @@ public final class ElmConnectionManager implements ConnectionManager {
     private ElmConnection connection;
     
     private static final Logger LOGGER = getLogger(ElmConnectionManager.class);
-    private static int currentBaudrate = 38400;
-    private final int baudrates[] = {currentBaudrate, 9600};    
+    private static int baudrate = 38400;  
 
     private int elmMode = 0;
     private String portName;
@@ -53,7 +52,7 @@ public final class ElmConnectionManager implements ConnectionManager {
         checkNotNull(connectionProperties, "connectionProperties");
        
         this.portName = portName;
-    	this.connection = new ElmConnection(this.portName, currentBaudrate);
+    	this.connection = new ElmConnection(this.portName, baudrate);
        // this.connectionProperties = connectionProperties;
        // timeout = connectionProperties.getConnectTimeout();
        // readTimeout = timeout;
@@ -127,6 +126,7 @@ public final class ElmConnectionManager implements ConnectionManager {
          return responseBytes;
     }
     
+    //TODO: Clean this up
     public boolean resetAndInit(String transportProtcol, String moduleString, String testerString) {
 
         elmMode = parseProtocolType(transportProtcol);
@@ -137,34 +137,41 @@ public final class ElmConnectionManager implements ConnectionManager {
         	return false;
         }
         
-        for(int baudrate: baudrates) {
             try {
-            	if(this.connection != null) this.connection.close();
-	        	this.connection = new ElmConnection(this.portName, baudrate);
 	        	
 	            String result = "";
 	              
 	            clearLine(); //Clear input buffer
 	            send("");	//Clear buffer of ELM incase there is some data
 	            
-	            //Check if ELM is even there
-	            result = sendAndWaitForResponse("ATZ", 2500, 15);
-	
-	            if(!result.contains("ELM327")) {
+	            send("AT PC");
+	            sendAndWait("AT Z", 3500); 
+	            result+=connection.readAvailable();
+	            
+	            //ATZ could be sent if echo mode is on
+	            if(!result.contains("ELM327") && !result.contains("OK") && !result.contains("AT Z")) {
 	            	LOGGER.error("Tried settings: " +  this.portName +
 	            			", Baudrate: " + baudrate);
-                	continue;
+                	return false;
 	            }
 	            
-	            result = result.replace(">", "");
-	            LOGGER.info(result.trim()  + " found with Baudrate: " + baudrate + "!");
+	            clearLine();
+	            
+	            //Turn off echo
+	            sendAndWait("AT E0", 500); 
+	            result = connection.readAvailable();
+	            
+	            if(!result.contains("OK") && !result.contains("AT E0")) {
+	            	LOGGER.error("ELM327 rejected echo off!");
+                	return false;
+	            }
 	            
 	            //Set the correct protocol
 	            result = sendAndWaitForNewLine("ATSP " + elmMode, 2500); 
 	            
 	            if(!result.contains("OK")) {
 	            	LOGGER.error("ELM327 rejected Protocol Init!");
-                	continue;
+                	return false;
 	            }
 	            else
 	            	LOGGER.debug("ELM327 accepted Protocol Init!");
@@ -184,7 +191,7 @@ public final class ElmConnectionManager implements ConnectionManager {
 	                
 	                if(!result.contains("OK")) {
 	                	LOGGER.error("ELM327 rejected ATIIA Init (Only K-Line)!");
-	                	continue;
+	                	return false;
 	                }
 	                else
 	                	Log.debug("ELM327 accepted ATIIA Init!");
@@ -194,28 +201,31 @@ public final class ElmConnectionManager implements ConnectionManager {
 	            }
 	            
 	            
+	            clearLine();
 	            result = sendAndWaitForNewLine(reqATSH, 2500);
 	            
 	            if(!result.contains("OK")) {
 	            	LOGGER.error("ELM327 rejected ATSH Init!");
-                	continue;
+                	return false;
 	            }
 	            else
-	            	Log.debug("ELM327 accepted ATSH Init!");
-	            
-	            
-	            currentBaudrate = baudrate;
+	            	Log.debug("ELM327 accepted ATSH Init!");	            
+	      
 	            return true;
             
 	        } catch (Exception e) {
+	        	sleep(100);	        	
 	            throw new SerialCommunicationException(e);
-	        }
-        }
+	  }
         
-        return false;
     }
     
-    // Send request 
+    private void sendAndWait(String string, int i) {
+		send(string);
+		sleep(i);
+	}
+
+	// Send request 
     public void send(String command) {
         checkNotNull(command, "bytes");
         connection.readStaleData();
@@ -259,7 +269,7 @@ public final class ElmConnectionManager implements ConnectionManager {
         return response;
     }
     
-    // Send request and wait specified time for response with exakt length
+    // Send request and wait specified time for response with exact length
     public String WaitForResponse(int timeout, int length) {
 
         long lastChange = currentTimeMillis();
@@ -273,6 +283,23 @@ public final class ElmConnectionManager implements ConnectionManager {
         
         return response;
     }
+    
+    // Send request and wait specified time for response with exact length
+    public String SendAndWaitForResponseWithText(String command, int timeout, String text) {
+        send(command);
+        
+        long lastChange = currentTimeMillis();
+        
+        String response = "";
+        while(!response.contains(text)) {
+        	sleep(2);
+            response = WaitForNewLine((int) (timeout - (currentTimeMillis() - lastChange)));
+        	if(currentTimeMillis() - lastChange > timeout) break;    	
+        }
+        
+        return response;
+    }
+    
     
     // Send request and wait specified time for response with exact length
     public String WaitForNewLine(int timeout) {
