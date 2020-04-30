@@ -210,7 +210,26 @@ public final class ElmConnectionManager implements ConnectionManager {
 	            }
 	            else
 	            	Log.debug("ELM327 accepted ATSH Init!");	            
-	      
+	            
+	            Log.info("ELM 327 found and init complete!\nTrying to connect to ECU...");
+	            	           
+
+	            /*
+	             * Check if connected to actual ECU, not just the ELM
+	             * 
+	            result = sendAndWaitForNewLine("01 00", 2500);
+	           	result = result.trim();
+	           	
+	           	if(result.contains("BUS INIT") || result.contains("STOPPED") )
+	           	{
+	           		LOGGER.warn("ELM 327 still initializing bus while querying!");
+	           		return false;
+	           	}
+	           	else if(result.contains("STOPPED")) {
+	            	LOGGER.warn("ELM327 stopped trying to connect to the ECU!");
+	            	return false;
+	            }*/
+		           		            
 	            return true;
             
 	        } catch (Exception e) {

@@ -113,7 +113,7 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
            		continue;
            	}
            	else if(result.contains("STOPPED")) {
-            	LOGGER.warn("ELM327 returned stopped!");
+            	LOGGER.warn("ELM327 stopped trying to connect to the ECU!");
             	continue;
             }
            	
