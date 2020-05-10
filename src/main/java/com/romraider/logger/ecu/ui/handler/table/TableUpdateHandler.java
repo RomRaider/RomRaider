@@ -49,17 +49,19 @@ public final class TableUpdateHandler implements DataUpdateHandler {
 
     @Override
     public void handleDataUpdate(Response response) {
-        for (LoggerData loggerData : response.getData()) {
-        	synchronized(tableMap) {
-	            List<Table> tables = tableMap.get(loggerData.getId());
-	            if (tables != null && !tables.isEmpty()) {
-	                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
-	                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
-	                    item.next().highlightLiveData(formattedValue);
-	                }
-	            }
-	        }
-    	}
+    	if(!tableMap.isEmpty()) {
+	        for (LoggerData loggerData : response.getData()) {
+	        	synchronized(tableMap) {
+		            List<Table> tables = tableMap.get(loggerData.getId());
+		            if (tables != null && !tables.isEmpty()) {
+		                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
+		                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
+		                    item.next().highlightLiveData(formattedValue);
+		                }
+		            }
+		        }
+	    	}
+	    	}
     }
 
     @Override

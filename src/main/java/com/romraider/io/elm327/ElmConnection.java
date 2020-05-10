@@ -42,21 +42,22 @@ import java.io.PrintWriter;
 
 public final class ElmConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
-    private final SerialPort serialPort;
-    private final PrintWriter os;
-    private final BufferedInputStream is;
+    private SerialPort serialPort;
+    private PrintWriter os;
+    private BufferedInputStream is;
     
     public ElmConnection(String portName, int baudrate) {
         checkNotNullOrEmpty(portName, "portName");
-
+        
         try {      	
             serialPort = connect(portName, baudrate);
             os = new PrintWriter(serialPort.getOutputStream());
-            is = new BufferedInputStream (serialPort.getInputStream());
+            is = new BufferedInputStream (serialPort.getInputStream());	            
+            
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
-        }
+        }    
     }
     
     public void flush() {

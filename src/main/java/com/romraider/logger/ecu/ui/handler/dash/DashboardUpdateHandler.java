@@ -52,13 +52,15 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        for (LoggerData loggerData : response.getData()) {
-            Gauge gauge = gauges.get(loggerData);
-            if (gauge != null) {
-                double value = response.getDataValue(loggerData);
-                gauge.updateValue(value);
-            }
-        }
+    	if (dashboardPanel.isShowing()) {
+	        for (LoggerData loggerData : response.getData()) {
+	            Gauge gauge = gauges.get(loggerData);
+	            if (gauge != null) {
+	                double value = response.getDataValue(loggerData);
+	                gauge.updateValue(value);
+	            }
+	        }
+    	}
     }
 
     public synchronized void deregisterData(LoggerData loggerData) {

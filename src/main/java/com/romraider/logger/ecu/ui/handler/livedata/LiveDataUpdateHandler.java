@@ -38,6 +38,7 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
     }
 
     public synchronized void handleDataUpdate(final Response response) {
+    	
         for (final LoggerData loggerData : response.getData()) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {

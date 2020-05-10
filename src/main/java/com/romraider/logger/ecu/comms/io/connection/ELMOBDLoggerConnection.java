@@ -31,6 +31,7 @@ import java.util.Map;
 import com.romraider.Settings;
 import com.romraider.util.SettingsManager;
 import com.romraider.io.elm327.ElmConnectionManager;
+import com.romraider.io.elm327.ElmConnectionManager.ERROR_TYPE;
 import com.romraider.io.protocol.ProtocolFactory;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocolOBD;
 import com.romraider.logger.ecu.comms.manager.PollingState;
@@ -63,11 +64,18 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     	String moduleStr =  concatBytes(module.getAddress());   
     	String testerStr =  concatBytes(module.getTester());   
     	
-    	boolean result = manager.resetAndInit(settings.getTransportProtocol(),
+    	ERROR_TYPE result = manager.resetAndInit(settings.getTransportProtocol(),
     			moduleStr, testerStr);
     	
-    	if(!result) {
+    	if(result == ERROR_TYPE.ELM_NOT_FOUND) {
     		throw new SerialCommunicationException("ELM327 was not found!");
+    	}
+    	else  if (result == ERROR_TYPE.ECU_NOT_FOUND) {
+    		throw new SerialCommunicationException("ELM327 was not found, but no response from ECU!");
+    	}
+    	else if(result == ERROR_TYPE.UNKNOWN_PROTOCOL) {
+    		throw new SerialCommunicationException("Unknown ELM Protocol, check xml for"
+    				+ " available modes!");
     	}
     	
     }
@@ -102,11 +110,10 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
    	
             final byte[] request = protocol.constructReadAddressRequest(module, obdQueries);
             String reqStr = String.format("%02X %02X", (int)request[4], (int)request[5]);
-            String result = manager.sendAndWaitForNewLine(reqStr, 2500);
-           	result = result.trim();
-           	
-           	String[] resultSplit = result.split("\r");
-           	
+            LOGGER.trace("Request: " + reqStr);
+            String result = manager.sendAndWaitForChar(reqStr, 2500, ">");
+           	LOGGER.trace("ELM: " + result);
+          	
            	if(result.contains("BUS INIT"))
            	{
            		LOGGER.warn("ELM 327 still initializing bus while querying!");
@@ -116,26 +123,35 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
             	LOGGER.warn("ELM327 returned stopped!");
             	continue;
             }
+           	else if(result.contains("NO DATA")) {
+            	LOGGER.warn("ELM327 received no response from ECU!");
+            	continue;
+            }
+           	           	
+           	boolean found = false;
            	
-           	String moduleStr = concatBytes(module.getAddress());         	
-           	         	
-           	for(String s : resultSplit) {
-           		
-           		if(s.startsWith(moduleStr)) {
-		            String[] bytesSplit = s.split(" ");
-		            
-		            //Skip header (3 Bytes plus Request PID)
-		            if(bytesSplit.length > 4) {           	            	            
-			            byte[] response = new byte[bytesSplit.length - 4];
+           	String[] resultSplit = result.split("\r");
+           	
+           	for(String s : resultSplit) {          		
+		        String[] bytesSplit = s.split(" ");
+		        
+		        for(int j = 0; j < bytesSplit.length; j++) {
+		        			      
+		        	if(bytesSplit[j].equals(String.format("%02X",(int)request[5]))) {
+		                      	            	            
+			            byte[] response = new byte[bytesSplit.length - j - 1];
 			         
-			            for(int j = 4; j < bytesSplit.length; j++) {
-			            		response[j - 4] = (byte) Integer.parseInt(bytesSplit[j], 16);	
+			            for(int k = 0; k < response.length; k++) {
+			            		response[k] = (byte) Integer.parseInt(bytesSplit[k + j + 1], 16);	
 			            }
 			            
-			            LOGGER.debug("Response for Module " + moduleStr +  " " + response);
-			            query.setResponse(response);           	
+			            query.setResponse(response);
+			            found = true;
+			            break;
 		            }
-           		}
+		        }
+		        
+		        if(found) break;
            	}
             
             obdQueries.clear();
