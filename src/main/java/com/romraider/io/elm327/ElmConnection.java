@@ -150,8 +150,7 @@ public final class ElmConnection {
         }
         if (serialPort != null) {
             try {
-                serialPort.close();
-                
+                serialPort.close();              
             } catch (Exception e) {
                 LOGGER.error("Error closing serial port", e);
             }
