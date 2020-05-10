@@ -71,7 +71,8 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     		throw new SerialCommunicationException("ELM327 was not found!");
     	}
     	else  if (result == ERROR_TYPE.ECU_NOT_FOUND) {
-    		throw new SerialCommunicationException("ELM327 was not found, but no response from ECU!");
+    		throw new SerialCommunicationException("ELM327 was not found,"
+    				+ " but no response from ECU!");
     	}
     	else if(result == ERROR_TYPE.UNKNOWN_PROTOCOL) {
     		throw new SerialCommunicationException("Unknown ELM Protocol, check xml for"
