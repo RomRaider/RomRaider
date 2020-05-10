@@ -130,8 +130,7 @@ public final class ElmConnectionManager implements ConnectionManager {
     	try {	        	
 	            String result = "";
 	              
-	            send("");	//Clear buffer of ELM in case there is some data
-	            result = sendAndWaitForChar("AT PC", 2000, ">");
+	            result = sendAndWaitForChar("\nAT PC", 2000, ">");
 	            
 	            clearLine();
 	            result = sendAndWaitForChar("AT Z", 3500, ">"); 
