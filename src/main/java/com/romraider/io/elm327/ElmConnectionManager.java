@@ -69,7 +69,7 @@ public final class ElmConnectionManager implements ConnectionManager {
 	    		return 1;
     	else if(s.equals("sae1850-vpw"))
 	    		return 2;
-	    else if(s.equals("iso9141-2"))
+	    else if(s.equals("iso19141-2"))
 	    		return 3;
 	    else if(s.equals("iso14230-4kwp-5"))
 	    		return 4;
