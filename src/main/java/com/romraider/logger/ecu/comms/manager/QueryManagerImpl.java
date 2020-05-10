@@ -82,6 +82,8 @@ public final class QueryManagerImpl implements QueryManager {
     private static boolean started;
     private static boolean stop;
     private AsyncDataUpdateHandler dataUpdater;
+    private int queryCounter;
+    private long queryStart;
 
     public QueryManagerImpl(EcuInitCallback ecuInitCallback,
             MessageListener messageListener,
@@ -113,6 +115,11 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void addQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
+        
+        //Reset stats
+        queryCounter = 0;
+        queryStart = System.currentTimeMillis();
+        
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
         if (loggerData.getDataType() == EXTERNAL) {
@@ -127,10 +134,16 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
+        
+        //Reset stats
+        queryCounter = 0;
+        queryStart = System.currentTimeMillis();
+        
         removeList.add(buildQueryId(callerId, loggerData));
         if (loggerData.getDataType() != EXTERNAL) {
             pollState.setNewQuery(true);
         }
+        
     }
 
     @Override
@@ -170,6 +183,12 @@ public final class QueryManagerImpl implements QueryManager {
             notifyStopped();
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
             LOGGER.debug("QueryManager stopped.");
+            
+            try {
+				dataUpdater.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
     }
 
@@ -213,9 +232,9 @@ public final class QueryManagerImpl implements QueryManager {
             moduleName = module.getName();
         }
         TransmissionManager txManager = new TransmissionManagerImpl();
-        long start = currentTimeMillis();
+        queryStart = currentTimeMillis();
         long end = currentTimeMillis();
-        int count = 0;
+
         try {
             txManager.start();
             
@@ -229,8 +248,9 @@ public final class QueryManagerImpl implements QueryManager {
                         endEcuQueries(txManager);
                         pollState.setLastState(PollingState.State.STATE_0);
                     }
-                    start = System.currentTimeMillis();
-                    count = 0;
+                    
+                    queryStart = System.currentTimeMillis();
+                    queryCounter = 0;
                     messageListener.reportMessage(rb.getString("SELECTPARAMS"));
                     sleep(100L);
                 } else {
@@ -290,10 +310,10 @@ public final class QueryManagerImpl implements QueryManager {
                     }
                     
                     handleQueryResponse();
-                    count++;
+                    queryCounter++;
                     messageListener.reportMessage(MessageFormat.format(
                             rb.getString("QUERYING"), moduleName));
-                    messageListener.reportStats(buildStatsMessage(start, count));
+                    messageListener.reportStats(buildStatsMessage(queryStart, queryCounter));
                 }
             }
         } catch (Exception e) {
