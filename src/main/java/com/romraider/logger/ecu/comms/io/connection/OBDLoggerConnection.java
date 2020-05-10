@@ -79,10 +79,11 @@ public final class OBDLoggerConnection implements LoggerConnection {
                 request, tmp, new PollingStateImpl());
         LOGGER.debug(String.format("%s Calibration ID Response <--- %s",
                 module, asHex(response)));
+               
         System.arraycopy(response, 0, processedResponse, 0, response.length);
         int j = 7;
         // try to find the string termination character 0x00 in the response
-        while (response[j] != 0 && j < response.length) { j++; }
+        while (j < response.length && response[j] != 0) { j++; }
         // make sure j is not pointing to a position past the end of the string
         // if the termination character 0x00 was not found
         if (j == response.length) { j--; }

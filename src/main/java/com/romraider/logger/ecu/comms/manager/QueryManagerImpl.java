@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,12 +76,12 @@ public final class QueryManagerImpl implements QueryManager {
     private static final String EXT = "Externals";
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
-    private final DataUpdateHandler[] dataUpdateHandlers;
     private FileLoggerControllerSwitchMonitor monitor;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private static boolean started;
     private static boolean stop;
+    private AsyncDataUpdateHandler dataUpdater;
 
     public QueryManagerImpl(EcuInitCallback ecuInitCallback,
             MessageListener messageListener,
@@ -91,8 +91,10 @@ public final class QueryManagerImpl implements QueryManager {
                 dataUpdateHandlers);
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
-        this.dataUpdateHandlers = dataUpdateHandlers;
         stop = true;
+        
+        dataUpdater = new AsyncDataUpdateHandler(dataUpdateHandlers);
+        dataUpdater.start();
     }
 
     @Override
@@ -216,6 +218,7 @@ public final class QueryManagerImpl implements QueryManager {
         int count = 0;
         try {
             txManager.start();
+            
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
                 pollState.setFastPoll(settings.isFastPoll());
@@ -229,7 +232,7 @@ public final class QueryManagerImpl implements QueryManager {
                     start = System.currentTimeMillis();
                     count = 0;
                     messageListener.reportMessage(rb.getString("SELECTPARAMS"));
-                    sleep(1000L);
+                    sleep(100L);
                 } else {
                     end = currentTimeMillis() + 1L; // update once every 1msec
                     final List<EcuQuery> ecuQueries =
@@ -285,6 +288,7 @@ public final class QueryManagerImpl implements QueryManager {
                     while (currentTimeMillis() < end) {
                         sleep(1L);
                     }
+                    
                     handleQueryResponse();
                     count++;
                     messageListener.reportMessage(MessageFormat.format(
@@ -328,14 +332,8 @@ public final class QueryManagerImpl implements QueryManager {
         if (settings.isFileLoggingControllerSwitchActive())
             monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
         final Response response = buildResponse(queryMap.values());
-        for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
-            runAsDaemon(new Runnable() {
-                @Override
-                public void run() {
-                    dataUpdateHandler.handleDataUpdate(response);
-                }
-            });
-        }
+        
+        dataUpdater.addResponse(response);
     }
 
     private Response buildResponse(Collection<Query> queries) {
@@ -371,6 +369,7 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public void stop() {
         stop = true;
+        dataUpdater.stopUpdater();
     }
 
     private String buildQueryId(String callerId, LoggerData loggerData) {
