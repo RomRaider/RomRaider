@@ -100,6 +100,8 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     
 
     @Override
+    //TODO: CAN supports requesting multiple PIDs at once
+    //This still has to be implemented
     public final void sendAddressReads(Collection<EcuQuery> queries, Module module,
     		PollingState pollState) {
 
