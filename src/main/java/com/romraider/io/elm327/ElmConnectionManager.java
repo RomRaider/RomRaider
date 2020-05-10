@@ -60,6 +60,10 @@ public final class ElmConnectionManager implements ConnectionManager {
        // readTimeout = timeout;
     }
     
+    public int getCurrentProtocolMode() {
+    	return elmMode;
+    }
+    
     private int parseProtocolType(String protocol) {
     	String s = protocol.toLowerCase().trim();
     	
