@@ -353,6 +353,7 @@ public final class QueryManagerImpl implements QueryManager {
             monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
         final Response response = buildResponse(queryMap.values());
         
+        
         dataUpdater.addResponse(response);
     }
 
