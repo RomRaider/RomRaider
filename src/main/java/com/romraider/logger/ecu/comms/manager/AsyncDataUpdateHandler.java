@@ -67,6 +67,8 @@ public class AsyncDataUpdateHandler extends Thread {
     }
     
     public void addResponse(Response response) {
-    	responsesToUpdate.add(response);
+    	synchronized(responsesToUpdate) {
+    		responsesToUpdate.add(response);
+    	}
     }
   }
