@@ -31,7 +31,8 @@ public class AsyncDataUpdateHandler extends Thread {
     
 	Stack<Response> responsesToUpdate = new Stack<Response>();
 	DataUpdateHandler[] handlers;
-	volatile boolean stop = false;
+	private  boolean stop = false;
+	private volatile boolean isRunning = false;
 	
 	public AsyncDataUpdateHandler(DataUpdateHandler[] handlers) {
 		this.handlers = handlers;		
@@ -40,8 +41,10 @@ public class AsyncDataUpdateHandler extends Thread {
 	
     public void run(){
     	LOGGER.info("Starting AsyncDataUpdateHandler");
-       
+    	stop = false;
+    	
     	while(!stop) {	    	
+    		isRunning = true;
 	    	synchronized(responsesToUpdate) {
 			   while(!responsesToUpdate.isEmpty()) {
 			    	   
@@ -60,15 +63,18 @@ public class AsyncDataUpdateHandler extends Thread {
        }
     	
     	LOGGER.info("AsyncDataUpdater stopped.");
+    	isRunning = false;
     }
     
     public void stopUpdater() {
     	stop = true;
     }
     
+    public boolean isRunning() {
+    	return !stop && isRunning;
+    }
+    
     public void addResponse(Response response) {
-    	synchronized(responsesToUpdate) {
-    		responsesToUpdate.add(response);
-    	}
+    	responsesToUpdate.add(response);   
     }
   }

@@ -96,7 +96,7 @@ public final class QueryManagerImpl implements QueryManager {
         stop = true;
         
         dataUpdater = new AsyncDataUpdateHandler(dataUpdateHandlers);
-        dataUpdater.start();
+
     }
 
     @Override
@@ -164,6 +164,7 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             stop = false;
+            
             while (!stop) {
                 notifyConnecting();
                 if (!settings.isLogExternalsOnly() && doEcuInit(settings.getDestinationTarget())) {
@@ -237,6 +238,7 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             txManager.start();
+            if(!dataUpdater.isRunning())dataUpdater.start();
             
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
@@ -330,7 +332,7 @@ public final class QueryManagerImpl implements QueryManager {
         if (fileLoggerQuery != null
                 && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
-        txManager.sendQueries(ecuQueries, pollState);
+        	txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {

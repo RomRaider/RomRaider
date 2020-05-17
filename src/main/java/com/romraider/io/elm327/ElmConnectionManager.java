@@ -259,9 +259,9 @@ public final class ElmConnectionManager implements ConnectionManager {
         
         String response = "";
         while(!response.contains(charac)) {
-        	sleep(2);
             response += connection.readAvailable();
-        	if(currentTimeMillis() - lastChange > timeout) break;    	
+        	if(currentTimeMillis() - lastChange > timeout) break; 
+        	sleep(1);
         }
         
         return response.replace(charac, "").trim();
