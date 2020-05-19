@@ -52,7 +52,7 @@ public final class ElmConnection {
         try {      	
             serialPort = connect(portName, baudrate);
             os = new PrintWriter(serialPort.getOutputStream());
-            is = new BufferedInputStream (serialPort.getInputStream());	            
+            is = new BufferedInputStream (serialPort.getInputStream());	  
             
         } catch (Exception e) {
             close();
@@ -122,9 +122,7 @@ public final class ElmConnection {
         return response;
     }
 
-    public void readStaleData() {
-        if (available() <= 0) return;
-        
+    public void readStaleData() {      
     	while(available() > 0)
 			try {
 				is.read();
