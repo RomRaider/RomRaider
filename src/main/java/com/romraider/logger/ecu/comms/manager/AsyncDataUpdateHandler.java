@@ -71,7 +71,7 @@ public class AsyncDataUpdateHandler extends Thread {
     }
     
     public boolean isRunning() {
-    	return !stop && isRunning;
+    	return isRunning;
     }
     
     public void addResponse(Response response) {

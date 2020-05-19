@@ -82,6 +82,7 @@ public final class QueryManagerImpl implements QueryManager {
     private static boolean started;
     private static boolean stop;
     private AsyncDataUpdateHandler dataUpdater;
+    private DataUpdateHandler[] updateHandlers;
     private int queryCounter;
     private long queryStart;
 
@@ -93,9 +94,9 @@ public final class QueryManagerImpl implements QueryManager {
                 dataUpdateHandlers);
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
+        this.updateHandlers = dataUpdateHandlers;
         stop = true;
         
-        dataUpdater = new AsyncDataUpdateHandler(dataUpdateHandlers);
 
     }
 
@@ -185,6 +186,7 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
             LOGGER.debug("QueryManager stopped.");
             
+            dataUpdater.stopUpdater();
             try {
 				dataUpdater.join();
 			} catch (InterruptedException e) {
@@ -238,7 +240,10 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             txManager.start();
-            if(!dataUpdater.isRunning())dataUpdater.start();
+            if(dataUpdater == null || !dataUpdater.isRunning()) {
+                dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+            	dataUpdater.start();
+            }
             
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
@@ -392,7 +397,6 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public void stop() {
         stop = true;
-        dataUpdater.stopUpdater();
     }
 
     private String buildQueryId(String callerId, LoggerData loggerData) {

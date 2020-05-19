@@ -154,6 +154,12 @@ public final class ElmConnection {
             }
         }
         LOGGER.info("Connection closed.");
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void sendBreak(int duration) {
