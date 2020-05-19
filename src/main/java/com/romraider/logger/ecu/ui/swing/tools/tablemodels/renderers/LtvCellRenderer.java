@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,10 +80,10 @@ public class LtvCellRenderer extends DefaultTableCellRenderer {
 
     private final void setColour(JLabel cell, double value) {
         if (value < 0) {
-            cell.setForeground(Color.RED);
+            cell.setForeground(Color.BLUE);
         }
         else if (value > 0) {
-            cell.setForeground(Color.BLUE);
+            cell.setForeground(Color.RED);
         }
     }
 }
