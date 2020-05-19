@@ -97,12 +97,7 @@ public final class QueryManagerImpl implements QueryManager {
         this.updateHandlers = dataUpdateHandlers;
         stop = true;
         
-<<<<<<< HEAD
-        dataUpdater = new AsyncDataUpdateHandler(dataUpdateHandlers);
-        dataUpdater.start();
-=======
 
->>>>>>> Fixed bug where updater didnt restart on reconnect
     }
 
     @Override
@@ -170,6 +165,7 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             stop = false;
+            
             while (!stop) {
                 notifyConnecting();
                 if (!settings.isLogExternalsOnly() && doEcuInit(settings.getDestinationTarget())) {
@@ -244,13 +240,10 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             txManager.start();
-<<<<<<< HEAD
-=======
             if(dataUpdater == null || !dataUpdater.isRunning()) {
                 dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
             	dataUpdater.start();
             }
->>>>>>> Fixed bug where updater didnt restart on reconnect
             
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
@@ -344,7 +337,7 @@ public final class QueryManagerImpl implements QueryManager {
         if (fileLoggerQuery != null
                 && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
-        txManager.sendQueries(ecuQueries, pollState);
+        	txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
