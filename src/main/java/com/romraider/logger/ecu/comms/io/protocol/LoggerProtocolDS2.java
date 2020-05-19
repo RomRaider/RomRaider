@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +21,22 @@ package com.romraider.logger.ecu.comms.io.protocol;
 
 import java.util.Collection;
 
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.definition.Module;
 
-
-
 public interface LoggerProtocolDS2 extends LoggerProtocol {
+
+    byte[] constructReadProcedureRequest(Module module,
+            Collection<EcuQuery> queries);
+
+    byte[] constructReadAddressResponse(
+            Collection<EcuQuery> queries, int requestSize);
 
     byte[] constructReadGroupRequest(
             Module module, String group);
 
     byte[] constructReadGroupResponse(
-            Collection<EcuQuery> queries, int requestSize);
-
-    byte[] constructReadAddressResponse(
             Collection<EcuQuery> queries, int requestSize);
 
     byte[] constructReadMemoryRequest(
@@ -45,5 +47,15 @@ public interface LoggerProtocolDS2 extends LoggerProtocol {
 
     public byte[] constructReadMemoryRangeResponse(int requestSize, int length);
 
+    void processReadAddressResponse(Collection<EcuQuery> queries,
+            byte[] response, PollingState pollState);
+
     void processReadMemoryRangeResponse(Collection<EcuQuery> queries, byte[] response);
+
+    byte[] constructSetAddressRequest(
+            Module module, Collection<EcuQuery> queryList);
+
+    byte[] constructSetAddressResponse(int length);
+
+    void validateSetAddressResponse(byte[] response);
 }

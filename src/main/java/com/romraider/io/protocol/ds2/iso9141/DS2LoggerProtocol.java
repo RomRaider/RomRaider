@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.romraider.io.protocol.ds2.iso9141;
 import static com.romraider.io.protocol.ds2.iso9141.DS2Protocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ds2.iso9141.DS2ResponseProcessor.extractResponseData;
 import static com.romraider.io.protocol.ds2.iso9141.DS2ResponseProcessor.filterRequestFromResponse;
+import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
@@ -60,8 +61,16 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
     public byte[] constructReadAddressRequest(
             Module module, Collection<EcuQuery> queries) {
 
-        Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         return protocol.constructReadAddressRequest(
+                module, new byte[][]{});
+    }
+
+    @Override
+    public byte[] constructReadProcedureRequest(
+            Module module, Collection<EcuQuery> queries) {
+
+        Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        return protocol.constructReadProcedureRequest(
                 module, convertToByteAddresses(filteredQueries));
     }
 
@@ -90,6 +99,26 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
                 module, convertToByteAddresses(queries), length);
     }
 
+    /**
+     * Convert address for the list of queries into the hex format the
+     * ECU expects.
+     **/
+    @Override
+    public byte[] constructSetAddressRequest(Module module,
+            Collection<EcuQuery> queries) {
+        Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        return protocol.constructSetAddressRequest(
+                module, convertListToByteAddresses(filteredQueries));
+    }
+
+    /**
+     * An Address set response is a 4 byte ACK sequence
+     **/
+    @Override
+    public byte[] constructSetAddressResponse(int requestSize) {
+        return new byte[requestSize + RESPONSE_NON_DATA_BYTES];
+    }
+
     @Override
     public byte[] constructReadAddressResponse(Collection<EcuQuery> queries,
             PollingState pollState) {
@@ -102,11 +131,11 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
 
         checkNotNullOrEmpty(queries, "queries");
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
-        int numAddresses = 0;
+        int responseBytes = requestSize + RESPONSE_NON_DATA_BYTES;
         for (EcuQuery ecuQuery : filteredQueries) {
-            numAddresses += EcuQueryData.getDataLength(ecuQuery); 
+            responseBytes += EcuQueryData.getDataLength(ecuQuery); 
         }
-        return new byte[requestSize + RESPONSE_NON_DATA_BYTES + numAddresses];
+        return new byte[responseBytes];
     }
 
     @Override
@@ -156,7 +185,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
      * array. 
      **/
     @Override
-    public void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response, PollingState pollState) {
+    public void processReadAddressResponse(Collection<EcuQuery> queries, byte[] response, PollingState pollState) {
         checkNotNullOrEmpty(queries, "queries");
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(response);
@@ -216,6 +245,36 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
     }
 
     @Override
+    public void processReadAddressResponses(Collection<EcuQuery> queries,
+            byte[] response, PollingState pollState) {
+        checkNotNullOrEmpty(queries, "queries");
+        checkNotNullOrEmpty(response, "response");
+        final byte[] responseData = extractResponseData(response);
+        final Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        final Map<String, byte[]> addressResults = new HashMap<String, byte[]>();
+        int i = 0;
+        for (EcuQuery filteredQuery : filteredQueries) {
+            final int dataLength = EcuQueryData.getDataLength(filteredQuery);
+            final byte[] data = new byte[dataLength];
+            arraycopy(responseData, i, data, 0, dataLength);
+            addressResults.put(filteredQuery.getHex(), data);
+            i += dataLength;
+        }
+        for (EcuQuery query : queries) {
+            query.setResponse(addressResults.get(query.getHex()));
+        }
+    }
+
+    /**
+     * Validate response headers, length and checksum 
+     **/
+    @Override
+    public void validateSetAddressResponse(byte[] response) {
+        checkNotNullOrEmpty(response, "response");
+        protocol.validateSetAddressResponse(response);
+    }
+
+    @Override
     public Protocol getProtocol() {
         return protocol;
     }
@@ -259,6 +318,34 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
             for (int j = 0; j < bytes.length / addrLength; j++) {
                 arraycopy(bytes, j * addrLength, addresses[i++], 0, addrLength);
             }
+        }
+        return addresses;
+    }
+
+    private byte[][] convertListToByteAddresses(Collection<EcuQuery> queries) {
+        /*
+         * Address format is five bytes. First byte is data type
+         * (byte, word, procedure) followed by the four byte address.
+         */
+        final byte[][] addresses = new byte[queries.size()][5];
+        int i = 0;
+        for (EcuQuery query : queries) {
+            final int addrLength = query.getBytes().length;
+            final byte[] bytes = query.getBytes();
+            for (int j = 0; j < bytes.length / addrLength; j++) {
+                arraycopy(bytes, j * addrLength, addresses[i], 1, addrLength);
+            }
+            // Update the first byte to the appropriate data type
+            // 0 = byte, 1 = word and 2 = procedure
+            // procedure
+            if (asUnsignedInt(bytes) < 0x1C) {
+                addresses[i][0] = 2;
+            }
+            // word or byte
+            else {
+                addresses[i][0] = (byte) (EcuQueryData.getDataLength(query) - 1);
+            }
+            i++;
         }
         return addresses;
     }

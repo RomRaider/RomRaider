@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +40,12 @@ import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class DS2Protocol implements ProtocolDS2 {
     private static final byte[] READ_MEMORY_COMMAND = new byte[]{0x06, 0x00};
-    private static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x02, 0x0e};
+    private static final byte[] READ_PROCEDURE_COMMAND = new byte[]{0x0B, 0x02};
     private static final byte[] ECU_INIT_COMMAND = new byte[]{0x00};
     private static final byte[] ECU_RESET_COMMAND = new byte[]{0x43};
+    private static final byte[] SET_ADDRESS_COMMAND = new byte[]{0x0B, 0x01};
+    private static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x00};
     public static final byte VALID_RESPONSE = (byte) 0xA0;
-    private static final int ADDRESS_SIZE = 3;
-    private static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 4;
     public static Module module;
     private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
@@ -97,9 +97,18 @@ public final class DS2Protocol implements ProtocolDS2 {
     public byte[] constructReadAddressRequest(
             Module module, byte[][] addresses) {
         checkNotNull(module, "module");
+        // 0x12 0x05 0x0B 0x00
+        return buildRequest(
+                READ_ADDRESS_COMMAND, new byte[0], new byte[]{0});
+    }
+
+    @Override
+    public byte[] constructReadProcedureRequest(
+            Module module, byte[][] addresses) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(addresses, "addresses");
-        // 0x12 data_length group subgroup [address] checksum
-        return buildRequest(READ_ADDRESS_COMMAND, new byte[0], addresses);
+        // 0x12 data_length group subgroup [procedure] checksum
+        return buildRequest(READ_PROCEDURE_COMMAND, new byte[0], addresses);
     }
 
     public byte[] constructReadGroupRequest(
@@ -108,6 +117,14 @@ public final class DS2Protocol implements ProtocolDS2 {
         checkNotNullOrEmpty(addresses, "addresses");
         // 0x12 data_length group subgroup checksum
         return buildRequest(new byte[0], new byte[0], addresses);
+    }
+
+    @Override
+    public byte[] constructSetAddressRequest(Module module,
+            byte[][] addresses) {
+        checkNotNull(module, "module");
+        checkNotNullOrEmpty(addresses, "address");
+        return buildRequest(SET_ADDRESS_COMMAND, new byte[0], addresses);
     }
 
     @Override
@@ -124,6 +141,13 @@ public final class DS2Protocol implements ProtocolDS2 {
     @Override
     public void checkValidEcuInitResponse(byte[] processedResponse) {
         // 12 2e a0 31343337383036 3131303133303231323239363030303031313538353236303030393632313432353634 9c
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        DS2ResponseProcessor.validateResponse(processedResponse);
+    }
+
+    @Override
+    public void validateSetAddressResponse(byte[] processedResponse) {
+        // Valid response is an ACK: 12 04 A0 B6
         checkNotNullOrEmpty(processedResponse, "processedResponse");
         DS2ResponseProcessor.validateResponse(processedResponse);
     }
@@ -194,23 +218,34 @@ public final class DS2Protocol implements ProtocolDS2 {
         byte[] request = new byte[0];
         try {
             int length = 3;
-            for (byte[] tmp : content) {
-                length += tmp.length;
-            }
             length += command.length;
             length += readLen.length;
             bb.reset();
             bb.write(module.getAddress());
             bb.write((byte) length);
             bb.write(command);
-            for (byte[] tmp : content) {
-                    bb.write(tmp);
+            if (command == SET_ADDRESS_COMMAND) {
+                length++;
+                bb.write(content.length);   // number of parameters
             }
-            if (readLen.length > 0) {
+            for (byte[] tmp : content) {    // address payload
+                if (command == READ_PROCEDURE_COMMAND
+                        && tmp.length == 3) {// legacy ADC def 0x0B020E support
+                    length++;
+                    bb.write((byte) 0x00);
+                }
+                else if (command == READ_ADDRESS_COMMAND) {
+                    break;  // no content
+                }
+                length += tmp.length;
+                bb.write(tmp);
+            }
+            if (readLen.length > 0) {   // readMemory, # of bytes to reads
                 bb.write(readLen);
             }
-            bb.write((byte) 0x00);
+            bb.write((byte) 0x00);      // chksum placeholder
             request = bb.toByteArray();
+            request[1] = (byte) length; // update length value
             final byte cs = calculateChecksum(request);
             request[request.length - 1] = cs;
         } catch (IOException e) {

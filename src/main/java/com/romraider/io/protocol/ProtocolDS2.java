@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,17 @@ package com.romraider.io.protocol;
 
 import com.romraider.logger.ecu.definition.Module;
 
-
-
 public interface ProtocolDS2 extends Protocol {
+
+    byte[] constructReadProcedureRequest(Module module, byte[][] addresses);
 
     byte[] constructReadGroupRequest(Module module, byte[][] addresses);
 
     byte[] constructReadMemoryRequest(
             Module module, byte[][] convertToByteAddresses, int length);
+
+    byte[] constructSetAddressRequest(
+            Module module, byte[][] convertToByteAddresses);
+
+    void validateSetAddressResponse(byte[] response);
 }
