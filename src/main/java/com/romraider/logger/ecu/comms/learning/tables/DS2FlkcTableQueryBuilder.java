@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public class DS2FlkcTableQueryBuilder {
             for (int k = 0; k < columns; k++) {
                 String id = "Knock-r" + j + "c" + k;
                 final String addrStr = String.format("0x%06X", flkcAddr + (i * dataSize));
-                LOGGER.debug(
+                LOGGER.trace(
                         String.format(
                                 "Knock Data row:%d col:%d addr:%s",
                                 j, k, addrStr));
