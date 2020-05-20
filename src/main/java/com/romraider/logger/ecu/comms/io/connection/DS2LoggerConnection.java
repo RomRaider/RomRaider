@@ -181,16 +181,15 @@ public final class DS2LoggerConnection implements LoggerConnection {
                 // update address list if size or new query changes
                 if (querySet.size() != queryCount
                         || pollState.isNewQuery()) {
-                    // if too many parameters selected then notify user
-                    // to un-select some
-                    if (querySet.size() > 0x32) {
-                        throw new SerialCommunicationException(
-                                rb.getString("TOOLARGE"));
-                    }
 
                     // Set new address list
                     request = protocol.constructSetAddressRequest(
                             module, querySet);
+                    // if too many parameters selected then notify user
+                    if (request.length > 256) {
+                        throw new SerialCommunicationException(
+                                rb.getString("TOOLARGE"));
+                    }
                     LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
                             pollState.getCurrentState(), module, asHex(request)));
                     pollState.setLastState(PollingState.State.STATE_0);
