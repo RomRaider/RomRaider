@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public final class FileLoggerImpl implements FileLogger {
     private boolean started;
     private OutputStream os;
     private long startTimestamp;
-    private boolean zero;
+    //private boolean zero;
 
     public FileLoggerImpl(MessageListener messageListener) {
         checkNotNull(messageListener);
@@ -64,7 +64,6 @@ public final class FileLoggerImpl implements FileLogger {
                 messageListener.reportMessageInTitleBar(MessageFormat.format(
                         rb.getString("STARTLOG"),
                         FormatFilename.getShortName(filePath)));
-                zero = true;
             } catch (Exception e) {
                 stop();
                 throw new FileLoggerException(e);
@@ -122,13 +121,8 @@ public final class FileLoggerImpl implements FileLogger {
         if (SettingsManager.getSettings().isFileLoggingAbsoluteTimestamp()) {
             formattedTimestamp = timestampFormat.format(new Date(timestamp));
         } else {
-            if (zero) {
-                formattedTimestamp = "0";
-                startTimestamp = System.currentTimeMillis();
-                zero = false;
-            } else {
-                formattedTimestamp = String.valueOf(System.currentTimeMillis() - startTimestamp);
-            }
+        	if(startTimestamp == 0) startTimestamp = timestamp;
+        	formattedTimestamp = String.valueOf(timestamp - startTimestamp);          
         }
         return new StringBuilder(formattedTimestamp).append(line).toString();
     }

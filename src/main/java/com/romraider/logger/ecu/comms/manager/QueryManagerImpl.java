@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,12 +76,15 @@ public final class QueryManagerImpl implements QueryManager {
     private static final String EXT = "Externals";
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
-    private final DataUpdateHandler[] dataUpdateHandlers;
     private FileLoggerControllerSwitchMonitor monitor;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private static boolean started;
     private static boolean stop;
+    private AsyncDataUpdateHandler dataUpdater;
+    private DataUpdateHandler[] updateHandlers;
+    private int queryCounter;
+    private long queryStart;
 
     public QueryManagerImpl(EcuInitCallback ecuInitCallback,
             MessageListener messageListener,
@@ -91,8 +94,10 @@ public final class QueryManagerImpl implements QueryManager {
                 dataUpdateHandlers);
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
-        this.dataUpdateHandlers = dataUpdateHandlers;
+        this.updateHandlers = dataUpdateHandlers;
         stop = true;
+        
+
     }
 
     @Override
@@ -111,6 +116,11 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void addQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
+        
+        //Reset stats
+        queryCounter = 0;
+        queryStart = System.currentTimeMillis();
+        
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
         if (loggerData.getDataType() == EXTERNAL) {
@@ -125,10 +135,16 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
+        
+        //Reset stats
+        queryCounter = 0;
+        queryStart = System.currentTimeMillis();
+        
         removeList.add(buildQueryId(callerId, loggerData));
         if (loggerData.getDataType() != EXTERNAL) {
             pollState.setNewQuery(true);
         }
+        
     }
 
     @Override
@@ -149,6 +165,7 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             stop = false;
+            
             while (!stop) {
                 notifyConnecting();
                 if (!settings.isLogExternalsOnly() && doEcuInit(settings.getDestinationTarget())) {
@@ -168,6 +185,13 @@ public final class QueryManagerImpl implements QueryManager {
             notifyStopped();
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
             LOGGER.debug("QueryManager stopped.");
+            
+            dataUpdater.stopUpdater();
+            try {
+				dataUpdater.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
     }
 
@@ -211,11 +235,16 @@ public final class QueryManagerImpl implements QueryManager {
             moduleName = module.getName();
         }
         TransmissionManager txManager = new TransmissionManagerImpl();
-        long start = currentTimeMillis();
+        queryStart = currentTimeMillis();
         long end = currentTimeMillis();
-        int count = 0;
+
         try {
             txManager.start();
+            if(dataUpdater == null || !dataUpdater.isRunning()) {
+                dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+            	dataUpdater.start();
+            }
+            
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
                 pollState.setFastPoll(settings.isFastPoll());
@@ -226,10 +255,11 @@ public final class QueryManagerImpl implements QueryManager {
                         endEcuQueries(txManager);
                         pollState.setLastState(PollingState.State.STATE_0);
                     }
-                    start = System.currentTimeMillis();
-                    count = 0;
+                    
+                    queryStart = System.currentTimeMillis();
+                    queryCounter = 0;
                     messageListener.reportMessage(rb.getString("SELECTPARAMS"));
-                    sleep(1000L);
+                    sleep(100L);
                 } else {
                     end = currentTimeMillis() + 1L; // update once every 1msec
                     final List<EcuQuery> ecuQueries =
@@ -285,11 +315,12 @@ public final class QueryManagerImpl implements QueryManager {
                     while (currentTimeMillis() < end) {
                         sleep(1L);
                     }
+                    
                     handleQueryResponse();
-                    count++;
+                    queryCounter++;
                     messageListener.reportMessage(MessageFormat.format(
                             rb.getString("QUERYING"), moduleName));
-                    messageListener.reportStats(buildStatsMessage(start, count));
+                    messageListener.reportStats(buildStatsMessage(queryStart, queryCounter));
                 }
             }
         } catch (Exception e) {
@@ -306,7 +337,7 @@ public final class QueryManagerImpl implements QueryManager {
         if (fileLoggerQuery != null
                 && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
-        txManager.sendQueries(ecuQueries, pollState);
+        	txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
@@ -328,14 +359,9 @@ public final class QueryManagerImpl implements QueryManager {
         if (settings.isFileLoggingControllerSwitchActive())
             monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
         final Response response = buildResponse(queryMap.values());
-        for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
-            runAsDaemon(new Runnable() {
-                @Override
-                public void run() {
-                    dataUpdateHandler.handleDataUpdate(response);
-                }
-            });
-        }
+        
+        
+        dataUpdater.addResponse(response);
     }
 
     private Response buildResponse(Collection<Query> queries) {

@@ -42,21 +42,22 @@ import java.io.PrintWriter;
 
 public final class ElmConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
-    private final SerialPort serialPort;
-    private final PrintWriter os;
-    private final BufferedInputStream is;
+    private SerialPort serialPort;
+    private PrintWriter os;
+    private BufferedInputStream is;
     
     public ElmConnection(String portName, int baudrate) {
         checkNotNullOrEmpty(portName, "portName");
-
+        
         try {      	
             serialPort = connect(portName, baudrate);
             os = new PrintWriter(serialPort.getOutputStream());
-            is = new BufferedInputStream (serialPort.getInputStream());
+            is = new BufferedInputStream (serialPort.getInputStream());	  
+            
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
-        }
+        }    
     }
     
     public void flush() {
@@ -116,13 +117,12 @@ public final class ElmConnection {
     //Reads everything that is available
     public String readAvailable() {
         String response = "";
-        response = read(available());
+        
+        response += read(available());
         return response;
     }
 
-    public void readStaleData() {
-        if (available() <= 0) return;
-        
+    public void readStaleData() {      
     	while(available() > 0)
 			try {
 				is.read();
@@ -148,12 +148,18 @@ public final class ElmConnection {
         }
         if (serialPort != null) {
             try {
-                serialPort.close();
+                serialPort.close();              
             } catch (Exception e) {
                 LOGGER.error("Error closing serial port", e);
             }
         }
         LOGGER.info("Connection closed.");
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void sendBreak(int duration) {
