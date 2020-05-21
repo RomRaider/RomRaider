@@ -68,7 +68,9 @@ public final class FileLoggerImpl implements FileLogger {
                 stop();
                 throw new FileLoggerException(e);
             }
+            
             started = true;
+            startTimestamp = 0;
         }
     }
 
