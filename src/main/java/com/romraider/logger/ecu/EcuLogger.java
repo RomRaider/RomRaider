@@ -1570,7 +1570,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         }
 
-        ecuIdLabel.setText(replaceString(ecuIdLabel.getText(), target));
+        final String ecuId = ecuIdLabel.getText().split(": ")[1];
+        ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
 
         for (String key : componentList.keySet()) {
             if (key.equals("ecuIdItem")) {
