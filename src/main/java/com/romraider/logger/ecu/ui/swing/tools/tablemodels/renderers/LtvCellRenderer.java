@@ -80,10 +80,10 @@ public class LtvCellRenderer extends DefaultTableCellRenderer {
 
     private final void setColour(JLabel cell, double value) {
         if (value < 0) {
-            cell.setForeground(Color.BLUE);
+            cell.setForeground(Color.RED);
         }
         else if (value > 0) {
-            cell.setForeground(Color.RED);
+            cell.setForeground(Color.BLUE);
         }
     }
 }
