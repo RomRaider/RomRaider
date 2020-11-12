@@ -1,4 +1,4 @@
-                - RomRaider 0.7.1 AUG16 2020 -
+                - RomRaider 0.7.2 NOV11 2020 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.7.1 AUG16 2020 Notes (08/06/2020) -
+- 0.7.2 NOV11 2020 Notes (11/11/2020) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.7.1 AUG16 2020 Known Issues -
+- 0.7.2 NOV11 2020 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,13 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.7.2 NOV11 2020 (11/11/2020)
+----------------------------------
+
+- Logger
+  - Fix reversed colours in LTV
+
 
 0.7.1 AUG16 2020 (08/06/2020)
 ----------------------------------
