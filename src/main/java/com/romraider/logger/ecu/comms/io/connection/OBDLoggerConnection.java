@@ -88,7 +88,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
         if (j == response.length) { j--; }
         final byte[] calIdStr = new byte[j - 7];
         System.arraycopy(response, 7, calIdStr, 0, j - 7);
-        System.arraycopy(calIdStr, 0, processedResponse, 5, 8);
+        System.arraycopy(calIdStr, 0, processedResponse, 5, calIdStr.length);
         LOGGER.info(String.format("%s Calibration ID: %s", module, new String(calIdStr)));
 
         final byte[] supportedPidsPid = {
