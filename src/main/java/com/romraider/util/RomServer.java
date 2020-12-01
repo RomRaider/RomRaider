@@ -32,7 +32,7 @@ import java.net.Socket;
 public final class RomServer {
     private static final Logger LOGGER = getLogger(RomServer.class);
     private static final String HOST = "localhost";
-    private static final int PORT = 65329;
+    private static final int PORT = 23272;
 
     public static boolean isRunning() {
         try {
