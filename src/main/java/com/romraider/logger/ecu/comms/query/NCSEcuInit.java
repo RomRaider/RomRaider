@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,14 +23,14 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static java.lang.System.arraycopy;
 
 public final class NCSEcuInit implements EcuInit {
-    private byte[] ecuInitBytes;
-    private String ecuId;
+    final private byte[] ecuInitBytes;
+    final private String ecuId;
 
     public NCSEcuInit(byte[] ecuInitBytes) {
         checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
         this.ecuInitBytes = ecuInitBytes;
-        final byte[] ecuIdBytes = new byte[5];
-        arraycopy(ecuInitBytes, 3, ecuIdBytes, 0, 5);
+        final byte[] ecuIdBytes = new byte[6];
+        arraycopy(ecuInitBytes, 2, ecuIdBytes, 0, ecuIdBytes.length);
         ecuId = new String(ecuIdBytes);
     }
 
