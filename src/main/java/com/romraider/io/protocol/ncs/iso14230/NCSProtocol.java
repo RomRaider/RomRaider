@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,14 @@ public final class NCSProtocol implements ProtocolNCS {
         return request;
     }
 
+    // not implemented
     @Override
     public byte[] constructEcuInitRequest(Module module) {
+        return null;
+    }
+
+    @Override
+    public byte[] constructEcuIdRequest(Module module) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
         // len  SID  opt  chk
@@ -184,7 +190,6 @@ public final class NCSProtocol implements ProtocolNCS {
     @Override
     public EcuInit parseEcuInitResponse(byte[] processedResponse) {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
-        //final byte[] ecuInitBytes = parseResponseData(processedResponse);
         return new NCSEcuInit(processedResponse);
     }
 
@@ -203,9 +208,9 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     @Override
-    public void checkValidSidPidResponse(byte[] response) {
+    public byte[] checkValidSidPidResponse(byte[] response) {
         checkNotNullOrEmpty(response, "SidPidResponse");
-        NCSResponseProcessor.validateResponse(response);
+        return NCSResponseProcessor.extractResponseData(response);
     }
 
     @Override

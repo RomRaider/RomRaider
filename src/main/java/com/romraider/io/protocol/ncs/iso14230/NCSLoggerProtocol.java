@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,11 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     @Override
     public byte[] constructEcuInitRequest(Module module) {
         return protocol.constructEcuInitRequest(module);
+    }
+
+    @Override
+    public byte[] constructEcuIdRequest(Module module) {
+        return protocol.constructEcuIdRequest(module);
     }
 
     @Override
@@ -125,9 +130,15 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     }
 
     @Override
-    public void processReadSidPidResponse(byte[] response) {
+    public byte[] processEcuIdResponse(byte[] response) {
         checkNotNullOrEmpty(response, "response");
-        protocol.checkValidSidPidResponse(response);
+        return protocol.parseResponseData(response);
+    }
+
+    @Override
+    public byte[] processReadSidPidResponse(byte[] response) {
+        checkNotNullOrEmpty(response, "response");
+        return protocol.checkValidSidPidResponse(response);
     }
 
     @Override

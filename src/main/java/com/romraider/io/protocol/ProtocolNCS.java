@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,10 @@ public interface ProtocolNCS extends Protocol {
 
     void validateLoadAddressResponse(byte[] response);
 
-    void checkValidSidPidResponse(byte[] response);
+    byte[] checkValidSidPidResponse(byte[] response);
 
     byte[] constructReadAddressRequest(Module module, byte[][] bs,
             PollingState pollState);
+
+    byte[] constructEcuIdRequest(Module module);
 }

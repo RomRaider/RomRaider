@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
 package com.romraider.io.protocol.ncs.iso14230;
 
 import static com.romraider.io.protocol.ncs.iso14230.NCSChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.LOAD_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.ECU_ID_SID_RESPONSE;
+import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.LOAD_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.NCS_NRC;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.READ_LOAD_RESPONSE;
-import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.READ_SID_GRP_RESPONSE;
+import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -69,10 +69,22 @@ public final class NCSResponseProcessor {
 
     public final static byte[] extractResponseData(byte[] response) {
         checkNotNullOrEmpty(response, "response");
-        // len response_sid option response_data1 ... [response_dataN]
+        // len response_sid option response_data1 ... [response_dataN] CS
         validateResponse(response);
-        final byte[] data = new byte[response.length - 4];
-        System.arraycopy(response, RESPONSE_NON_DATA_BYTES, data, 0, data.length);
+        byte[] data = new byte[]{};
+        // Strip headers and CS returning only the payload
+        if (response[1] == ECU_ID_SID_RESPONSE) {
+            data = new byte[response.length - RESPONSE_NON_DATA_BYTES];
+            System.arraycopy(response, RESPONSE_NON_DATA_BYTES-1, data, 0, data.length);
+        }
+        if (response[1] == READ_LOAD_RESPONSE) {
+            data = new byte[response.length - 4];
+            System.arraycopy(response, RESPONSE_NON_DATA_BYTES, data, 0, data.length);
+        }
+        if (response[1] == READ_SID_GRP_RESPONSE) {
+            data = new byte[response.length - 5];
+            System.arraycopy(response, RESPONSE_NON_DATA_BYTES+1, data, 0, data.length);
+        }
         return data;
     }
 

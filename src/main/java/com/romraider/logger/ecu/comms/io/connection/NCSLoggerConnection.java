@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,14 +79,16 @@ public final class NCSLoggerConnection implements LoggerConnection {
     // can reference supported parameters with ecubyte/bit attributes. 
     public void ecuInit(EcuInitCallback callback, Module module) {
         final byte[] initResponse = new byte[422];
-        byte[] request = protocol.constructEcuInitRequest(module);
+        byte[] request = protocol.constructEcuIdRequest(module);
         LOGGER.debug(String.format("%s ID Request  ---> %s",
                 module, asHex(request)));
-        byte[] response = new byte[9];
-        manager.send(request, response, new PollingStateImpl());
-        LOGGER.debug(String.format("%s ID Response <--- %s",
+        byte[] response = manager.send(request);
+        LOGGER.debug(String.format("%s ID Raw Response <--- %s",
                 module, asHex(response)));
-        System.arraycopy(response, 0, initResponse, 0, response.length - 1);
+        response = protocol.processEcuIdResponse(response);
+        LOGGER.debug(String.format("%s ID Processed Response <--- %s",
+                module, asHex(response)));
+        System.arraycopy(response, 0, initResponse, 2, response.length);
         sleep(55L);
 
         final byte[] supportedPidsPid = {
@@ -101,15 +103,16 @@ public final class NCSLoggerConnection implements LoggerConnection {
                         module, sid, new byte[]{pid});
                 LOGGER.debug(String.format("%s SID %02X, PID Group %02X Request  ---> %s",
                         module, sid, pid, asHex(request)));
-                response = new byte[8];
-                manager.send(request, response, new PollingStateImpl());
-                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Response <--- %s",
+                response = manager.send(request);
+                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Raw Response <--- %s",
                         module, sid ,pid, asHex(response)));
                 // Validate response
-                protocol.processReadSidPidResponse(response);
-                System.arraycopy(response, 3, initResponse, i, 4);
+                response = protocol.processReadSidPidResponse(response);
+                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Processed Response <--- %s",
+                        module, sid ,pid, asHex(response)));
+                System.arraycopy(response, 0, initResponse, i, 4);
                 // Check lsb to see if next PID group is supported
-                if ((response[response[0]] & 0x01) == 0) {
+                if ((response[response.length-1] & 0x01) == 0) {
                     test_grp = false;
                 }
             }
@@ -120,7 +123,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
                 (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14,
                 (byte) 0x15};
         for (byte hb : highBytes) {
-            if (hb == (byte) 0x13) {
+            if (hb == (byte) 0x13) {    // Supported Switch PIDs
                 test_grp = true;
                 for (byte pid : supportedPidsPid) {
                     if (test_grp) {
@@ -128,19 +131,20 @@ public final class NCSLoggerConnection implements LoggerConnection {
                                 module, sid, new byte[]{hb, pid});
                         LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
                                 module, sid, hb, pid, asHex(request)));
-                        response = new byte[9];
-                        manager.send(request, response, new PollingStateImpl());
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Response <--- %s",
-                                module, sid ,hb, pid, asHex(response)));
+                        response = manager.send(request);
+                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
+                                module, sid, hb, pid, asHex(response)));
                         // Validate response
-                        protocol.processReadSidPidResponse(response);
+                        response = protocol.processReadSidPidResponse(response);
+                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                                module, sid, hb, pid, asHex(response)));
                         // Check lsb to see if next PID group is supported
-                        if ((response[response[0]] & 0x01) == 0) {
+                        if ((response[response.length-1] & 0x01) == 0) {
                             test_grp = false;
                         }
                         final short[] supported = new short[2];
                         for (int j = 0; j < 2; j++) {
-                            supported[j] = (short) ((short)(response[j*2+4] << 8) + ((short)response[j*2+5] & 0x00FF));
+                            supported[j] = (short) ((short)(response[j*2] << 8) + ((short)response[j*2+1] & 0x00FF));
                         }
                         for (int k = 0; k < supported.length; k++) {
                             // ex: 7FFC2000
@@ -151,13 +155,15 @@ public final class NCSLoggerConnection implements LoggerConnection {
                                             module, sid, new byte[]{hb, cid});
                                     LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Request  ---> %s",
                                             module, sid, hb, cid, asHex(request)));
-                                    response = new byte[7];
-                                    manager.send(request, response, new PollingStateImpl());
-                                    LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Response <--- %s",
+                                    response = manager.send(request);
+                                    LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Raw Response <--- %s",
                                             module, sid ,hb, cid, asHex(response)));
                                     // Validate response
-                                    protocol.processReadSidPidResponse(response);
-                                    System.arraycopy(response, 5, initResponse, i, 1);
+                                    response = protocol.processReadSidPidResponse(response);
+                                    LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                                            module, sid, hb, pid, asHex(response)));
+                                    // 2 bytes returned, we only need the second byte
+                                    System.arraycopy(response, 1, initResponse, i, 1);
                                 }
                                 i++;
                             }
@@ -177,15 +183,16 @@ public final class NCSLoggerConnection implements LoggerConnection {
                                 module, sid, new byte[]{hb, pid});
                         LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
                                 module, sid, hb, pid, asHex(request)));
-                        response = new byte[9];
-                        manager.send(request, response, new PollingStateImpl());
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Response <--- %s",
+                        response = manager.send(request);
+                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
                                 module, sid ,hb, pid, asHex(response)));
                         // Validate response
-                        protocol.processReadSidPidResponse(response);
-                        System.arraycopy(response, 4, initResponse, i, 4);
+                        response = protocol.processReadSidPidResponse(response);
+                        System.arraycopy(response, 0, initResponse, i, 4);
+                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                                module, sid, hb, pid, asHex(response)));
                         // Check lsb to see if next PID group is supported
-                        if ((response[response[0]] & 0x01) == 0) {
+                        if ((response[response.length-1] & 0x01) == 0) {
                             test_grp = false;
                         }
                     }
