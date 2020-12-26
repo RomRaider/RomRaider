@@ -45,15 +45,43 @@ public final class CalculateALT2 implements Calculator {
         int sumt = 0;
         int xort = 0;
         int dw = 0;
-        for (int i = range.get(START); i < range.get(END); i += 4) {
+        for (int i = range.get(START) + 4; i < range.get(END); i += 4) {
             if ((i == range.get(SUMLOC))
                     || (i == range.get(XORLOC)
                     || (i == range.get(SKIPLOC)))) continue;
-            dw = (int)parseByteValue(binData, Settings.Endian.BIG, i, 4, true);
+            dw = (int)parseByteValue(binData, Settings.Endian.BIG, i, 4, true); //this works, but shouldn't it be unsigned?
             sumt += dw;
             xort ^= dw;
         }
         results.put(SUMT, sumt);
         results.put(XORT, xort);
+        //need to save SUMT and XORT before doing 16bit checksums
+        short sumCAL = 0;
+        short sumCODE = 0;
+        short d = 0;
+        for (int i = range.get(START) + 2; i < range.get(SKIPLOC); i += 2) {
+            if (i == range.get(SUMLOC)){
+                dw = results.get(SUMT);
+                sumCAL += (short)((dw >> 16) & 0xffff);
+                sumCAL += (short)(dw & 0xffff);
+                i += 2; //skip over final 2 bytes of SUMT
+                continue;
+            }
+            if (i == range.get(XORLOC)){
+                dw = results.get(XORT);
+                sumCAL += (short)((dw >> 16) & 0xffff);
+                sumCAL += (short)(dw & 0xffff);
+                i += 2; //skip over final 2 bytes of XORT
+                continue;
+            }        
+            d = (short)parseByteValue(binData, Settings.Endian.BIG, i, 2, false); 
+            sumCAL += d;
+        }
+        for (int i = range.get(SKIPLOC) + 2; i < range.get(END); i += 2) {
+            d = (short)parseByteValue(binData, Settings.Endian.BIG, i, 2, false);
+            sumCODE += d;
+        }
+        results.put(START, (int)sumCAL); //will this work casting as int?
+        results.put(SKIPLOC, (int)sumCODE); //will this work casting as int?
     }
 }
