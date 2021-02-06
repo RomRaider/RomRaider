@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,6 @@ import com.romraider.util.HexUtil;
  */
 public final class ChecksumALT2 extends NissanChecksum {
     protected static final String SKIPLOC = "skiploc";
-    public static final String SUMCAL = "sumcal";
-    public static final String SUMCODE = "sumcode";
 
     public ChecksumALT2() {
         calculator = new CalculateALT2();
@@ -48,24 +46,21 @@ public final class ChecksumALT2 extends NissanChecksum {
         else {
             range.put(SKIPLOC, 0x20000);
         }
-        //override start for ALT2
-        range.put(START, 0x8200);
     }
 
-    // Validate the 16 bit chks as well
     public boolean validate(byte[] binData) {
         calculator.calculate(range, binData, results);
         final boolean valid =
                 (results.get(SUMT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(SUMLOC), 4, true)) &&
                 (results.get(XORT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(XORLOC), 4, true)) &&
-                (results.get(SUMCAL) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(START), 2, false)) &&
-                (results.get(SUMCODE) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(SKIPLOC), 2, false));
+                (results.get(START) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(START), 2, false)) &&
+                (results.get(SKIPLOC) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(SKIPLOC), 2, false));
             return valid;
     }
 
     public void update(byte[] binData) {
         super.update(binData);
-        System.arraycopy(parseIntegerValue(results.get(SUMCAL), Settings.Endian.BIG, 2), 0, binData, range.get(START), 2);
-        System.arraycopy(parseIntegerValue(results.get(SUMCODE), Settings.Endian.BIG, 2), 0, binData, range.get(SKIPLOC), 2);
+        System.arraycopy(parseIntegerValue(results.get(START), Settings.Endian.BIG, 2), 0, binData, range.get(START), 2);
+        System.arraycopy(parseIntegerValue(results.get(SKIPLOC), Settings.Endian.BIG, 2), 0, binData, range.get(SKIPLOC), 2);
     }
 }
