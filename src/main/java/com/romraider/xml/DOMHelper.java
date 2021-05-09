@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public final class DOMHelper {
 
     public static String unmarshallAttribute(Node node, String name, String defaultValue) {
         Node n = node.getAttributes().getNamedItem(name);
-        return (n != null) ? (n.getNodeValue()) : (defaultValue);
+        return (n != null && !n.getNodeValue().equals("NaN")) ? (n.getNodeValue()) : (defaultValue);
     }
 
     public static Double unmarshallAttribute(Node node, String name, double defaultValue) {

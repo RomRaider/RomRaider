@@ -95,7 +95,6 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     private void doDisconnect() {
-        if (dataSource.getPort() == null) return;
         try {
             String message = String.format("%s: disconnecting port %s",
                     dataSource.getName(), dataSource.getPort());

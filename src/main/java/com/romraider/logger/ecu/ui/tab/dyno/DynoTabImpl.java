@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,10 @@ public final class DynoTabImpl extends JPanel implements DynoTab {
         add(chartPanel, CENTER);
     }
 
+    public DynoControlPanel getDynoControlPanel() {
+    	return controlPanel;
+    }
+    
     @Override
     public double calcRpm(double vs) {
         return controlPanel.calcRpm(vs);

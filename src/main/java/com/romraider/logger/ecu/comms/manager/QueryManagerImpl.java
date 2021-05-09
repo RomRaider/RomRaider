@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ package com.romraider.logger.ecu.comms.manager;
 import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.synchronizedList;
@@ -95,9 +94,7 @@ public final class QueryManagerImpl implements QueryManager {
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
         this.updateHandlers = dataUpdateHandlers;
-        stop = true;
-        
-
+        stop = true;       
     }
 
     @Override
@@ -161,17 +158,25 @@ public final class QueryManagerImpl implements QueryManager {
     public void run() {
         started = true;
         queryManagerThread = Thread.currentThread();
+        queryManagerThread.setName("Query Manager");
         LOGGER.debug("QueryManager started.");
 
         try {
             stop = false;
             
             while (!stop) {
-                notifyConnecting();
-                if (!settings.isLogExternalsOnly() && doEcuInit(settings.getDestinationTarget())) {
-
+                Module target = settings.getDestinationTarget();
+                
+                if(target == null) {
+                	notifyStopped();
+                }
+                else {
+                	notifyConnecting();
+                }
+                
+                if (!settings.isLogExternalsOnly() &&  (target != null && doEcuInit(target))) {
                     notifyReading();
-                    runLogger(settings.getDestinationTarget());
+                    runLogger(target);
                 } else if (settings.isLogExternalsOnly()) {
                     notifyReading();
                     runLogger(null);
@@ -186,16 +191,18 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
             LOGGER.debug("QueryManager stopped.");
             
-            dataUpdater.stopUpdater();
-            try {
-				dataUpdater.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+            if (dataUpdater != null) {
+	            dataUpdater.stopUpdater();
+	            try {
+					dataUpdater.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+            }
         }
     }
 
-    private boolean doEcuInit(Module module) {
+    private boolean doEcuInit(Module module) {    	
         try {
             LoggerConnection connection =
                     getConnection(settings.getLoggerProtocol(),
@@ -211,7 +218,7 @@ public final class QueryManagerImpl implements QueryManager {
             } finally {
                 connection.close();
             }
-        } catch (Exception e) {
+        } catch (Exception e) {       	
             messageListener.reportMessage(MessageFormat.format(rb.getString("INITFAIL"), module.getName()));
             logError(e);
             return false;
@@ -241,7 +248,9 @@ public final class QueryManagerImpl implements QueryManager {
         try {
             txManager.start();
             if(dataUpdater == null || !dataUpdater.isRunning()) {
-                dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+            	if(dataUpdater == null) {
+            		dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+            	}
             	dataUpdater.start();
             }
             

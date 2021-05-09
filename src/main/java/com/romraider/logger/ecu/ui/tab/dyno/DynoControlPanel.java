@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ public final class DynoControlPanel extends JPanel {
     private boolean wotSet;
     private String path;
     private String carInfo;
-    private String[] carTypeArr;
+    private String[] carTypeArr = {MISSING_CAR_DEF};
     private String[] carMassArr;
     private String[] dragCoeffArr;
     private String[] rollCoeffArr;
@@ -1501,7 +1501,27 @@ public final class DynoControlPanel extends JPanel {
             gearList[g - 1] = Integer.toString(g);
         }
     }
-
+    
+    public void checkDynoDefs() {
+    	if (carTypeArr[0].trim().equals(MISSING_CAR_DEF)){
+	        Object[] options = {"Yes", "No"};
+	        int answer = showOptionDialog(parent,
+	                rb.getString("CDNOTFOUND"),
+	                rb.getString("CONFIGURATION"),
+	                DEFAULT_OPTION, WARNING_MESSAGE,
+	                null, options, options[0]);
+	        if (answer == 0) {
+	            BrowserControl.displayURL(CARS_DEFS_URL);
+	        } else {
+	            final String msg = MessageFormat.format(
+	                    rb.getString("MISSINGCD"), MISSING_CAR_DEF);
+	            showMessageDialog(parent,
+	            msg,
+	            rb.getString("NOTICE"), WARNING_MESSAGE);
+	        }
+    	}
+    }
+    
     private void changeCars(int index) {
         if (!carTypeArr[0].trim().equals(MISSING_CAR_DEF)) {
             iButton.doClick();
@@ -1537,13 +1557,15 @@ public final class DynoControlPanel extends JPanel {
             File carDef = null;
             final String SEPARATOR = System.getProperty("file.separator");
             final String loggerFilePath = getSettings().getLoggerDefinitionFilePath();
-            if (loggerFilePath != null) {
+            
+            if(loggerFilePath != null) {
                 final int index = loggerFilePath.lastIndexOf(SEPARATOR);
                 if (index > 0) {
                     final String path = loggerFilePath.substring(0, index + 1);
                     carDef = new File(path + CARS_FILE);
                 }
             }
+            
             if (!carDef.exists()) {
                 final String profileFilePath = getSettings().getLoggerProfileFilePath();
                 if (profileFilePath != null) {
@@ -1663,23 +1685,9 @@ public final class DynoControlPanel extends JPanel {
             ((x == null) ? e : x).printStackTrace();
         }
         catch (Throwable t) {    // file not found
-            Object[] options = {"Yes", "No"};
-            int answer = showOptionDialog(this,
-                    rb.getString("CDNOTFOUND"),
-                    rb.getString("CONFIGURATION"),
-                    DEFAULT_OPTION, WARNING_MESSAGE,
-                    null, options, options[0]);
-            if (answer == 0) {
-                BrowserControl.displayURL(CARS_DEFS_URL);
-            } else {
-                final String msg = MessageFormat.format(
-                        rb.getString("MISSINGCD"), MISSING_CAR_DEF);
-                showMessageDialog(parent,
-                msg,
-                rb.getString("NOTICE"), WARNING_MESSAGE);
-            }
             carTypeArr = new String[]{MISSING_CAR_DEF};
-            t.printStackTrace();
+            LOGGER.warn("No car_definition.xml file found!");
+            //t.printStackTrace();
         }
     }
 

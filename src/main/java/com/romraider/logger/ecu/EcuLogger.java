@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +106,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JWindow;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Level;
@@ -953,7 +955,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                                     buildToggleGaugeStyleButton());
             tabbedPane.add("MAF", mafTab.getPanel());
             tabbedPane.add("Injector", injectorTab.getPanel());
-            tabbedPane.add("Dyno", dynoTab.getPanel());
+            tabbedPane.add("Dyno", dynoTab.getPanel());              
         }
         else
         {
@@ -992,6 +994,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Injector"+ "</body></html>", injectorTab.getPanel());
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());
         }
+                
+        //Check for definitions only when we open the dyno tab
+        tabbedPane.addChangeListener(new ChangeListener() { 
+            public void stateChanged(ChangeEvent e) {
+                if(tabbedPane.getSelectedComponent() == dynoTab.getPanel())
+                {
+                	((DynoTabImpl)dynoTab).getDynoControlPanel().checkDynoDefs();
+                }
+            }
+        });
+        
         return tabbedPane;
     }
 
@@ -1514,6 +1527,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void buildModuleSelectPanel() {
         moduleSelectPanel.removeAll();
         final CustomButtonGroup moduleGroup = new CustomButtonGroup();
+
         for (Module module : getModuleList()) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             if (touchEnabled == true)
@@ -1527,6 +1541,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 cb.setSelected(true);
                 setTarget(module.getName());
             }
+            
             cb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {

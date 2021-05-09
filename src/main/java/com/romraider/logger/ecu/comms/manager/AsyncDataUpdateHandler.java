@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,21 +23,20 @@ package com.romraider.logger.ecu.comms.manager;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-
 import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 
 
 public class AsyncDataUpdateHandler extends Thread {
     private static final Logger LOGGER = Logger.getLogger(AsyncDataUpdateHandler.class);
-    
+
     Vector<Response> responsesToUpdate = new Vector<Response>();
 	DataUpdateHandler[] handlers;
 	private  boolean stop = false;
 	private volatile boolean isRunning = false;
 	
 	public AsyncDataUpdateHandler(DataUpdateHandler[] handlers) {
-		this.handlers = handlers;		
+		this.handlers = handlers;
 		setName("AsyncDataUpdater");
 	}
 	
@@ -46,12 +45,10 @@ public class AsyncDataUpdateHandler extends Thread {
     	stop = false;
     	
     	while(!stop) {	    	
-    		isRunning = true;
+    		isRunning = true;	
     		
-	    	synchronized(responsesToUpdate) {
-			   
-	    		Response r;
-	    		
+	    	synchronized(responsesToUpdate) {		   
+	    		Response r;	    		
 	    		while(!responsesToUpdate.isEmpty()) {
 	    			r = responsesToUpdate.get(0);
 	    			

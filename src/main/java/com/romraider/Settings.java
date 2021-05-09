@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,17 +262,17 @@ public class Settings implements Serializable {
     /**
      * Gear selection for selected car on Dyno tab
      */
-    private String selectedGear = "";
+    private String selectedGear = "3";
 
     /**
      * Throttle threshold value to indicate WOT on Dyno tab
      */
-    private String tpsThreshold = "";
+    private String tpsThreshold = "98";
 
     /**
      * Throttle value units % or VDC on Dyno tab, not all cars support both
      */
-    private String tpsThresholdPID = "";
+    private String tpsThresholdPID = "%";
 
     /**
      * Sets if we search for the ELM327 on startup (small delay)

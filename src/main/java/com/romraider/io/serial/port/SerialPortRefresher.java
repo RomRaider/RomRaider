@@ -45,6 +45,8 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     public void run() {
+        Thread.currentThread().setName("Serial Port Refresher");
+        
         refreshPortList();
         started = true;
         while (true) {
