@@ -19,7 +19,6 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
-import com.romraider.logger.ecu.definition.EcuDataType;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.util.ResourceUtil;
