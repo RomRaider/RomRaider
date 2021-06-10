@@ -62,7 +62,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                     new FileInputStream(ecuDefsFile));
             try {
                 EcuDefinitionHandler handler = new EcuDefinitionHandler(ecuDefsFile);
-                getSaxParser().parse(inputStream, handler);
+                getSaxParser().parse(inputStream, handler, ecuDefsFile.getAbsolutePath());
                 ecuDefinitionMap = handler.getEcuDefinitionMap();
             } finally {
                 inputStream.close();
@@ -88,12 +88,11 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
         try {
-            InputStream inputStream = new BufferedInputStream(
-                    new FileInputStream(new File(loggerConfigFilePath)));
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
                         protocol, fileLoggingControllerSwitchId, ecuInit);
-                getSaxParser().parse(inputStream, handler);
+                getSaxParser().parse(inputStream, handler, loggerConfigFilePath);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();

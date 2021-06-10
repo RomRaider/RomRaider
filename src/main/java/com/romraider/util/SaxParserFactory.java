@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,9 @@
 package com.romraider.util;
 
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 
 public final class SaxParserFactory {
 
@@ -36,22 +32,9 @@ public final class SaxParserFactory {
 
     public static SAXParser getSaxParser() throws ParserConfigurationException, SAXException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(false);
+        parserFactory.setNamespaceAware(true);
         parserFactory.setValidating(true);
-        parserFactory.setXIncludeAware(false);
+        parserFactory.setXIncludeAware(true);
         return parserFactory.newSAXParser();
-    }
-
-    public static void main(String args[]) {
-        try {
-            SAXParser parser = SaxParserFactory.getSaxParser();
-            BufferedInputStream b = new BufferedInputStream(new FileInputStream(new File("/ecu_defs.xml")));
-            System.out.println(b.available());
-            parser.parse(b, new DefaultHandler());
-            System.out.println(parser.isValidating());
-
-        } catch (Exception ex) {
-            System.err.println(ex);
-        }
     }
 }
