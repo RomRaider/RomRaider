@@ -167,14 +167,14 @@ public final class QueryManagerImpl implements QueryManager {
             while (!stop) {
                 Module target = settings.getDestinationTarget();
                 
-                if(target == null) {
+                if(target == null || settings.getLoggerPort() == null ) {
                 	notifyStopped();
                 }
                 else {
                 	notifyConnecting();
                 }
                 
-                if (!settings.isLogExternalsOnly() &&  (target != null && doEcuInit(target))) {
+                if (!settings.isLogExternalsOnly() &&  (target != null && settings.getLoggerPort() != null && doEcuInit(target))) {
                     notifyReading();
                     runLogger(target);
                 } else if (settings.isLogExternalsOnly()) {
@@ -193,11 +193,6 @@ public final class QueryManagerImpl implements QueryManager {
             
             if (dataUpdater != null) {
 	            dataUpdater.stopUpdater();
-	            try {
-					dataUpdater.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
             }
         }
     }
@@ -247,12 +242,13 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             txManager.start();
-            if(dataUpdater == null || !dataUpdater.isRunning()) {
-            	if(dataUpdater == null) {
-            		dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
-            	}
-            	dataUpdater.start();
+            
+            if(dataUpdater != null && dataUpdater.isRunning()) {
+            	dataUpdater.stopUpdater();
             }
+            
+			dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+	    	dataUpdater.start();
             
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {

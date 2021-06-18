@@ -580,7 +580,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
 
                 loadResult = String.format(
-                        "%sloaded protocol %s: %d parameters, %d switches from def version %s.",
+                        "%sloaded protocol %s: %d parameters, %d switches from def version %s. ",
                         loadResult,
                         getSettings().getLoggerProtocol(),
                         ecuParams.size(),
@@ -1612,12 +1612,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return inString.replaceAll("[A-Z]{3}", newString);
     }
 
-    private Transport getTransportById(String id) {
+
+	private Transport getTransportById(String id) {
         Transport loggerTransport = null;
-        for (Transport transport : getTransportMap().keySet()) {
+        Map<Transport, Collection<Module>> transportMap = getTransportMap();
+        
+        for (Transport transport : transportMap.keySet()) {
             if (transport.getId().equalsIgnoreCase(id))
                 loggerTransport = transport;
         }
+
         return loggerTransport;
     }
 

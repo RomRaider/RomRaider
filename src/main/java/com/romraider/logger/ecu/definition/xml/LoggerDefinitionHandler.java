@@ -437,6 +437,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     }
 
     public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
+    	/*
         if (protocolMap.get(protocol).isEmpty()) {
             final Module module = new Module(
                     "ecu", new byte[]{0x10}, "Engine Control Unit",
@@ -447,7 +448,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             transportMap = new HashMap<Transport, Collection<Module>>();
             transportMap.put(transport, moduleList);
             protocolMap.put(protocol, transportMap);
-        }
+        }*/
         return protocolMap;
     }
 

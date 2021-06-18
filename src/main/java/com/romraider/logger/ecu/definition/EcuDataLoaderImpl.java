@@ -25,6 +25,8 @@ import com.romraider.logger.ecu.definition.xml.EcuDefinitionHandler;
 import com.romraider.logger.ecu.definition.xml.LoggerDefinitionHandler;
 import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.util.ResourceUtil;
+import com.romraider.util.SettingsManager;
+import com.romraider.Settings;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
@@ -93,6 +95,10 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
                         protocol, fileLoggingControllerSwitchId, ecuInit);
                 getSaxParser().parse(inputStream, handler, loggerConfigFilePath);
+                Settings s = SettingsManager.getSettings();
+                Map<Transport, Collection<Module>> transportMap;
+                
+               
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
@@ -100,6 +106,33 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 defVersion = handler.getVersion();
                 dtcodes = handler.getEcuCodes();
                 protocolList = handler.getProtocols();
+                
+                //If settings use protocol that new definition does not contain --> Use first values of new def.
+                boolean valid = true;
+                
+                if(!protocolList.containsKey(s.getLoggerProtocol())){  
+                	valid = false;
+                }
+                else {
+                    transportMap = protocolList.get(s.getLoggerProtocol());               
+                    boolean found = false;
+                    
+                    for (Transport transport : transportMap.keySet()) {
+                        if (transport.getId().equalsIgnoreCase(s.getTransportProtocol())) {
+                        	found = true;
+                        	break;
+                        }
+                    }
+                    
+                    valid = found;                  
+                }
+                
+                if(!valid) {
+                	protocol = protocolList.keySet().iterator().next();
+                	s.setLoggerProtocol(protocol);
+                	s.setTransportProtocol(protocolList.values().iterator().next().keySet().iterator().next().getId());
+                }
+            
             } finally {
                 inputStream.close();
             }
