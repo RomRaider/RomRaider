@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,9 +65,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.tree.TreePath;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 import com.romraider.Settings;
@@ -89,7 +90,6 @@ import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
@@ -672,8 +672,12 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         ECUEditor editor = ECUEditorManager.getECUEditor();
         Settings settings = SettingsManager.getSettings();
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setXIncludeAware(true);
+        DocumentBuilder docBuilder = factory.newDocumentBuilder();
 
-        DOMParser parser = new DOMParser();
         Document doc;
         FileInputStream fileStream;
         final String errorLoading = MessageFormat.format(
@@ -704,11 +708,9 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                             ERROR_MESSAGE);
                     continue;
                 }
-                fileStream = new FileInputStream(settings.getEcuDefinitionFiles().get(i));
-                InputSource src = new InputSource(fileStream);
-
-                parser.parse(src);
-                doc = parser.getDocument();
+                File f = settings.getEcuDefinitionFiles().get(i);
+                fileStream = new FileInputStream(f);
+                doc = docBuilder.parse(fileStream, f.getAbsolutePath());
 
                 Rom rom;
 
@@ -726,7 +728,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                     return null;
                 } finally {
                     // Release mem after unmarshall.
-                    parser.reset();
+                	docBuilder.reset();
                     doc.removeChild(doc.getDocumentElement());
                     doc = null;
                     fileStream.close();
