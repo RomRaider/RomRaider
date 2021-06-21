@@ -1042,31 +1042,35 @@ public final class DynoControlPanel extends JPanel {
                         "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
                         "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
+                	
+                	//Convert everything to . notation
+                	line = line.replace(',', '.');
                     String[] values = line.split(delimiter);
-                    if (NumberUtil.doubleValue(values[taCol]) > tpsMin) {
+                                                       
+                    if (Double.parseDouble(values[taCol]) > tpsMin) {
                         double logTime = 0;
                         if (atrTime) {
                             String[] timeStamp = values[timeCol].split(COLON);
                             if (timeStamp.length == 3) {
-                                logTime = (NumberUtil.doubleValue(timeStamp[0]) * 3600) +
-                                        (NumberUtil.doubleValue(timeStamp[1]) * 60) +
-                                        NumberUtil.doubleValue(timeStamp[2]) * timeMult;
+                                logTime = (Double.parseDouble(timeStamp[0]) * 3600) +
+                                        (Double.parseDouble(timeStamp[1]) * 60) +
+                                        Double.parseDouble(timeStamp[2]) * timeMult;
                             } else {
-                                logTime = (NumberUtil.doubleValue(timeStamp[0]) * 60) +
-                                        NumberUtil.doubleValue(timeStamp[1]) * timeMult;
+                                logTime = (Double.parseDouble(timeStamp[0]) * 60) +
+                                		Double.parseDouble(timeStamp[1]) * timeMult;
                             }
                         } else {
-                            logTime = NumberUtil.doubleValue(values[timeCol]) * timeMult;
+                            logTime = Double.parseDouble(values[timeCol]) * timeMult;
                         }
                         if (startTime == -999999999) startTime = logTime;
                         logTime = logTime - startTime;
                         double logRpm = 0;
                         if (isManual()) {
-                            logRpm = NumberUtil.doubleValue(values[rpmCol]);
+                            logRpm = Double.parseDouble(values[rpmCol]);
                             minRpm = Math.min(minRpm, logRpm);
                             maxRpm = Math.max(maxRpm, logRpm);
                         } else {
-                            logRpm = NumberUtil.doubleValue(values[vsCol]);
+                            logRpm = Double.parseDouble(values[vsCol]);
                             minRpm = Math.min(minRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                             maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
@@ -1082,9 +1086,6 @@ public final class DynoControlPanel extends JPanel {
             catch (IOException e) {
 				e.printStackTrace();
             }
-            catch (ParseException e) {
-				e.printStackTrace();
-			}
             finally {
                 if (inputStream != null) {
                     try {
@@ -1449,12 +1450,8 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private double parseDouble(JTextField field) {
-        try {
-            return NumberUtil.doubleValue(field.getText().trim());
-        } catch (ParseException e) {
-            LOGGER.error(rb.getString("ERROR"), e);
-        }
-        return Double.parseDouble("NaN");
+    	String s = field.getText().trim().replace(',', '.');
+    	return Double.parseDouble(s);
     }
 
     public void setEcuParams(List<EcuParameter> params) {
@@ -1555,33 +1552,24 @@ public final class DynoControlPanel extends JPanel {
     private void loadCars() {
         try {
             File carDef = null;
-            final String SEPARATOR = System.getProperty("file.separator");
-            final String loggerFilePath = getSettings().getLoggerDefinitionFilePath();
+         
+            //Look through some folders to find the car definition file
+            //Do NOT delete the "", this also searches through the local folder!
+            final String searchPaths[] = {getSettings().getLoggerDefinitionFilePath(), getSettings().getLoggerProfileFilePath(), ""};
             
-            if(loggerFilePath != null) {
-                final int index = loggerFilePath.lastIndexOf(SEPARATOR);
-                if (index > 0) {
-                    final String path = loggerFilePath.substring(0, index + 1);
-                    carDef = new File(path + CARS_FILE);
-                }
+            for (String s : searchPaths) {
+            	File f = new File(s);
+            	File path_test = new File(f.getParent(), CARS_FILE);
+            	
+            	if(path_test.exists()) {
+                    LOGGER.info("Loaded dyno definition file from " + path_test.getAbsolutePath());
+            		carDef = path_test;
+            		break;
+            	}
             }
             
-            if (!carDef.exists()) {
-                final String profileFilePath = getSettings().getLoggerProfileFilePath();
-                if (profileFilePath != null) {
-                    final int index = profileFilePath.lastIndexOf(SEPARATOR);
-                    if (index > 0) {
-                        final String path = profileFilePath.substring(0, index + 1);
-                        carDef = new File(path + CARS_FILE);
-                    }
-                }
-            }
-            if (!carDef.exists()) {
-                carDef = new File(CARS_FILE);
-            }
-            if (!carDef.exists()) {
-                throw new FileNotFoundException(MISSING_CAR_DEF);
-            }
+            if(carDef == null) throw new FileNotFoundException(MISSING_CAR_DEF);
+            
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document carsDef = docBuilder.parse(carDef);

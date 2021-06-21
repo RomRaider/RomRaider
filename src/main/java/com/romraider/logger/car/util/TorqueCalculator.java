@@ -28,11 +28,11 @@ public class TorqueCalculator {
 
     public static double calculateTorque(double rpm, double hp, String units) {
         double tq = 0;
-        if (units.equalsIgnoreCase(IMPERIAL.value())) {
-            tq = hp / rpm * Double.parseDouble(TQ_CONSTANT_I.value());
+        if (units.equalsIgnoreCase(IMPERIAL)) {
+            tq = hp / rpm * TQ_CONSTANT_I;
         }
-        if (units.equalsIgnoreCase(METRIC.value())) {
-            tq = hp / rpm * Double.parseDouble(TQ_CONSTANT_M.value());
+        if (units.equalsIgnoreCase(METRIC)) {
+            tq = hp / rpm * TQ_CONSTANT_M;
         }
         return tq;
     }
