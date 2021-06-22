@@ -543,7 +543,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private void loadLoggerConfig() {
         String loggerConfigFilePath = getSettings().getLoggerDefinitionFilePath();
-        if (isNullOrEmpty(loggerConfigFilePath)) showMissingConfigDialog();
+        if (isNullOrEmpty(loggerConfigFilePath))
+        	{
+        		showMissingConfigDialog();
+        		getSettings().setLogExternalsOnly(true);
+        	}
         else {
             try {
                 EcuDataLoader dataLoader = new EcuDataLoaderImpl();
@@ -1527,40 +1531,45 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void buildModuleSelectPanel() {
         moduleSelectPanel.removeAll();
         final CustomButtonGroup moduleGroup = new CustomButtonGroup();
-
-        for (Module module : getModuleList()) {
-            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
-            if (touchEnabled == true)
-            {
-                cb.setPreferredSize(new Dimension(75, 50));
-            }
-            cb.setToolTipText(MessageFormat.format(
-                    rb.getString("TTTEXTEXTERNALS"),
-                    module.getDescription()));
-            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
-                cb.setSelected(true);
-                setTarget(module.getName());
-            }
-            
-            cb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    stopLogging();
-                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
-                    if (source.isSelected()) {
-                        getSettings().setLogExternalsOnly(false);
-                        setTarget(source.getText());
-                    }
-                    else {
-                        getSettings().setLogExternalsOnly(true);
-                    }
-                    startLogging();
-                }
-            });
-
-            moduleGroup.add(cb);
-            moduleSelectPanel.add(cb);
-            moduleSelectPanel.validate();
+        Collection<Module> moduleList = getModuleList();
+        if(moduleList.size() == 0) {
+        	getSettings().setLogExternalsOnly(true);
+        }
+        else {
+	        for (Module module : moduleList) {
+	            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
+	            if (touchEnabled == true)
+	            {
+	                cb.setPreferredSize(new Dimension(75, 50));
+	            }
+	            cb.setToolTipText(MessageFormat.format(
+	                    rb.getString("TTTEXTEXTERNALS"),
+	                    module.getDescription()));
+	            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
+	                cb.setSelected(true);
+	                setTarget(module.getName());
+	            }
+	            
+	            cb.addActionListener(new ActionListener() {
+	                @Override
+	                public void actionPerformed(ActionEvent actionEvent) {
+	                    stopLogging();
+	                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
+	                    if (source.isSelected()) {
+	                        getSettings().setLogExternalsOnly(false);
+	                        setTarget(source.getText());
+	                    }
+	                    else {
+	                        getSettings().setLogExternalsOnly(true);
+	                    }
+	                    startLogging();
+	                }
+	            });
+	
+	            moduleGroup.add(cb);
+	            moduleSelectPanel.add(cb);
+	            moduleSelectPanel.validate();
+	        }
         }
     }
 

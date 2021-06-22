@@ -38,6 +38,7 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     private final JLabel statusLabel = new JLabel();
     private static final String TEXT_CONNECTING = rb.getString("CONNECTING");
     private static final String TEXT_READING = rb.getString("READING");
+    private static final String TEXT_READING_EXTERNAL = rb.getString("READING_EXTERNAL");
     private static final String TEXT_LOGGING = rb.getString("LOGGING");
     private static final String TEXT_STOPPED = rb.getString("STOPPED");
     private static final ImageIcon ICON_CONNECTING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_blue.png"));
@@ -59,7 +60,11 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     public void readingData() {
         updateStatusLabel(TEXT_READING, ICON_READING);
     }
-
+    
+    public void readingDataExternal() {
+        updateStatusLabel(TEXT_READING_EXTERNAL, ICON_READING);
+    }
+    
     public void loggingData() {
         updateStatusLabel(TEXT_LOGGING, ICON_LOGGING);
     }

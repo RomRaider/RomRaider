@@ -24,6 +24,8 @@ public interface StatusChangeListener {
     void connecting();
 
     void readingData();
+    
+    void readingDataExternal();
 
     void loggingData();
 

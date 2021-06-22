@@ -75,7 +75,11 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
 
     public synchronized void readingData() {
     }
-
+	
+	public void readingDataExternal() {
+		
+	}
+	
     public synchronized void loggingData() {
     }
 
@@ -89,5 +93,7 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
         // deregister param from handlers
         handlerManager.deregisterData(loggerData);
     }
+
+
 
 }
