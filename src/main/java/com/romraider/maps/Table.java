@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
     protected Scale curScale;
-
+        
     protected int storageAddress;
     protected int storageType;
     protected boolean signed;
@@ -124,7 +124,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected String liveAxisValue = Settings.BLANK;
     protected int liveDataIndex = 0;
     protected int previousLiveDataIndex = 0;
-
+    
+    protected boolean substractLayout = false; //Bosch Style Subtract Method
     private Table compareTable = null;
 
     protected Table() {
@@ -497,7 +498,38 @@ public abstract class Table extends JPanel implements Serializable {
     public void setData(DataCell[] data) {
         this.data = data;
     }
+    
+    private double getDataValue(byte[] input, int i) {
+        double dataValue = 0.0;
 
+        // populate data cells
+        if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
+            byte[] byteValue = new byte[4];
+            byteValue[0] = input[getStorageAddress() + i * 4 - ramOffset];
+            byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
+            byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
+            byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
+            dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
+
+        } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
+        		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+            dataValue = RomAttributeParser.parseByteValue(input,
+                    endian,
+                    getStorageAddress() + i * 3 - ramOffset,
+                    storageType,
+                    signed);
+
+        } else { // integer storage type
+            dataValue = RomAttributeParser.parseByteValue(input,
+                    endian,
+                    getStorageAddress() + i * storageType - ramOffset,
+                    storageType,
+                    signed);
+        }
+        
+        return dataValue;
+    }
+    
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         // temporarily remove lock
         boolean tempLock = locked;
@@ -509,33 +541,17 @@ public abstract class Table extends JPanel implements Serializable {
 
         for (int i = 0; i < data.length; i++) {
             if (data[i] == null) {
-                double dataValue = 0.0;
+            	double dataValue = getDataValue(input, i);
 
-                // populate data cells
-                if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
-                    byte[] byteValue = new byte[4];
-                    byteValue[0] = input[getStorageAddress() + i * 4 - ramOffset];
-                    byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
-                    byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
-                    byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
-                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
-
-                } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-                		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-                    dataValue = RomAttributeParser.parseByteValue(input,
-                            endian,
-                            getStorageAddress() + i * 3 - ramOffset,
-                            storageType,
-                            signed);
-
-                } else { // integer storage type
-                    dataValue = RomAttributeParser.parseByteValue(input,
-                            endian,
-                            getStorageAddress() + i * storageType - ramOffset,
-                            storageType,
-                            signed);
-                }
-
+            	//Bosch Motronic subtract method
+            	if(substractLayout) {
+            		dataValue = Math.pow(2, 8 * storageType);
+            		
+            		for (int j = data.length - 1; j >= i; j--) {
+            			dataValue -= getDataValue(input, j);
+            		}       		
+            	}
+            	
                 data[i] = new DataCell(this, dataValue, 0, i);
                 data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
                 centerPanel.add(data[i]);
@@ -543,7 +559,7 @@ public abstract class Table extends JPanel implements Serializable {
                 // show locked cell
                 if (tempLock) {
                     data[i].setForeground(Color.GRAY);
-                }
+                }         
             }
         }
 
@@ -1073,12 +1089,29 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public byte[] saveFile(byte[] binData) {
+    	 	
+    	//Copy data into a new array first
+    	double[] crossedData = null;
+       
+        //Do reverse cross referencing in for Bosch Subtract Axis array
+    	if(substractLayout) {
+    		crossedData = new double[data.length];
+    		
+    	    for (int i = crossedData.length - 1; i >=0 ; i--) {
+	        	if(i == crossedData.length - 1) crossedData[i] = Math.pow(2, 8 * storageType) - data[i].getBinValue();
+	        	else {
+	        		crossedData[i] = data[i + 1].getBinValue() - data[i].getBinValue();
+	        	}
+	        }  	     
+    	}
+    	 	
         if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
             for (int i = 0; i < data.length; i++) {
+            	                  	
                 // determine output byte values
                 byte[] output;
                 if(this.isStaticDataTable() && storageType > 0) {
-                    LOGGER.warn("Static data table: " +this.getName()+ ", storageType: "+storageType);
+                    LOGGER.warn("Static data table: " + this.getName() + ", storageType: "+storageType);
                 }
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                     // convert byte values
@@ -1095,8 +1128,9 @@ public abstract class Table extends JPanel implements Serializable {
                         // Do not save the value.
                         //LOGGER.debug("The static data table value will not be saved.");
                         continue;
-                    }  else {
-                        output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    }  else {                   	
+                        output = RomAttributeParser.parseIntegerValue(
+                        		(int) (substractLayout ? crossedData[i]: data[i].getBinValue()), endian, storageType);
                     }
                     int byteLength = storageType;
                     if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
@@ -1109,7 +1143,9 @@ public abstract class Table extends JPanel implements Serializable {
 
                 } else { // float
                     // convert byte values
-                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian, memModelEndian);
+                    output = RomAttributeParser.floatToByte((float) 
+                    		(substractLayout ? crossedData[i]: data[i].getBinValue()), endian, memModelEndian);
+                    
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[i * 4 + z + getStorageAddress() - ramOffset] = output[z];
                     }
@@ -1126,7 +1162,11 @@ public abstract class Table extends JPanel implements Serializable {
     public void setBeforeRam(boolean beforeRam) {
         this.beforeRam = beforeRam;
     }
-
+    
+    public void setSubtractLayout(boolean value) {
+        this.substractLayout = value;
+    }
+    
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
