@@ -1044,8 +1044,11 @@ public final class DynoControlPanel extends JPanel {
                 while ((line = inputStream.readLine()) != null) {
                 	
                 	//Convert everything to . notation
-                	line = line.replace(',', '.');
                     String[] values = line.split(delimiter);
+                    
+                    for(int i=0; i < values.length;i++) {
+                    	values[i] = values[i].replace(',', '.');
+                    }
                                                        
                     if (Double.parseDouble(values[taCol]) > tpsMin) {
                         double logTime = 0;
