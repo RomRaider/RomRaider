@@ -468,7 +468,10 @@ public final class QueryManagerImpl implements QueryManager {
             @Override
             public void run() {
                 for (StatusChangeListener listener : listeners) {
-                    listener.readingData();
+                	if(settings.isLogExternalsOnly()) listener.readingDataExternal();
+                	else {
+                		listener.readingData();
+                	}
                 }
             }
         });

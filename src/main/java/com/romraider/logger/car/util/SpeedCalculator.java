@@ -24,20 +24,18 @@ import static com.romraider.logger.car.util.Constants.KPH_2_MPH;
 import static com.romraider.logger.car.util.Constants.METRIC_UNIT;
 
 public class SpeedCalculator {
-    private static final double K2M = Double.parseDouble(KPH_2_MPH.value());
-
     public static double calculateMph(double rpm, double ratio) {
         return (rpm / ratio);
     }
 
     public static double calculateKph(double rpm, double ratio) {
-        return calculateMph(rpm, ratio) * K2M;
+        return calculateMph(rpm, ratio) * KPH_2_MPH;
     }
 
     public static double calculateRpm(double vs, double ratio, String units) {
         double rpm = 0;
-        if (units.equalsIgnoreCase(IMPERIAL_UNIT.value())) rpm = (vs * ratio);
-        if (units.equalsIgnoreCase(METRIC_UNIT.value())) rpm = (vs * ratio / K2M);
+        if (units.equalsIgnoreCase(IMPERIAL_UNIT)) rpm = (vs * ratio);
+        if (units.equalsIgnoreCase(METRIC_UNIT)) rpm = (vs * ratio / KPH_2_MPH);
         return rpm;
     }
 
