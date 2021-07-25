@@ -42,6 +42,7 @@
         <echo message="            [Java source code                       ]" />
         <echo message="dist        [Create the distribution packages       ]" />
         <echo message="all         [Complete rebuild and packaging         ]" />
+        <echo message="unittest    [Run all unit tests                     ]" />
     </target>
 
     <!-- =================================================================== -->
@@ -75,7 +76,10 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
-       <property name="bootclasspath.dir" value="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib"/>
+        <condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
+                   else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
+            <isset property="env.JRE_DIR" />
+        </condition>
         <property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />
@@ -98,6 +102,7 @@
         <property name="classes.dir" value="${build.dir}/classes" />
         <property name="javadoc.dir" value="${build.dir}/javadoc" />
         <property name="dist.dir" value="${build.dir}/dist" />
+        <property name="testclasses.dir" value="${build.dir}/test" />
 
         <!-- package naming properties -->
         <property name="jar.package" value="${name.package}.jar" />
@@ -124,6 +129,20 @@
         <path id="linux.classpath">
             <fileset dir="lib/common" includes="*.jar" />
             <fileset dir="lib/linux" includes="*.jar" />
+        </path>
+
+        <!-- test classpath -->
+        <path id="test.classpath">
+            <fileset dir="${testclasses.dir}" includes="**/*.class" />
+        </path>
+
+        <!-- JUnit classpath. -->
+        <path id="junit.classpath">
+            <path refid="linux.classpath" />
+            <pathelement location="${bootclasspath.dir}/junit.jar" />
+            <pathelement location="${bootclasspath.dir}/hamcrest-core.jar" />
+            <pathelement location="${build.dir}/linux/lib/RomRaider.jar" />
+            <path refid="test.classpath" />
         </path>
 
         <!-- this set of filters should contain all the substitutions needed -->
@@ -179,10 +198,43 @@
     <!-- =================================================================== -->
     <!-- Compiles the source directory                                       -->
     <!-- =================================================================== -->
-    <target name="build" depends="prepare">
-        <macro_compile os="${os.windows}" />
-        <macro_jar os="${os.windows}" />
-        <macro_jar os="${os.linux}" />
+    <target name="compile-windows" depends="prepare">
+        <macro_compile os="${os.windows}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
+    </target>
+    <target name="compile-linux" depends="prepare">
+        <macro_compile os="${os.linux}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- Build jar files                                                     -->
+    <!-- =================================================================== -->
+    <target name="build-linux" depends="compile-linux">
+        <macro_jar os="${os.linux}" basedir="${classes.dir}"/>
+    </target>
+    <target name="build-windows" depends="compile-windows">
+        <macro_jar os="${os.windows}" basedir="${classes.dir}"/>
+    </target>
+    <target name="build" depends="build-windows, build-linux" />
+
+    <!-- =================================================================== -->
+    <!-- Compile and run all unit tests                                      -->
+    <!-- =================================================================== -->
+    <target name="compile-for-unittests-linux" depends="prepare">
+        <mkdir dir="${testclasses.dir}" />
+        <macro_compile os="${os.linux}" srcdir="${src.dir}" destdir="${testclasses.dir}" />
+        <macro_jar os="${os.linux}" basedir="${testclasses.dir}"/>
+    </target>
+    <target name="unittest" depends="compile-for-unittests-linux">
+        <junit printsummary="withOutAndErr" showoutput="true" haltonfailure="true">
+            <classpath refid="junit.classpath" />
+            <batchtest skipNonTests="true">
+                <fileset dir="${testclasses.dir}">
+                    <include name="**/*Test*" />
+                </fileset>
+            </batchtest>
+            <formatter type="brief" usefile="false"/>
+        </junit>
+        <fail message="test failed" if="junit.failure" />
     </target>
 
     <!-- ================================================================== -->
@@ -282,6 +334,7 @@
 
     <macrodef name="macro_jar">
         <attribute name="os" />
+        <attribute name="basedir" />
         <sequential>
             <mkdir dir="${build.dir}/@{os}/lib" />
             <manifestclasspath property="@{os}.jar.classpath" jarfile="${jar.package}">
@@ -295,7 +348,7 @@
                 <attribute name="Main-Class" value="${class.start}" />
                 <attribute name="Class-Path" value="${@{os}.jar.classpath}" />
             </manifest>
-            <jar basedir="${classes.dir}" destfile="${build.dir}/@{os}/lib/${jar.package}"
+            <jar basedir="@{basedir}" destfile="${build.dir}/@{os}/lib/${jar.package}"
                  manifest="${build.dir}/@{os}/MANIFEST.MF">
                  <fileset dir="${src.res.dir}">
                     <include name="**/*.*" />
@@ -306,15 +359,17 @@
 
     <macrodef name="macro_compile">
         <attribute name="os" />
+        <attribute name="srcdir" />
+        <attribute name="destdir" />
         <sequential>
             <mkdir dir="${classes.dir}" />
             <path id="bootpath.ref">
               <fileset dir="${bootclasspath.dir}" includes="*.jar"/>
             </path>
-            <javac 
+            <javac
                 failonerror="true"
-                srcdir="${src.java.dir}" 
-                destdir="${classes.dir}"
+                srcdir="@{srcdir}"
+                destdir="@{destdir}"
                 source="${javac.source}"
                 target="${javac.target}"
                 includeantruntime="false"
