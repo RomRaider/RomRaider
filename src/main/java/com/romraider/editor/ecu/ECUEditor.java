@@ -734,7 +734,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                     fileStream.close();
                     System.gc();
                 }
-
+                
                 editor.getStatusPanel().setStatus(
                         ECUEditor.rb.getString("POPULATING"));
                 setProgress(50);
