@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@ import com.ecm.graphics.data.GraphData;
 import com.ecm.graphics.data.GraphDataListener;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.maps.DataCell;
 import com.romraider.maps.DataCellView;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;

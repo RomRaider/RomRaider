@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import javax.swing.SwingWorker;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.SettingsManager;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
@@ -523,6 +525,11 @@ public class Table2D extends Table {
             axis.repaint();
         }
     }
+    
+	@Override
+	public void setValues(String name, String value) {
+		throw new NotImplementedException();
+	}
 }
 
 class CopySelection2DWorker extends SwingWorker<Void, Void> {

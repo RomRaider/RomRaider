@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import javax.swing.JLabel;
 
 import com.romraider.Settings;
 import com.romraider.util.NumberUtil;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
@@ -394,4 +396,9 @@ public class Table1D extends Table {
             return super.getTableAsString();
         }
     }
+
+	@Override
+	public void setValues(String name, String value) {
+		throw new NotImplementedException();
+	}
 }

@@ -535,21 +535,14 @@ public final class DOMRomUnmarshaller {
                     table.setDescription(unmarshallText(n));
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
-                    ((TableSwitch) table).setValues(
-                            unmarshallAttribute(n, "name", ""),
-                            unmarshallAttribute(n, "data", "0.0"));
-                                      
+                	 table.setValues(
+	                            unmarshallAttribute(n, "name", ""),
+	                            unmarshallAttribute(n, "data", "0"));                                  
                 } else if (n.getNodeName().equalsIgnoreCase("bit")) {
-                    ((TableBitwiseSwitch) table).setValues(
+                    table.setValues(
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "position", "0"));
-
-                } else if (n.getNodeName().equalsIgnoreCase("maskedPreset")) {
-                    ((Table2DSwitchable) table).setPredefinedOption(
-                            unmarshallAttribute(n, "presetName", ""),
-                            unmarshallAttribute(n, "maskedData", "0")
-                           
-                            );
+ 
                 } else { /* unexpected element in Table (skip) */
                 }
             } else { /* unexpected node-type in Table (skip) */

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class Table2DSwitchable extends Table2D {
 		super();
 	}
 	
-	public void setPredefinedOption(String name, String data) {
+	public void setValues(String name, String data) {
 		PresetEntry entry = new PresetEntry();
 		entry.data = new LinkedList<Integer>();
 	

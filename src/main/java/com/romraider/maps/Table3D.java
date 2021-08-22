@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table3D extends Table {
 
@@ -1121,6 +1123,11 @@ public class Table3D extends Table {
             yAxis.repaint();
         }
     }
+    
+	@Override
+	public void setValues(String name, String value) {
+		throw new NotImplementedException();
+	}
 }
 
 class CopySelection3DWorker extends SwingWorker<Void, Void> {

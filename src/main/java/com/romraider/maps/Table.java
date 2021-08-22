@@ -1091,6 +1091,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     abstract public byte[] saveFile(byte[] binData);
+    abstract public void setValues(String name, String value);
     
     public boolean isBeforeRam() {
         return beforeRam;
