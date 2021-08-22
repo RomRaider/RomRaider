@@ -128,7 +128,8 @@ public class Table2D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        centerLayout.setRows(2);
+    	this.input = input;
+    	centerLayout.setRows(2);
         centerLayout.setColumns(this.getDataSize());
 
         try {
@@ -199,11 +200,14 @@ public class Table2D extends Table {
         super.undoAll();
         axis.undoAll();
     }
+    
 
     @Override
     public byte[] saveFile(byte[] binData) {
+        /*
         binData = super.saveFile(binData);
-        binData = axis.saveFile(binData);
+        binData = axis.saveFile(binData);*/
+    	
         return binData;
     }
 
@@ -366,8 +370,8 @@ public class Table2D extends Table {
     @Override
     public void horizontalInterpolate() {
         int[] coords = { getDataSize(), 0};
-        DataCell[] tableData = getData();
-        DataCell[] axisData = getAxis().getData();
+        DataCellView[] tableData = getData();
+        DataCellView[] axisData = getAxis().getData();
 
         for (int i = 0; i < getDataSize(); ++i) {
             if (tableData[i].isSelected()) {
@@ -379,13 +383,13 @@ public class Table2D extends Table {
         }
         if (coords[1] - coords[0] > 1) {
             double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getBinValue();
-            y1 = tableData[coords[0]].getBinValue();
-            x2 = axisData[coords[1]].getBinValue();
-            y2 = tableData[coords[1]].getBinValue();
+            x1 = axisData[coords[0]].getDataCell().getBinValue();
+            y1 = tableData[coords[0]].getDataCell().getBinValue();
+            x2 = axisData[coords[1]].getDataCell().getBinValue();
+            y2 = tableData[coords[1]].getDataCell().getBinValue();
             for (int i = coords[0] + 1; i < coords[1]; ++i) {
-                x = axisData[i].getBinValue();
-                data[i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                x = axisData[i].getDataCell().getBinValue();
+                data[i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
             }
         }
         // Interpolate x axis in case the x axis in selected.

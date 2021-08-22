@@ -62,7 +62,7 @@ public class Table3D extends Table {
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
-    DataCell[][] data = new DataCell[1][1];
+    DataCellView[][] data = new DataCellView[1][1];
     private boolean swapXY = false;
     private boolean flipX = false;
     private boolean flipY = false;
@@ -123,7 +123,7 @@ public class Table3D extends Table {
     }
 
     public void setSizeX(int size) {
-        data = new DataCell[size][data[0].length];
+        data = new DataCellView[size][data[0].length];
         centerLayout.setColumns(size + 1);
     }
 
@@ -132,7 +132,7 @@ public class Table3D extends Table {
     }
 
     public void setSizeY(int size) {
-        data = new DataCell[data.length][size];
+        data = new DataCellView[data.length][size];
         centerLayout.setRows(size + 1);
     }
 
@@ -142,8 +142,8 @@ public class Table3D extends Table {
 
     @Override
     public void drawTable() {
-        for(DataCell[] column : data) {
-            for(DataCell cell : column) {
+        for(DataCellView[] column : data) {
+            for(DataCellView cell : column) {
                 if(null != cell) {
                     cell.drawCell();
                 }
@@ -155,7 +155,8 @@ public class Table3D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        // fill first empty cell
+    	this.input = input;
+    	// fill first empty cell
         centerPanel.add(new JLabel());
         if (!beforeRam) {
             this.ramOffset = romRamOffset;
@@ -192,7 +193,7 @@ public class Table3D extends Table {
                     y = z;
                 }
 
-
+/*
                 double cellBinValue;
 
                 // populate data cells
@@ -219,13 +220,14 @@ public class Table3D extends Table {
                             storageType,
                             signed);
                 }
-
+*/
                 // show locked cell
                 if (tempLock) {
                     data[x][y].setForeground(Color.GRAY);
                 }
-
-                data[x][y] = new DataCell(this, cellBinValue, x, y);
+                
+                DataCell c = new DataCell(this, offset);
+                data[x][y] = new DataCellView(c,x,y);
                 offset++;
             }
         }
@@ -300,24 +302,24 @@ public class Table3D extends Table {
 
     @Override
     public void calcCellRanges() {
-        double binMax = data[0][0].getBinValue();
-        double binMin = data[0][0].getBinValue();
+        double binMax = data[0][0].getDataCell().getBinValue();
+        double binMin = data[0][0].getDataCell().getBinValue();
 
-        double compareMax = data[0][0].getCompareValue();
-        double compareMin = data[0][0].getCompareValue();
+        double compareMax = data[0][0].getDataCell().getCompareValue();
+        double compareMin = data[0][0].getDataCell().getCompareValue();
 
-        for(DataCell[] column : data) {
-            for(DataCell cell : column) {
+        for(DataCellView[] column : data) {
+            for(DataCellView cell : column) {
                 // Calc bin
-                if(binMax < cell.getBinValue()) {
-                    binMax = cell.getBinValue();
+                if(binMax < cell.getDataCell().getBinValue()) {
+                    binMax = cell.getDataCell().getBinValue();
                 }
-                if(binMin > cell.getBinValue()) {
-                    binMin = cell.getBinValue();
+                if(binMin > cell.getDataCell().getBinValue()) {
+                    binMin = cell.getDataCell().getBinValue();
                 }
 
                 // Calc compare
-                double compareValue = cell.getCompareValue();
+                double compareValue = cell.getDataCell().getCompareValue();
                 if(compareMax < compareValue) {
                     compareMax = compareValue;
                 }
@@ -340,7 +342,7 @@ public class Table3D extends Table {
         output.append(Settings.NEW_LINE);
 
         for (int y = 0; y < getSizeY(); y++) {
-            output.append(NumberUtil.stringValue(yAxis.data[y].getRealValue()));
+            output.append(NumberUtil.stringValue(yAxis.data[y].getDataCell().getRealValue()));
             output.append(Settings.TAB);
 
             for (int x = 0; x < getSizeX(); x++) {
@@ -348,7 +350,7 @@ public class Table3D extends Table {
                     output.append(data[x][y].getCellText());
                 }
                 else {
-                    output.append(NumberUtil.stringValue(data[x][y].getRealValue()));
+                    output.append(NumberUtil.stringValue(data[x][y].getDataCell().getRealValue()));
                 }
                 if (x < getSizeX() - 1) {
                     output.append(Settings.TAB);
@@ -380,10 +382,10 @@ public class Table3D extends Table {
         clearLiveDataTrace();
 
         int x=0;
-        for (DataCell[] column : data) {
+        for (DataCellView[] column : data) {
             int y = 0;
-            for(DataCell cell : column) {
-                cell.setCompareValue(compareTable3D.data[x][y]);
+            for(DataCellView cell : column) {
+                cell.getDataCell().setCompareValue(compareTable3D.data[x][y].getDataCell());
                 y++;
             }
             x++;
@@ -435,7 +437,7 @@ public class Table3D extends Table {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {
                     if (data[x][y].isSelected()) {
-                        data[x][y].increment(increment);
+                        data[x][y].getDataCell().increment(increment);
                     }
                 }
             }
@@ -450,9 +452,9 @@ public class Table3D extends Table {
                     if (data[x][y].isSelected()) {
                     	
                     	if(getCurrentScale().getName().equals("Raw Value"))
-                    		data[x][y].multiplyRaw(factor);                	
+                    		data[x][y].getDataCell().multiplyRaw(factor);                	
                     	else 
-                    		data[x][y].multiply(factor);                            
+                    		data[x][y].getDataCell().multiply(factor);                            
                     }
                 }
             }
@@ -511,7 +513,7 @@ public class Table3D extends Table {
     public void setRevertPoint() {
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
-                data[x][y].setRevertPoint();
+                data[x][y].getDataCell().setRevertPoint();
             }
         }
         yAxis.setRevertPoint();
@@ -523,7 +525,7 @@ public class Table3D extends Table {
         clearLiveDataTrace();
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
-                data[x][y].undo();
+                data[x][y].getDataCell().undo();
             }
         }
         yAxis.undoAll();
@@ -536,7 +538,7 @@ public class Table3D extends Table {
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
                 if (data[x][y].isSelected()) {
-                    data[x][y].undo();
+                    data[x][y].getDataCell().undo();
                 }
             }
         }
@@ -545,6 +547,8 @@ public class Table3D extends Table {
 
     @Override
     public byte[] saveFile(byte[] binData) {
+    	return binData;
+        /*
         if ( userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
             binData = xAxis.saveFile(binData);
             binData = yAxis.saveFile(binData);
@@ -566,7 +570,7 @@ public class Table3D extends Table {
                     // determine output byte values
                     byte[] output;
                     if (storageType != Settings.STORAGE_TYPE_FLOAT) {
-                        output = RomAttributeParser.parseIntegerValue((int) data[x][y].getBinValue(), endian, storageType);
+                        output = RomAttributeParser.parseIntegerValue((int) data[x][y].getDataCell().getBinValue(), endian, storageType);
                         int byteLength = storageType;
                         if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
                         		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
@@ -576,7 +580,7 @@ public class Table3D extends Table {
                             binData[offset * byteLength + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian, memModelEndian);
+                        output = RomAttributeParser.floatToByte((float) data[x][y].getDataCell().getBinValue(), endian, memModelEndian);
                         for (int z = 0; z < 4; z++) {
                             binData[offset * 4 + z + getStorageAddress() - ramOffset] = output[z];
                         }
@@ -587,16 +591,16 @@ public class Table3D extends Table {
                 }
             }
         }
-        return binData;
+        return binData;*/
     }
 
     @Override
     public void setRealValue(String realValue) {
         if (!locked && !(userLevel > getSettings().getUserLevel()) ) {
-            for(DataCell[] column : data) {
-                for(DataCell cell : column) {
+            for(DataCellView[] column : data) {
+                for(DataCellView cell : column) {
                     if(cell.isSelected()) {
-                        cell.setRealValue(realValue);
+                        cell.getDataCell().setRealValue(realValue);
                     }
                 }
             }
@@ -851,7 +855,7 @@ public class Table3D extends Table {
 
                 try {
                     if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
-                        data[x][y].setRealValue(currentToken);
+                        data[x][y].getDataCell().setRealValue(currentToken);
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
             }
@@ -861,8 +865,8 @@ public class Table3D extends Table {
     @Override
     public void verticalInterpolate() {
         int[] coords = { getSizeX(), getSizeY(), 0, 0};
-        DataCell[][] tableData = get3dData();
-        DataCell[] axisData = getYAxis().getData();
+        DataCellView[][] tableData = get3dData();
+        DataCellView[] axisData = getYAxis().getData();
         int i, j;
         for (i = 0; i < getSizeX(); ++i) {
             for (j = 0; j < getSizeY(); ++j) {
@@ -880,14 +884,14 @@ public class Table3D extends Table {
         }
         if (coords[3] - coords[1] > 1) {
             double x, x1, x2, y1, y2;
-            x1 = axisData[coords[1]].getBinValue();
-            x2 = axisData[coords[3]].getBinValue();
+            x1 = axisData[coords[1]].getDataCell().getBinValue();
+            x2 = axisData[coords[3]].getDataCell().getBinValue();
             for (i = coords[0]; i <= coords[2]; ++i) {
-                y1 = tableData[i][coords[1]].getBinValue();
-                y2 = tableData[i][coords[3]].getBinValue();
+                y1 = tableData[i][coords[1]].getDataCell().getBinValue();
+                y2 = tableData[i][coords[3]].getDataCell().getBinValue();
                 for (j = coords[1] + 1; j < coords[3]; ++j) {
-                    x = axisData[j].getBinValue();
-                    tableData[i][j].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                    x = axisData[j].getDataCell().getBinValue();
+                    tableData[i][j].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
                 }
             }
         }
@@ -898,8 +902,8 @@ public class Table3D extends Table {
     @Override
     public void horizontalInterpolate() {
         int[] coords = { getSizeX(), getSizeY(), 0, 0 };
-        DataCell[][] tableData = get3dData();
-        DataCell[] axisData = getXAxis().getData();
+        DataCellView[][] tableData = get3dData();
+        DataCellView[] axisData = getXAxis().getData();
         int i, j;
         for (i = 0; i < getSizeX(); ++i) {
             for (j = 0; j < getSizeY(); ++j) {
@@ -917,14 +921,14 @@ public class Table3D extends Table {
         }
         if (coords[2] - coords[0] > 1) {
             double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getBinValue();
-            x2 = axisData[coords[2]].getBinValue();
+            x1 = axisData[coords[0]].getDataCell().getBinValue();
+            x2 = axisData[coords[2]].getDataCell().getBinValue();
             for (i = coords[1]; i <= coords[3]; ++i) {
-                y1 = tableData[coords[0]][i].getBinValue();
-                y2 = tableData[coords[2]][i].getBinValue();
+                y1 = tableData[coords[0]][i].getDataCell().getBinValue();
+                y2 = tableData[coords[2]][i].getDataCell().getBinValue();
                 for (j = coords[0] + 1; j < coords[2]; ++j) {
-                    x = axisData[j].getBinValue();
-                    tableData[j][i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                    x = axisData[j].getDataCell().getBinValue();
+                    tableData[j][i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
                 }
             }
         }
@@ -953,9 +957,9 @@ public class Table3D extends Table {
         if (getOverlayLog()) {
             int x = xAxis.getLiveDataIndex();
             int y = yAxis.getLiveDataIndex();
-            DataCell cell = data[x][y];
+            DataCellView cell = data[x][y];
             cell.setLiveDataTrace(true);
-            cell.setLiveDataTraceValue(liveValue);
+            cell.getDataCell().setLiveDataTraceValue(liveValue);
             getToolbar().setLiveDataValue(liveValue);
         }
     }
@@ -985,7 +989,7 @@ public class Table3D extends Table {
         }
     }
 
-    public DataCell[][] get3dData() {
+    public DataCellView[][] get3dData() {
         return data;
     }
 
@@ -1165,7 +1169,7 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
             for (int y = coords[1]; y <= coords[3]; y++) {
                 for (int x = coords[0]; x <= coords[2]; x++) {
                     if (table.get3dData()[x][y].isSelected()) {
-                        output.append(NumberUtil.stringValue(table.get3dData()[x][y].getRealValue()));
+                        output.append(NumberUtil.stringValue(table.get3dData()[x][y].getDataCell().getRealValue()));
                     } else {
                         output.append("x"); // x represents non-selected cell
                     }

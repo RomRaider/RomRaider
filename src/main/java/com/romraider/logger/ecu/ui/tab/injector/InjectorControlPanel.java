@@ -60,6 +60,7 @@ import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import com.romraider.maps.DataCell;
+import com.romraider.maps.DataCellView;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
@@ -432,11 +433,11 @@ public final class InjectorControlPanel extends JPanel {
                             rb.getString("INJFLOWSCALING")) == OK_OPTION) {
                         Table2D table = getInjectorFlowTable(ecuEditor);
                         if (table != null) {
-                            DataCell[] cells = table.getData();
+                            DataCellView[] cells = table.getData();
                             if (cells.length == 1) {
                                 if (isNumber(flowScaling)) {
                                     String value = flowScaling.getText().trim();
-                                    cells[0].setRealValue(value);
+                                    cells[0].getDataCell().setRealValue(value);
                                 } else {
                                     showMessageDialog(parent,
                                             rb.getString("INVALIDSCALING"),
@@ -471,12 +472,12 @@ public final class InjectorControlPanel extends JPanel {
                     if (showUpdateTableConfirmation(rb.getString("INJLAT")) == OK_OPTION) {
                         Table2D table = getInjectorLatencyTable(ecuEditor);
                         if (table != null) {
-                            DataCell[] cells = table.getData();
+                            DataCellView[] cells = table.getData();
                             if (isNumber(latencyOffset)) {
-                                for (DataCell cell : cells) {
-                                    double newLatency = cell.getRealValue()
+                                for (DataCellView cell : cells) {
+                                    double newLatency = cell.getDataCell().getRealValue()
                                             + parseDouble(latencyOffset);
-                                    cell.setRealValue("" + newLatency);
+                                    cell.getDataCell().setRealValue("" + newLatency);
                                 }
                             } else {
                                 showMessageDialog(parent,

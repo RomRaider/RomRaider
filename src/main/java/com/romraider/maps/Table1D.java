@@ -47,7 +47,7 @@ public class Table1D extends Table {
         return axisParent;
     }
 
-    public void addStaticDataCell(DataCell input) {
+    public void addStaticDataCell(DataCellView input) {
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
                 data[i] = input;
@@ -56,7 +56,12 @@ public class Table1D extends Table {
             }
         }
     }
-
+    
+	@Override
+	public byte[] saveFile(byte[] binData) {
+		return binData;
+	}
+	
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         centerLayout.setRows(1);
@@ -280,7 +285,7 @@ public class Table1D extends Table {
                         return;
                     }
                 } else {
-                    currentValue = data[i].getRealValue();
+                    currentValue = data[i].getDataCell().getRealValue();
                 }
 
                 if (liveValue == currentValue) {
@@ -293,12 +298,12 @@ public class Table1D extends Table {
             }
 
             setLiveDataIndex(startIdx);
-            DataCell cellp = data[getPreviousLiveDataIndex()];
+            DataCellView cellp = data[getPreviousLiveDataIndex()];
             cellp.setPreviousLiveDataTrace(true);
-            DataCell cell = data[getLiveDataIndex()];
+            DataCellView cell = data[getLiveDataIndex()];
             cell.setPreviousLiveDataTrace(false);
             cell.setLiveDataTrace(true);
-            cell.setLiveDataTraceValue(liveVal);
+            cell.getDataCell().setLiveDataTraceValue(liveVal);
             getToolbar().setLiveDataValue(liveVal);
         }
         getAxisParent().updateLiveDataHighlight();

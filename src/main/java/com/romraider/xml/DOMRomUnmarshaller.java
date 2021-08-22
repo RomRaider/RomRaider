@@ -40,6 +40,7 @@ import org.w3c.dom.NodeList;
 
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.DataCell;
+import com.romraider.maps.DataCellView;
 import com.romraider.maps.Rom;
 import com.romraider.maps.RomID;
 import com.romraider.maps.Scale;
@@ -525,7 +526,8 @@ public final class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
-                    DataCell dataCell = new DataCell(table, unmarshallText(n));
+                    DataCell c = new DataCell(table, unmarshallText(n));
+                    DataCellView dataCell = new DataCellView(c);
                     if(table instanceof Table1D) {
                         ((Table1D)table).addStaticDataCell(dataCell);
                     } else {

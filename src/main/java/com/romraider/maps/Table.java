@@ -36,6 +36,8 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -82,7 +84,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean signed;
     protected Settings.Endian endian = Settings.Endian.BIG;
     protected boolean flip;
-    protected DataCell[] data = new DataCell[0];
+    protected DataCellView[] data = new DataCellView[0];
     protected boolean beforeRam = false;
     protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
@@ -108,6 +110,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
 
+    protected byte[] input; //Pointer to Raw ROM Bytes
+    
     protected double minAllowedBin = 0.0;
     protected double maxAllowedBin = 0.0;
 
@@ -491,47 +495,27 @@ public abstract class Table extends JPanel implements Serializable {
         this.setInputMap(WHEN_FOCUSED, im);
     }
 
-    public DataCell[] getData() {
+    public DataCellView[] getData() {
         return data;
     }
 
-    public void setData(DataCell[] data) {
+    public void setData(DataCellView[] data) {
         this.data = data;
     }
     
-    private double getDataValue(byte[] input, int i) {
-        double dataValue = 0.0;
-
-        // populate data cells
-        if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
-            byte[] byteValue = new byte[4];
-            byteValue[0] = input[getStorageAddress() + i * 4 - ramOffset];
-            byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
-            byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
-            byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
-            dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
-
-        } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-        		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-            dataValue = RomAttributeParser.parseByteValue(input,
-                    endian,
-                    getStorageAddress() + i * 3 - ramOffset,
-                    storageType,
-                    signed);
-
-        } else { // integer storage type
-            dataValue = RomAttributeParser.parseByteValue(input,
-                    endian,
-                    getStorageAddress() + i * storageType - ramOffset,
-                    storageType,
-                    signed);
-        }
-        
-        return dataValue;
+    public int getRamOffset() {
+    	return this.ramOffset;
     }
     
+    public byte[] getInputFile() {
+    	return this.input;
+    }
+    
+
+  
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         // temporarily remove lock
+    	this.input = input;
         boolean tempLock = locked;
         locked = false;
 
@@ -541,8 +525,9 @@ public abstract class Table extends JPanel implements Serializable {
 
         for (int i = 0; i < data.length; i++) {
             if (data[i] == null) {
-            	double dataValue = getDataValue(input, i);
+            	//double dataValue = getDataValue(input, i);
 
+            	/*
             	//Bosch Motronic subtract method
             	if(substractLayout) {
             		dataValue = Math.pow(2, 8 * storageType);
@@ -551,8 +536,10 @@ public abstract class Table extends JPanel implements Serializable {
             			dataValue -= getDataValue(input, j);
             		}       		
             	}
+            	*/
             	
-                data[i] = new DataCell(this, dataValue, 0, i);
+            	DataCell newC = new DataCell(this, i);
+                data[i] = new DataCellView(newC, 0, i);
                 data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
                 centerPanel.add(data[i]);
 
@@ -570,7 +557,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public abstract TableType getType();
 
-    public DataCell getDataCell(int location) {
+    public DataCellView getDataCell(int location) {
         return data[location];
     }
 
@@ -695,7 +682,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setDataSize(int size) {
-        data = new DataCell[size];
+        data = new DataCellView[size];
     }
 
     public int getDataSize() {
@@ -849,13 +836,15 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void calcCellRanges() {
     	if(data.length > 0) {
-	        double binMax = data[0].getBinValue();
-	        double binMin = data[0].getBinValue();
+	        double binMax = data[0].getDataCell().getBinValue();
+	        double binMin = data[0].getDataCell().getBinValue();
 	
-	        double compareMax = data[0].getCompareValue();
-	        double compareMin = data[0].getCompareValue();
+	        double compareMax = data[0].getDataCell().getCompareValue();
+	        double compareMin = data[0].getDataCell().getCompareValue();
 	
-	        for(DataCell cell : data) {
+	        for(DataCellView view : data) {
+	        	DataCell cell = view.getDataCell();
+	        	
 	            // Calc bin
 	            if(binMax < cell.getBinValue()) {
 	                binMax = cell.getBinValue();
@@ -934,7 +923,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void drawTable() {
     	
-        for(DataCell cell : data) {
+        for(DataCellView cell : data) {
             if(null != cell) {
                 cell.drawCell();
             }
@@ -956,9 +945,9 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void increment(double increment) {
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
+            for (DataCellView cell : data) {
                 if (cell.isSelected()) {
-                    cell.increment(increment);
+                    cell.getDataCell().increment(increment);
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
@@ -972,14 +961,14 @@ public abstract class Table extends JPanel implements Serializable {
     public void multiply(double factor) {
     	
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
+            for (DataCellView cell : data) {
                 if (cell.isSelected()) {
                 	
                 	//Use raw or real value, depending on view settings
                 	if(getCurrentScale().getName().equals("Raw Value"))
-                		cell.multiplyRaw(factor);                	
+                		cell.getDataCell().multiplyRaw(factor);                	
                 	else 
-                		cell.multiply(factor);               	
+                		cell.getDataCell().multiply(factor);               	
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
@@ -992,9 +981,9 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setRealValue(String realValue) {
         if (!locked && userLevel <= getSettings().getUserLevel()) {
-            for(DataCell cell : data) {
+            for(DataCellView cell : data) {
                 if (cell.isSelected()) {
-                    cell.setRealValue(realValue);
+                    cell.getDataCell().setRealValue(realValue);
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
@@ -1010,7 +999,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void clearSelectedData() {
-        for (DataCell cell : data) {
+        for (DataCellView cell : data) {
             if(cell.isSelected()) {
                 cell.setSelected(false);
             }
@@ -1039,7 +1028,7 @@ public abstract class Table extends JPanel implements Serializable {
     public void stopHighlight() {
         highlight = false;
         // loop through, selected and un-highlight
-        for (DataCell cell : data) {
+        for (DataCellView cell : data) {
             if (cell.isHighlighted()) {
                 cell.setHighlighted(false);
                 if(!cell.isSelected()) {
@@ -1066,95 +1055,30 @@ public abstract class Table extends JPanel implements Serializable {
     public abstract void shiftCursorRight();
 
     public void setRevertPoint() {
-        for (DataCell cell : data) {
-            cell.setRevertPoint();
+        for (DataCellView cell : data) {
+            cell.getDataCell().setRevertPoint();
         }
     }
 
     public void undoAll() {
         clearLiveDataTrace();
-        for (DataCell cell : data) {
-            cell.undo();
+        for (DataCellView cell : data) {
+            cell.getDataCell().undo();
         }
     }
 
     public void undoSelected() {
         clearLiveDataTrace();
-        for (DataCell cell : data) {
+        for (DataCellView cell : data) {
             // reset current value to original value
             if (cell.isSelected()) {
-                cell.undo();
+                cell.getDataCell().undo();
             }
         }
     }
-
-    public byte[] saveFile(byte[] binData) {
-    	 	
-    	//Copy data into a new array first
-    	double[] crossedData = null;
-       
-        //Do reverse cross referencing in for Bosch Subtract Axis array
-    	if(substractLayout) {
-    		crossedData = new double[data.length];
-    		
-    	    for (int i = crossedData.length - 1; i >=0 ; i--) {
-	        	if(i == crossedData.length - 1) crossedData[i] = Math.pow(2, 8 * storageType) - data[i].getBinValue();
-	        	else {
-	        		crossedData[i] = data[i + 1].getBinValue() - data[i].getBinValue();
-	        	}
-	        }  	     
-    	}
-    	 	
-        if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
-            for (int i = 0; i < data.length; i++) {
-            	                  	
-                // determine output byte values
-                byte[] output;
-                if(this.isStaticDataTable() && storageType > 0) {
-                    LOGGER.warn("Static data table: " + this.getName() + ", storageType: "+storageType);
-                }
-                if (storageType != Settings.STORAGE_TYPE_FLOAT) {
-                    // convert byte values
-                    if(this.isStaticDataTable() && storageType > 0) {
-                        try {
-                            int parsedValue = Integer.parseInt(data[i].getStaticText());
-                            output = RomAttributeParser.parseIntegerValue(parsedValue, endian, storageType);
-                        } catch (NumberFormatException ex) {
-                            LOGGER.error("Error parsing static data table value: " + data[i].getStaticText(), ex);
-                            LOGGER.error("Validate the table definition storageType and data value.");
-                            continue;
-                        }
-                    } else if(this.isStaticDataTable() && storageType < 1) {
-                        // Do not save the value.
-                        //LOGGER.debug("The static data table value will not be saved.");
-                        continue;
-                    }  else {                   	
-                        output = RomAttributeParser.parseIntegerValue(
-                        		(int) (substractLayout ? crossedData[i]: data[i].getBinValue()), endian, storageType);
-                    }
-                    int byteLength = storageType;
-                    if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-                    		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-                    	byteLength = 3;
-                    }
-                    for (int z = 0; z < byteLength; z++) { // insert into file
-                        binData[i * byteLength + z + getStorageAddress() - ramOffset] = output[z];
-                    }
-
-                } else { // float
-                    // convert byte values
-                    output = RomAttributeParser.floatToByte((float) 
-                    		(substractLayout ? crossedData[i]: data[i].getBinValue()), endian, memModelEndian);
-                    
-                    for (int z = 0; z < 4; z++) { // insert in to file
-                        binData[i * 4 + z + getStorageAddress() - ramOffset] = output[z];
-                    }
-                }
-            }
-        }
-        return binData;
-    }
-
+    
+    abstract public byte[] saveFile(byte[] binData);
+    
     public boolean isBeforeRam() {
         return beforeRam;
     }
@@ -1167,10 +1091,14 @@ public abstract class Table extends JPanel implements Serializable {
         this.substractLayout = value;
     }
     
+    public boolean getSubtractLayout() {
+        return this.substractLayout;
+    }
+    
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
-        for (DataCell cell : data) {
+        for (DataCellView cell : data) {
             for (int z = 0; z < storageType; z++) {
                 cell.addKeyListener(listener);
             }
@@ -1214,7 +1142,7 @@ public abstract class Table extends JPanel implements Serializable {
                 output.append(data[i].getCellText());
             }
             else {
-                output.append(NumberUtil.stringValue(data[i].getRealValue()));
+                output.append(NumberUtil.stringValue(data[i].getDataCell().getRealValue()));
             }
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
@@ -1243,7 +1171,7 @@ public abstract class Table extends JPanel implements Serializable {
         for (int i = 0; i < input.length; i++) {
             try {
                 Double.parseDouble(input[i]);
-                data[i].setRealValue(input[i]);
+                data[i].getDataCell().setRealValue(input[i]);
             } catch (NumberFormatException ex) { /* not a number, do nothing */ }
         }
     }
@@ -1267,7 +1195,7 @@ public abstract class Table extends JPanel implements Serializable {
                     String currentToken = st.nextToken();
                     try {
                         if (!data[i].getText().equalsIgnoreCase(currentToken)) {
-                            data[i].setRealValue(currentToken);
+                            data[i].getDataCell().setRealValue(currentToken);
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
                     i++;
@@ -1279,7 +1207,7 @@ public abstract class Table extends JPanel implements Serializable {
                         String currentToken = st.nextToken();
                         try {
                             if (!data[highlightY + i].getText().equalsIgnoreCase(currentToken)) {
-                                data[highlightY + i].setRealValue(currentToken);
+                                data[highlightY + i].getDataCell().setRealValue(currentToken);
                             }
                         } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
                         i++;
@@ -1353,7 +1281,7 @@ public abstract class Table extends JPanel implements Serializable {
             return;
         }
 
-        DataCell[] compareData = otherTable.getData();
+        DataCellView[] compareData = otherTable.getData();
         if(data.length != compareData.length) {
             return;
         }
@@ -1361,8 +1289,8 @@ public abstract class Table extends JPanel implements Serializable {
         clearLiveDataTrace();
 
         int i = 0;
-        for(DataCell cell : data) {
-            cell.setCompareValue(compareData[i]);
+        for(DataCellView cell : data) {
+            cell.getDataCell().setCompareValue(compareData[i].getDataCell());
             i++;
         }
 
@@ -1472,7 +1400,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             int startIdx = data.length;
             for (int i = 0; i < data.length; i++) {
-                double currentValue = data[i].getRealValue();
+                double currentValue = data[i].getDataCell().getRealValue();
                 if (liveValue == currentValue) {
                     startIdx = i;
                     break;
@@ -1483,10 +1411,10 @@ public abstract class Table extends JPanel implements Serializable {
             }
 
             setLiveDataIndex(startIdx);
-            DataCell cell = data[getLiveDataIndex()];
+            DataCellView cell = data[getLiveDataIndex()];
             cell.setPreviousLiveDataTrace(false);
             cell.setLiveDataTrace(true);
-            cell.setLiveDataTraceValue(liveVal);
+            cell.getDataCell().setLiveDataTraceValue(liveVal);
             getToolbar().setLiveDataValue(liveVal);
         }
     }
@@ -1519,7 +1447,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void clearLiveDataTrace() {
-        for (DataCell cell : data) {
+        for (DataCellView cell : data) {
             cell.setLiveDataTrace(false);
             cell.setPreviousLiveDataTrace(false);
         }
@@ -1639,7 +1567,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         //make a string of the selection
         for (int i = coords[0]; i <= coords[1]; i++) {
             if (table.getData()[i].isSelected()) {
-                output = output + NumberUtil.stringValue(table.getData()[i].getRealValue());
+                output = output + NumberUtil.stringValue(table.getData()[i].getDataCell().getRealValue());
             } else {
                 output = output + "x"; // x represents non-selected cell
             }

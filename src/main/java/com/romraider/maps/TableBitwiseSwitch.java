@@ -118,6 +118,7 @@ public class TableBitwiseSwitch extends Table {
 		add(descriptionArea, BorderLayout.SOUTH);
 	}
 
+
 	@Override
 	public byte[] saveFile(byte[] input) {
 

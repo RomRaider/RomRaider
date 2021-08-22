@@ -118,7 +118,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 			} else {	
 				double binValue = RomAttributeParser.parseByteValueMasked(input, endian, getStorageAddress() + i * storageType - ramOffset, storageType, signed, bitMask);
 				
-				data[i].setBinValue(binValue);
+				data[i].getDataCell().setBinValue(binValue);
 			}
 
 			// show locked cell
@@ -191,7 +191,8 @@ public class Table2DMaskedSwitchable extends Table2D {
 			}
 		}
 	}
-
+	
+    /*
 	@Override
 	public byte[] saveFile(byte[] binData) {
 		if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables())) {
@@ -208,7 +209,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 
 					if (!this.isStaticDataTable() && storageType > 0) {
 						// Shift left again
-						int tempData = (int) data[i].getBinValue() << ByteUtil.firstOneOfMask(bitMask);
+						int tempData = (int) data[i].getDataCell().getBinValue() << ByteUtil.firstOneOfMask(bitMask);
 										
 						output = RomAttributeParser.parseIntegerValue(tempData, endian, storageType);
 					}
@@ -232,7 +233,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 			}
 		}
 		return binData;
-	}
+	}*/
 
 
 	@Override
@@ -296,7 +297,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 			if (values != null) {
 				for (int i = 0; i < getDataSize(); i++) {
 					if(getDataSize() == values.size()) {
-						if ((int) data[i].getBinValue() != values.get(i)) {
+						if ((int) data[i].getDataCell().getBinValue() != values.get(i)) {
 							found = false;
 							break;
 						}
@@ -314,7 +315,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 			
 			if(getDataSize() == button.values.size()) {
 				for (int i = 0; i < getDataSize(); i++) {
-					data[i].setBinValue(button.values.get(i));
+					data[i].getDataCell().setBinValue(button.values.get(i));
 				}
 			}
 			calcCellRanges();

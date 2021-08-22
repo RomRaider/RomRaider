@@ -66,6 +66,7 @@ import com.ecm.graphics.data.GraphDataListener;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.DataCell;
+import com.romraider.maps.DataCellView;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
@@ -618,16 +619,16 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         if (currentTable.getType() == Table.TableType.TABLE_3D) {
             Table3D table3d = (Table3D) currentTable;
-            DataCell[][] tableData = table3d.get3dData();
+            DataCellView[][] tableData = table3d.get3dData();
             valueCount = tableData.length;
-            DataCell[] dataRow = tableData[0];
+            DataCellView[] dataRow = tableData[0];
             rowCount = dataRow.length;
 
             for (int j = (rowCount - 1); j >= 0; j--) {
                 float[] rowValues = new float[valueCount];
                 for (int i = 0; i < valueCount; i++) {
-                    DataCell theCell = tableData[i][j];
-                    rowValues[i] = (float) theCell.getRealValue();
+                    DataCellView theCell = tableData[i][j];
+                    rowValues[i] = (float) theCell.getDataCell().getRealValue();
                 }
                 graphValues.add(rowValues);
             }
@@ -636,12 +637,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             Table1D yAxisTable1D = table3d.getYAxis();
 
             //Gather x axis values
-            DataCell[] dataCells = xAxisTable1D.getData();
+            DataCellView[] dataCells = xAxisTable1D.getData();
             int length = dataCells.length;
             double[] xValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                xValues[i] = dataCells[i].getRealValue();
+                xValues[i] = dataCells[i].getDataCell().getRealValue();
             }
 
             //Gather y/z axis values
@@ -650,7 +651,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] yValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                double theValue = dataCells[i].getRealValue();
+                double theValue = dataCells[i].getDataCell().getRealValue();
                 BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2, BigDecimal.ROUND_HALF_UP);
                 yValues[i] = finalRoundedValue.doubleValue();
             }

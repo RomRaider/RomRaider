@@ -35,6 +35,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -66,9 +67,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");
-    private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
     private byte[] binData;
+    //private final HashMap<Long, DataCell> bitMapping = new HashMap<Long, DataCell>();
     private boolean isAbstract = false;
+    
+    private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
+
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
     public Rom() {
@@ -305,7 +309,10 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         this.fileName = fileName;
     }
 
+    //Most of this function is useless now, since each Datacell is now responsible for each memory region
+    //It is only used in the Switch Tables, since those don't use DataCells
     public byte[] saveFile() {
+
         final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
         for (TableTreeNode tableNode : tableNodes) {
             tableNode.getTable().saveFile(binData);
@@ -366,6 +373,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 }
             }
         }
+    	
         updateChecksum();
         return binData;
     }

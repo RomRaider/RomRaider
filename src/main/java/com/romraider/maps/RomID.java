@@ -71,6 +71,8 @@ public class RomID implements Serializable {
                 return Arrays.equals(romIDBytes, romBytes);
             }
             else {
+            	if(file.length < getInternalIdAddress() + getInternalIdString().length()) return false;
+            	
                 String ecuID = new String(file, getInternalIdAddress(),
                         getInternalIdString().length());
                 return ecuID.equalsIgnoreCase(getInternalIdString());

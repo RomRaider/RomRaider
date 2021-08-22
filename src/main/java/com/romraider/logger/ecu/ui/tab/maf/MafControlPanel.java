@@ -61,6 +61,7 @@ import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import com.romraider.maps.DataCell;
+import com.romraider.maps.DataCellView;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
@@ -431,19 +432,19 @@ public final class MafControlPanel extends JPanel {
                         Table2D table = getMafTable(ecuEditor);
                         if (table != null) {
                             if (isValidRange(mafvMin, mafvMax)) {
-                                DataCell[] axisCells = table.getAxis().getData();
+                                DataCellView[] axisCells = table.getAxis().getData();
                                 double[] x = new double[axisCells.length];
                                 for (int i = 0; i < axisCells.length; i++) {
-                                    DataCell cell = axisCells[i];
-                                    x[i] = cell.getRealValue();
+                                    DataCellView cell = axisCells[i];
+                                    x[i] = cell.getDataCell().getRealValue();
                                 }
                                 double[] percentChange = chartPanel.calculate(x);
-                                DataCell[] dataCells = table.getData();
+                                DataCellView[] dataCells = table.getData();
                                 for (int i = 0; i < dataCells.length; i++) {
-                                    if (inRange(axisCells[i].getRealValue(), mafvMin, mafvMax)) {
-                                        DataCell cell = dataCells[i];
-                                        double value = cell.getRealValue();
-                                        cell.setRealValue("" + (value * (1.0 + percentChange[i] / 100.0)));
+                                    if (inRange(axisCells[i].getDataCell().getRealValue(), mafvMin, mafvMax)) {
+                                        DataCellView cell = dataCells[i];
+                                        double value = cell.getDataCell().getRealValue();
+                                        cell.getDataCell().setRealValue("" + (value * (1.0 + percentChange[i] / 100.0)));
                                     }
                                 }
                             } else {

@@ -182,6 +182,7 @@ public class TableSwitch extends Table {
         add(descriptionArea, BorderLayout.SOUTH);
     }
 
+    
     @Override
     public byte[] saveFile(byte[] input) {
         if (!super.getName().contains("Checksum Fix")) {
