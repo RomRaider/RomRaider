@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.Settings.Endian;
+import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
@@ -105,11 +106,16 @@ public class DataCell {
                     signed);
 
         } else { // integer storage type
-            dataValue = RomAttributeParser.parseByteValue(input,
-                    endian,
-                    storageAddress + index * storageType - ramOffset,
-                    storageType,
-                    signed);
+        	if(table.getBitMask() == 0) {        		
+	            dataValue = RomAttributeParser.parseByteValue(input,
+	                    endian, storageAddress + index * storageType - ramOffset,
+	                    storageType, signed);
+	        	}
+	        	else {
+	        		dataValue = RomAttributeParser.parseByteValueMasked(input, endian, 
+	        				storageAddress + index * storageType - ramOffset,
+	        				storageType, signed, table.getBitMask());				
+	        	}      	
         }
         
         return dataValue;
@@ -158,16 +164,17 @@ public class DataCell {
         if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {       	                  	
                 // determine output byte values
                 byte[] output;
-                
-                if(table.isStaticDataTable() && storageType > 0) {
-                    LOGGER.warn("Static data table: " + table.getName() + ", storageType: "+storageType);
-                }
+            	int mask = table.getBitMask();
+            	
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
+                	int finalValue = 0;
+                	
                     // convert byte values
                     if(table.isStaticDataTable() && storageType > 0) {
-                        try {
-                            int parsedValue = Integer.parseInt(getStaticText());
-                            output = RomAttributeParser.parseIntegerValue(parsedValue, endian, storageType);
+                    	LOGGER.warn("Static data table: " + table.getName() + ", storageType: "+storageType);
+                        
+                    	try {
+                        	finalValue = Integer.parseInt(getStaticText());                            
                         } catch (NumberFormatException ex) {
                             LOGGER.error("Error parsing static data table value: " + getStaticText(), ex);
                             LOGGER.error("Validate the table definition storageType and data value.");
@@ -177,18 +184,46 @@ public class DataCell {
                         // Do not save the value.
                         //LOGGER.debug("The static data table value will not be saved.");
                         return;
-                    }  else {            
-                    	double finalValue = table.getSubtractLayout() ? crossedValue: getBinValue();
-                        output = RomAttributeParser.parseIntegerValue((int) (finalValue), endian, storageType);
+                    }  else {  
+                    	finalValue = (int) (table.getSubtractLayout() ? crossedValue : getBinValue());     
                     }
+                    
+                	if(mask != 0) {
+						// Shift left again
+                		finalValue = finalValue << ByteUtil.firstOneOfMask(mask); 										
+                	}
+                	
+                    output = RomAttributeParser.parseIntegerValue(finalValue, endian, storageType);
                     
                     int byteLength = storageType;
                     if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
                     		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
                     	byteLength = 3;
                     }
-                    for (int z = 0; z < byteLength; z++) { // insert into file
-                        binData[index * byteLength + z + storageAddress - ramOffset] = output[z];
+                    
+                    //If mask enabled, only change bits within the mask
+                    if(mask != 0) {
+						int tempBitMask = 0; 
+						
+						for (int z = 0; z < byteLength; z++) { // insert into file							
+	
+							tempBitMask = mask;
+							
+							//Trim mask depending on byte, from left to right
+							tempBitMask = (tempBitMask & (0xFF << 8 * (byteLength - 1 - z))) >> 8*(byteLength - 1 - z);
+							
+							// Delete old bits
+							binData[index * byteLength + z + storageAddress - ramOffset] &= ~tempBitMask;
+	
+							// Overwrite
+							binData[index * byteLength + z + storageAddress - ramOffset] |= output[z];
+						}
+                    }
+                    //No Masking
+                    else {
+	                    for (int z = 0; z < byteLength; z++) { // insert into file
+	                        binData[index * byteLength + z + storageAddress - ramOffset] = output[z];
+	                    }
                     }
 
                 } else { // float
@@ -201,6 +236,7 @@ public class DataCell {
                 }
         }
         
+        //On the Bosch substract model, we need to update all previous cells, because they depend on our value
         if(table.getSubtractLayout() && index > 0) table.data[index-1].getDataCell().saveBinValueInFile();
         
         DataCell.checkForDataUpdates(this);          
@@ -208,7 +244,7 @@ public class DataCell {
     
     public static void registerDataCell(DataCell cell) {
     	
-    	int memoryIndex = cell.getTable().getStorageAddress() + cell.getIndexInTable() * 4 - cell.getTable().getRamOffset();
+    	int memoryIndex = getMemoryStartAddress(cell);
     	   	
     	if (byteCellMapping.containsKey(memoryIndex))
     		{
@@ -223,7 +259,7 @@ public class DataCell {
     
     public static void checkForDataUpdates(DataCell cell) {
     	
-    	int memoryIndex = cell.getTable().getStorageAddress() + cell.getIndexInTable() * 4 - cell.getTable().getRamOffset();
+    	int memoryIndex = getMemoryStartAddress(cell);
     	 	
     	if (byteCellMapping.containsKey(memoryIndex)){
     		for(DataCell c : byteCellMapping.get(memoryIndex)) {
@@ -233,11 +269,15 @@ public class DataCell {
     	}
     }
     
+    public static int getMemoryStartAddress(DataCell cell) {
+    	return cell.getTable().getStorageAddress() + cell.getIndexInTable() * 4 - cell.getTable().getRamOffset();
+    }
+    
     public Settings getSettings()
     {
         return SettingsManager.getSettings();
     }
-    
+     
     public void updateBinValueFromMemory() {
     	this.binValue = getValueFromMemory();
         updateViews();
@@ -289,6 +329,8 @@ public class DataCell {
     }
     
     public double getRealValue() {
+    	if(table.getCurrentScale() == null) return binValue;
+    	
         return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
     }
 

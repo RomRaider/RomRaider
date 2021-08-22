@@ -36,8 +36,6 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -59,11 +57,11 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
+import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
@@ -84,7 +82,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean signed;
     protected Settings.Endian endian = Settings.Endian.BIG;
     protected boolean flip;
-    protected DataCellView[] data = new DataCellView[0];
+    protected DataCellView[] data = new DataCellView[1];
     protected boolean beforeRam = false;
     protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
@@ -111,7 +109,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopySelectionWorker copySelectionWorker;
 
     protected byte[] input; //Pointer to Raw ROM Bytes
-    
+	private int bitMask = 0;
+	
     protected double minAllowedBin = 0.0;
     protected double maxAllowedBin = 0.0;
 
@@ -758,6 +757,10 @@ public abstract class Table extends JPanel implements Serializable {
                 return false;
             }
 
+			if (this.bitMask != otherTable.bitMask) {
+				return true;
+			}
+			
             if(this.data.equals(otherTable.data))
             {
                 return true;
@@ -769,7 +772,7 @@ public abstract class Table extends JPanel implements Serializable {
                     return false;
                 }
             }
-
+            
             return true;
         } catch(Exception ex) {
             // TODO: Log Exception.
@@ -794,6 +797,9 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     protected void calcValueRange() {
+    	
+
+    	
         if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (isSignedData()) {
                 switch (getStorageType()) {
@@ -820,8 +826,15 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
             else {
-                maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
-                minAllowedBin = 0.0;
+            	
+            	if(bitMask == 0) {          	
+	                maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
+            	}
+            	else {
+            		maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
+            	}
+            	
+        		minAllowedBin = 0.0;
             }
         } else {
             maxAllowedBin = Float.MAX_VALUE;
@@ -1095,6 +1108,23 @@ public abstract class Table extends JPanel implements Serializable {
         return this.substractLayout;
     }
     
+	public void setStringMask(String stringMask) {	
+		int mask = ByteUtil.parseUnsignedInt(stringMask, 16); 		
+		setBitMask(mask);
+	}
+	
+	public void setBitMask(int mask) {
+		if(mask == 0) return;
+		
+		//Clamp mask to max size
+		bitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
+		calcValueRange();
+	}
+
+	public int getBitMask() {
+		return bitMask;
+	}
+    
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -1142,7 +1172,8 @@ public abstract class Table extends JPanel implements Serializable {
                 output.append(data[i].getCellText());
             }
             else {
-                output.append(NumberUtil.stringValue(data[i].getDataCell().getRealValue()));
+            	if(data[i]!= null)
+            		output.append(NumberUtil.stringValue(data[i].getDataCell().getRealValue()));
             }
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
@@ -1508,7 +1539,7 @@ public abstract class Table extends JPanel implements Serializable {
         X_AXIS(4),
         Y_AXIS(5),
         SWITCH(6),
-    	TABLE_2D_MASKED_SWITCHABLE(7);
+    	TABLE_2D_SWITCHABLE(7);
 
         private final int marshallingCode;
 
@@ -1521,7 +1552,7 @@ public abstract class Table extends JPanel implements Serializable {
                 case TABLE_1D:
                     return 1;
                 case TABLE_2D:
-                case TABLE_2D_MASKED_SWITCHABLE:
+                case TABLE_2D_SWITCHABLE:
                     return 2;
                 case TABLE_3D:
                     return 3;

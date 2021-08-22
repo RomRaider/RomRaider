@@ -49,7 +49,7 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableBitwiseSwitch;
-import com.romraider.maps.Table2DMaskedSwitchable;
+import com.romraider.maps.Table2DSwitchable;
 import com.romraider.maps.TableSwitch;
 import com.romraider.maps.checksum.ChecksumFactory;
 import com.romraider.maps.checksum.ChecksumManager;
@@ -366,8 +366,8 @@ public final class DOMRomUnmarshaller {
                     table = new TableBitwiseSwitch();
                 }
                 else if (unmarshallAttribute(tableNode, "type", "unknown")
-                            .equalsIgnoreCase("2DMaskedSwitchable")) {
-                        table = new Table2DMaskedSwitchable();
+                            .equalsIgnoreCase("2DSwitchable")) {
+                        table = new Table2DSwitchable();
                 } else {
                     throw new XMLParseException("Error loading table, "
                             + tableNode.getAttributes().getNamedItem("name"));
@@ -432,7 +432,8 @@ public final class DOMRomUnmarshaller {
                 table.isLocked()));
         table.setLogParam(unmarshallAttribute(tableNode, "logparam",
                 table.getLogParam()));
-        
+        table.setStringMask(
+                unmarshallAttribute(tableNode, "mask", "0"));
 
         if (table.getType() == Table.TableType.TABLE_3D) {
             ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
@@ -446,12 +447,7 @@ public final class DOMRomUnmarshaller {
             ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
                     ((Table3D) table).getSizeY()));
         }
-        
-        if (table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) {
-        ((Table2DMaskedSwitchable) table).setStringMask(
-                unmarshallAttribute(tableNode, "mask", "FFFFFFFF"));
-        }
-        
+              
         Node n;
         NodeList nodes = tableNode.getChildNodes();
 
@@ -461,7 +457,7 @@ public final class DOMRomUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
 
-                    if (table.getType() == Table.TableType.TABLE_2D || table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) { // if table is 2D,
+                    if (table.getType() == Table.TableType.TABLE_2D || table.getType() == Table.TableType.TABLE_2D_SWITCHABLE) { // if table is 2D,
                         // parse axis
 
                         if (RomAttributeParser
@@ -549,7 +545,7 @@ public final class DOMRomUnmarshaller {
                             unmarshallAttribute(n, "position", "0"));
 
                 } else if (n.getNodeName().equalsIgnoreCase("maskedPreset")) {
-                    ((Table2DMaskedSwitchable) table).setPredefinedOption(
+                    ((Table2DSwitchable) table).setPredefinedOption(
                             unmarshallAttribute(n, "presetName", ""),
                             unmarshallAttribute(n, "maskedData", "0")
                            

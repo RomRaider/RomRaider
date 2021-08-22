@@ -67,6 +67,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private final JMenu fileMenu = new JMenu(rb.getString("FILE"));
     private final JMenuItem openImage = new JMenuItem(rb.getString("OPENIMG"));
     private final JMenuItem openImages = new JMenuItem(rb.getString("OPENIMGS"));
+    private final JMenuItem quickSaveImage = new JMenuItem(rb.getString("SAVE"));
     private final JMenuItem saveImage = new JMenuItem(rb.getString("SAVEAS"));
     private final JMenuItem saveAsRepository = new JMenuItem(rb.getString("SAVEREPO"));
     private final JMenuItem refreshImage = new JMenuItem(rb.getString("REFRESH"));
@@ -120,7 +121,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         //fileMenu.add(openImages);
         //openImages.addActionListener(this);
         //openImages.setMnemonic('I');
-
+        
+        fileMenu.add(quickSaveImage);
+        quickSaveImage.addActionListener(this);
+        quickSaveImage.setMnemonic('q');
+        
         fileMenu.add(saveImage);
         saveImage.addActionListener(this);
         saveImage.setMnemonic('S');
@@ -271,6 +276,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void updateMenu() {
         String file = getLastSelectedRomFileName();
         if ("".equals(file)) {
+        	quickSaveImage.setEnabled(false);
             saveImage.setEnabled(false);
             saveAsRepository.setEnabled(false);
             closeImage.setEnabled(false);
@@ -282,10 +288,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             convertRom.setEnabled(false);
         } else {
             saveImage.setEnabled(true);
+            quickSaveImage.setEnabled(true);
             saveAsRepository.setEnabled(true);
             closeImage.setEnabled(true);
             //closeAll.setEnabled(true);
             romProperties.setEnabled(true);
+            quickSaveImage.setText(MessageFormat.format(
+                    rb.getString("QUICKSAVE"), file));
             saveImage.setText(MessageFormat.format(
                     rb.getString("SAVEFAS"), file));
             saveAsRepository.setText(MessageFormat.format(
@@ -345,12 +354,21 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == saveImage) {
             try {
-                this.saveImage();
+                this.saveImage(false);
             } catch (Exception ex) {
                 showMessageDialog(parent,
                         new DebugPanel(ex, getSettings().getSupportURL()),
                         rb.getString("EXCEPTN"), ERROR_MESSAGE);
-            }
+            	}
+        	}
+            else if (e.getSource() == quickSaveImage) {
+                try {
+                    this.saveImage(true);
+                } catch (Exception ex) {
+                    showMessageDialog(parent,
+                            new DebugPanel(ex, getSettings().getSupportURL()),
+                            rb.getString("EXCEPTN"), ERROR_MESSAGE);
+                }
         } else if (e.getSource() == saveAsRepository) {
             try {
                 this.saveAsRepository();
@@ -491,10 +509,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
-    public void saveImage() throws Exception {
+    public void saveImage(boolean quickSave) throws Exception {
         Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
         if (lastSelectedRom != null) {
-            File selectedFile = getImageOutputFile();
+        	
+        	File selectedFile = lastSelectedRom.getFullFileName();
+        	if(!quickSave) selectedFile = getImageOutputFile(); 
+
             if(null != selectedFile){
                 byte[] output = lastSelectedRom.saveFile();
                 this.writeImage(output, selectedFile);

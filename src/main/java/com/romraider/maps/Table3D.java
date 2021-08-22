@@ -50,7 +50,6 @@ import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.RomAttributeParser;
 
 public class Table3D extends Table {
 

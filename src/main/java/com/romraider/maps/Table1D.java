@@ -236,13 +236,18 @@ public class Table1D extends Table {
     @Override
     public void clearSelection() {
         // Call to the axis parent.  The axis parent should then call to clear this data.
-        getAxisParent().clearSelection();
+    	Table p = getAxisParent();
+    	
+    	if(p != null)
+    		p.clearSelection();
     }
 
     @Override
     public void startHighlight(int x, int y) {
         Table axisParent = getAxisParent();
-        axisParent.clearSelectedData();
+        
+        if(axisParent != null)
+        	axisParent.clearSelectedData();
 
         if(axisParent instanceof Table3D) {
             Table3D table3D = (Table3D) axisParent;
