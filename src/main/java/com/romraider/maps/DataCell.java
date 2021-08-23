@@ -36,14 +36,13 @@ import com.romraider.xml.RomAttributeParser;
 
 public class DataCell {
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-
-    private final Table table;
-    
+   
     //This keeps track of DataCells on a byte level
     static protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
     
-    //List of views we need to update whenever our value changes
-    private LinkedList<DataCellView> views = new LinkedList<DataCellView>();
+    //View we need to keep up to date
+    private DataCellView view = null;
+    private final Table table;
     
     private double binValue = 0.0;
     private double originalValue = 0.0;
@@ -280,21 +279,20 @@ public class DataCell {
      
     public void updateBinValueFromMemory() {
     	this.binValue = getValueFromMemory();
-        updateViews();
+    	updateView();
     }
           
-    public void addDataView(DataCellView v) {
-    	views.add(v);
+    public void setDataView(DataCellView v) {
+    	view = v;
     }
     
     public int getIndexInTable() {
     	return index;
     }
     
-    private void updateViews() {
-    	for(DataCellView v : views) {
-    		v.drawCell();
-    	}
+    private void updateView() {
+    	if(view != null)
+    		view.drawCell();
     }
     
     public Table getTable() {
@@ -312,7 +310,7 @@ public class DataCell {
     public void setLiveDataTraceValue(String liveValue) {
         if(this.liveValue != liveValue) {
             this.liveValue = liveValue;
-            updateViews();
+            updateView();
         }
     }
 
@@ -399,7 +397,7 @@ public class DataCell {
         // set bin.
         binValue = checkedValue;
         saveBinValueInFile();
-        updateViews();
+        updateView();
     }
 
     public void increment(double increment) {
@@ -439,7 +437,7 @@ public class DataCell {
 
     public void setRevertPoint() {
         this.setOriginalValue(binValue);
-        updateViews();
+        updateView();
     }
 
     public void setOriginalValue(double originalValue) {

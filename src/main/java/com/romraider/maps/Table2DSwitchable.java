@@ -37,7 +37,7 @@ import com.romraider.util.ByteUtil;
 
 @SuppressWarnings("serial")
 public class Table2DSwitchable extends Table2D {	
-	private LinkedList<PresetEntry> defaultEntries = new LinkedList<PresetEntry>();
+	private LinkedList<PresetEntry> presets = new LinkedList<PresetEntry>();
 	private final List<PresetButton> buttonGroup = new ArrayList<PresetButton>();
 
 	//Struct for saving Preset values
@@ -54,8 +54,10 @@ public class Table2DSwitchable extends Table2D {
 		PresetEntry entry = new PresetEntry();
 		entry.data = new LinkedList<Integer>();
 	
+		data =  data.trim();
+		String seperator = data.contains(",") ? "," : " ";
 		
-		for (String s : data.split(",")) {	
+		for (String s : data.split(seperator)) {	
 			Integer i = ByteUtil.parseUnsignedInt(s, 16);
 			
 			if (getStorageType() > 1 && getEndian() == Endian.LITTLE)
@@ -74,7 +76,7 @@ public class Table2DSwitchable extends Table2D {
 		
 		entry.name = name;
 
-		defaultEntries.add(entry);
+		presets.add(entry);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class Table2DSwitchable extends Table2D {
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 		
 		// Add presets
-		if(defaultEntries.size() > 0) {
+		if(presets.size() > 0) {
 			JLabel optionLabel = new JLabel(" Presets");
 			
 			Font f = optionLabel.getFont();
@@ -101,7 +103,7 @@ public class Table2DSwitchable extends Table2D {
 		}
 		
 		//Setup button for each preset
-		for (PresetEntry entry : defaultEntries) {
+		for (PresetEntry entry : presets) {
 			PresetButton button = new PresetButton();
 
 			button.setText(entry.name);

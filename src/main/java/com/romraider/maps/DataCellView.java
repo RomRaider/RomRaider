@@ -80,7 +80,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         this.setVisible(true);
         this.addMouseListener(this);
         
-        cell.addDataView(this);
+        cell.setDataView(this);
     }
     
     public DataCellView(DataCell cell, int x, int y) {
