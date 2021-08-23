@@ -32,69 +32,32 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.romraider.Settings.Endian;
-import com.romraider.util.ByteUtil;
+import com.romraider.maps.PresetManager.PresetEntry;
 
-@SuppressWarnings("serial")
-public class Table2DSwitchable extends Table2D {	
-	private LinkedList<PresetEntry> presets = new LinkedList<PresetEntry>();
+public class PresetPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private final List<PresetButton> buttonGroup = new ArrayList<PresetButton>();
-
-	//Struct for saving Preset values
-	private class PresetEntry {
-		String name;
-		LinkedList<Integer> data;
-	}
-	   
-	public Table2DSwitchable() {
-		super();
+	private PresetManager manager;
+	private Table table;
+	
+	public PresetPanel(Table t, PresetManager manager) {
+		this.manager = manager;
+		this.table = t;
 	}
 	
-	public void setValues(String name, String data) {
-		PresetEntry entry = new PresetEntry();
-		entry.data = new LinkedList<Integer>();
-	
-		data =  data.trim();
-		String seperator = data.contains(",") ? "," : " ";
+	public void populatePanel() {
 		
-		for (String s : data.split(seperator)) {	
-			Integer i = ByteUtil.parseUnsignedInt(s, 16);
-			
-			if (getStorageType() > 1 && getEndian() == Endian.LITTLE)
-			{
-				if(getStorageType() == 2) {
-					i = Short.reverseBytes((short)(i&0xFFFF))&0xFFFF;
-				}
-					
-				else if(getStorageType() == 4)
-					i = Integer.reverseBytes(i);
-				
+		//If this is an axis within another table dont show the panel
+		if(table instanceof Table1D) {
+			if(((Table1D) (table)).getAxisParent() != null) {
+				return;
 			}
+		}
 				
-			entry.data.add(i);
-		}
-		
-		entry.name = name;
-
-		presets.add(entry);
-	}
-
-	@Override
-	public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-		super.populateTable(input, romRamOffset);
-		
-		JLabel axisLabel = getAxisLabel();
-		
-		if(getAxis().isStaticDataTable()) {
-			axisLabel.setText(" " + axisLabel.getText() + " ");
-			Font f = axisLabel.getFont();
-			axisLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-		}
-		
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 		
 		// Add presets
-		if(presets.size() > 0) {
+		if(manager.getPresets().size() > 0) {
 			JLabel optionLabel = new JLabel(" Presets");
 			
 			Font f = optionLabel.getFont();
@@ -103,7 +66,7 @@ public class Table2DSwitchable extends Table2D {
 		}
 		
 		//Setup button for each preset
-		for (PresetEntry entry : presets) {
+		for (PresetEntry entry : manager.getPresets()) {
 			PresetButton button = new PresetButton();
 
 			button.setText(entry.name);
@@ -115,27 +78,21 @@ public class Table2DSwitchable extends Table2D {
 			radioPanel.add(button);
 		}
 
-		add(radioPanel, BorderLayout.SOUTH);
+		table.add(radioPanel, BorderLayout.SOUTH);
 		repaint();
-	}
-
-	//New values, check if any presets are active
-	@Override
-	public void repaint() {
-		super.repaint();
+	}	
 	
+	@Override
+	public void repaint() {	
 		if (buttonGroup != null) {
 			for (PresetButton button: buttonGroup) {
 					button.checkIfActive();
 			}
 		}
+		
+		super.repaint();
 	} 
-	
-	@Override
-	public TableType getType() {
-		return Table.TableType.TABLE_2D_SWITCHABLE;
-	}
-
+		
 	/*
 	 * Custom Button and Actionlistener
 	 */
@@ -152,9 +109,9 @@ public class Table2DSwitchable extends Table2D {
 			boolean found = true;
 			
 			if (values != null) {
-				for (int i = 0; i < getDataSize(); i++) {
-					if(getDataSize() == values.size()) {
-						if ((int) data[i].getDataCell().getBinValue() != values.get(i)) {
+				for (int i = 0; i < table.getDataSize(); i++) {
+					if(table.getDataSize() == values.size()) {
+						if ((int) table.data[i].getDataCell().getBinValue() != values.get(i)) {
 							found = false;
 							break;
 						}
@@ -170,12 +127,14 @@ public class Table2DSwitchable extends Table2D {
 		public void actionPerformed(ActionEvent event) {
 			PresetButton button = (PresetButton)event.getSource();
 			
-			if(getDataSize() == button.values.size()) {
-				for (int i = 0; i < getDataSize(); i++) {
-					data[i].getDataCell().setBinValue(button.values.get(i));
+			if(table.getDataSize() == button.values.size()) {
+				for (int i = 0; i < table.getDataSize(); i++) {
+					table.data[i].getDataCell().setBinValue(button.values.get(i));
 				}
 			}
-			calcCellRanges();
+			
+			table.calcCellRanges();
+			table.calcValueRange();
 			repaint();
 		}
 	}

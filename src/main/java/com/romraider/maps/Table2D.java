@@ -37,12 +37,11 @@ import javax.naming.NameNotFoundException;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.SettingsManager;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
@@ -167,7 +166,10 @@ public class Table2D extends Table {
         }
 
         tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
-        add(tableLabel, BorderLayout.SOUTH);
+        add(tableLabel, BorderLayout.SOUTH);      
+        axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
+        
+        if(presetPanel != null) presetPanel.populatePanel();
         repaint();
     }
 
@@ -524,12 +526,7 @@ public class Table2D extends Table {
         if(null != axis) {
             axis.repaint();
         }
-    }
-    
-	@Override
-	public void setValues(String name, String value) {
-		throw new NotImplementedException();
-	}
+    }  
 }
 
 class CopySelection2DWorker extends SwingWorker<Void, Void> {

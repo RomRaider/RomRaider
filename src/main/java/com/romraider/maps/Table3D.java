@@ -43,6 +43,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
@@ -50,8 +51,6 @@ import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table3D extends Table {
 
@@ -274,7 +273,11 @@ public class Table3D extends Table {
 
         tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
         add(tableLabel, BorderLayout.SOUTH);
-
+        
+        yAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
+        xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
+        
+        if(presetPanel != null) presetPanel.populatePanel();
         calcCellRanges();
     }
 
@@ -1123,11 +1126,6 @@ public class Table3D extends Table {
             yAxis.repaint();
         }
     }
-    
-	@Override
-	public void setValues(String name, String value) {
-		throw new NotImplementedException();
-	}
 }
 
 class CopySelection3DWorker extends SwingWorker<Void, Void> {

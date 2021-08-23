@@ -51,7 +51,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
@@ -76,6 +75,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
     protected Scale curScale;
+    protected PresetManager presetManager;
+    protected PresetPanel presetPanel;
         
     protected int storageAddress;
     protected int storageType;
@@ -137,7 +138,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
-
+             
         // key binding actions
         Action rightAction = new AbstractAction() {
             private static final long serialVersionUID = 1042884198300385041L;
@@ -510,8 +511,6 @@ public abstract class Table extends JPanel implements Serializable {
     	return this.input;
     }
     
-
-  
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         // temporarily remove lock
     	this.input = input;
@@ -523,20 +522,7 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         for (int i = 0; i < data.length; i++) {
-            if (data[i] == null) {
-            	//double dataValue = getDataValue(input, i);
-
-            	/*
-            	//Bosch Motronic subtract method
-            	if(substractLayout) {
-            		dataValue = Math.pow(2, 8 * storageType);
-            		
-            		for (int j = data.length - 1; j >= i; j--) {
-            			dataValue -= getDataValue(input, j);
-            		}       		
-            	}
-            	*/
-            	
+            if (data[i] == null) {            	
             	DataCell newC = new DataCell(this, i);
                 data[i] = new DataCellView(newC, 0, i);
                 data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
@@ -796,10 +782,7 @@ public abstract class Table extends JPanel implements Serializable {
         return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
     }
 
-    protected void calcValueRange() {
-    	
-
-    	
+    protected void calcValueRange() {   	
         if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (isSignedData()) {
                 switch (getStorageType()) {
@@ -1091,7 +1074,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     abstract public byte[] saveFile(byte[] binData);
-    abstract public void setValues(String name, String value);
+    
+    public void setValues(String name, String value) {
+    	if(presetManager == null) presetManager = new PresetManager(this);
+    	if(presetPanel == null) presetPanel = new PresetPanel(this, presetManager);
+    	
+    	presetManager.setValues(name, value);
+    }
     
     public boolean isBeforeRam() {
         return beforeRam;
@@ -1539,8 +1528,7 @@ public abstract class Table extends JPanel implements Serializable {
         TABLE_3D(3),
         X_AXIS(4),
         Y_AXIS(5),
-        SWITCH(6),
-    	TABLE_2D_SWITCHABLE(7);
+        SWITCH(6);
 
         private final int marshallingCode;
 
@@ -1553,7 +1541,6 @@ public abstract class Table extends JPanel implements Serializable {
                 case TABLE_1D:
                     return 1;
                 case TABLE_2D:
-                case TABLE_2D_SWITCHABLE:
                     return 2;
                 case TABLE_3D:
                     return 3;

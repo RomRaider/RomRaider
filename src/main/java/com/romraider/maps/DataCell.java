@@ -262,8 +262,7 @@ public class DataCell {
     	 	
     	if (byteCellMapping.containsKey(memoryIndex)){
     		for(DataCell c : byteCellMapping.get(memoryIndex)) {
-    			if(c != cell)
-    				c.updateBinValueFromMemory();
+    			c.updateBinValueFromMemory();
     		}
     	}
     }

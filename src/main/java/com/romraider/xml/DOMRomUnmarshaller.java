@@ -49,7 +49,6 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableBitwiseSwitch;
-import com.romraider.maps.Table2DSwitchable;
 import com.romraider.maps.TableSwitch;
 import com.romraider.maps.checksum.ChecksumFactory;
 import com.romraider.maps.checksum.ChecksumManager;
@@ -365,10 +364,7 @@ public final class DOMRomUnmarshaller {
                         .equalsIgnoreCase("BitwiseSwitch")) {
                     table = new TableBitwiseSwitch();
                 }
-                else if (unmarshallAttribute(tableNode, "type", "unknown")
-                            .equalsIgnoreCase("2DSwitchable")) {
-                        table = new Table2DSwitchable();
-                } else {
+                else {
                     throw new XMLParseException("Error loading table, "
                             + tableNode.getAttributes().getNamedItem("name"));
                 }
@@ -457,7 +453,7 @@ public final class DOMRomUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
 
-                    if (table.getType() == Table.TableType.TABLE_2D || table.getType() == Table.TableType.TABLE_2D_SWITCHABLE) { // if table is 2D,
+                    if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
 
                         if (RomAttributeParser

@@ -199,6 +199,7 @@ public class TableSwitch extends Table {
         return input;
     }
 
+    @Override
     public void setValues(String name, String input) {
         switchStates.put(name, asBytes(input));
     }

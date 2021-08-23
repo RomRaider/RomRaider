@@ -136,7 +136,8 @@ public class TableBitwiseSwitch extends Table {
 
 		return input;
 	}
-
+	
+    @Override
 	public void setValues(String name, String input) {
 		controlBits.put(name, Integer.parseInt(input));
 	}

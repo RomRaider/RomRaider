@@ -20,12 +20,12 @@
 package com.romraider.maps;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.util.NumberUtil;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
@@ -86,6 +86,10 @@ public class Table1D extends Table {
             tableLabel = new JLabel(getName() + " (" + getCurrentScale().getUnit() + ")", JLabel.CENTER);
             add(tableLabel, BorderLayout.NORTH);
         }
+        
+        tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
+        
+        if(presetPanel != null) presetPanel.populatePanel();
     }
 
     @Override
@@ -396,9 +400,4 @@ public class Table1D extends Table {
             return super.getTableAsString();
         }
     }
-
-	@Override
-	public void setValues(String name, String value) {
-		throw new NotImplementedException();
-	}
 }
