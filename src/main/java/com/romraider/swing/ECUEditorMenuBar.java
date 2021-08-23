@@ -121,11 +121,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         //fileMenu.add(openImages);
         //openImages.addActionListener(this);
         //openImages.setMnemonic('I');
-        
-        fileMenu.add(quickSaveImage);
-        quickSaveImage.addActionListener(this);
-        quickSaveImage.setMnemonic('q');
-        
+               
         fileMenu.add(saveImage);
         saveImage.addActionListener(this);
         saveImage.setMnemonic('S');
@@ -133,7 +129,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(saveAsRepository);
         saveAsRepository.setMnemonic('D');
         saveAsRepository.addActionListener(this);
-
+        
+        fileMenu.add(quickSaveImage);
+        quickSaveImage.addActionListener(this);
+        quickSaveImage.setMnemonic('q');
+        
         fileMenu.add(refreshImage);
         refreshImage.addActionListener(this);
         refreshImage.setMnemonic('R');

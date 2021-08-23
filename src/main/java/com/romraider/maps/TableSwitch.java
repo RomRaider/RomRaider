@@ -49,7 +49,6 @@ import javax.swing.JTextArea;
 import com.romraider.util.ResourceUtil;
 
 public class TableSwitch extends Table {
-
     private static final long serialVersionUID = -4887718305447362308L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableSwitch.class.getName());
