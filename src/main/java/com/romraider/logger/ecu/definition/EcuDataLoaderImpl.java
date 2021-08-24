@@ -89,16 +89,19 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
+        
+        boolean valid = true;
+        Settings s = SettingsManager.getSettings();
+        
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
                         protocol, fileLoggingControllerSwitchId, ecuInit);
                 getSaxParser().parse(inputStream, handler, loggerConfigFilePath);
-                Settings s = SettingsManager.getSettings();
+
                 Map<Transport, Collection<Module>> transportMap;
-                
-               
+                               
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
@@ -108,8 +111,6 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 protocolList = handler.getProtocols();
                 
                 //If settings use protocol that new definition does not contain --> Use first values of new def.
-                boolean valid = true;
-                
                 if(!protocolList.containsKey(s.getLoggerProtocol())){  
                 	valid = false;
                 }
@@ -126,13 +127,12 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                     
                     valid = found;                  
                 }
-                
-                if(!valid) {
-                	protocol = protocolList.keySet().iterator().next();
-                	s.setLoggerProtocol(protocol);
-                	s.setTransportProtocol(protocolList.values().iterator().next().keySet().iterator().next().getId());
-                }
-            
+
+                if(!valid) {                	
+                	s.setLoggerProtocol(protocolList.keySet().iterator().next());
+                	s.setTransportProtocol(protocolList.values().iterator().next().
+                			keySet().iterator().next().getId());               	               	
+                }                              
             } finally {
                 inputStream.close();
             }
@@ -147,6 +147,12 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
+        
+        //If the new definition did not contain the desired protocol, we have to 
+        // re-call the function with the new (available) protocol
+        // because only the loaded protocol gets parsed fully
+        if(!valid)loadConfigFromXml(loggerConfigFilePath,
+        		s.getLoggerProtocol(), fileLoggingControllerSwitchId, ecuInit);
     }
 
     public Map<String, EcuDefinition> getEcuDefinitionMap() {
