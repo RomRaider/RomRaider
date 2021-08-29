@@ -274,8 +274,10 @@ public class Table3D extends Table {
         tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
         add(tableLabel, BorderLayout.SOUTH);
         
-        yAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
-        xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
+        yAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));  
+        
+        if(xAxisLabel!=null)
+        	xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
         
         if(presetPanel != null) presetPanel.populatePanel();
         calcCellRanges();

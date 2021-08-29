@@ -268,7 +268,8 @@ public class DataCell {
     }
     
     public static int getMemoryStartAddress(DataCell cell) {
-    	return cell.getTable().getStorageAddress() + cell.getIndexInTable() * 4 - cell.getTable().getRamOffset();
+    	Table t = cell.getTable();   	
+    	return t.getStorageAddress() + cell.getIndexInTable() * t.getStorageType() - t.getRamOffset();
     }
     
     public Settings getSettings()

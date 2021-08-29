@@ -87,7 +87,8 @@ public class Table1D extends Table {
             add(tableLabel, BorderLayout.NORTH);
         }
         
-        tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
+        if(tableLabel != null)
+        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
         
         if(presetPanel != null) presetPanel.populatePanel();
     }
