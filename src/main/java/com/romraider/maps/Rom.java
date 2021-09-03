@@ -88,23 +88,32 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for (TableTreeNode tableTreeNode : tableNodes) {
             TableFrame tableFrame = tableTreeNode.getFrame();
             Table table = tableFrame.getTable();
-
+            String[] categories = table.getCategory().split("//");
+                      
             if (settings.isDisplayHighTables() || settings.getUserLevel() >= table.getUserLevel()) {
-                boolean categoryExists = false;
-
-                for (int j = 0; j < getChildCount(); j++) {
-                    if (getChildAt(j).toString().equals(table.getCategory())) {
-                        // add to appropriate category
-                        getChildAt(j).add(tableTreeNode);
-                        categoryExists = true;
-                        break;
-                    }
-                }
-
-                if (!categoryExists) { // if category does not already exist, create it
-                    CategoryTreeNode categoryNode = new CategoryTreeNode(table.getCategory());
-                    categoryNode.add(tableTreeNode);
-                    this.add(categoryNode);
+                
+                DefaultMutableTreeNode currentParent = this;
+                
+                for(int i=0; i < categories.length; i++) {
+                    boolean categoryExists = false;
+                    
+	                for (int j = 0; j < currentParent.getChildCount(); j++) {
+	                    if (currentParent.getChildAt(j).toString().equalsIgnoreCase(categories[i])) {	  
+	                    	categoryExists = true;	                    		                    	
+	                    	currentParent = (DefaultMutableTreeNode) currentParent.getChildAt(j);
+	                        break;
+	                    }
+	                }
+	                
+	                if(!categoryExists) {
+	                    CategoryTreeNode categoryNode = new CategoryTreeNode(categories[i]);
+	                    currentParent.add(categoryNode);
+	                    currentParent = categoryNode;
+	                }
+	                
+                	if(i == categories.length - 1){
+                		currentParent.add(tableTreeNode);
+                	}
                 }
             }
         }

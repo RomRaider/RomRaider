@@ -577,6 +577,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setCategory(String category) {
+    	category = category.trim().replace(" //", "//").replace("// ", "//");
         this.category = category;
     }
 

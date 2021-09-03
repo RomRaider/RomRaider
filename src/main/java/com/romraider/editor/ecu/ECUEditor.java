@@ -572,7 +572,7 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
 
     public void propertyChange(PropertyChangeEvent evnt)
     {
-        SwingWorker source = (SwingWorker) evnt.getSource();
+        SwingWorker<?, ?> source = (SwingWorker<?, ?>) evnt.getSource();
         if (null != source && "state".equals( evnt.getPropertyName() )
                 && (source.isDone() || source.isCancelled() ) )
         {
@@ -604,7 +604,7 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
 
     public void propertyChange(PropertyChangeEvent evnt)
     {
-        SwingWorker source = (SwingWorker) evnt.getSource();
+        SwingWorker<?, ?> source = (SwingWorker<?, ?>) evnt.getSource();
         if (null != source && "state".equals( evnt.getPropertyName() )
                 && (source.isDone() || source.isCancelled() ) )
         {
@@ -802,7 +802,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
     public void propertyChange(PropertyChangeEvent evnt)
     {
-        SwingWorker source = (SwingWorker) evnt.getSource();
+        SwingWorker<?, ?> source = (SwingWorker<?, ?>) evnt.getSource();
         if (null != source && "state".equals( evnt.getPropertyName() )
                 && (source.isDone() || source.isCancelled() ) )
         {
