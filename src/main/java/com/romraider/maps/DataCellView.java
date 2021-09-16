@@ -91,6 +91,10 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         this.setPreferredSize(getSettings().getCellSize());
     }
     
+    public boolean equals (DataCellView v) {
+    	return v.dataCell.equals(dataCell);
+    }
+    
     public DataCell getDataCell() {
     	return dataCell;
     }

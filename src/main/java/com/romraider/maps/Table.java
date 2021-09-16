@@ -745,7 +745,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
 
 			if (this.bitMask != otherTable.bitMask) {
-				return true;
+				return false;
 			}
 			
             if(this.data.equals(otherTable.data))
