@@ -120,8 +120,8 @@ public class DataCell {
         return dataValue;
     }
     
-    private double getValueFromMemory() {    	   	
-    	if (table.getSubtractLayout()) {
+    private double getValueFromMemory() {  	
+    	if (table.getDataLayout() == Table.DataLayout.BOSCH_SUBTRACT) {
     		
         	//Bosch Motronic subtract method
         	 double dataValue = Math.pow(2, 8 * table.getStorageType());
@@ -144,11 +144,12 @@ public class DataCell {
         Endian endian = table.getEndian();
         int ramOffset = table.getRamOffset();
         int storageAddress = table.getStorageAddress();
+        boolean isBoschSubtract = table.getDataLayout() == Table.DataLayout.BOSCH_SUBTRACT;
         
     	double crossedValue = 0;
        
         //Do reverse cross referencing in for Bosch Subtract Axis array
-    	if(table.getSubtractLayout()) {  		
+    	if(isBoschSubtract) {  		
     	    for (int i = table.data.length - 1; i >=index ; i--) {
 	        	if(i == index)
 	        		crossedValue -= table.data[i].getDataCell().getBinValue();
@@ -184,7 +185,7 @@ public class DataCell {
                         //LOGGER.debug("The static data table value will not be saved.");
                         return;
                     }  else {  
-                    	finalValue = (int) (table.getSubtractLayout() ? crossedValue : getBinValue());     
+                    	finalValue = (int) (isBoschSubtract ? crossedValue : getBinValue());     
                     }
                     
                 	if(mask != 0) {
@@ -236,7 +237,7 @@ public class DataCell {
         }
         
         //On the Bosch substract model, we need to update all previous cells, because they depend on our value
-        if(table.getSubtractLayout() && index > 0) table.data[index-1].getDataCell().saveBinValueInFile();
+        if(isBoschSubtract && index > 0) table.data[index-1].getDataCell().saveBinValueInFile();
         
         DataCell.checkForDataUpdates(this);          
     }

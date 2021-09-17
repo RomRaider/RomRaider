@@ -129,9 +129,14 @@ public abstract class Table extends JPanel implements Serializable {
     protected int liveDataIndex = 0;
     protected int previousLiveDataIndex = 0;
     
-    protected boolean substractLayout = false; //Bosch Style Subtract Method
+    protected DataLayout dataLayout = DataLayout.DEFAULT;
     private Table compareTable = null;
-
+    
+    public enum DataLayout {
+    	DEFAULT,
+    	BOSCH_SUBTRACT
+    }
+    
     protected Table() {
         scales.clear();
 
@@ -1091,12 +1096,23 @@ public abstract class Table extends JPanel implements Serializable {
         this.beforeRam = beforeRam;
     }
     
-    public void setSubtractLayout(boolean value) {
-        this.substractLayout = value;
+    public void setDataLayout(String s) {  	
+    	switch(s.trim().toLowerCase()) {
+	    	case "bosch_subtract":
+	    		setDataLayout(DataLayout.BOSCH_SUBTRACT);
+	    		break;
+	    	case "default":
+	    		setDataLayout(DataLayout.DEFAULT);
+	    		break;
+    	}
     }
     
-    public boolean getSubtractLayout() {
-        return this.substractLayout;
+    public void setDataLayout(DataLayout m) {
+        this.dataLayout = m;
+    }
+    
+    public DataLayout getDataLayout() {
+        return this.dataLayout;
     }
     
 	public void setStringMask(String stringMask) {	

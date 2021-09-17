@@ -382,10 +382,8 @@ public final class DOMRomUnmarshaller {
             table.setBeforeRam(true);
         }        
         
-        if (unmarshallAttribute(tableNode, "substractLayout", false)) {
-            table.setSubtractLayout(true);
-        }
-
+        
+        table.setDataLayout(unmarshallAttribute(tableNode, "dataLayout", ""));        
         table.setCategory(unmarshallAttribute(tableNode, "category",
                 table.getCategory()));
         if (table.getStorageType() < 1) {
