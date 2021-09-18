@@ -1096,14 +1096,12 @@ public abstract class Table extends JPanel implements Serializable {
         this.beforeRam = beforeRam;
     }
     
-    public void setDataLayout(String s) {  	
-    	switch(s.trim().toLowerCase()) {
-	    	case "bosch_subtract":
-	    		setDataLayout(DataLayout.BOSCH_SUBTRACT);
-	    		break;
-	    	case "default":
-	    		setDataLayout(DataLayout.DEFAULT);
-	    		break;
+    public void setDataLayout(String s) {
+    	if(s.trim().equalsIgnoreCase("bosch_subtract")) {
+    		setDataLayout(DataLayout.BOSCH_SUBTRACT);
+    	}
+    	else {
+    		setDataLayout(DataLayout.DEFAULT);
     	}
     }
     
