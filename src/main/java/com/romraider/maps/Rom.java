@@ -67,11 +67,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
-    //private final HashMap<Long, DataCell> bitMapping = new HashMap<Long, DataCell>();
     private boolean isAbstract = false;
     
     private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
-
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
     public Rom() {
