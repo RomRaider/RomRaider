@@ -17,8 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-//DOM XML parser for ROMs
-
 package com.romraider.xml;
 
 import static com.romraider.xml.DOMHelper.unmarshallAttribute;
@@ -46,18 +44,44 @@ public final class DOMRomUnmarshaller {
             .getLogger(DOMRomUnmarshaller.class);
     private JProgressPane progress = null; 
     private ChecksumManager checksumManager = null;
-    private TableScaleAttributeHandler tableScaleHandler = new TableScaleAttributeHandler();
+    private TableScaleUnmarshaller tableScaleHandler = new TableScaleUnmarshaller();
 
     public Rom unmarshallXMLDefinition(Node rootNode, byte[] input,
             JProgressPane progress) throws RomNotFoundException,
             XMLParseException, StackOverflowError, Exception {
 
         this.progress = progress;
-        Node n;
+       
+        // Unmarshall scales first
+        tableScaleHandler.unmarshallBaseScales(rootNode);
+        
+        RomID romId = new RomID();     
+        Node n = findRomNodeMatch(rootNode, null, input, romId);
+       
+        if(n != null) {
+        	Rom rom = new Rom(romId);
+	        Rom output = unmarshallRom(n, rom);
+	        
+	        // set ram offset
+	        output.getRomID().setRamOffset(
+	                output.getRomID().getFileSize()
+	                - input.length);
+	
+	        return output;
+        }
+        
+        throw new RomNotFoundException();
+    }
+    
+    //Find the correct Rom Node either by xmlID or by input bytes
+    //Supplying both will return null
+    private Node findRomNodeMatch(Node rootNode, String xmlID, byte[] input, RomID romId) {
+        if(xmlID == null && input == null) return null;
+        if(xmlID != null && input != null) return null;
+        
+    	Node n;
         NodeList nodes = rootNode.getChildNodes();
-        tableScaleHandler.unmarshallBaseScales(nodes);
-
-        // now unmarshall roms
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
@@ -68,32 +92,31 @@ public final class DOMRomUnmarshaller {
 
                 for (int z = 0; z < nodes2.getLength(); z++) {
                     n2 = nodes2.item(z);
+                    
                     if (n2.getNodeType() == ELEMENT_NODE
                             && n2.getNodeName().equalsIgnoreCase("romid")) {
 
-                        RomID romID = unmarshallRomID(n2, new RomID());
+                    	romId = unmarshallRomID(n2, romId);
 
                         //Check if bytes match in file
-                        if (romID.checkMatch(input)) {
-                            Rom output = unmarshallRom(n, new Rom());
-
-                            // set ram offset
-                            output.getRomID().setRamOffset(
-                                    output.getRomID().getFileSize()
-                                    - input.length);
-
-                            return output;
+                        if(input != null && romId.checkMatch(input)) {
+                        	return n;
                         }
                         
-                        //ROM only has one ID Node, so we can skip the rest after we found it
+                        //Check if the ID matches
+                        else if(xmlID != null && romId.getXmlid().equalsIgnoreCase(xmlID)) {
+                        	return n;
+                        }
+                        
                         break;
                     }
                 }
             }
         }
-        throw new RomNotFoundException();
+        
+        return null;
     }
-
+    
     public Rom unmarshallRom(Node rootNode, Rom rom) throws XMLParseException,
     RomNotFoundException, StackOverflowError, Exception {
         Node n;
@@ -123,33 +146,25 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("table")) {
                     Table table = null;
                     try {
-                        table = rom.getTableByName(unmarshallAttribute(n, "name",
-                                null));
+                        table = rom.getTableByName(unmarshallAttribute(n, "name", null));
                     } catch (TableNotFoundException e) {
-                        /*
-                         * table does not
-                         * already exist (do
-                         * nothing)
-                         */
+                        //Table does not already exist (do nothing)
                     } catch (InvalidTableNameException iex) {
                         // Table name is null or empty.  Do nothing.
                     }
 
                     try {
                         table = tableScaleHandler.unmarshallTable(n, table, rom);
-                        //rom.addTableByName(table);
                         if (table != null) {
-                            //rom.removeTableByName(table);
                             rom.addTable(table);
                         }
                     } catch (TableIsOmittedException ex) {
                         // table is not supported in inherited def (skip)
                         if (table != null) {
-                            //rom.removeTableByName(table);
                             rom.removeTable(table);
                         }
                     } catch (XMLParseException ex) {
-                        LOGGER.error("Error unmarshalling rom", ex);
+                        LOGGER.error(ex.getMessage());
                     }
                 } else if (n.getNodeName().equalsIgnoreCase("checksum")) {
                     rom.getRomID().setChecksum(unmarshallAttribute(n, "type", ""));
@@ -167,32 +182,15 @@ public final class DOMRomUnmarshaller {
     public Rom getBaseRom(Node rootNode, String xmlID, Rom rom)
             throws XMLParseException, RomNotFoundException, StackOverflowError,
             Exception {
-        Node n;
-        NodeList nodes = rootNode.getChildNodes();
+    		
+    		Node n = findRomNodeMatch(rootNode, xmlID, null, new RomID());
+    		
+    		if(n != null) {
+	            Rom returnrom = unmarshallRom(n, rom);
+	            returnrom.getRomID().setObsolete(false);
+	            return returnrom;
+    		}
 
-        for (int i = 0; i < nodes.getLength(); i++) {
-            n = nodes.item(i);
-
-            if (n.getNodeType() == ELEMENT_NODE
-                    && n.getNodeName().equalsIgnoreCase("rom")) {
-                Node n2;
-                NodeList nodes2 = n.getChildNodes();
-
-                for (int z = 0; z < nodes2.getLength(); z++) {
-                    n2 = nodes2.item(z);
-                    if (n2.getNodeType() == ELEMENT_NODE
-                            && n2.getNodeName().equalsIgnoreCase("romid")) {
-
-                        RomID romID = unmarshallRomID(n2, new RomID());
-                        if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
-                            Rom returnrom = unmarshallRom(n, rom);
-                            returnrom.getRomID().setObsolete(false);
-                            return returnrom;
-                        }
-                    }
-                }
-            }
-        }
         throw new RomNotFoundException();
     }
 
@@ -204,56 +202,58 @@ public final class DOMRomUnmarshaller {
             n = nodes.item(i);
 
             if (n.getNodeType() == ELEMENT_NODE) {
-
-                if (n.getNodeName().equalsIgnoreCase("xmlid")) {
+            	String nodeName = n.getNodeName();
+            	
+                if (nodeName.equalsIgnoreCase("xmlid")) {
                     romID.setXmlid(unmarshallText(n));
 
-                } else if (n.getNodeName()
-                        .equalsIgnoreCase("internalidaddress")) {
+                } else if (nodeName.equalsIgnoreCase("internalidaddress")) {
                     romID.setInternalIdAddress(RomAttributeParser
                             .parseHexString(unmarshallText(n)));
 
-                } else if (n.getNodeName().equalsIgnoreCase("internalidstring")) {
+                } else if (nodeName.equalsIgnoreCase("internalidstring")) {
                     romID.setInternalIdString(unmarshallText(n));
+                    
                     if (romID.getInternalIdString() == null) {
                         romID.setInternalIdString("");
                     }
 
-                } else if (n.getNodeName().equalsIgnoreCase("caseid")) {
+                } else if (nodeName.equalsIgnoreCase("caseid")) {
                     romID.setCaseId(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("ecuid")) {
+                } else if (nodeName.equalsIgnoreCase("ecuid")) {
                     romID.setEcuId(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("make")) {
+                } else if (nodeName.equalsIgnoreCase("make")) {
                     romID.setMake(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("market")) {
+                } else if (nodeName.equalsIgnoreCase("market")) {
                     romID.setMarket(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("model")) {
+                } else if (nodeName.equalsIgnoreCase("model")) {
                     romID.setModel(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("submodel")) {
+                } else if (nodeName.equalsIgnoreCase("submodel")) {
                     romID.setSubModel(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("transmission")) {
+                } else if (nodeName.equalsIgnoreCase("transmission")) {
                     romID.setTransmission(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("year")) {
+                } else if (nodeName.equalsIgnoreCase("year")) {
                     romID.setYear(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("flashmethod")) {
+                } else if (nodeName.equalsIgnoreCase("flashmethod")) {
                     romID.setFlashMethod(unmarshallText(n));
 
-                } else if (n.getNodeName().equalsIgnoreCase("memmodel")) {
-                    romID.setMemModel(unmarshallText(n));
+                } else if (nodeName.equalsIgnoreCase("memmodel")) {
+                    romID.setMemModel(unmarshallText(n));                   
                     tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));
-                } else if (n.getNodeName().equalsIgnoreCase("filesize")) {
+                    
+                } else if (nodeName.equalsIgnoreCase("filesize")) {
                     romID.setFileSize(RomAttributeParser
                             .parseFileSize(unmarshallText(n)));
-
-                } else if (n.getNodeName().equalsIgnoreCase("obsolete")) {
+                    
+                } else if (nodeName.equalsIgnoreCase("obsolete")) {
                     romID.setObsolete(Boolean.parseBoolean(unmarshallText(n)));
 
                 } else { /* unexpected element in RomID (skip) */

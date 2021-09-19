@@ -33,7 +33,7 @@ public class RomPropertyPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 5583360728106071942L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             RomPropertyPanel.class.getName());
-    Rom rom = new Rom();
+    Rom rom;
 
     public RomPropertyPanel(Rom rom) {
         initComponents();

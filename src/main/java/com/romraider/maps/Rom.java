@@ -63,7 +63,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             Rom.class.getName());
-    private RomID romID = new RomID();
+    private RomID romID;
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
@@ -72,7 +72,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
-    public Rom() {
+    public Rom(RomID romID) {
+    	this.romID = romID;
         tableNodes.clear();
     }
 
@@ -201,8 +202,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
             Table table = tableNodes.get(i).getTable();
             try {
-                // if storageaddress has not been set (or is set to 0) omit table
-            	//Why can the address not be zero? - Changed
                 if (table.getStorageAddress() >= 0) {
                     try {
                         table.populateTable(binData, this.getRomID().getRamOffset());

@@ -51,22 +51,21 @@ import com.romraider.swing.DebugPanel;
 import com.romraider.util.ObjectCloner;
 import com.romraider.util.SettingsManager;
 
-public class TableScaleAttributeHandler {
-    private static final Logger LOGGER = Logger.getLogger(TableScaleAttributeHandler.class);
+public class TableScaleUnmarshaller {
+    private static final Logger LOGGER = Logger.getLogger(TableScaleUnmarshaller.class);
 	private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
     private final List<Scale> scales = new ArrayList<Scale>();
     private String memModelEndian = null;
     private final Scale rawScale = new Scale();
     
-    
     public void setMemModelEndian(String endian) {
-    	
+    	memModelEndian = endian;
     }
     
-    public void unmarshallBaseScales(NodeList nodes) {
+    public void unmarshallBaseScales(Node rootNode) {
+    	NodeList nodes = rootNode.getChildNodes();
         Node n;
 
-        // unmarshall scales first
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
@@ -79,7 +78,7 @@ public class TableScaleAttributeHandler {
     
 	 public Table unmarshallTable(Node tableNode, Table table, Rom rom)
 	            throws XMLParseException, TableIsOmittedException, Exception {
-	    	
+	    			 
 	        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase(
 	                "true")) { // remove table if omitted
 	            throw new TableIsOmittedException();
@@ -88,6 +87,7 @@ public class TableScaleAttributeHandler {
 	        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase(
 	                "none")) { // copy base table for inheritance
 	            try {
+	            	//Why is this needed?
 	                table = (Table) ObjectCloner
 	                        .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
 	                                "base", "none")));
@@ -100,7 +100,6 @@ public class TableScaleAttributeHandler {
 	                JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),
 	                        new DebugPanel(ex, SettingsManager.getSettings().getSupportURL()), "Exception",
 	                        JOptionPane.ERROR_MESSAGE);
-
 	            }
 	        }
 
@@ -108,46 +107,42 @@ public class TableScaleAttributeHandler {
 	            // create new instance (otherwise it
 	            // is inherited)
 	            final String tn = unmarshallAttribute(tableNode, "name", "unknown");
-	            final String type = unmarshallAttribute(tableNode, "type", "unknown");
+	            final String type = unmarshallAttribute(tableNode, "type", "none");
+
 	            if (tableNames.containsKey(tn) || type.contains("xis")) {
-	                if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("3D")) {
+	                if (type.equalsIgnoreCase("3D")) {
 	                    table = new Table3D();
 	                    table.getScales().add(rawScale);
 	                    ((Table3D) table).getXAxis().getScales().add(rawScale);
 	                    ((Table3D) table).getYAxis().getScales().add(rawScale);
 
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("2D")) {
+	                } else if (type.equalsIgnoreCase("2D")) {
 	                    table = new Table2D();
 	                    table.getScales().add(rawScale);
 	                    ((Table2D) table).getAxis().getScales().add(rawScale);
 
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("1D")) {
+	                } else if (type.equalsIgnoreCase("1D")) {
 	                    table = new Table1D(Table.TableType.TABLE_1D);
 
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("X Axis")
-	                        || unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("Static X Axis"))  {
+	                } else if (type.equalsIgnoreCase("X Axis")
+	                        || type.equalsIgnoreCase("Static X Axis"))  {
 	                    table = new Table1D(Table.TableType.X_AXIS);
 
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("Y Axis")
-	                        || unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("Static Y Axis")) {
+	                } else if (type.equalsIgnoreCase("Y Axis")
+	                        || type.equalsIgnoreCase("Static Y Axis")) {
 	                    table = new Table1D(Table.TableType.Y_AXIS);
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("Switch")) {
+	                } else if (type.equalsIgnoreCase("Switch")) {
 	                    table = new TableSwitch();
 
-	                } else if (unmarshallAttribute(tableNode, "type", "unknown")
-	                        .equalsIgnoreCase("BitwiseSwitch")) {
+	                } else if (type.equalsIgnoreCase("BitwiseSwitch")) {
 	                    table = new TableBitwiseSwitch();
 	                }
+	                else if(type.equalsIgnoreCase("none")){
+	                    throw new XMLParseException("Table type unspecified for "
+	                            + tableNode.getAttributes().getNamedItem("name"));
+	                }
 	                else {
-	                    throw new XMLParseException("Error loading table, "
+	                    throw new XMLParseException("Table type " + type + " unknown for "
 	                            + tableNode.getAttributes().getNamedItem("name"));
 	                }
 	            }
