@@ -1,0 +1,29 @@
+name: Copyright Update
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  Copyright-Update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y')"
+      - uses: actions/checkout@v2
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "Copyright .{3} [0-9]{4}-[0-9]{4}"
+          replace: "Copyright (C) 2006-${{ steps.date.outputs.date }}"
+          include: "src/"    
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Update copyright date'
+          commit_options: '--no-verify'
+          repository: .
+          commit_user_name: Copyright Action
