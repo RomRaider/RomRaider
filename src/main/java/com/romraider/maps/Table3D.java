@@ -193,34 +193,6 @@ public class Table3D extends Table {
                     y = z;
                 }
 
-/*
-                double cellBinValue;
-
-                // populate data cells
-                if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
-                    byte[] byteValue = new byte[4];
-                    byteValue[0] = input[getStorageAddress() + offset * 4 - ramOffset];
-                    byteValue[1] = input[getStorageAddress() + offset * 4 - ramOffset + 1];
-                    byteValue[2] = input[getStorageAddress() + offset * 4 - ramOffset + 2];
-                    byteValue[3] = input[getStorageAddress() + offset * 4 - ramOffset + 3];
-                    cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
-
-                } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-                		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-                	cellBinValue = RomAttributeParser.parseByteValue(input,
-                            endian,
-                            getStorageAddress() + i * 3 - ramOffset,
-                            storageType,
-                            signed);
-
-                } else { // integer storage type
-                    cellBinValue = RomAttributeParser.parseByteValue(input,
-                            endian,
-                            getStorageAddress() + offset * storageType - ramOffset,
-                            storageType,
-                            signed);
-                }
-*/
                 // show locked cell
                 if (tempLock) {
                     data[x][y].setForeground(Color.GRAY);
@@ -554,50 +526,6 @@ public class Table3D extends Table {
     @Override
     public byte[] saveFile(byte[] binData) {
     	return binData;
-        /*
-        if ( userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
-            binData = xAxis.saveFile(binData);
-            binData = yAxis.saveFile(binData);
-            int offset = 0;
-
-            int iMax = swapXY ? xAxis.getDataSize() : yAxis.getDataSize();
-            int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
-            for (int i = 0; i < iMax; i++) {
-                for (int j = 0; j < jMax; j++) {
-
-                    int x = flipY ? jMax - j - 1 : j;
-                    int y = flipX ? iMax - i - 1 : i;
-                    if (swapXY) {
-                        int z = x;
-                        x = y;
-                        y = z;
-                    }
-
-                    // determine output byte values
-                    byte[] output;
-                    if (storageType != Settings.STORAGE_TYPE_FLOAT) {
-                        output = RomAttributeParser.parseIntegerValue((int) data[x][y].getDataCell().getBinValue(), endian, storageType);
-                        int byteLength = storageType;
-                        if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-                        		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-                        	byteLength = 3;
-                        }
-                        for (int z = 0; z < byteLength; z++) {
-                            binData[offset * byteLength + z + getStorageAddress() - ramOffset] = output[z];
-                        }
-                    } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[x][y].getDataCell().getBinValue(), endian, memModelEndian);
-                        for (int z = 0; z < 4; z++) {
-                            binData[offset * 4 + z + getStorageAddress() - ramOffset] = output[z];
-                        }
-                    }
-
-
-                    offset++;
-                }
-            }
-        }
-        return binData;*/
     }
 
     @Override

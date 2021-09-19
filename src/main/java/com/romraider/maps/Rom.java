@@ -74,7 +74,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public Rom(RomID romID) {
     	this.romID = romID;
-        tableNodes.clear();
     }
 
     public void refreshDisplayedTables() {
