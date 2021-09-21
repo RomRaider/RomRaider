@@ -118,7 +118,6 @@ public abstract class Table implements Serializable {
     };
 
        
-
     public DataCell[] getData() {
         return data;
     }
@@ -559,6 +558,15 @@ public abstract class Table implements Serializable {
     public void undoAll() {
         for (DataCell cell : data) {
             cell.undo();
+        }
+    }
+    
+    public void undoSelected() {
+        for (DataCell cell : data) {
+            // reset current value to original value
+            if (cell.isSelected()) {
+                cell.undo();
+            }
         }
     }
   
