@@ -58,7 +58,6 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     private int x = 0;
     private int y = 0;
     
-    private boolean selected = false;
     private boolean highlighted = false;
     private boolean traced = false;
     private boolean tracedStale = false;
@@ -128,7 +127,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
 
         if(highlighted) {
             backgroundColor = settings.getHighlightColor();
-        } else if(selected) {
+        } else if(dataCell.isSelected()) {
             backgroundColor = settings.getSelectColor();
         } else if(null == table.getCompareTable()) {
             backgroundColor = getBinColor();
@@ -238,7 +237,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
             }
         } else if (highlighted) {
             textColor = Settings.highlightTextColor;
-        } else if (selected) {
+        } else if (dataCell.isSelected()) {
             textColor = Settings.selectTextColor;
         } else {
             textColor = Settings.scaleTextColor;
@@ -335,8 +334,8 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         if(isHighlighted()) {
             setHighlighted(false);
         }
-        if(isSelected()) {
-            setSelected(false);
+        if(dataCell.isSelected()) {
+        	dataCell.setSelected(false);
         }
     }
 
@@ -346,16 +345,6 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         return getCellText();
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        if(!table.isStaticDataTable() && this.selected != selected) {
-            this.selected = selected;
-            drawCell();
-        }
-    }
 
     public void setHighlighted(boolean highlighted) {
         if(!table.isStaticDataTable() && this.highlighted != highlighted) {

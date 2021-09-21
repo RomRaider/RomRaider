@@ -23,6 +23,8 @@ package com.romraider.maps;
 
 import java.io.Serializable;
 
+import com.romraider.util.JEPUtil;
+
 public class Scale implements Serializable {
 
     private static final long serialVersionUID = 5836610685159474795L;
@@ -37,8 +39,6 @@ public class Scale implements Serializable {
     private double min = 0.0;
     private double max = 0.0;
 
-    public Scale() {
-    }
 
     @Override
     public String toString() {
@@ -54,7 +54,17 @@ public class Scale implements Serializable {
                 "\n      Max: " + getMax() +
                 "\n      ---- End Scale ----\n";
     }
+    
+    public boolean validate() {
+        double startValue = 5;
+        double toReal = JEPUtil.evaluate(getExpression(), startValue); // convert real world value of "5"
+        double endValue = JEPUtil.evaluate(getByteExpression(), toReal);
 
+        // if real to byte doesn't equal 5, report conflict
+        if (Math.abs(endValue - startValue) > .001) return false;
+        else return true;
+    }
+    
     public String getUnit() {
         return unit;
     }

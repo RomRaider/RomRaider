@@ -49,6 +49,7 @@ public class DataCell {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
     private String staticText = null;
+    private boolean isSelected = false;
     
     //Index within table
     private int index;
@@ -152,7 +153,7 @@ public class DataCell {
     	if(isBoschSubtract) {  		
     	    for (int i = table.data.length - 1; i >=index ; i--) {
 	        	if(i == index)
-	        		crossedValue -= table.data[i].getDataCell().getBinValue();
+	        		crossedValue -= table.data[i].getBinValue();
 	        	else if(i == table.data.length - 1) 
 	        		crossedValue = Math.pow(2, 8 * storageType) - getValueFromMemory(i);
 	        	else {
@@ -171,7 +172,7 @@ public class DataCell {
                 	
                     // convert byte values
                     if(table.isStaticDataTable() && storageType > 0) {
-                    	LOGGER.warn("Static data table: " + table.getName() + ", storageType: "+storageType);
+                    	LOGGER.warn("Static data table: " + table.toString() + ", storageType: "+storageType);
                         
                     	try {
                         	finalValue = Integer.parseInt(getStaticText());                            
@@ -237,7 +238,7 @@ public class DataCell {
         }
         
         //On the Bosch substract model, we need to update all previous cells, because they depend on our value
-        if(isBoschSubtract && index > 0) table.data[index-1].getDataCell().saveBinValueInFile();
+        if(isBoschSubtract && index > 0) table.data[index-1].saveBinValueInFile();
         
         DataCell.checkForDataUpdates(this);          
     }
@@ -475,7 +476,17 @@ public class DataCell {
     public void multiplyRaw(double factor) {
         setBinValue(binValue * factor);
     }
-
+    
+    public void setSelected(boolean selected) {
+        if(!table.isStaticDataTable() && this.isSelected != selected) {
+            this.isSelected = selected;
+        }
+    }
+    
+    public boolean isSelected() {
+    	return isSelected;
+    }
+    
     @Override
     public boolean equals(Object other) {
         if(other == null) {
