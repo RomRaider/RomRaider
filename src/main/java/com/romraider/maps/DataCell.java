@@ -50,16 +50,18 @@ public class DataCell {
     private String liveValue = Settings.BLANK;
     private String staticText = null;
     private boolean isSelected = false;
+    private byte[] input;
     
     //Index within table
     private int index;
 
-    public DataCell(Table table) {
+    public DataCell(Table table, byte[] input) {
         this.table = table;
+        this.input = input;
     }
 
     public DataCell(Table table, String staticText) {
-        this(table);
+        this(table, new byte[] {});
         final StringTokenizer st = new StringTokenizer(staticText, DataCellView.ST_DELIMITER);
         if (st.hasMoreTokens()) {
             this.staticText = st.nextToken();
@@ -67,8 +69,8 @@ public class DataCell {
         table.setStaticDataTable(true);
     }
 
-    public DataCell(Table table, int index) {
-        this(table);
+    public DataCell(Table table, int index, byte[] input) {
+        this(table, input);
         this.index = index;
         
         updateBinValueFromMemory();   
@@ -79,8 +81,7 @@ public class DataCell {
     
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
-        
-        byte[] input = table.getInputFile();
+       
         int storageType = table.getStorageType();
         Endian endian = table.getEndian();
         int ramOffset = table.getRamOffset();
@@ -139,7 +140,7 @@ public class DataCell {
     }
     
     public void saveBinValueInFile() {
-        byte[] binData = table.getInputFile();
+        byte[] binData = input;
     	int userLevel = table.getUserLevel();
     	int storageType = table.getStorageType();
         Endian endian = table.getEndian();

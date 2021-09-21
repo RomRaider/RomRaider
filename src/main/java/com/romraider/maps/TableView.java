@@ -20,7 +20,6 @@
 package com.romraider.maps;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -38,9 +37,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import javax.naming.NameNotFoundException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -56,8 +53,6 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
-import com.romraider.util.ByteUtil;
-import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
@@ -86,11 +81,14 @@ public abstract class TableView extends JPanel implements Serializable {
     protected int highlightY;
     protected boolean highlight = false;
     protected boolean overlayLog = false;
-
+    protected String liveAxisValue = Settings.BLANK;
+    protected int liveDataIndex = 0;
+    protected int previousLiveDataIndex = 0;
+    
     protected CopyTableWorker copyTableWorker;
-    protected CopySelectionWorker copySelectionWorker;
+    protected CopySelectionWorker copySelectionWorker;  
+    protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
 
-    protected Settings.DataType compareValueType = Settings.DataType.BIN;
     
     protected TableView(Table table) {
     	this.table = table;
@@ -456,7 +454,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
         this.setInputMap(WHEN_FOCUSED, im);
     }
-
+    
+    public Table getTable() {
+    	return this.table;
+    }
+    
     public DataCellView[] getData() {
         return data;
     }
@@ -494,57 +496,6 @@ public abstract class TableView extends JPanel implements Serializable {
             width = minWidth;
         }
         return new Dimension(width, height);
-    }
-
-    public void increment(double increment) {
-        if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCellView cell : data) {
-                if (cell.isSelected()) {
-                    cell.getDataCell().increment(increment);
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
-    public void multiply(double factor) {
-    	
-        if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCellView cell : data) {
-                if (cell.isSelected()) {
-                	
-                	//Use raw or real value, depending on view settings
-                	if(getCurrentScale().getName().equals("Raw Value"))
-                		cell.getDataCell().multiplyRaw(factor);                	
-                	else 
-                		cell.getDataCell().multiply(factor);               	
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
-    public void setRealValue(String realValue) {
-        if (!locked && userLevel <= getSettings().getUserLevel()) {
-            for(DataCellView cell : data) {
-                if (cell.isSelected()) {
-                    cell.getDataCell().setRealValue(realValue);
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
     }
 
     public void clearSelection() {
@@ -628,23 +579,11 @@ public abstract class TableView extends JPanel implements Serializable {
             ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
     }
-
-    public void copySelection() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copySelectionWorker = new CopySelectionWorker(table);
-        copySelectionWorker.execute();
-    }
-
+    
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
+
             if (overlayLog) {
                 output.append(data[i].getCellText());
             }
@@ -658,6 +597,21 @@ public abstract class TableView extends JPanel implements Serializable {
         }
         return output;
     }
+    
+    public void copySelection() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        copySelectionWorker = new CopySelectionWorker(this);
+        copySelectionWorker.execute();
+    }
+
+
 
     public void copyTable() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
@@ -666,7 +620,7 @@ public abstract class TableView extends JPanel implements Serializable {
         }
         ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTableWorker = new CopyTableWorker(table);
+        copyTableWorker = new CopyTableWorker(this);
         copyTableWorker.execute();
     }
 
@@ -724,18 +678,17 @@ public abstract class TableView extends JPanel implements Serializable {
             }
         }
     }
-
-    public void setCompareValueType(Settings.DataType compareValueType) {
-        this.compareValueType = compareValueType;
+    
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
+        this.compareDisplay = compareDisplay;
         drawTable();
     }
 
-    public Settings.DataType getCompareValueType() {
-        return this.compareValueType;
+    public Settings.CompareDisplay getCompareDisplay() {
+        return this.compareDisplay;
     }
-
     
-    public Settings getSettings()
+    public static Settings getSettings()
     {
         return SettingsManager.getSettings();
     }
@@ -744,7 +697,6 @@ public abstract class TableView extends JPanel implements Serializable {
     {
         return ECUEditorManager.getECUEditor().getTableToolBar();
     }
-
 
     public void setOverlayLog(boolean overlayLog) {
         this.overlayLog = overlayLog;
@@ -755,7 +707,35 @@ public abstract class TableView extends JPanel implements Serializable {
         return this.overlayLog;
     }
 
+    public int getLiveDataIndex() {
+        return liveDataIndex;
+    }
 
+    public int getPreviousLiveDataIndex() {
+        return previousLiveDataIndex;
+    }
+
+    public void setLiveDataIndex(int index) {
+        if (index < 0) {
+            index = 0;
+        }
+        if (index >= data.length) {
+            index = data.length - 1;
+        }
+        this.previousLiveDataIndex = this.liveDataIndex;
+        this.liveDataIndex = index;
+    }
+    
+    public double getLiveAxisValue() {
+        try {
+            return Double.parseDouble(liveAxisValue);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+    
+    public abstract boolean isLiveDataSupported();
+    
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {
             double liveValue = 0.0;
@@ -804,21 +784,49 @@ public abstract class TableView extends JPanel implements Serializable {
 
 
     public void updateTableLabel() {
-        if(null == name || name.isEmpty()) {
+        if(null == table.name || table.name.isEmpty()) {
             ;// Do not update label.
-        } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
+        } else if(null == table.getCurrentScale () || "0x" == table.getCurrentScale().getUnit()) {
             // static or no scale exists.
             tableLabel.setText(getName());
         } else {
-            tableLabel.setText(getName() + " (" + getCurrentScale().getUnit() + ")");
+            tableLabel.setText(getName() + " (" + table.getCurrentScale().getUnit() + ")");
         }
+    }
+    
+    public static void showBadScalePopup(Table table, Scale scale) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 1));
+        panel.add(new JLabel(MessageFormat.format(
+                rb.getString("REALBYTEINVALID"), table.toString())));
+        panel.add(new JLabel(MessageFormat.format(
+                rb.getString("REALVALUE"), scale.getExpression())));
+        panel.add(new JLabel(MessageFormat.format(
+                rb.getString("BYTEVALUE"), scale.getByteExpression())));
+
+        JCheckBox check = new JCheckBox(rb.getString("DISPLAYMSG"), true);
+        check.setHorizontalAlignment(JCheckBox.RIGHT);
+        panel.add(check);
+        
+        
+        check.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                    }
+                }
+                );
+
+        JOptionPane.showMessageDialog(null, panel,
+                rb.getString("WARNING"), JOptionPane.ERROR_MESSAGE);
     }
 
 class CopySelectionWorker extends SwingWorker<Void, Void> {
-    Table table;
+    TableView tableView;
 
-    public CopySelectionWorker(Table table) {
-        this.table = table;
+    public CopySelectionWorker(TableView tableView) {
+        this.tableView = tableView;
     }
 
     @Override
@@ -845,7 +853,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         //make a string of the selection
         for (int i = coords[0]; i <= coords[1]; i++) {
             if (table.getData()[i].isSelected()) {
-                output = output + NumberUtil.stringValue(table.getData()[i].getDataCell().getRealValue());
+                output = output + NumberUtil.stringValue(table.getData()[i].getRealValue());
             } else {
                 output = output + "x"; // x represents non-selected cell
             }
@@ -862,38 +870,39 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
         }
-        table.setCursor(null);
+        setCursor(null);
         ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
 
 class CopyTableWorker extends SwingWorker<Void, Void> {
-    Table table;
+    TableView tableView;
 
-    public CopyTableWorker(Table table) {
-        this.table = table;
+    public CopyTableWorker(TableView t) {
+        this.tableView = t;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTableAsString());
+        output.append(getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }
 
     @Override
     public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
         }
-        table.setCursor(null);
+        tableView.setCursor(null);
         ECUEditorManager.getECUEditor().setCursor(null);
     }
+	}
 }

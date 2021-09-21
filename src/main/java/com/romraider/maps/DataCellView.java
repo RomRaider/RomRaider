@@ -53,7 +53,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     static int UNSELECT_MASK2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
         
     private DataCell dataCell; //Data Source
-    private Table table = null;
+    private TableView tableView = null;
     
     private int x = 0;
     private int y = 0;
@@ -69,9 +69,9 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     private static final Border STALELIVE_BORDER = createLineBorder(getSettings().getliveValueColor(), 2);
     
     
-    public DataCellView(DataCell cell) {
+    public DataCellView(DataCell cell, TableView view) {
         this.dataCell = cell;
-        this.table = cell.getTable();
+        this.tableView = view;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
         this.setFont(DEFAULT_FONT);
@@ -82,8 +82,8 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         cell.setDataView(this);
     }
     
-    public DataCellView(DataCell cell, int x, int y) {
-    	this(cell);
+    public DataCellView(DataCell cell, TableView view, int x, int y) {
+    	this(cell, view);
     	
         this.x = x;
         this.y = y;
@@ -103,7 +103,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
     
     public void drawCell() {
-        if(table == null) {
+        if(tableView == null) {
             // Table will be null in the static case.
             return;
         }
@@ -116,9 +116,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         setForeground(getCellTextColor());
         setBorder(getCellBorder());
         this.validate();
-        this.repaint();
-        //table.validate();
-       // table.repaint();      
+        this.repaint();     
     }
 
     private Color getCellBackgroundColor() {
@@ -129,7 +127,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
             backgroundColor = settings.getHighlightColor();
         } else if(dataCell.isSelected()) {
             backgroundColor = settings.getSelectColor();
-        } else if(null == table.getCompareTable()) {
+        } else if(null == tableView.getTable().getCompareTable()) {
             backgroundColor = getBinColor();
         }else {
             backgroundColor = getCompareColor();
@@ -139,8 +137,10 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
     
     public Color getCompareColor() {
-        if(table instanceof Table1D) {
-            Table1D checkTable = (Table1D)table;
+    	Table t = tableView.getTable();
+    	
+        if(t instanceof Table1D) {
+            Table1D checkTable = (Table1D)t;
             if(checkTable.isAxis() && !getSettings().isColorAxis()) {
                 return getSettings().getAxisColor();
             }
@@ -149,34 +149,36 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         double compareScale;
         if (0.0 == dataCell.getCompareValue()) {
             return Settings.UNCHANGED_VALUE_COLOR;
-        }else if(table.getMinCompare() == table.getMaxCompare()) {
+        }else if(t.getMinCompare() == t.getMaxCompare()) {
             return getSettings().getMaxColor();
         } else {
-            compareScale = (dataCell.getCompareValue() - table.getMinCompare()) / (table.getMaxCompare() - table.getMinCompare());
+            compareScale = (dataCell.getCompareValue() - t.getMinCompare()) / (t.getMaxCompare() - t.getMinCompare());
         }
         return getScaledColor(compareScale);
     }
 
     public Color getBinColor() {
-        if(table instanceof Table1D) {
-            Table1D checkTable = (Table1D)table;
+    	Table t = tableView.getTable();
+    	
+        if(t instanceof Table1D) {
+            Table1D checkTable = (Table1D)t;
             if(checkTable.isAxis() && !getSettings().isColorAxis()) {
                 return getSettings().getAxisColor();
             }
         }
 
-        if (table.getMaxAllowedBin() < dataCell.getBinValue()) {
+        if (t.getMaxAllowedBin() < dataCell.getBinValue()) {
             return getSettings().getWarningColor();
-        } else if (table.getMinAllowedBin() > dataCell.getBinValue()) {
+        } else if (t.getMinAllowedBin() > dataCell.getBinValue()) {
             return getSettings().getWarningColor();
         } else {
             // limits not set, scale based on table values
             double colorScale;
-            if (table.getMaxBin() - table.getMinBin() == 0.0) {
+            if (t.getMaxBin() - t.getMinBin() == 0.0) {
                 // if all values are the same, color will be middle value
                 colorScale = .5;
             } else {
-                colorScale = (dataCell.getRealValue() - table.getMinReal()) / (table.getMaxReal() - table.getMinReal());
+                colorScale = (dataCell.getRealValue() - t.getMinReal()) / (t.getMaxReal() - t.getMinReal());
             }
 
             return getScaledColor(colorScale);
@@ -190,20 +192,20 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         } else if (UNSELECT_MASK2 == (e.getModifiersEx() & UNSELECT_MASK2)) {
             clearCell();
         } else {
-        	table.highlight(x, y);
+        	tableView.highlight(x, y);
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         if (!e.isControlDown()) {
-        	table.clearSelection();
+        	tableView.clearSelection();
         }
 
         if (e.isControlDown() && e.isAltDown()) {
             clearCell();
         } else {
-        	table.startHighlight(x, y);
+        	tableView.startHighlight(x, y);
         }
         requestFocus();
         ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(dataCell.getTable());
@@ -211,7 +213,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-    	table.stopHighlight();
+    	tableView.stopHighlight();
     }
 
     @Override
@@ -227,7 +229,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
 
         if(traced) {
             if(!dataCell.getLiveValue().isEmpty()) {
-                if(table instanceof Table1D) {
+                if(tableView.getTable() instanceof Table1D) {
                     textColor = Settings.scaleTextColor;
                 } else {
                     textColor = Settings.liveDataTraceTextColor;
@@ -256,7 +258,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         } else {
             double checkValue;
 
-            if(null == table.getCompareTable()) {
+            if(null == tableView.getTable().getCompareTable()) {
                 checkValue= dataCell.getOriginalValue();
             } else {
                 checkValue = dataCell.getCompareToValue();
@@ -275,18 +277,18 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
 
     public String getCellText() {
-        if(table.isStaticDataTable()) {
+        if(tableView.getTable().isStaticDataTable()) {
             return getStaticText();
         }
 
-        FORMATTER.applyPattern(table.getCurrentScale().getFormat());
+        FORMATTER.applyPattern(tableView.getTable().getCurrentScale().getFormat());
         String displayString = "";
 
-        if (null == table.getCompareTable()) {
+        if (null == tableView.getTable().getCompareTable()) {
             displayString = FORMATTER.format(dataCell.getRealValue());
-        } else if (table.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
+        } else if (tableView.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
             displayString = FORMATTER.format(dataCell.getRealCompareValue());
-        } else if (table.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
+        } else if (tableView.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
             FORMATTER.applyPattern(PERCENT_FORMAT);
             if (dataCell.getCompareValue() == 0.0) {
                 displayString = FORMATTER.format(0.0);
@@ -296,7 +298,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         }
 
         if(traced) {
-            if(!(table instanceof Table1D)) {
+            if(!(tableView.getTable() instanceof Table1D)) {
                 displayString = getLiveValueString(displayString);
             }
         }
@@ -304,16 +306,16 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
 
     private String getCellToolTip() {
-        if(table.isStaticDataTable()) {
+        if(tableView.getTable().isStaticDataTable()) {
             return getStaticText();
         }
         String ttString = null;
         FORMATTER.applyPattern(TT_FORMAT);
-        if (null == table.getCompareTable()) {
+        if (null == tableView.getTable().getCompareTable()) {
             ttString = FORMATTER.format(dataCell.getRealValue());
-        } else if (table.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
+        } else if (tableView.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
             ttString = FORMATTER.format(dataCell.getRealCompareValue());
-        } else if (table.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
+        } else if (tableView.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
             FORMATTER.applyPattern(TT_PERCENT_FORMAT);
             if (dataCell.getCompareValue() == 0.0) {
                 ttString = FORMATTER.format(0.0);
@@ -322,7 +324,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
             }
         }
         if(traced) {
-            if(!(table instanceof Table1D)) {
+            if(!(tableView.getTable() instanceof Table1D)) {
                 ttString = getLiveValueString(ttString);
             }
         }
@@ -347,7 +349,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
 
 
     public void setHighlighted(boolean highlighted) {
-        if(!table.isStaticDataTable() && this.highlighted != highlighted) {
+        if(!tableView.getTable().isStaticDataTable() && this.highlighted != highlighted) {
             this.highlighted = highlighted;
             drawCell();
         }
@@ -378,9 +380,9 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     public String getStaticText() {
         String displayString = null;
         try {
-            FORMATTER.applyPattern(table.getCurrentScale().getFormat());
+            FORMATTER.applyPattern(tableView.getTable().getCurrentScale().getFormat());
             double staticDouble = NumberUtil.doubleValue(dataCell.getStaticText());
-            displayString = FORMATTER.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
+            displayString = FORMATTER.format(JEPUtil.evaluate(tableView.getTable().getCurrentScale().getExpression(), staticDouble));
         } catch (Exception ex) {
             displayString = dataCell.getStaticText();
         }

@@ -19,46 +19,21 @@
 
 package com.romraider.maps;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.naming.NameNotFoundException;
 
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
-import com.romraider.util.NumberUtil;
-import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public abstract class Table implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(
-            Table.class.getName());
     protected static final String ST_DELIMITER = "\t\n\r\f";
     protected static Settings.Endian memModelEndian;
 
@@ -76,7 +51,6 @@ public abstract class Table implements Serializable {
     protected boolean flip;
     
     protected DataLayout dataLayout = DataLayout.DEFAULT;	//DataCell Ordering
-    protected byte[] input; 								//Pointer to Raw ROM Bytes
     protected DataCell[] data = new DataCell[1];
     
     protected boolean beforeRam = false;
@@ -85,10 +59,6 @@ public abstract class Table implements Serializable {
     protected int userLevel = 0;
     protected boolean locked = false;
     protected String logParam = Settings.BLANK;
-
-    protected CopyTableWorker copyTableWorker;
-    protected CopySelectionWorker copySelectionWorker;
-
 	private int bitMask = 0;
 	
     protected double minAllowedBin = 0.0;
@@ -100,13 +70,9 @@ public abstract class Table implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
-    protected boolean staticDataTable = false;
-    protected String liveAxisValue = Settings.BLANK;
-    protected int liveDataIndex = 0;
-    protected int previousLiveDataIndex = 0;
-    
-    protected Settings.DataType compareValueType = Settings.DataType.BIN;
+    protected boolean staticDataTable = false; 
     private Table compareTable = null;
+    protected Settings.DataType compareValueType = Settings.DataType.BIN;
     
     public enum DataLayout {
     	DEFAULT,
@@ -130,13 +96,8 @@ public abstract class Table implements Serializable {
     	return this.ramOffset;
     }
     
-    public byte[] getInputFile() {
-    	return this.input;
-    }
-    
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        // temporarily remove lock
-    	this.input = input;
+        // temporarily remove lock;
         boolean tempLock = locked;
         locked = false;
 
@@ -146,7 +107,7 @@ public abstract class Table implements Serializable {
 
         for (int i = 0; i < data.length; i++) {
             if (data[i] == null) {            	
-            	DataCell newC = new DataCell(this, i);      
+            	data[i] = new DataCell(this, i, input);    
             }
         }
 
@@ -160,7 +121,6 @@ public abstract class Table implements Serializable {
     public DataCell getDataCell(int location) {
         return data[location];
     }
-
 
     public String getCategory() {
         return category;
@@ -299,6 +259,8 @@ public abstract class Table implements Serializable {
         }
         return name;
     }
+    
+
 
     @Override
     public boolean equals(Object other) {
@@ -497,7 +459,7 @@ public abstract class Table implements Serializable {
 
     //TODO: Rework
     //Cell should check if selected and then increment
-    public void increment(double increment) {
+    public void increment(double increment) throws UserLevelException {
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
@@ -505,14 +467,16 @@ public abstract class Table implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
+        	throw new UserLevelException(userLevel);
+        	/*
             JOptionPane.showMessageDialog(this, MessageFormat.format(
                     rb.getString("USERLVLTOLOW"), userLevel),
                     rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE);*/
         }
     }
 
-    public void multiply(double factor) {
+    public void multiply(double factor) throws UserLevelException{
     	
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
@@ -526,14 +490,16 @@ public abstract class Table implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
+        	throw new UserLevelException(userLevel);
+        	/*
             JOptionPane.showMessageDialog(this, MessageFormat.format(
                     rb.getString("USERLVLTOLOW"), userLevel),
                     rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE);*/
         }
     }
 
-    public void setRealValue(String realValue) {
+    public void setRealValue(String realValue) throws UserLevelException {
         if (!locked && userLevel <= getSettings().getUserLevel()) {
             for(DataCell cell : data) {
                 if (cell.isSelected()) {
@@ -541,10 +507,12 @@ public abstract class Table implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
+        	throw new UserLevelException(userLevel);
+        	/*
             JOptionPane.showMessageDialog(this, MessageFormat.format(
                     rb.getString("USERLVLTOLOW"), userLevel),
                     rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE);*/
         }
     }
 
@@ -634,7 +602,7 @@ public abstract class Table implements Serializable {
         return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
 
-    public boolean validateScaling() {
+    public void validateScaling() {
         if (getType() != TableType.SWITCH) {
 
             // make sure a scale is present
@@ -644,32 +612,7 @@ public abstract class Table implements Serializable {
             
             for(Scale scale : scales) {
                 if (!scale.validate()) {
-
-                    JPanel panel = new JPanel();
-                    panel.setLayout(new GridLayout(4, 1));
-                    panel.add(new JLabel(MessageFormat.format(
-                            rb.getString("REALBYTEINVALID"), toString())));
-                    panel.add(new JLabel(MessageFormat.format(
-                            rb.getString("REALVALUE"), scale.getExpression())));
-                    panel.add(new JLabel(MessageFormat.format(
-                            rb.getString("BYTEVALUE"), scale.getByteExpression())));
-
-                    JCheckBox check = new JCheckBox(rb.getString("DISPLAYMSG"), true);
-                    check.setHorizontalAlignment(JCheckBox.RIGHT);
-                    panel.add(check);
-                    
-                    
-                    check.addActionListener(
-                            new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
-                                }
-                            }
-                            );
-
-                    JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(this), panel,
-                            rb.getString("WARNING"), JOptionPane.ERROR_MESSAGE);
+                	TableView.showBadScalePopup(this, scale);
                 }
             }
         }
@@ -695,13 +638,7 @@ public abstract class Table implements Serializable {
         calcCellRanges();
     }
 
-    public void setCompareValueType(Settings.DataType compareValueType) {
-        this.compareValueType = compareValueType;
-    }
 
-    public Settings.DataType getCompareValueType() {
-        return this.compareValueType;
-    }
 
     public int getUserLevel() {
         return userLevel;
@@ -747,39 +684,7 @@ public abstract class Table implements Serializable {
         this.locked = locked;
     }
 
-
-
-    public double getLiveAxisValue() {
-        try {
-            return Double.parseDouble(liveAxisValue);
-        } catch (NumberFormatException e) {
-            return 0.0;
-        }
-    }
-
-    public abstract boolean isLiveDataSupported();
-
     public abstract boolean isButtonSelected();
-
-
-    public int getLiveDataIndex() {
-        return liveDataIndex;
-    }
-
-    public int getPreviousLiveDataIndex() {
-        return previousLiveDataIndex;
-    }
-
-    public void setLiveDataIndex(int index) {
-        if (index < 0) {
-            index = 0;
-        }
-        if (index >= data.length) {
-            index = data.length - 1;
-        }
-        this.previousLiveDataIndex = this.liveDataIndex;
-        this.liveDataIndex = index;
-    }
 
     public Table getCompareTable() {
         return compareTable;
@@ -789,6 +694,13 @@ public abstract class Table implements Serializable {
         this.compareTable = compareTable;
     }
 
+    public void setCompareValueType(Settings.DataType compareValueType) {
+        this.compareValueType = compareValueType;
+    }
+
+    public Settings.DataType getCompareValueType() {
+        return this.compareValueType;
+    }
 
     public void colorCells() {
         calcCellRanges();
@@ -845,7 +757,4 @@ public abstract class Table implements Serializable {
             return String.valueOf(marshallingCode);
         }
     }
-
-
-
 }
