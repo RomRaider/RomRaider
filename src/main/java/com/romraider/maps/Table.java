@@ -260,7 +260,9 @@ public abstract class Table implements Serializable {
         return name;
     }
     
-
+    public String getName() {
+    	return toString();
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -639,7 +641,8 @@ public abstract class Table implements Serializable {
     }
 
 
-
+    public abstract boolean isLiveDataSupported();
+    
     public int getUserLevel() {
         return userLevel;
     }

@@ -52,7 +52,7 @@ import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
-public class Table3D extends Table {
+public class Table3DView extends TableView {
 
     private static final long serialVersionUID = 3103448753263606599L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(

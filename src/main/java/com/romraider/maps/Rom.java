@@ -119,7 +119,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void addTable(Table table) {
         boolean found = false;
-        String frameTitle = this.getFileName()+" - "+table.getName();
+        String frameTitle = this.getFileName()+" - " + table.getName();
 
         for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().equals(table)) {

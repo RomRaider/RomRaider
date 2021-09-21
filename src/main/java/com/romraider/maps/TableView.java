@@ -484,14 +484,16 @@ public abstract class TableView extends JPanel implements Serializable {
             }
         }
     }
-
+    
+    public abstract void populateTable(byte[] input, int romRamOffset);
+    
     public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight;
         int width = horizontalOverhead + data.length * cellWidth;
         if (height < minHeight) {
             height = minHeight;
         }
-        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
+        int minWidth = table.isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -734,7 +736,7 @@ public abstract class TableView extends JPanel implements Serializable {
         }
     }
     
-    public abstract boolean isLiveDataSupported();
+
     
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {

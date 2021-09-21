@@ -38,9 +38,9 @@ public class PresetPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private final List<PresetButton> buttonGroup = new ArrayList<PresetButton>();
 	private PresetManager manager;
-	private Table table;
+	private TableView table;
 	
-	public PresetPanel(Table t, PresetManager manager) {
+	public PresetPanel(TableView t, PresetManager manager) {
 		this.manager = manager;
 		this.table = t;
 	}
@@ -48,8 +48,8 @@ public class PresetPanel extends JPanel {
 	public void populatePanel() {
 		
 		//If this is an axis within another table dont show the panel
-		if(table instanceof Table1D) {
-			if(((Table1D) (table)).getAxisParent() != null) {
+		if(table.getTable() instanceof Table1D) {
+			if(((Table1D) (table.getTable())).getAxisParent() != null) {
 				return;
 			}
 		}
@@ -109,8 +109,8 @@ public class PresetPanel extends JPanel {
 			boolean found = true;
 			
 			if (values != null) {
-				for (int i = 0; i < table.getDataSize(); i++) {
-					if(table.getDataSize() == values.size()) {
+				for (int i = 0; i < table.getTable().getDataSize(); i++) {
+					if(table.getTable().getDataSize() == values.size()) {
 						if ((int) table.data[i].getDataCell().getBinValue() != values.get(i)) {
 							found = false;
 							break;
@@ -127,14 +127,14 @@ public class PresetPanel extends JPanel {
 		public void actionPerformed(ActionEvent event) {
 			PresetButton button = (PresetButton)event.getSource();
 			
-			if(table.getDataSize() == button.values.size()) {
-				for (int i = 0; i < table.getDataSize(); i++) {
+			if(table.getTable().getDataSize() == button.values.size()) {
+				for (int i = 0; i < table.getTable().getDataSize(); i++) {
 					table.data[i].getDataCell().setBinValue(button.values.get(i));
 				}
 			}
 			
-			table.calcCellRanges();
-			table.calcValueRange();
+			table.getTable().calcCellRanges();
+			table.getTable().calcValueRange();
 			repaint();
 		}
 	}
