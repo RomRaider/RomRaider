@@ -66,7 +66,6 @@ public abstract class TableView extends JPanel implements Serializable {
     protected Table table;
     protected PresetPanel presetPanel;   
     protected DataCellView[] data;
-    protected TableFrame frame;
     
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
@@ -91,17 +90,14 @@ public abstract class TableView extends JPanel implements Serializable {
     protected CopySelectionWorker copySelectionWorker;  
     protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
 
-    protected TableView(Table table, TableFrame frame) {
-    	this.frame = frame;
+    protected TableView(Table table) {    	
     	this.table = table;
     	table.setTableView(this);
-    	
-    	//Populate Views from table here
-    	
+    	   	
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
-             
+                    
         // key binding actions
         Action rightAction = new AbstractAction() {
             private static final long serialVersionUID = 1042884198300385041L;
@@ -495,7 +491,7 @@ public abstract class TableView extends JPanel implements Serializable {
     }
       
     public TableFrame getFrame() {
-    	return frame;
+    	return table.getTableFrame();
     }
     
     public Table getTable() {
@@ -520,12 +516,13 @@ public abstract class TableView extends JPanel implements Serializable {
     }
      
     public void drawTable() {
-    	
-        for(DataCellView cell : data) {
-            if(null != cell) {
-                cell.drawCell();
-            }
-        }
+    	if(data!=null) {
+	        for(DataCellView cell : data) {
+	            if(null != cell) {
+	                cell.drawCell();
+	            }
+	        }
+    	}
     }
     
     public void verticalInterpolate() throws UserLevelException{
@@ -542,7 +539,14 @@ public abstract class TableView extends JPanel implements Serializable {
         return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
     
-    public abstract void populateTable(byte[] input, int romRamOffset);
+    public void populateTableVisual() {
+    	//Populate Views from table here
+    	data = new DataCellView[table.getDataSize()];
+
+    	for(int i= 0; i < table.getDataSize(); i++) {
+    		data[i] = new DataCellView(table.getData()[i], this);		
+    	}
+    }
     
     public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight;
@@ -561,6 +565,11 @@ public abstract class TableView extends JPanel implements Serializable {
         for (DataCellView cell : data) {
                 cell.setSelected(false);
             }
+    }
+    
+    @Override
+    public void repaint() {
+    	drawTable();
     }
 
     public void startHighlight(int x, int y) {

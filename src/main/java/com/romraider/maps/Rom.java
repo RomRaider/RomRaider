@@ -410,10 +410,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setFullFileName(File fullFileName) {
         this.fullFileName = fullFileName;
         this.setFileName(fullFileName.getName());
-        for (TableTreeNode tableNode : tableNodes) {
-            String frameTitle = this.getFileName() + " - " + tableNode.getTable().getName();
-            tableNode.getFrame().setTitle(frameTitle);
-        }
     }
 
     public boolean isAbstract() {
@@ -426,7 +422,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void refreshTableCompareMenus() {
         for(TableTreeNode tableNode : getTableNodes()) {
-            tableNode.getFrame().refreshSimilarOpenTables();
+        	TableFrame f = tableNode.getFrame();
+        	if(f != null) f.refreshSimilarOpenTables();
         }
     }
 

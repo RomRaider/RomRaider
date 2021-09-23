@@ -24,7 +24,6 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
-import com.romraider.swing.TableFrame;
 import com.romraider.util.NumberUtil;
 
 public class Table1DView extends TableView {
@@ -32,9 +31,10 @@ public class Table1DView extends TableView {
 	private static final long serialVersionUID = -8747180767803835631L;
 	private Table1D table;
 	
-    protected Table1DView(Table1D table, TableFrame frame) {
-		super(table, frame);
+    public Table1DView(Table1D table) {
+		super(table);
     	this.table = table;
+    	populateTableVisual();
 	}
     
     public void addStaticDataCell(DataCellView input) {
@@ -47,12 +47,11 @@ public class Table1DView extends TableView {
         }
     }
     
-	
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
+    public void populateTableVisual()   {
         centerLayout.setRows(1);
         centerLayout.setColumns(table.getDataSize());
-
+        super.populateTableVisual();
 
         // add to table
         for (int i = 0; i < table.getDataSize(); i++) {
@@ -223,8 +222,7 @@ public class Table1DView extends TableView {
         }
 	}
 
-    @Override
-    public void clearSelection() {
+    public void clearSelectionInParent() {
         // Call to the axis parent. The axis parent should then call to clear this data.
     	Table p = table.getAxisParent();
     	

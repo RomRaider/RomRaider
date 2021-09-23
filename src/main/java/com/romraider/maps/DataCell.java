@@ -294,7 +294,7 @@ public class DataCell {
     
     private void updateView() {
     	if(view != null)
-    		view.drawCell();
+    		view.repaint();
     }
     
     public Table getTable() {

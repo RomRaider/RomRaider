@@ -38,7 +38,6 @@ import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.swing.TableFrame;
 
 public class Table2DView extends TableView {
 	private static final long serialVersionUID = -7684570967109324784L;
@@ -48,11 +47,11 @@ public class Table2DView extends TableView {
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
    
-    protected Table2DView(Table2D table, TableFrame frame) {
-		super(table, frame);
-		axis = new Table1DView(table.getAxis(), frame);
+    public Table2DView(Table2D table) {
+		super(table);
+		axis = new Table1DView(table.getAxis());
         verticalOverhead += 18;
-
+        populateTableVisual();
 	}
       
 	public Table1DView getAxis() {
@@ -87,9 +86,10 @@ public class Table2DView extends TableView {
     }
 
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTableVisual(){
     	centerLayout.setRows(2);
         centerLayout.setColumns(table.getDataSize());
+        super.populateTableVisual();
 
         // add to table
         for (int i = 0; i < axis.getTable().getDataSize(); i++) {
@@ -118,8 +118,10 @@ public class Table2DView extends TableView {
         }
 
         tableLabel = new JLabel(table.getCurrentScale().getUnit(), JLabel.CENTER);
-        add(tableLabel, BorderLayout.SOUTH);      
-        axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
+        add(tableLabel, BorderLayout.SOUTH);
+        
+        if(axisLabel != null)
+        	axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
         
         if(presetPanel != null) presetPanel.populatePanel();
         repaint();
@@ -183,7 +185,7 @@ public class Table2DView extends TableView {
     @Override
     public void clearSelection() {
         axis.clearSelection();
-        clearSelection();
+        super.clearSelection();
     }
 
     
@@ -203,7 +205,9 @@ public class Table2DView extends TableView {
     @Override
     public void drawTable() {
         super.drawTable();
-        axis.drawTable();
+        
+        if(axis !=null)
+        	axis.drawTable();
     }
 
     @Override

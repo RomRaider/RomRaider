@@ -100,7 +100,7 @@ public class RomCellRenderer implements TreeCellRenderer {
             returnValue = renderer;
         } else if (value != null && value instanceof TableTreeNode) {
 
-            Table table = ((TableFrame)((DefaultMutableTreeNode) value).getUserObject()).getTable();
+            Table table = (Table) (((TableTreeNode)(value)).getUserObject());
             JPanel renderer = new JPanel(new GridLayout(1, 1));
             renderer.setBorder(createLineBorder(Color.WHITE));
             JLabel tableName = new JLabel("");

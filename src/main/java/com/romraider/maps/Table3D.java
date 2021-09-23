@@ -91,7 +91,6 @@ public class Table3D extends Table {
 
     public void setSizeX(int size) {
         data = new DataCell[size][data[0].length];
-       // centerLayout.setColumns(size + 1);
     }
 
     public int getSizeX() {
@@ -100,7 +99,6 @@ public class Table3D extends Table {
 
     public void setSizeY(int size) {
         data = new DataCell[data.length][size];
-        //centerLayout.setRows(size + 1);
     }
 
     public int getSizeY() {

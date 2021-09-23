@@ -126,10 +126,8 @@ public abstract class Table implements Serializable {
             this.ramOffset = romRamOffset;
         }
 
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] == null) {            	
-            	data[i] = new DataCell(this, i, input);    
-            }
+        for (int i = 0; i < data.length; i++) {          	
+        	data[i] = new DataCell(this, i, input);    
         }
 
         // reset locked status
@@ -290,7 +288,7 @@ public abstract class Table implements Serializable {
     }
     
     public String getName() {
-    	return toString();
+    	return name;
     }
     
     public StringBuffer getTableAsString() {
@@ -634,6 +632,8 @@ public abstract class Table implements Serializable {
 
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
+        
+        if(tableView!=null) tableView.repaint();
     }
 
     public Settings getSettings()

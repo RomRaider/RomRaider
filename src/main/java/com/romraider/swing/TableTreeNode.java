@@ -35,7 +35,7 @@ public class TableTreeNode extends DefaultMutableTreeNode {
     }
 
     public TableFrame getFrame() {
-    	return table.getTableView().getFrame();  	
+    	return table.getTableFrame(); 	
     }
     
     public void setTable(Table t) {

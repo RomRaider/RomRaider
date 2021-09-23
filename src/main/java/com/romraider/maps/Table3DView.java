@@ -19,9 +19,11 @@
 
 package com.romraider.maps;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -34,38 +36,42 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
+import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.swing.TableFrame;
+import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
 
 public class Table3DView extends TableView {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(Table3D.class.getName());
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(Table3DView.class.getName());
     private Table3D table;
     private Table1DView xAxis;
     private Table1DView yAxis;
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
-    DataCellView[][] data = new DataCellView[1][1];
+    DataCellView[][] data;
 
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
 
-    public Table3DView(Table3D table, TableFrame frame) {
-    	super(table, frame);
-    	xAxis = new Table1DView(table.getXAxis(), frame);
-    	yAxis = new Table1DView(table.getYAxis(), frame);
+    public Table3DView(Table3D table) {
+    	super(table);
+    	this.table = table;
+    	xAxis = new Table1DView(table.getXAxis());
+    	yAxis = new Table1DView(table.getYAxis());
     	
         verticalOverhead += 39;
         horizontalOverhead += 10;
+        
+        populateTableVisual();
     }
     
     @Override
@@ -75,30 +81,38 @@ public class Table3DView extends TableView {
 
     @Override
     public void drawTable() {
-        for(DataCellView[] column : data) {
-            for(DataCellView cell : column) {
-                if(null != cell) {
-                    cell.drawCell();
-                }
-            }
-        }
-        xAxis.drawTable();
+    	if(data!=null) {
+	        for(DataCellView[] column : data) {
+	            for(DataCellView cell : column) {
+	                if(null != cell) {
+	                    cell.repaint();
+	                }
+	            }
+	        }
+    	}
+    	
+    	if(xAxis!=null)
+    		xAxis.drawTable();
+    	
+    	if(yAxis!=null)
         yAxis.drawTable();
     }
 
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTableVisual() {
     	// fill first empty cell
         centerPanel.add(new JLabel());
-        /*
+        centerLayout.setColumns(xAxis.getTable().getDataSize());
+        centerLayout.setRows(yAxis.getTable().getDataSize());
+        
         // temporarily remove lock
         boolean tempLock = table.locked;
         table.locked = false;
 
         // populate axes
         try {
-            xAxis.populateTable(input, romRamOffset);
-            yAxis.populateTable(input, romRamOffset);
+            xAxis.populateTableVisual();
+            yAxis.populateTableVisual();
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -107,16 +121,17 @@ public class Table3DView extends TableView {
             centerPanel.add(xAxis.getDataCell(x));
         }
 
-        int offset = 0;
-
-        int iMax = swapXY ? xAxis.getTable().getDataSize() : yAxis.getTable().getDataSize();
-        int jMax = swapXY ? yAxis.getTable().getDataSize() : xAxis.getTable().getDataSize();
+        
+        data = new DataCellView[xAxis.getTable().getDataSize()][yAxis.getTable().getDataSize()];
+        
+        int iMax = table.getSwapXY() ? xAxis.getTable().getDataSize() : yAxis.getTable().getDataSize();
+        int jMax = table.getSwapXY() ? yAxis.getTable().getDataSize() : xAxis.getTable().getDataSize();
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
 
-                int x = flipY ? jMax - j - 1 : j;
-                int y = flipX ? iMax - i - 1 : i;
-                if (swapXY) {
+                int x = table.getFlipY() ? jMax - j - 1 : j;
+                int y = table.getFlipX() ? iMax - i - 1 : i;
+                if (table.getSwapXY()) {
                     int z = x;
                     x = y;
                     y = z;
@@ -127,21 +142,20 @@ public class Table3DView extends TableView {
                     data[x][y].setForeground(Color.GRAY);
                 }
                 
-                DataCell c = new DataCell(this, offset);
-                data[x][y] = new DataCellView(c,x,y);
-                offset++;
+             
+                data[x][y] = new DataCellView(table.get3dData()[x][y], this, x,y);
             }
         }
 
-        for (int y = 0; y < yAxis.getDataSize(); y++) {
+        for (int y = 0; y < yAxis.getTable().getDataSize(); y++) {
             centerPanel.add(yAxis.getDataCell(y));
-            for (int x = 0; x < xAxis.getDataSize(); x++) {
+            for (int x = 0; x < xAxis.getTable().getDataSize(); x++) {
                 centerPanel.add(data[x][y]);
             }
         }
 
         // reset locked status
-        locked = tempLock;
+        table.locked = tempLock;
 
         GridLayout topLayout = new GridLayout(2, 1);
         JPanel topPanel = new JPanel(topLayout);
@@ -150,37 +164,38 @@ public class Table3DView extends TableView {
 
         if(null == xAxis.getName() || xAxis.getName().length() < 1 || Settings.BLANK == xAxis.getName()) {
             ;// Do not add label.
-        } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
+        } else if(null == xAxis.getTable().getCurrentScale() || "0x" == xAxis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             xAxisLabel = new JLabel(xAxis.getName(), JLabel.CENTER);
             topPanel.add(xAxisLabel, BorderLayout.NORTH);
         } else {
-            xAxisLabel = new JLabel(xAxis.getName() + " (" + xAxis.getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            xAxisLabel = new JLabel(xAxis.getName() + " (" + xAxis.getTable().getCurrentScale().getUnit() + ")", JLabel.CENTER);
             topPanel.add(xAxisLabel, BorderLayout.NORTH);
         }
 
         yAxisLabel = null;
         if(null == yAxis.getName() || yAxis.getName().length() < 1 || Settings.BLANK == yAxis.getName()) {
             ;// Do not add label.
-        } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
+        } else if(null == yAxis.getTable().getCurrentScale() || "0x" == yAxis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             yAxisLabel = new JLabel(yAxis.getName());
         } else {
-            yAxisLabel = new JLabel(yAxis.getName() + " (" + yAxis.getCurrentScale().getUnit() + ")");
+            yAxisLabel = new JLabel(yAxis.getName() + " (" + yAxis.getTable().getCurrentScale().getUnit() + ")");
         }
-
-        yAxisLabel.setUI(new VerticalLabelUI(false));
-        add(yAxisLabel, BorderLayout.WEST);
-
-        tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
+        
+        if(yAxisLabel!=null) {
+	        yAxisLabel.setUI(new VerticalLabelUI(false));
+	        add(yAxisLabel, BorderLayout.WEST);
+	        yAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));  
+        }
+        
+        tableLabel = new JLabel(table.getCurrentScale().getUnit(), JLabel.CENTER);
         add(tableLabel, BorderLayout.SOUTH);
-        
-        yAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));  
-        
+               
         if(xAxisLabel!=null)
         	xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
         
-        if(presetPanel != null) presetPanel.populatePanel();*/
+        if(presetPanel != null) presetPanel.populatePanel();
     }
 
     @Override

@@ -35,6 +35,13 @@ import javax.swing.tree.TreePath;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
+import com.romraider.maps.Table1D;
+import com.romraider.maps.Table1DView;
+import com.romraider.maps.Table2D;
+import com.romraider.maps.Table2DView;
+import com.romraider.maps.Table3D;
+import com.romraider.maps.Table3DView;
+import com.romraider.maps.TableView;
 import com.romraider.util.SettingsManager;
 
 public class RomTree extends JTree implements MouseListener {
@@ -101,7 +108,23 @@ public class RomTree extends JTree implements MouseListener {
     private void showTable(TableTreeNode selectedRow) {
         TableTreeNode node = (TableTreeNode) selectedRow;
         if (null != node) {
-            getEditor().displayTable(node.getFrame());
+        	TableFrame f = node.getFrame();
+        	
+        	if(f == null) {
+	        	TableView v;
+	        	
+	        	if(node.getTable() instanceof Table1D)
+	        		v = new Table1DView((Table1D)node.getTable());
+	        	else if(node.getTable() instanceof Table2D)
+	        		v = new Table2DView((Table2D)node.getTable());
+	        	else if(node.getTable() instanceof Table3D)
+	        		v = new Table3DView((Table3D)node.getTable());
+	        	else
+	        		return;
+	        	
+	        	 f = new TableFrame("Title", v);
+        	}
+            getEditor().displayTable(f);
         }
     }
 

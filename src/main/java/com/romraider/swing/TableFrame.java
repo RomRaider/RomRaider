@@ -48,13 +48,18 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     private static final long serialVersionUID = -2651279694660392351L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableFrame.class.getName());
-    private final TableView table;
+    private final TableView tableView;
     private TableMenuBar tableMenuBar = null;
 
-    public TableFrame(String title, TableView table) {
+    public TableFrame(String title, TableView tableView) {
         super(title, true, true);
-        this.table = table;
-        add(table);
+        this.tableView = tableView;
+        Table t = tableView.getTable();
+        t.setTableFrame(this);
+        
+        add(tableView);
+        tableView.repaint();
+        
         setFrameIcon(null);
         setBorder(createBevelBorder(0));
         if (System.getProperty("os.name").startsWith("Mac OS"))
@@ -109,10 +114,10 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
 
     public Table getTable() {
-        return table.getTable();
+        return tableView.getTable();
     }
     public TableView getTableView() {
-        return table;
+        return tableView;
     }
 
     public ECUEditor getEditor() {
@@ -229,7 +234,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             for(TableTreeNode tableNode : rom.getTableNodes()) {
                 if(tableNode.getTable().getName().equalsIgnoreCase(getTable().getName())) {
                     JRadioButtonMenuItem similarTable = new TableMenuItem(rom.getFileName());
-                    similarTable.setToolTipText(tableNode.getFrame().getTable().getName());
+                    similarTable.setToolTipText(tableNode.getTable().getName());
                     similarTable.addActionListener(this);
                     similarTables.add(similarTable);
                     break;
