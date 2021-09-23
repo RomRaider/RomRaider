@@ -31,7 +31,7 @@ public class Table1DView extends TableView {
 
 	private static final long serialVersionUID = -8747180767803835631L;
 	private Table1D table;
-
+	
     protected Table1DView(Table1D table) {
 		super(table);
     	this.table = table;
@@ -47,10 +47,6 @@ public class Table1DView extends TableView {
         }
     }
     
-	@Override
-	public byte[] saveFile(byte[] binData) {
-		return binData;
-	}
 	
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
@@ -88,7 +84,7 @@ public class Table1DView extends TableView {
     @Override
     public void cursorUp() {
         if (table.getType() == Table.TableType.Y_AXIS) {
-            if (highlightY > 0 && data[highlightY].getDataCell().isSelected()) {
+            if (highlightY > 0 && data[highlightY].isSelected()) {
                 selectCellAt(highlightY - 1);
             }
         } else if (table.getType() == Table.TableType.X_AXIS) {
@@ -102,16 +98,16 @@ public class Table1DView extends TableView {
     public void cursorDown() {
         if (table.getType() == Table.TableType.Y_AXIS) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
-                if (highlightY < table.getDataSize() - 1 && data[highlightY].getDataCell().isSelected()) {
+                if (highlightY < table.getDataSize() - 1 && data[highlightY].isSelected()) {
                     selectCellAt(highlightY + 1);
                 }
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
-                if (data[highlightY].getDataCell().isSelected()) {
+                if (data[highlightY].isSelected()) {
                 	selectCellAt(highlightY);
                 }
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightY].getDataCell().isSelected()) {
-            ((Table3D) table.getAxisParent()).selectCellAt(highlightY, this);
+        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightY].isSelected()) {
+            ((Table3D) table.getAxisParent()).getTableView().selectCellAt(highlightY);
         } else if (table.getType() == Table.TableType.TABLE_1D) {
             // no where to move down to
         }
@@ -141,7 +137,7 @@ public class Table1DView extends TableView {
     public void cursorRight() {
         if (table.getType() == Table.TableType.Y_AXIS && data[highlightY].isSelected()) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
-                ((Table3D) table.getAxisParent()).selectCellAt(highlightY, this);
+                ((Table3D) table.getAxisParent()).getTableView().selectCellAt(highlightY);
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
                 selectCellAt(highlightY + 1);
             }
@@ -178,11 +174,11 @@ public class Table1DView extends TableView {
                 }
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
                 if (data[highlightY].isSelected()) {
-                    table.getAxisParent().selectCellAtWithoutClear(highlightY);
+                    table.getAxisParent().getTableView().selectCellAtWithoutClear(highlightY);
                 }
             }
         } else if (table.getType() == Table.TableType.X_AXIS && data[highlightY].isSelected()) {
-            ((Table3D) table.getAxisParent()).selectCellAt(highlightY, this);
+            ((Table3D) table.getAxisParent()).getTableView().selectCellAt(highlightY);
         } else if (table.getType() == Table.TableType.TABLE_1D) {
             // no where to move down to
         }
@@ -212,7 +208,7 @@ public class Table1DView extends TableView {
 	public void shiftCursorRight() {
         if (table.getType() == Table.TableType.Y_AXIS && data[highlightY].isSelected()) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
-                ((Table3D) table.getAxisParent()).selectCellAt(highlightY, this);
+                ((Table3D) table.getAxisParent()).getTableView().selectCellAt(highlightY);
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
             	selectCellAtWithoutClear(highlightY + 1);
             }
@@ -229,11 +225,11 @@ public class Table1DView extends TableView {
 
     @Override
     public void clearSelection() {
-        // Call to the axis parent.  The axis parent should then call to clear this data.
+        // Call to the axis parent. The axis parent should then call to clear this data.
     	Table p = table.getAxisParent();
     	
     	if(p != null)
-    		p.clearSelection();
+    		p.getTableView().clearSelection();
     }
 
     @Override
@@ -241,17 +237,17 @@ public class Table1DView extends TableView {
         Table axisParent = table.getAxisParent();
         
         if(axisParent != null)
-        	axisParent.clearSelectedData();
+        	axisParent.getTableView().clearSelection();
 
         if(axisParent instanceof Table3D) {
             Table3D table3D = (Table3D) axisParent;
             if(table.getType() == Table.TableType.X_AXIS) {
-                table3D.getYAxis().clearSelectedData();
+                table3D.getYAxis().getTableView().clearSelection();
             } else if (table.getType() == Table.TableType.Y_AXIS) {
-                table3D.getXAxis().clearSelectedData();
+                table3D.getXAxis().getTableView().clearSelection();
             }
         } else if (axisParent instanceof Table2D) {
-            ((Table2D) axisParent).getAxis().clearSelectedData();
+            ((Table2D) axisParent).getAxis().getTableView().clearSelection();
         }
 
 
@@ -305,7 +301,8 @@ public class Table1DView extends TableView {
             cell.getDataCell().setLiveDataTraceValue(liveVal);
             getToolbar().setLiveDataValue(liveVal);
         }
-        table.getAxisParent().updateLiveDataHighlight();
+        
+        table.getAxisParent().getTableView().updateLiveDataHighlight();
     }
 
     public boolean isAxis() {
@@ -360,7 +357,7 @@ public class Table1DView extends TableView {
 
     @Override
     public void updateTableLabel() {
-        this.table.getAxisParent().updateTableLabel();
+        this.table.getAxisParent().getTableView().updateTableLabel();
     }
 
     @Override

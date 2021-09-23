@@ -37,6 +37,8 @@ public abstract class Table implements Serializable {
     protected static final String ST_DELIMITER = "\t\n\r\f";
     protected static Settings.Endian memModelEndian;
 
+    protected TableView tableView;
+    
     protected String name;
     protected String category = "Other";
     protected String description = Settings.BLANK;
@@ -83,7 +85,14 @@ public abstract class Table implements Serializable {
         scales.clear();     
     };
 
-       
+    public void setTableView(TableView v) {
+    	this.tableView = v;
+    }
+    
+    public TableView getTableView() {
+    	return this.tableView;
+    }
+    
     public DataCell[] getData() {
         return data;
     }
@@ -239,6 +248,10 @@ public abstract class Table implements Serializable {
 
     public String getLogParam() {
         return logParam;
+    }
+    
+    public String getLogParamString() {
+        return getName()+ ":" + getLogParam();
     }
 
     @Override
@@ -459,64 +472,7 @@ public abstract class Table implements Serializable {
         this.minCompare = minCompare;
     }
 
-    //TODO: Rework
-    //Cell should check if selected and then increment
-    public void increment(double increment) throws UserLevelException {
-        if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
-                if (cell.isSelected()) {
-                    cell.increment(increment);
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-        	throw new UserLevelException(userLevel);
-        	/*
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);*/
-        }
-    }
-
-    public void multiply(double factor) throws UserLevelException{
-    	
-        if (!locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
-                if (cell.isSelected()) {
-                	
-                	//Use raw or real value, depending on view settings
-                	if(getCurrentScale().getName().equals("Raw Value"))
-                		cell.multiplyRaw(factor);                	
-                	else 
-                		cell.multiply(factor);               	
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-        	throw new UserLevelException(userLevel);
-        	/*
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);*/
-        }
-    }
-
-    public void setRealValue(String realValue) throws UserLevelException {
-        if (!locked && userLevel <= getSettings().getUserLevel()) {
-            for(DataCell cell : data) {
-                if (cell.isSelected()) {
-                    cell.setRealValue(realValue);
-                }
-            }
-        } else if (userLevel > getSettings().getUserLevel()) {
-        	throw new UserLevelException(userLevel);
-        	/*
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);*/
-        }
-    }
+    
 
 
     public void setRevertPoint() {
@@ -525,21 +481,12 @@ public abstract class Table implements Serializable {
         }
     }
 
-    public void undoAll() {
+    public void undoAll() throws UserLevelException {
         for (DataCell cell : data) {
             cell.undo();
         }
     }
-    
-    public void undoSelected() {
-        for (DataCell cell : data) {
-            // reset current value to original value
-            if (cell.isSelected()) {
-                cell.undo();
-            }
-        }
-    }
-  
+     
     abstract public byte[] saveFile(byte[] binData);
     
     public void setValues(String name, String value) {
@@ -589,21 +536,6 @@ public abstract class Table implements Serializable {
 		return bitMask;
 	}
     
-
-    public void verticalInterpolate() {
-    }
-
-    public void horizontalInterpolate() {
-    }
-
-    public void interpolate() {
-        horizontalInterpolate();
-    }
-    
-    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
-        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
-    }
-
     public void validateScaling() {
         if (getType() != TableType.SWITCH) {
 

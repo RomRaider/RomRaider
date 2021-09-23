@@ -129,7 +129,10 @@ public class PresetPanel extends JPanel {
 			
 			if(table.getTable().getDataSize() == button.values.size()) {
 				for (int i = 0; i < table.getTable().getDataSize(); i++) {
-					table.data[i].getDataCell().setBinValue(button.values.get(i));
+					try {
+						table.data[i].getDataCell().setBinValue(button.values.get(i));
+					} catch (UserLevelException e) {
+					}
 				}
 			}
 			

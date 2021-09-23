@@ -216,7 +216,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
                                 MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
                                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
@@ -227,7 +227,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 table.getStorageAddress() + " " + binData.length + " filesize", iex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
                                 MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
                                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
@@ -242,7 +242,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
             } catch (NullPointerException ex) {
                 LOGGER.error("Error Populating Table", ex);
-                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
                         MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
                         rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                 tableNodes.removeElementAt(i);
@@ -360,7 +360,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 Object[] options = {rb.getString("YES"), rb.getString("NO")};
                 final String message = rb.getString("CHKSUMINVALID");
                 int answer = showOptionDialog(
-                        SwingUtilities.windowForComponent(checksum.getTable()),
+                        SwingUtilities.windowForComponent(checksum.getTable().getTableView()),
                         message,
                         rb.getString("CHECKSUMFIX"),
                         DEFAULT_OPTION,

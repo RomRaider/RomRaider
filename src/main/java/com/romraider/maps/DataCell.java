@@ -49,7 +49,6 @@ public class DataCell {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
     private String staticText = null;
-    private boolean isSelected = false;
     private byte[] input;
     
     //Index within table
@@ -335,7 +334,7 @@ public class DataCell {
         return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
     }
 
-    public void setRealValue(String input) {
+    public void setRealValue(String input) throws UserLevelException {
         // create parser
         input = input.replaceAll(DataCellView.REPLACE_TEXT, Settings.BLANK);
         try {
@@ -377,10 +376,13 @@ public class DataCell {
         }
     }
 
-    public void setBinValue(double newBinValue) {
-        if(binValue == newBinValue) {
+    public void setBinValue(double newBinValue) throws UserLevelException {
+        if(binValue == newBinValue || table.locked) {
             return;
         }
+        
+        if (table.userLevel > getSettings().getUserLevel()) 
+        	throw new UserLevelException(table.userLevel);
 
         double checkedValue = newBinValue;
 
@@ -403,7 +405,7 @@ public class DataCell {
         updateView();
     }
 
-    public void increment(double increment) {
+    public void increment(double increment) throws UserLevelException {
         double oldValue = getRealValue();
 
         if (table.getCurrentScale().getCoarseIncrement() < 0.0) {
@@ -434,7 +436,7 @@ public class DataCell {
         }
     }
 
-    public void undo() {
+    public void undo() throws UserLevelException {
         this.setBinValue(originalValue);
     }
 
@@ -464,29 +466,18 @@ public class DataCell {
         }
     }
     
-    public void multiply(double factor) {
-        String newValue = (getRealValue() * factor) + "";
-        
-        //We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
-        if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
-        
-        setRealValue(newValue);
-    }
-    
-    //Used to be multiply(), this doesn't work as expected on negative values though
-    public void multiplyRaw(double factor) {
-        setBinValue(binValue * factor);
-    }
-    
-    public void setSelected(boolean selected) {
-        if(!table.isStaticDataTable() && this.isSelected != selected) {
-            this.isSelected = selected;
+    public void multiply(double factor) throws UserLevelException {     
+        if(table.getCurrentScale().getName().equals("Raw Value"))
+        	setBinValue(binValue * factor);
+        else {
+            String newValue = (getRealValue() * factor) + "";
+            
+            //We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
+            if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
+            
+        	setRealValue(newValue);
         }
-    }
-    
-    public boolean isSelected() {
-    	return isSelected;
-    }
+    }   
     
     @Override
     public boolean equals(Object other) {

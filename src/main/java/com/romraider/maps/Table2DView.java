@@ -18,9 +18,6 @@
  */
 
 package com.romraider.maps;
-
-import static com.romraider.util.ParamChecker.isNullOrEmpty;
-
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -33,7 +30,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import javax.naming.NameNotFoundException;
+
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -41,27 +38,24 @@ import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.util.SettingsManager;
 
-public class Table2D extends Table {
-    private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D(Table.TableType.Y_AXIS);
+public class Table2DView extends TableView {
+	private static final long serialVersionUID = -7684570967109324784L;
     private JLabel axisLabel;
+    private Table1DView axis;
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
-
-    public Table2D() {
+   
+    protected Table2DView(Table2D table) {
+		super(table);
+		axis = new Table1DView(table.getAxis());
         verticalOverhead += 18;
-    }
 
-    @Override
-    public TableType getType() {
-        return TableType.TABLE_2D;
-    }
-
-    public Table1D getAxis() {
-        return axis;
+	}
+      
+	public Table1DView getAxis() {
+    	return axis;
     }
     
     public JLabel getAxisLabel() {
@@ -72,36 +66,9 @@ public class Table2D extends Table {
     	axisLabel = label;
     }
     
-    public void setAxis(Table1D axis) {
-        this.axis = axis;
-        axis.setAxisParent(this);
-    }
-
     @Override
     public String toString() {
         return super.toString() + " (2D)";// + axis;
-    }
-
-    @Override
-    public void populateCompareValues(Table otherTable) {
-        if(null == otherTable || !(otherTable instanceof Table2D)) {
-            return;
-        }
-
-        Table2D compareTable2D = (Table2D) otherTable;
-        if(data.length != compareTable2D.data.length ||
-                axis.data.length != compareTable2D.axis.data.length) {
-            return;
-        }
-
-        super.populateCompareValues(otherTable);
-        axis.populateCompareValues(compareTable2D.getAxis());
-    }
-
-    @Override
-    public void refreshCompare() {
-        populateCompareValues(getCompareTable());
-        axis.refreshCompare();
     }
 
     @Override
@@ -120,7 +87,7 @@ public class Table2D extends Table {
         if (height < minHeight) {
             height = minHeight;
         }
-        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
+        int minWidth = table.isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -129,43 +96,36 @@ public class Table2D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-    	this.input = input;
     	centerLayout.setRows(2);
-        centerLayout.setColumns(this.getDataSize());
-
-        try {
-            axis.populateTable(input, romRamOffset);
-            super.populateTable(input, romRamOffset);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        centerLayout.setColumns(table.getDataSize());
 
         // add to table
-        for (int i = 0; i < this.getDataSize(); i++) {
+        for (int i = 0; i < axis.getTable().getDataSize(); i++) {
             centerPanel.add(axis.getDataCell(i));
         }
-        if (flip) {
-            for (int i = this.getDataSize() - 1; i >= 0; i--) {
+        
+        if (table.flip) {
+            for (int i = table.getDataSize() - 1; i >= 0; i--) {
                 centerPanel.add(this.getDataCell(i));
             }
         } else {
-            for (int i = 0; i < this.getDataSize(); i++) {
+            for (int i = 0; i < table.getDataSize(); i++) {
                 centerPanel.add(this.getDataCell(i));
             }
         }
 
         if(null == axis.getName() || axis.getName().isEmpty() || Settings.BLANK == axis.getName()) {
             ;// Do not add label.
-        } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
+        } else if(null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             axisLabel = new JLabel(axis.getName(), JLabel.CENTER);
             add(axisLabel, BorderLayout.NORTH);
         } else {
-            axisLabel = new JLabel(axis.getName() + " (" + axis.getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            axisLabel = new JLabel(axis.getName() + " (" + axis.getTable().getCurrentScale().getUnit() + ")", JLabel.CENTER);
             add(axisLabel, BorderLayout.NORTH);
         }
 
-        tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
+        tableLabel = new JLabel(table.getCurrentScale().getUnit(), JLabel.CENTER);
         add(tableLabel, BorderLayout.SOUTH);      
         axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
         
@@ -177,44 +137,64 @@ public class Table2D extends Table {
     public void updateTableLabel() {
         if(null == axis.getName() || axis.getName().length() < 1 || Settings.BLANK == axis.getName()) {
             ;// Do not update label.
-        } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
+        } else if(null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             axisLabel.setText(axis.getName());
         } else {
-            axisLabel.setText(axis.getName() + " (" + axis.getCurrentScale().getUnit() + ")");
+            axisLabel.setText(axis.getName() + " (" + axis.getTable().getCurrentScale().getUnit() + ")");
         }
 
-        tableLabel.setText(getCurrentScale().getUnit());
+        tableLabel.setText(table.getCurrentScale().getUnit());
     }
 
     @Override
-    public void clearSelection() {
-        axis.clearSelectedData();
-        clearSelectedData();
+    public void interpolate() throws UserLevelException {
+        super.interpolate();
+        this.getAxis().interpolate();
     }
 
     @Override
-    public void setRevertPoint() {
-        super.setRevertPoint();
-        axis.setRevertPoint();
+    public void verticalInterpolate() throws UserLevelException {
+        super.verticalInterpolate();
+        this.getAxis().verticalInterpolate();
     }
 
     @Override
-    public void undoAll() {
-        super.undoAll();
-        axis.undoAll();
+    public void horizontalInterpolate() throws UserLevelException {
+        int[] coords = { table.getDataSize(), 0};
+        DataCellView[] tableData = getData();
+        DataCellView[] axisData = getAxis().getData();
+
+        for (int i = 0; i < table.getDataSize(); ++i) {
+            if (tableData[i].isSelected()) {
+                if (i < coords[0])
+                    coords[0] = i;
+                if (i > coords[1])
+                    coords[1] = i;
+            }
+        }
+        if (coords[1] - coords[0] > 1) {
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[0]].getDataCell().getBinValue();
+            y1 = tableData[coords[0]].getDataCell().getBinValue();
+            x2 = axisData[coords[1]].getDataCell().getBinValue();
+            y2 = tableData[coords[1]].getDataCell().getBinValue();
+            for (int i = coords[0] + 1; i < coords[1]; ++i) {
+                x = axisData[i].getDataCell().getBinValue();
+                data[i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+            }
+        }
+        // Interpolate x axis in case the x axis in selected.
+        this.getAxis().horizontalInterpolate();
     }
     
-
     @Override
-    public byte[] saveFile(byte[] binData) {
-        /*
-        binData = super.saveFile(binData);
-        binData = axis.saveFile(binData);*/
-    	
-        return binData;
+    public void clearSelection() {
+        axis.clearSelection();
+        clearSelection();
     }
 
+    
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -290,7 +270,7 @@ public class Table2D extends Table {
 
     @Override
     public void startHighlight(int x, int y) {
-        axis.clearSelectedData();
+        axis.clearSelection();
         super.startHighlight(x, y);
     }
 
@@ -320,12 +300,12 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void paste() {
+    public void paste() throws UserLevelException {
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, ST_DELIMITER);
+            st = new StringTokenizer(input, table.ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -360,57 +340,6 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void interpolate() {
-        super.interpolate();
-        this.getAxis().interpolate();
-    }
-
-    @Override
-    public void verticalInterpolate() {
-        super.verticalInterpolate();
-        this.getAxis().verticalInterpolate();
-    }
-
-    @Override
-    public void horizontalInterpolate() {
-        int[] coords = { getDataSize(), 0};
-        DataCellView[] tableData = getData();
-        DataCellView[] axisData = getAxis().getData();
-
-        for (int i = 0; i < getDataSize(); ++i) {
-            if (tableData[i].isSelected()) {
-                if (i < coords[0])
-                    coords[0] = i;
-                if (i > coords[1])
-                    coords[1] = i;
-            }
-        }
-        if (coords[1] - coords[0] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getDataCell().getBinValue();
-            y1 = tableData[coords[0]].getDataCell().getBinValue();
-            x2 = axisData[coords[1]].getDataCell().getBinValue();
-            y2 = tableData[coords[1]].getDataCell().getBinValue();
-            for (int i = coords[0] + 1; i < coords[1]; ++i) {
-                x = axisData[i].getDataCell().getBinValue();
-                data[i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
-            }
-        }
-        // Interpolate x axis in case the x axis in selected.
-        this.getAxis().horizontalInterpolate();
-    }
-
-    @Override
-    public boolean isLiveDataSupported() {
-        return !isNullOrEmpty(axis.getLogParam());
-    }
-
-    @Override
-    public boolean isButtonSelected() {
-        return true;
-    }
-
-    @Override
     public void clearLiveDataTrace() {
         super.clearLiveDataTrace();
         axis.clearLiveDataTrace();
@@ -425,13 +354,6 @@ public class Table2D extends Table {
         }
     }
 
-    @Override
-    public String getLogParamString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(axis.getLogParamString()+ ", ");
-        sb.append(getName()+ ":" + getLogParam());
-        return sb.toString();
-    }
 
     @Override
     public void setOverlayLog(boolean overlayLog) {
@@ -446,78 +368,8 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void setCompareValueType(Settings.DataType compareValueType) {
-        super.setCompareValueType(compareValueType);
-        axis.setCompareValueType(compareValueType);
-    }
-
-    @Override
-    public void setCurrentScale(Scale curScale) {
-        if(SettingsManager.getSettings().isScaleHeadersAndData() && !axis.isStaticDataTable()) {
-            try {
-                this.axis.setScaleByName(curScale.getName());
-            } catch (NameNotFoundException e) {
-                try {
-                    this.axis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
-                } catch (NameNotFoundException e1) {
-                }
-            }
-        }
-        this.curScale = curScale;
-        updateTableLabel();
-        drawTable();
-    }
-
-    @Override
     public boolean equals(Object other) {
-        try {
-            if(null == other) {
-                return false;
-            }
-
-            if(other == this) {
-                return true;
-            }
-
-            if(!(other instanceof Table2D)) {
-                return false;
-            }
-
-            Table2D otherTable = (Table2D)other;
-
-            if( (null == this.getName() && null == otherTable.getName())
-                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
-                ;// Skip name compare if name is null or empty.
-            } else if (!this.getName().equalsIgnoreCase(otherTable.getName())) {
-                return false;
-            }
-
-            if(!this.axis.equals(otherTable.axis)) {
-                return false;
-            }
-
-            if(this.data.length != otherTable.data.length)
-            {
-                return false;
-            }
-
-            if(this.data.equals(otherTable.data))
-            {
-                return true;
-            }
-
-            // Compare Bin Values
-            for(int i = 0 ; i < this.data.length ; i++) {
-                if(! this.data[i].equals(otherTable.data[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        } catch(Exception ex) {
-            // TODO: Log Exception.
-            return false;
-        }
+        return table.equals(other);
     }
 
     @Override
@@ -526,14 +378,14 @@ public class Table2D extends Table {
         if(null != axis) {
             axis.repaint();
         }
-    }  
+    } 
 }
 
 class CopySelection2DWorker extends SwingWorker<Void, Void> {
-    Table2D table;
-    Table extendedTable;
+	Table2DView table;
+    TableView extendedTable;
 
-    public CopySelection2DWorker(Table2D table)
+    public CopySelection2DWorker(Table2DView table)
     {
         this.table = table;
     }
@@ -556,9 +408,9 @@ class CopySelection2DWorker extends SwingWorker<Void, Void> {
 }
 
 class CopyTable2DWorker extends SwingWorker<Void, Void> {
-    Table2D table;
+    Table2DView table;
 
-    public CopyTable2DWorker(Table2D table)
+    public CopyTable2DWorker(Table2DView table)
     {
         this.table = table;
     }

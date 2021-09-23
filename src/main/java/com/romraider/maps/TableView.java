@@ -65,7 +65,7 @@ public abstract class TableView extends JPanel implements Serializable {
     protected Table table;
     protected PresetPanel presetPanel;      
     protected DataCellView[] data;
-   
+    
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
     protected JPanel centerPanel = new JPanel(centerLayout);
@@ -92,6 +92,7 @@ public abstract class TableView extends JPanel implements Serializable {
     
     protected TableView(Table table) {
     	this.table = table;
+    	table.setTableView(this);
     	
     	//Populate Views from table here
     	
@@ -297,7 +298,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                paste();
+                try {
+					paste();
+				} catch (UserLevelException e1) {
+					showInvalidUserLevelPopup(e1);
+				}
             }
         };
         Action interpolate = new AbstractAction() {
@@ -305,7 +310,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.interpolate();
+                try {
+                interpolate();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action verticalInterpolate = new AbstractAction() {
@@ -313,7 +322,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.verticalInterpolate();
+                try {
+                verticalInterpolate();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action horizontalInterpolate = new AbstractAction() {
@@ -321,7 +334,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.horizontalInterpolate();
+                try {
+                horizontalInterpolate();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action multiplyAction = new AbstractAction() {
@@ -475,7 +492,7 @@ public abstract class TableView extends JPanel implements Serializable {
     public String toString() {
         return table.toString();
     }
-
+     
     public void drawTable() {
     	
         for(DataCellView cell : data) {
@@ -483,6 +500,20 @@ public abstract class TableView extends JPanel implements Serializable {
                 cell.drawCell();
             }
         }
+    }
+    
+    public void verticalInterpolate() throws UserLevelException{
+    }
+
+    public void horizontalInterpolate() throws UserLevelException {
+    }
+
+    public void interpolate() throws UserLevelException {
+        horizontalInterpolate();
+    }
+    
+    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
+        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
     
     public abstract void populateTable(byte[] input, int romRamOffset);
@@ -502,7 +533,7 @@ public abstract class TableView extends JPanel implements Serializable {
 
     public void clearSelection() {
         for (DataCellView cell : data) {
-                cell.getDataCell().setSelected(false);
+                cell.setSelected(false);
             }
     }
 
@@ -531,7 +562,7 @@ public abstract class TableView extends JPanel implements Serializable {
         for (DataCellView cell : data) {
             if (cell.isHighlighted()) {
                 cell.setHighlighted(false);
-                cell.getDataCell().setSelected(true);
+                cell.setSelected(true);
             }
         }
     }
@@ -551,10 +582,47 @@ public abstract class TableView extends JPanel implements Serializable {
     public abstract void shiftCursorLeft();
 
     public abstract void shiftCursorRight();
+ 
+    public void undoSelected() throws UserLevelException {
+        for (DataCellView cell : data) {
+            // reset current value to original value
+            if (cell.isSelected()) {
+                cell.getDataCell().undo();
+            }
+        }
+    }
+    
+    public static void showInvalidUserLevelPopup(UserLevelException e) {
+        JOptionPane.showMessageDialog(null, MessageFormat.format(
+                rb.getString("USERLVLTOLOW"), e.getLevel()),
+                rb.getString("TBLNOTMODIFY"),
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+   
+    public void increment(double increment) throws UserLevelException {
+	    for (DataCellView cell : data) {
+	        if (cell.isSelected()) {
+	            cell.getDataCell().increment(increment);
+	        }
+	    }
+    }
 
-  
-    abstract public byte[] saveFile(byte[] binData);
-       
+    public void multiply(double factor) throws UserLevelException{  	
+    	for (DataCellView cell : data) {
+	        if (cell.isSelected()) {
+	        	cell.getDataCell().multiply(factor);               	
+            }
+         }
+    }
+
+    public void setRealValue(String realValue) throws UserLevelException {
+        for(DataCellView cell : data) {
+            if (cell.isSelected()) {
+                cell.getDataCell().setRealValue(realValue);
+            }
+        }
+    }
+    
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -568,7 +636,7 @@ public abstract class TableView extends JPanel implements Serializable {
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
             clearSelection();
-            data[y].getDataCell().setSelected(true);
+            data[y].setSelected(true);
             highlightY = y;
             ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
@@ -576,7 +644,7 @@ public abstract class TableView extends JPanel implements Serializable {
 
     public void selectCellAtWithoutClear(int y) {
         if(y >= 0 && y < data.length) {
-            data[y].getDataCell().setSelected(true);
+            data[y].setSelected(true);
             highlightY = y;
             ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
@@ -630,7 +698,7 @@ public abstract class TableView extends JPanel implements Serializable {
         return data[index].getText();
     }
 
-    public void pasteValues(String[] input) {
+    public void pasteValues(String[] input) throws UserLevelException {
         //set real values
         for (int i = 0; i < input.length; i++) {
             try {
@@ -640,7 +708,7 @@ public abstract class TableView extends JPanel implements Serializable {
         }
     }
 
-    public void paste() {
+    public void paste() throws UserLevelException {
         // TODO: This sounds like desearialize.
         if (!table.isStaticDataTable()) {
             StringTokenizer st = new StringTokenizer(Settings.BLANK);
@@ -665,7 +733,7 @@ public abstract class TableView extends JPanel implements Serializable {
                     i++;
                 }
             } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // copied selection
-                if (data[highlightY].getDataCell().isSelected()) {
+                if (data[highlightY].isSelected()) {
                     int i = 0;
                     while (st.hasMoreTokens()) {
                         String currentToken = st.nextToken();
@@ -736,7 +804,6 @@ public abstract class TableView extends JPanel implements Serializable {
         }
     }
     
-
     
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {
@@ -841,7 +908,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         coords[0] = table.getDataSize();
 
         for (int i = 0; i < table.getDataSize(); i++) {
-            if (table.getData()[i].isSelected()) {
+            if (tableView.getData()[i].isSelected()) {
                 if (i < coords[0]) {
                     coords[0] = i;
                     copy = true;
@@ -854,7 +921,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         }
         //make a string of the selection
         for (int i = coords[0]; i <= coords[1]; i++) {
-            if (table.getData()[i].isSelected()) {
+            if (tableView.getData()[i].isSelected()) {
                 output = output + NumberUtil.stringValue(table.getData()[i].getRealValue());
             } else {
                 output = output + "x"; // x represents non-selected cell

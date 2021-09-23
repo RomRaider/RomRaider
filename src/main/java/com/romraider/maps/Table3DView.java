@@ -55,89 +55,30 @@ import com.romraider.util.SettingsManager;
 public class Table3DView extends TableView {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(
-            Table3D.class.getName());
-    private Table1D xAxis = new Table1D(TableType.X_AXIS);
-    private Table1D yAxis = new Table1D(TableType.Y_AXIS);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(Table3D.class.getName());
+    private Table3D table;
+    private Table1DView xAxis;
+    private Table1DView yAxis;
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
     DataCellView[][] data = new DataCellView[1][1];
-    private boolean swapXY = false;
-    private boolean flipX = false;
-    private boolean flipY = false;
 
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
 
-    public Table3D() {
+    public Table3DView(Table3D table) {
+    	super(table);
+    	xAxis = new Table1DView(table.getXAxis());
+    	yAxis = new Table1DView(table.getYAxis());
+    	
         verticalOverhead += 39;
         horizontalOverhead += 10;
     }
-
+    
     @Override
-    public TableType getType() {
-        return Table.TableType.TABLE_3D;
-    }
-
-    public Table1D getXAxis() {
-        return xAxis;
-    }
-
-    public void setXAxis(Table1D xAxis) {
-        this.xAxis = xAxis;
-        xAxis.setAxisParent(this);
-    }
-
-    public Table1D getYAxis() {
-        return yAxis;
-    }
-
-    public void setYAxis(Table1D yAxis) {
-        this.yAxis = yAxis;
-        yAxis.setAxisParent(this);
-    }
-
-    public boolean getSwapXY() {
-        return swapXY;
-    }
-
-    public void setSwapXY(boolean swapXY) {
-        this.swapXY = swapXY;
-    }
-
-    public boolean getFlipX() {
-        return flipX;
-    }
-
-    public void setFlipX(boolean flipX) {
-        this.flipX = flipX;
-    }
-
-    public boolean getFlipY() {
-        return flipY;
-    }
-
-    public void setFlipY(boolean flipY) {
-        this.flipY = flipY;
-    }
-
-    public void setSizeX(int size) {
-        data = new DataCellView[size][data[0].length];
-        centerLayout.setColumns(size + 1);
-    }
-
-    public int getSizeX() {
-        return data.length;
-    }
-
-    public void setSizeY(int size) {
-        data = new DataCellView[data.length][size];
-        centerLayout.setRows(size + 1);
-    }
-
-    public int getSizeY() {
-        return data[0].length;
+    public Table3D getTable() {
+    	return table;
     }
 
     @Override
@@ -155,16 +96,12 @@ public class Table3DView extends TableView {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-    	this.input = input;
     	// fill first empty cell
         centerPanel.add(new JLabel());
-        if (!beforeRam) {
-            this.ramOffset = romRamOffset;
-        }
-
+        /*
         // temporarily remove lock
-        boolean tempLock = locked;
-        locked = false;
+        boolean tempLock = table.locked;
+        table.locked = false;
 
         // populate axes
         try {
@@ -174,14 +111,14 @@ public class Table3DView extends TableView {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        for (int x = 0; x < xAxis.getDataSize(); x++) {
+        for (int x = 0; x < xAxis.getTable().getDataSize(); x++) {
             centerPanel.add(xAxis.getDataCell(x));
         }
 
         int offset = 0;
 
-        int iMax = swapXY ? xAxis.getDataSize() : yAxis.getDataSize();
-        int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
+        int iMax = swapXY ? xAxis.getTable().getDataSize() : yAxis.getTable().getDataSize();
+        int jMax = swapXY ? yAxis.getTable().getDataSize() : xAxis.getTable().getDataSize();
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
 
@@ -251,67 +188,33 @@ public class Table3DView extends TableView {
         if(xAxisLabel!=null)
         	xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
         
-        if(presetPanel != null) presetPanel.populatePanel();
-        calcCellRanges();
+        if(presetPanel != null) presetPanel.populatePanel();*/
     }
 
     @Override
     public void updateTableLabel() {
         if(null == xAxis.getName() || xAxis.getName().length() < 1 || Settings.BLANK == xAxis.getName()) {
             ;// Do not update label.
-        } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
+        } else if(null == xAxis.getTable().getCurrentScale() || "0x" == xAxis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             xAxisLabel.setText(xAxis.getName());
         } else {
-            xAxisLabel.setText(xAxis.getName() + " (" + xAxis.getCurrentScale().getUnit() + ")");
+            xAxisLabel.setText(xAxis.getName() + " (" + xAxis.getTable().getCurrentScale().getUnit() + ")");
         }
 
         if(null == yAxis.getName() || yAxis.getName().length() < 1 || Settings.BLANK == yAxis.getName()) {
             ;// Do not update label.
-        } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
+        } else if(null == yAxis.getTable().getCurrentScale() || "0x" == yAxis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             yAxisLabel.setText(yAxis.getName());
         } else {
-            yAxisLabel.setText(yAxis.getName() + " (" + yAxis.getCurrentScale().getUnit() + ")");
+            yAxisLabel.setText(yAxis.getName() + " (" + yAxis.getTable().getCurrentScale().getUnit() + ")");
         }
 
-        tableLabel.setText(getCurrentScale().getUnit());
+        tableLabel.setText(table.getCurrentScale().getUnit());
     }
 
-    @Override
-    public void calcCellRanges() {
-        double binMax = data[0][0].getDataCell().getBinValue();
-        double binMin = data[0][0].getDataCell().getBinValue();
-
-        double compareMax = data[0][0].getDataCell().getCompareValue();
-        double compareMin = data[0][0].getDataCell().getCompareValue();
-
-        for(DataCellView[] column : data) {
-            for(DataCellView cell : column) {
-                // Calc bin
-                if(binMax < cell.getDataCell().getBinValue()) {
-                    binMax = cell.getDataCell().getBinValue();
-                }
-                if(binMin > cell.getDataCell().getBinValue()) {
-                    binMin = cell.getDataCell().getBinValue();
-                }
-
-                // Calc compare
-                double compareValue = cell.getDataCell().getCompareValue();
-                if(compareMax < compareValue) {
-                    compareMax = compareValue;
-                }
-                if(compareMin > compareValue) {
-                    compareMin = compareValue;
-                }
-            }
-        }
-        setMaxBin(binMax);
-        setMinBin(binMin);
-        setMaxCompare(compareMax);
-        setMinCompare(compareMin);
-    }
-
+  
     @Override
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
@@ -319,68 +222,28 @@ public class Table3DView extends TableView {
         output.append(xAxis.getTableAsString());
         output.append(Settings.NEW_LINE);
 
-        for (int y = 0; y < getSizeY(); y++) {
+        for (int y = 0; y < table.getSizeY(); y++) {
             output.append(NumberUtil.stringValue(yAxis.data[y].getDataCell().getRealValue()));
             output.append(Settings.TAB);
 
-            for (int x = 0; x < getSizeX(); x++) {
+            for (int x = 0; x < table.getSizeX(); x++) {
                 if (overlayLog) {
                     output.append(data[x][y].getCellText());
                 }
                 else {
                     output.append(NumberUtil.stringValue(data[x][y].getDataCell().getRealValue()));
                 }
-                if (x < getSizeX() - 1) {
+                if (x < table.getSizeX() - 1) {
                     output.append(Settings.TAB);
                 }
             }
 
-            if (y < getSizeY() - 1) {
+            if (y < table.getSizeY() - 1) {
                 output.append(Settings.NEW_LINE);
             }
         }
 
         return output;
-    }
-
-    @Override
-    public void populateCompareValues(Table otherTable) {
-        if(null == otherTable || !(otherTable instanceof Table3D)) {
-            return;
-        }
-
-        Table3D compareTable3D = (Table3D) otherTable;
-        if(data.length != compareTable3D.data.length ||
-                data[0].length != compareTable3D.data[0].length ||
-                xAxis.getDataSize() != compareTable3D.xAxis.getDataSize() ||
-                yAxis.getDataSize() != compareTable3D.yAxis.getDataSize()) {
-            return;
-        }
-
-        clearLiveDataTrace();
-
-        int x=0;
-        for (DataCellView[] column : data) {
-            int y = 0;
-            for(DataCellView cell : column) {
-                cell.getDataCell().setCompareValue(compareTable3D.data[x][y].getDataCell());
-                y++;
-            }
-            x++;
-        }
-
-        xAxis.populateCompareValues(compareTable3D.getXAxis());
-        yAxis.populateCompareValues(compareTable3D.getYAxis());
-
-        calcCellRanges();
-        drawTable();
-    }
-
-    @Override
-    public void refreshCompare() {
-        populateCompareValues(getCompareTable());
-        xAxis.refreshCompare();
-        yAxis.refreshCompare();
     }
 
     @Override
@@ -390,7 +253,7 @@ public class Table3DView extends TableView {
         if (height < minHeight) {
             height = minHeight;
         }
-        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
+        int minWidth = table.isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -410,46 +273,34 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void increment(double increment) {
-        if (!locked) {
-            for (int x = 0; x < this.getSizeX(); x++) {
-                for (int y = 0; y < this.getSizeY(); y++) {
+    public void increment(double increment) throws UserLevelException {
+            for (int x = 0; x < table.getSizeX(); x++) {
+                for (int y = 0; y < table.getSizeY(); y++) {
                     if (data[x][y].isSelected()) {
                         data[x][y].getDataCell().increment(increment);
                     }
                 }
             }
-        }
     }
 
     @Override
-    public void multiply(double factor) {
-        if (!locked) {
-            for (int x = 0; x < this.getSizeX(); x++) {
-                for (int y = 0; y < this.getSizeY(); y++) {
-                    if (data[x][y].isSelected()) {
-                    	
-                    	if(getCurrentScale().getName().equals("Raw Value"))
-                    		data[x][y].getDataCell().multiplyRaw(factor);                	
-                    	else 
+    public void multiply(double factor) throws UserLevelException {
+            for (int x = 0; x < table.getSizeX(); x++) {
+                for (int y = 0; y < table.getSizeY(); y++) {
+                    if (data[x][y].isSelected()) {                    
                     		data[x][y].getDataCell().multiply(factor);                            
                     }
                 }
-            }
-        }
+            }        
     }
 
     @Override
     public void clearSelection() {
-        xAxis.clearSelectedData();
-        yAxis.clearSelectedData();
-        clearSelectedData();
-    }
-
-    @Override
-    public void clearSelectedData() {
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
+        xAxis.clearSelection();
+        yAxis.clearSelection();
+        
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
                 data[x][y].setSelected(false);
             }
         }
@@ -458,8 +309,8 @@ public class Table3DView extends TableView {
     @Override
     public void highlight(int xCoord, int yCoord) {
         if (highlight) {
-            for (int x = 0; x < this.getSizeX(); x++) {
-                for (int y = 0; y < this.getSizeY(); y++) {
+            for (int x = 0; x < table.getSizeX(); x++) {
+                for (int y = 0; y < table.getSizeY(); y++) {
                     if (((y >= highlightY && y <= yCoord) ||
                             (y <= highlightY && y >= yCoord)) &&
                             ((x >= highlightX && x <= xCoord) ||
@@ -477,8 +328,8 @@ public class Table3DView extends TableView {
     public void stopHighlight() {
         highlight = false;
         // loop through, selected and un-highlight
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
                 if (data[x][y].isHighlighted()) {
                     data[x][y].setSelected(true);
                     data[x][y].setHighlighted(false);
@@ -488,33 +339,10 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void setRevertPoint() {
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
-                data[x][y].getDataCell().setRevertPoint();
-            }
-        }
-        yAxis.setRevertPoint();
-        xAxis.setRevertPoint();
-    }
-
-    @Override
-    public void undoAll() {
+    public void undoSelected() throws UserLevelException {
         clearLiveDataTrace();
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
-                data[x][y].getDataCell().undo();
-            }
-        }
-        yAxis.undoAll();
-        xAxis.undoAll();
-    }
-
-    @Override
-    public void undoSelected() {
-        clearLiveDataTrace();
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
                 if (data[x][y].isSelected()) {
                     data[x][y].getDataCell().undo();
                 }
@@ -522,28 +350,16 @@ public class Table3DView extends TableView {
         }
     }
 
-
     @Override
-    public byte[] saveFile(byte[] binData) {
-    	return binData;
-    }
-
-    @Override
-    public void setRealValue(String realValue) {
-        if (!locked && !(userLevel > getSettings().getUserLevel()) ) {
-            for(DataCellView[] column : data) {
-                for(DataCellView cell : column) {
-                    if(cell.isSelected()) {
-                        cell.getDataCell().setRealValue(realValue);
-                    }
+    public void setRealValue(String realValue) throws UserLevelException {
+        for(DataCellView[] column : data) {
+            for(DataCellView cell : column) {
+                if(cell.isSelected()) {
+                    cell.getDataCell().setRealValue(realValue);
                 }
             }
-        } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, MessageFormat.format(
-                    rb.getString("USERLVLTOLOW"), userLevel),
-                    rb.getString("TBLNOTMODIFY"),
-                    JOptionPane.INFORMATION_MESSAGE);
         }
+
         xAxis.setRealValue(realValue);
         yAxis.setRealValue(realValue);
     }
@@ -552,8 +368,8 @@ public class Table3DView extends TableView {
     public void addKeyListener(KeyListener listener) {
         xAxis.addKeyListener(listener);
         yAxis.addKeyListener(listener);
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
                 data[x][y].addKeyListener(listener);
             }
         }
@@ -565,7 +381,7 @@ public class Table3DView extends TableView {
         } else { // y axis
             selectCellAt(y, 0);
         }
-        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
+        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
     }
 
     public void deSelectCellAt(int x, int y) {
@@ -602,7 +418,7 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorDown() {
-        if (highlightY < getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
+        if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
             selectCellAt(highlightX, highlightY + 1);
         } else {
             xAxis.cursorDown();
@@ -624,7 +440,7 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorRight() {
-        if (highlightX < getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
+        if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
             selectCellAt(highlightX + 1, highlightY);
         } else {
             xAxis.cursorRight();
@@ -647,7 +463,7 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorDown() {
-        if (highlightY < getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
+        if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
         	selectCellAtWithoutClear(highlightX, highlightY + 1);
         } else {
             xAxis.shiftCursorDown();
@@ -669,7 +485,7 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorRight() {
-        if (highlightX < getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
+        if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
         	selectCellAtWithoutClear(highlightX + 1, highlightY);
         } else {
             xAxis.shiftCursorRight();
@@ -679,8 +495,8 @@ public class Table3DView extends TableView {
 
     @Override
     public void startHighlight(int x, int y) {
-        xAxis.clearSelectedData();
-        yAxis.clearSelectedData();
+        xAxis.clearSelection();
+        yAxis.clearSelection();
         super.startHighlight(x, y);
     }
 
@@ -710,12 +526,12 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void paste() {
+    public void paste() throws UserLevelException {
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, ST_DELIMITER);
+            st = new StringTokenizer(input, Table.ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -757,11 +573,11 @@ public class Table3DView extends TableView {
         }
     }
 
-    public void pasteValues() {
+    public void pasteValues() throws UserLevelException {
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, ST_DELIMITER);
+            st = new StringTokenizer(input, Table.ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -778,13 +594,13 @@ public class Table3DView extends TableView {
         }
 
         // set values
-        for (int y = startY; st.hasMoreTokens() && y < getSizeY(); y++) {
+        for (int y = startY; st.hasMoreTokens() && y < table.getSizeY(); y++) {
             String checkToken = st.nextToken(Settings.NEW_LINE);
             if (y==startY && checkToken.endsWith("\t")) {
                 checkToken = st.nextToken(Settings.NEW_LINE);
             }
-            StringTokenizer currentLine = new StringTokenizer(checkToken, ST_DELIMITER);
-            for (int x = startX; currentLine.hasMoreTokens() && x < getSizeX(); x++) {
+            StringTokenizer currentLine = new StringTokenizer(checkToken, Table.ST_DELIMITER);
+            for (int x = startX; currentLine.hasMoreTokens() && x < table.getSizeX(); x++) {
                 String currentToken = currentLine.nextToken();
 
                 try {
@@ -797,13 +613,13 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void verticalInterpolate() {
-        int[] coords = { getSizeX(), getSizeY(), 0, 0};
+    public void verticalInterpolate() throws UserLevelException {
+        int[] coords = { table.getSizeX(), table.getSizeY(), 0, 0};
         DataCellView[][] tableData = get3dData();
-        DataCellView[] axisData = getYAxis().getData();
+        DataCellView[] axisData = table.getYAxis().getTableView().getData();
         int i, j;
-        for (i = 0; i < getSizeX(); ++i) {
-            for (j = 0; j < getSizeY(); ++j) {
+        for (i = 0; i < table.getSizeX(); ++i) {
+            for (j = 0; j < table.getSizeY(); ++j) {
                 if (tableData[i][j].isSelected()) {
                     if (i < coords[0])
                         coords[0] = i;
@@ -830,17 +646,17 @@ public class Table3DView extends TableView {
             }
         }
         // Interpolate y axis in case the y axis in selected.
-        this.getYAxis().verticalInterpolate();
+        table.getYAxis().getTableView().verticalInterpolate();
     }
 
     @Override
-    public void horizontalInterpolate() {
-        int[] coords = { getSizeX(), getSizeY(), 0, 0 };
+    public void horizontalInterpolate() throws UserLevelException {
+        int[] coords = { table.getSizeX(), table.getSizeY(), 0, 0 };
         DataCellView[][] tableData = get3dData();
-        DataCellView[] axisData = getXAxis().getData();
+        DataCellView[] axisData = table.getXAxis().getTableView().getData();
         int i, j;
-        for (i = 0; i < getSizeX(); ++i) {
-            for (j = 0; j < getSizeY(); ++j) {
+        for (i = 0; i < table.getSizeX(); ++i) {
+            for (j = 0; j < table.getSizeY(); ++j) {
                 if (tableData[i][j].isSelected()) {
                     if (i < coords[0])
                         coords[0] = i;
@@ -867,23 +683,13 @@ public class Table3DView extends TableView {
             }
         }
         // Interpolate x axis in case the x axis in selected.
-        this.getXAxis().horizontalInterpolate();
+        table.getXAxis().getTableView().horizontalInterpolate();
     }
 
     @Override
-    public void interpolate() {
+    public void interpolate() throws UserLevelException {
         verticalInterpolate();
         horizontalInterpolate();
-    }
-
-    @Override
-    public boolean isLiveDataSupported() {
-        return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
-    }
-
-    @Override
-    public boolean isButtonSelected() {
-        return true;
     }
 
     @Override
@@ -915,8 +721,8 @@ public class Table3DView extends TableView {
     public void clearLiveDataTrace() {
         xAxis.clearLiveDataTrace();
         yAxis.clearLiveDataTrace();
-        for (int x = 0; x < getSizeX(); x++) {
-            for (int y = 0; y < getSizeY(); y++) {
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
                 data[x][y].setLiveDataTrace(false);
                 data[x][y].setPreviousLiveDataTrace(false);
             }
@@ -935,51 +741,6 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void setCompareValueType(Settings.DataType compareValueType) {
-        super.setCompareValueType(compareValueType);
-        xAxis.setCompareValueType(compareValueType);
-        yAxis.setCompareValueType(compareValueType);
-    }
-
-    @Override
-    public void setCurrentScale(Scale curScale) {
-        if(SettingsManager.getSettings().isScaleHeadersAndData()) {
-            if(!xAxis.isStaticDataTable()) {
-                try {
-                    this.xAxis.setScaleByName(curScale.getName());
-                } catch (NameNotFoundException e) {
-                    try {
-                        this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
-                    } catch (NameNotFoundException e1) {
-                    }
-                }
-            }
-            if(!yAxis.isStaticDataTable()) {
-                try {
-                    this.yAxis.setScaleByName(curScale.getName());
-                } catch (NameNotFoundException e) {
-                    try {
-                        this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
-                    } catch (NameNotFoundException e1) {
-                    }
-                }
-            }
-        }
-        this.curScale = curScale;
-        updateTableLabel();
-        drawTable();
-    }
-
-    @Override
-    public String getLogParamString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(xAxis.getLogParamString()+", ");
-        sb.append(yAxis.getLogParamString()+", ");
-        sb.append(getName()+ ":" + getLogParam());
-        return sb.toString();
-    }
-
-    @Override
     public void setOverlayLog(boolean overlayLog) {
         super.setOverlayLog(overlayLog);
         xAxis.setOverlayLog(overlayLog);
@@ -988,60 +749,7 @@ public class Table3DView extends TableView {
 
     @Override
     public boolean equals(Object other) {
-        try {
-            if(null == other) {
-                return false;
-            }
-
-            if(other == this) {
-                return true;
-            }
-
-            if(!(other instanceof Table3D)) {
-                return false;
-            }
-
-            Table3D otherTable = (Table3D)other;
-
-            if( (null == this.getName() && null == otherTable.getName())
-                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
-                ;// Skip name compare if name is null or empty.
-            } else if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
-                return false;
-            }
-
-            if(! this.xAxis.equals(otherTable.xAxis)) {
-                return false;
-            }
-
-            if(! this.yAxis.equals(otherTable.yAxis)) {
-                return false;
-            }
-
-            if(this.data.length != otherTable.data.length || this.data[0].length != otherTable.data[0].length)
-            {
-                return false;
-            }
-
-            if(this.data.equals(otherTable.data))
-            {
-                return true;
-            }
-
-            // Compare Bin Values
-            for(int i = 0 ; i < this.data.length ; i++) {
-                for(int j = 0; j < this.data[i].length ; j++) {
-                    if(! this.data[i][j].equals(otherTable.data[i][j]) ) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        } catch(Exception ex) {
-            // TODO: Log Exception.
-            return false;
-        }
+       return table.equals(other);
     }
 
     @Override
@@ -1059,11 +767,11 @@ public class Table3DView extends TableView {
 }
 
 class CopySelection3DWorker extends SwingWorker<Void, Void> {
-    Table3D table;
+    Table3DView tableView;
 
-    public CopySelection3DWorker(Table3D table)
+    public CopySelection3DWorker(Table3DView table)
     {
-        this.table = table;
+        this.tableView = table;
     }
 
     @Override
@@ -1072,12 +780,12 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
         // coords[0] = x min, y min, x max, y max
         boolean copy = false;
         int[] coords = new int[4];
-        coords[0] = table.getSizeX();
-        coords[1] = table.getSizeY();
+        coords[0] = tableView.getTable().getSizeX();
+        coords[1] = tableView.getTable().getSizeY();
 
-        for (int x = 0; x < table.getSizeX(); x++) {
-            for (int y = 0; y < table.getSizeY(); y++) {
-                if (table.get3dData()[x][y].isSelected()) {
+        for (int x = 0; x < tableView.getTable().getSizeX(); x++) {
+            for (int y = 0; y < tableView.getTable().getSizeY(); y++) {
+                if (tableView.get3dData()[x][y].isSelected()) {
                     if (x < coords[0]) {
                         coords[0] = x;
                         copy = true;
@@ -1102,8 +810,8 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
             StringBuffer output = new StringBuffer("[Selection3D]" + Settings.NEW_LINE);
             for (int y = coords[1]; y <= coords[3]; y++) {
                 for (int x = coords[0]; x <= coords[2]; x++) {
-                    if (table.get3dData()[x][y].isSelected()) {
-                        output.append(NumberUtil.stringValue(table.get3dData()[x][y].getDataCell().getRealValue()));
+                    if (tableView.get3dData()[x][y].isSelected()) {
+                        output.append(NumberUtil.stringValue(tableView.get3dData()[x][y].getDataCell().getRealValue()));
                     } else {
                         output.append("x"); // x represents non-selected cell
                     }
@@ -1118,47 +826,47 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
             }
         } else {
-            table.getXAxis().copySelection();
-            table.getYAxis().copySelection();
+            tableView.getTable().getXAxis().getTableView().copySelection();
+            tableView.getTable().getYAxis().getTableView().copySelection();
         }
         return null;
     }
 
     @Override
     public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
         }
-        table.setCursor(null);
+        tableView.setCursor(null);
         ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
 
 class CopyTable3DWorker extends SwingWorker<Void, Void> {
-    Table3D table;
+    Table3DView tableView;
 
-    public CopyTable3DWorker(Table3D table)
+    public CopyTable3DWorker(Table3DView v)
     {
-        this.table = table;
+        this.tableView = v;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        String tableHeader = table.getSettings().getTable3DHeader();
+        String tableHeader = TableView.getSettings().getTable3DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTableAsString());
+        output.append(tableView.getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }
 
     @Override
     public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
         if(null != ancestorWindow){
             ancestorWindow.setCursor(null);
         }
-        table.setCursor(null);
+        tableView.setCursor(null);
         ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
