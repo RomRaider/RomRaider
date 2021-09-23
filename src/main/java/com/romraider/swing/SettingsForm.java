@@ -1158,7 +1158,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         for(JInternalFrame frame : getEditor().getRightPanel().getAllFrames()) {
             if(frame instanceof TableFrame && frame.isVisible()) {
                 TableFrame tableFrame = (TableFrame) frame;
-                tableFrame.getTable().drawTable();
+                tableFrame.getTable().getTableView().drawTable();
             }
         }
     }

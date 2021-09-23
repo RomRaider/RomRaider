@@ -34,6 +34,7 @@ import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
+import com.romraider.maps.TableView;
 
 public final class TableUpdateHandler implements DataUpdateHandler {
     private static final TableUpdateHandler INSTANCE = new TableUpdateHandler();
@@ -56,7 +57,8 @@ public final class TableUpdateHandler implements DataUpdateHandler {
 		            if (tables != null && !tables.isEmpty()) {
 		                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
 		                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
-		                    item.next().highlightLiveData(formattedValue);
+		                	TableView v = item.next().getTableView();
+		                	if(v!= null) v.highlightLiveData(formattedValue);
 		                }
 		            }
 		        }

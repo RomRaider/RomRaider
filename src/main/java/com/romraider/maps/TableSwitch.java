@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -49,6 +50,31 @@ import javax.swing.JTextArea;
 import com.romraider.util.ResourceUtil;
 
 public class TableSwitch extends Table {
+
+	@Override
+	public TableType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] saveFile(byte[] binData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isLiveDataSupported() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isButtonSelected() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/*
     private static final long serialVersionUID = -4887718305447362308L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableSwitch.class.getName());
@@ -401,5 +427,10 @@ public class TableSwitch extends Table {
             }
         }
         return null;
-    }
+    }*/
+
+	public Vector<Scale> getSwitchStates() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

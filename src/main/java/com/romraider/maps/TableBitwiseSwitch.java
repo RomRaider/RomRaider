@@ -47,6 +47,30 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TableBitwiseSwitch extends Table {
 
+	@Override
+	public TableType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] saveFile(byte[] binData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isLiveDataSupported() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isButtonSelected() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+/*
 	private static final long serialVersionUID = -4887718305447362308L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableBitwiseSwitch.class.getName());
@@ -291,5 +315,5 @@ public class TableBitwiseSwitch extends Table {
 		}
 
 		return sortedMap;
-	}
+	}*/
 }

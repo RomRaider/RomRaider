@@ -164,6 +164,15 @@ public class Table2D extends Table {
         }
         this.curScale = curScale;
     }
+    
+    @Override
+    public StringBuffer getTableAsString() {
+        StringBuffer output = new StringBuffer(Settings.BLANK);
+        output.append(axis.getTableAsString());
+        output.append(Settings.NEW_LINE);
+        output.append(super.getTableAsString());
+        return output;
+    }
 
     @Override
     public boolean equals(Object other) {

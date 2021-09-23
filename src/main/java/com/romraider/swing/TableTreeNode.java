@@ -25,26 +25,25 @@ import com.romraider.maps.Table;
 
 public class TableTreeNode extends DefaultMutableTreeNode {
 
+	Table table;
     private static final long serialVersionUID = 2824050968863990871L;
     private String toolTip;
 
-    public TableTreeNode(TableFrame tableFrame) {
-        super(tableFrame);
+    public TableTreeNode(Table t) {
+        super(t);
+    	this.table = t;
     }
 
     public TableFrame getFrame() {
-        if(getUserObject() instanceof TableFrame) {
-            return (TableFrame)getUserObject();
-        }
-        return null;
+    	return table.getTableView().getFrame();  	
     }
-
-    public void setFrame(TableFrame tableFrame) {
-        this.setUserObject(tableFrame);
+    
+    public void setTable(Table t) {
+        this.setUserObject(t);
     }
 
     public Table getTable() {
-        return this.getFrame().getTable();
+        return table;
     }
 
     public void setToolTipText(String input) {

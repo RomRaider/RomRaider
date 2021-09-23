@@ -52,6 +52,7 @@ import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableToolBar;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
@@ -63,8 +64,9 @@ public abstract class TableView extends JPanel implements Serializable {
     private static final ResourceBundle rb = new ResourceUtil().getBundle(TableView.class.getName());
 
     protected Table table;
-    protected PresetPanel presetPanel;      
+    protected PresetPanel presetPanel;   
     protected DataCellView[] data;
+    protected TableFrame frame;
     
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
@@ -89,8 +91,8 @@ public abstract class TableView extends JPanel implements Serializable {
     protected CopySelectionWorker copySelectionWorker;  
     protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
 
-    
-    protected TableView(Table table) {
+    protected TableView(Table table, TableFrame frame) {
+    	this.frame = frame;
     	this.table = table;
     	table.setTableView(this);
     	
@@ -170,7 +172,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
                 getToolbar().incrementCoarse();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action decCoarseAction = new AbstractAction() {
@@ -178,7 +184,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getToolbar().decrementCoarse();
+                try {
+					getToolbar().decrementCoarse();
+				} catch (UserLevelException e1) {
+					showInvalidUserLevelPopup(e1);
+				}
             }
         };
         Action incFineAction = new AbstractAction() {
@@ -186,7 +196,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
                 getToolbar().incrementFine();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action decFineAction = new AbstractAction() {
@@ -194,7 +208,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
                 getToolbar().decrementFine();
+			} catch (UserLevelException e1) {
+				showInvalidUserLevelPopup(e1);
+			}
             }
         };
         Action num0Action = new AbstractAction() {
@@ -346,7 +364,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
                 getToolbar().multiply();
+    			} catch (UserLevelException e1) {
+    				showInvalidUserLevelPopup(e1);
+    			}
             }
         };
         Action numNegAction = new AbstractAction() {
@@ -470,6 +492,10 @@ public abstract class TableView extends JPanel implements Serializable {
         getActionMap().put(im.get(numNeg), numNegAction);
 
         this.setInputMap(WHEN_FOCUSED, im);
+    }
+      
+    public TableFrame getFrame() {
+    	return frame;
     }
     
     public Table getTable() {
@@ -649,25 +675,7 @@ public abstract class TableView extends JPanel implements Serializable {
             ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
     }
-    
-    public StringBuffer getTableAsString() {
-        StringBuffer output = new StringBuffer(Settings.BLANK);
-        for (int i = 0; i < data.length; i++) {
-
-            if (overlayLog) {
-                output.append(data[i].getCellText());
-            }
-            else {
-            	if(data[i]!= null)
-            		output.append(NumberUtil.stringValue(data[i].getDataCell().getRealValue()));
-            }
-            if (i < data.length - 1) {
-                output.append(Settings.TAB);
-            }
-        }
-        return output;
-    }
-    
+      
     public void copySelection() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 
@@ -959,7 +967,7 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(getTableAsString());
+        output.append(table.getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }

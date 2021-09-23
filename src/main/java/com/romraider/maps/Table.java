@@ -27,8 +27,10 @@ import javax.naming.NameNotFoundException;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
+import com.romraider.swing.TableFrame;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public abstract class Table implements Serializable {
@@ -38,6 +40,7 @@ public abstract class Table implements Serializable {
     protected static Settings.Endian memModelEndian;
 
     protected TableView tableView;
+    protected TableFrame tableFrame;
     
     protected String name;
     protected String category = "Other";
@@ -93,6 +96,14 @@ public abstract class Table implements Serializable {
     	return this.tableView;
     }
     
+    public void setTableFrame(TableFrame v) {
+    	this.tableFrame = v;
+    }
+    
+    public TableFrame getTableFrame() {
+    	return this.tableFrame;
+    }
+    
     public DataCell[] getData() {
         return data;
     }
@@ -100,6 +111,7 @@ public abstract class Table implements Serializable {
     public void setData(DataCell[] data) {
         this.data = data;
     }
+    
     
     public int getRamOffset() {
     	return this.ramOffset;
@@ -273,8 +285,26 @@ public abstract class Table implements Serializable {
         return name;
     }
     
+    public void setName(String n) {
+    	this.name = n;
+    }
+    
     public String getName() {
     	return toString();
+    }
+    
+    public StringBuffer getTableAsString() {
+        StringBuffer output = new StringBuffer(Settings.BLANK);
+        for (int i = 0; i < data.length; i++) {
+
+            if(data[i]!= null)
+            	output.append(NumberUtil.stringValue(data[i].getRealValue()));
+
+            if (i < data.length - 1) {
+                output.append(Settings.TAB);
+            }
+        }
+        return output;
     }
 
     @Override

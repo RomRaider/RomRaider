@@ -23,6 +23,7 @@ import static com.romraider.util.ParamChecker.isNullOrEmpty;
 
 import javax.naming.NameNotFoundException;
 import com.romraider.Settings;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public class Table3D extends Table {
@@ -41,7 +42,11 @@ public class Table3D extends Table {
     public TableType getType() {
         return Table.TableType.TABLE_3D;
     }
-
+    
+    public Table3DView getTableView() {
+    	return (Table3DView) tableView;
+    }
+    
     public Table1D getXAxis() {
         return xAxis;
     }
@@ -102,6 +107,33 @@ public class Table3D extends Table {
         return data[0].length;
     }
 
+    @Override
+    public StringBuffer getTableAsString() {
+        StringBuffer output = new StringBuffer(Settings.BLANK);
+
+        output.append(xAxis.getTableAsString());
+        output.append(Settings.NEW_LINE);
+
+        for (int y = 0; y < getSizeY(); y++) {
+            output.append(NumberUtil.stringValue(yAxis.data[y].getRealValue()));
+            output.append(Settings.TAB);
+
+            for (int x = 0; x < getSizeX(); x++) {
+
+            	output.append(NumberUtil.stringValue(data[x][y].getRealValue()));
+                
+                if (x < getSizeX() - 1) {
+                    output.append(Settings.TAB);
+                }
+            }
+
+            if (y < getSizeY() - 1) {
+                output.append(Settings.NEW_LINE);
+            }
+        }
+
+        return output;
+    }
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {

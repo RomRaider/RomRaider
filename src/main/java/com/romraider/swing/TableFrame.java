@@ -39,6 +39,8 @@ import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.maps.TableView;
+import com.romraider.maps.UserLevelException;
 import com.romraider.util.ResourceUtil;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener, ActionListener {
@@ -46,10 +48,10 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     private static final long serialVersionUID = -2651279694660392351L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableFrame.class.getName());
-    private final Table table;
+    private final TableView table;
     private TableMenuBar tableMenuBar = null;
 
-    public TableFrame(String title, Table table) {
+    public TableFrame(String title, TableView table) {
         super(title, true, true);
         this.table = table;
         add(table);
@@ -107,6 +109,9 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
 
     public Table getTable() {
+        return table.getTable();
+    }
+    public TableView getTableView() {
         return table;
     }
 
@@ -121,54 +126,56 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         TableMenuBar menu = getTableMenuBar();
-
+        Table t = getTable();
+        
+        try {
         if (e.getSource() == menu.getUndoAll()) {
-            getTable().undoAll();
+            t.undoAll();
 
         } else if (e.getSource() == menu.getRevert()) {
-            getTable().setRevertPoint();
+            t.setRevertPoint();
 
         } else if (e.getSource() == menu.getUndoSel()) {
-            getTable().undoSelected();
+            getTableView().undoSelected();
 
         } else if (e.getSource() == menu.getClose()) {
             ECUEditorManager.getECUEditor().removeDisplayTable(this);
 
         } else if (e.getSource() == menu.getTableProperties()) {
-            JOptionPane.showMessageDialog(getTable(),
-                    new TablePropertyPanel(getTable()),
+            JOptionPane.showMessageDialog(getTableView(),
+                    new TablePropertyPanel(t),
                     MessageFormat.format(
                             rb.getString("TBLPROP"), getTable().getName()),
                     JOptionPane.INFORMATION_MESSAGE);
 
         } else if (e.getSource() == menu.getCopySel()) {
-            getTable().copySelection();
+            getTableView().copySelection();
 
         } else if (e.getSource() == menu.getCopyTable()) {
-            getTable().copyTable();
+            getTableView().copyTable();
 
         } else if (e.getSource() == menu.getPaste()) {
-            getTable().paste();
+            getTableView().paste();
 
         } else if (e.getSource() == menu.getCompareOff()) {
-            getTable().setCompareTable(null);
-            getTable().setCompareValueType(Settings.DataType.BIN);
+            t.setCompareTable(null);
+            t.setCompareValueType(Settings.DataType.BIN);
             getTableMenuBar().getCompareToBin().setSelected(true);
 
         } else if (e.getSource() == menu.getCompareAbsolute()) {
-            getTable().setCompareDisplay(Settings.CompareDisplay.ABSOLUTE);
+            getTableView().setCompareDisplay(Settings.CompareDisplay.ABSOLUTE);
 
         } else if (e.getSource() == menu.getComparePercent()) {
-            getTable().setCompareDisplay(Settings.CompareDisplay.PERCENT);
+            getTableView().setCompareDisplay(Settings.CompareDisplay.PERCENT);
 
         } else if (e.getSource() == menu.getCompareOriginal()) {
-            getTable().setCompareValueType(Settings.DataType.ORIGINAL);
+            t.setCompareValueType(Settings.DataType.ORIGINAL);
             getTableMenuBar().getCompareToOriginal().setSelected(true);
-            compareByTable(getTable());
+            compareByTable(t);
 
         } else if (e.getSource() == menu.getCompareMap()) {
             JTableChooser chooser = new JTableChooser();
-            Table selectedTable = chooser.showChooser(getTable());
+            Table selectedTable = chooser.showChooser(t);
             if(null != selectedTable) {
                 compareByTable(selectedTable);
             }
@@ -180,31 +187,38 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             }
 
         } else if (e.getSource() == menu.getCompareToOriginal()) {
-            getTable().setCompareValueType(Settings.DataType.ORIGINAL);
-            getTable().refreshCompare();
+            t.setCompareValueType(Settings.DataType.ORIGINAL);
+            t.refreshCompare();
 
         } else if (e.getSource() == menu.getCompareToBin()) {
-            getTable().setCompareValueType(Settings.DataType.BIN);
-            getTable().refreshCompare();
+            t.setCompareValueType(Settings.DataType.BIN);
+            t.refreshCompare();
 
         } else if (e.getSource() == menu.getInterp()) {
-            getTable().interpolate();
+            getTableView().interpolate();
 
         } else if (e.getSource() == menu.getVertInterp()) {
-            getTable().verticalInterpolate();
+            getTableView().verticalInterpolate();
 
         } else if (e.getSource() == menu.getHorizInterp()) {
-            getTable().horizontalInterpolate();
+            getTableView().horizontalInterpolate();
+        }
+        }
+        catch(UserLevelException ex) {
+        	TableView.showInvalidUserLevelPopup(ex);
         }
     }
 
     public void compareByTable(Table selectedTable) {
+    	Table t = getTable();
+    	
         if(null == selectedTable) {
             return;
         }
-        getTable().setCompareTable(selectedTable);
-        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(getTable());
-        getTable().populateCompareValues(selectedTable);
+        
+        t.setCompareTable(selectedTable);
+        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(t);
+        t.populateCompareValues(selectedTable);
     }
 
     public void refreshSimilarOpenTables() {

@@ -38,6 +38,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.swing.TableFrame;
 
 public class Table2DView extends TableView {
 	private static final long serialVersionUID = -7684570967109324784L;
@@ -47,9 +48,9 @@ public class Table2DView extends TableView {
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
    
-    protected Table2DView(Table2D table) {
-		super(table);
-		axis = new Table1DView(table.getAxis());
+    protected Table2DView(Table2D table, TableFrame frame) {
+		super(table, frame);
+		axis = new Table1DView(table.getAxis(), frame);
         verticalOverhead += 18;
 
 	}
@@ -69,15 +70,6 @@ public class Table2DView extends TableView {
     @Override
     public String toString() {
         return super.toString() + " (2D)";// + axis;
-    }
-
-    @Override
-    public StringBuffer getTableAsString() {
-        StringBuffer output = new StringBuffer(Settings.BLANK);
-        output.append(axis.getTableAsString());
-        output.append(Settings.NEW_LINE);
-        output.append(super.getTableAsString());
-        return output;
     }
 
     @Override
@@ -419,7 +411,7 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTable2DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTableAsString());
+        output.append(table.getTable().getTableAsString());
 
         //copy to clipboard
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);

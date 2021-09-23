@@ -84,8 +84,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
         // Add nodes to ROM tree.
         for (TableTreeNode tableTreeNode : tableNodes) {
-            TableFrame tableFrame = tableTreeNode.getFrame();
-            Table table = tableFrame.getTable();
+            Table table = tableTreeNode.getTable();
             String[] categories = table.getCategory().split("//");
                       
             if (settings.isDisplayHighTables() || settings.getUserLevel() >= table.getUserLevel()) {
@@ -119,18 +118,17 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void addTable(Table table) {
         boolean found = false;
-        String frameTitle = this.getFileName()+" - " + table.getName();
 
         for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().equals(table)) {
                 tableNodes.remove(i);
-                tableNodes.add(i, new TableTreeNode(new TableFrame(frameTitle, table)));
+                tableNodes.add(i, new TableTreeNode(table));
                 found = true;
                 break;
             }
         }
         if (!found) {
-            tableNodes.add(new TableTreeNode(new TableFrame(frameTitle, table)));
+            tableNodes.add(new TableTreeNode(table));
         }
     }
 
@@ -141,13 +139,13 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
                 tableNodes.remove(i);
-                tableNodes.add(i, new TableTreeNode(new TableFrame(frameTitle, table)));
+                tableNodes.add(i, new TableTreeNode(table));
                 found = true;
                 break;
             }
         }
         if (!found) {
-            tableNodes.add(new TableTreeNode(new TableFrame(frameTitle, table)));
+            tableNodes.add(new TableTreeNode(table));
         }
     }
 

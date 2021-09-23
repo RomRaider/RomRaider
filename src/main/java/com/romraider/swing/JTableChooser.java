@@ -101,7 +101,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
         Object[] values = {rb.getString("COMPARE"), rb.getString("CANCEL")};
 
-        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable),
+        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable.getTableView()),
                 displayPanel,
                 rb.getString("SELECT"), JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0

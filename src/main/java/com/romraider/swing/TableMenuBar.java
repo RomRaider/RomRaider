@@ -31,6 +31,7 @@ import javax.swing.JSeparator;
 
 import com.romraider.maps.Table;
 import com.romraider.maps.Table3D;
+import com.romraider.maps.Table3DView;
 import com.romraider.util.ResourceUtil;
 
 public class TableMenuBar extends JMenuBar {

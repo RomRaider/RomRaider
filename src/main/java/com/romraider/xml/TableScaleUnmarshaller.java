@@ -294,9 +294,8 @@ public class TableScaleUnmarshaller {
 	                } else if (n.getNodeName().equalsIgnoreCase("data")) {
 	                    // parse and add data to table
 	                    DataCell c = new DataCell(table, unmarshallText(n));
-	                    DataCellView dataCell = new DataCellView(c);
 	                    if(table instanceof Table1D) {
-	                        ((Table1D)table).addStaticDataCell(dataCell);
+	                        ((Table1D)table).addStaticDataCell(c);
 	                    } else {
 	                        // Why would this happen.  Static should only be for axis.
 	                        LOGGER.error("Error adding static data cell.");

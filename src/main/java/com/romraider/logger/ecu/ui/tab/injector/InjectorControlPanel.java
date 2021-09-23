@@ -433,11 +433,11 @@ public final class InjectorControlPanel extends JPanel {
                             rb.getString("INJFLOWSCALING")) == OK_OPTION) {
                         Table2D table = getInjectorFlowTable(ecuEditor);
                         if (table != null) {
-                            DataCellView[] cells = table.getData();
+                            DataCell[] cells = table.getData();
                             if (cells.length == 1) {
                                 if (isNumber(flowScaling)) {
                                     String value = flowScaling.getText().trim();
-                                    cells[0].getDataCell().setRealValue(value);
+                                    cells[0].setRealValue(value);
                                 } else {
                                     showMessageDialog(parent,
                                             rb.getString("INVALIDSCALING"),
@@ -472,12 +472,12 @@ public final class InjectorControlPanel extends JPanel {
                     if (showUpdateTableConfirmation(rb.getString("INJLAT")) == OK_OPTION) {
                         Table2D table = getInjectorLatencyTable(ecuEditor);
                         if (table != null) {
-                            DataCellView[] cells = table.getData();
+                            DataCell[] cells = table.getData();
                             if (isNumber(latencyOffset)) {
-                                for (DataCellView cell : cells) {
-                                    double newLatency = cell.getDataCell().getRealValue()
+                                for (DataCell cell : cells) {
+                                    double newLatency = cell.getRealValue()
                                             + parseDouble(latencyOffset);
-                                    cell.getDataCell().setRealValue("" + newLatency);
+                                    cell.setRealValue("" + newLatency);
                                 }
                             } else {
                                 showMessageDialog(parent,

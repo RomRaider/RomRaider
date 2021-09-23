@@ -19,6 +19,8 @@
 
 package com.romraider.maps;
 
+import com.romraider.Settings;
+
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Table axisParent = null;
@@ -46,6 +48,32 @@ public class Table1D extends Table {
 		return binData;
 	}
 	
+    public void addStaticDataCell(DataCell input) {
+        for(int i = 0; i < data.length; i++) {
+            if(data[i] == null) {
+                data[i] = input;
+                break;
+            }
+        }
+    }
+    
+    @Override
+    public StringBuffer getTableAsString() {
+        if(isStaticDataTable()) {
+            StringBuffer output = new StringBuffer(Settings.BLANK);
+            for (int i = 0; i < data.length; i++) {
+                output.append(data[i].getStaticText());
+                if (i < data.length - 1) {
+                    output.append(Settings.TAB);
+                }
+            }
+            return output;
+        } else {
+            return super.getTableAsString();
+      
+        }
+    }
+        
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         super.populateTable(input, romRamOffset);
@@ -140,3 +168,5 @@ public class Table1D extends Table {
         }
     }
 }
+
+    

@@ -24,7 +24,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
-import com.romraider.Settings;
+import com.romraider.swing.TableFrame;
 import com.romraider.util.NumberUtil;
 
 public class Table1DView extends TableView {
@@ -32,8 +32,8 @@ public class Table1DView extends TableView {
 	private static final long serialVersionUID = -8747180767803835631L;
 	private Table1D table;
 	
-    protected Table1DView(Table1D table) {
-		super(table);
+    protected Table1DView(Table1D table, TableFrame frame) {
+		super(table, frame);
     	this.table = table;
 	}
     
@@ -360,19 +360,4 @@ public class Table1DView extends TableView {
         this.table.getAxisParent().getTableView().updateTableLabel();
     }
 
-    @Override
-    public StringBuffer getTableAsString() {
-        if(table.isStaticDataTable()) {
-            StringBuffer output = new StringBuffer(Settings.BLANK);
-            for (int i = 0; i < data.length; i++) {
-                output.append(data[i].getStaticText());
-                if (i < data.length - 1) {
-                    output.append(Settings.TAB);
-                }
-            }
-            return output;
-        } else {
-            return super.getTableAsString();
-        }
-    }
 }

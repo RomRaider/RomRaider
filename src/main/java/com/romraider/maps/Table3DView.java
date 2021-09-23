@@ -19,13 +19,9 @@
 
 package com.romraider.maps;
 
-import static com.romraider.util.ParamChecker.isNullOrEmpty;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -33,24 +29,20 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.text.MessageFormat;
+
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import javax.naming.NameNotFoundException;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.EmptyBorder;
+
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
+import com.romraider.swing.TableFrame;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.ResourceUtil;
-import com.romraider.util.SettingsManager;
 
 public class Table3DView extends TableView {
 
@@ -67,10 +59,10 @@ public class Table3DView extends TableView {
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
 
-    public Table3DView(Table3D table) {
-    	super(table);
-    	xAxis = new Table1DView(table.getXAxis());
-    	yAxis = new Table1DView(table.getYAxis());
+    public Table3DView(Table3D table, TableFrame frame) {
+    	super(table, frame);
+    	xAxis = new Table1DView(table.getXAxis(), frame);
+    	yAxis = new Table1DView(table.getYAxis(), frame);
     	
         verticalOverhead += 39;
         horizontalOverhead += 10;
@@ -212,38 +204,6 @@ public class Table3DView extends TableView {
         }
 
         tableLabel.setText(table.getCurrentScale().getUnit());
-    }
-
-  
-    @Override
-    public StringBuffer getTableAsString() {
-        StringBuffer output = new StringBuffer(Settings.BLANK);
-
-        output.append(xAxis.getTableAsString());
-        output.append(Settings.NEW_LINE);
-
-        for (int y = 0; y < table.getSizeY(); y++) {
-            output.append(NumberUtil.stringValue(yAxis.data[y].getDataCell().getRealValue()));
-            output.append(Settings.TAB);
-
-            for (int x = 0; x < table.getSizeX(); x++) {
-                if (overlayLog) {
-                    output.append(data[x][y].getCellText());
-                }
-                else {
-                    output.append(NumberUtil.stringValue(data[x][y].getDataCell().getRealValue()));
-                }
-                if (x < table.getSizeX() - 1) {
-                    output.append(Settings.TAB);
-                }
-            }
-
-            if (y < table.getSizeY() - 1) {
-                output.append(Settings.NEW_LINE);
-            }
-        }
-
-        return output;
     }
 
     @Override
@@ -855,7 +815,7 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         String tableHeader = TableView.getSettings().getTable3DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(tableView.getTableAsString());
+        output.append(tableView.getTable().getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }
