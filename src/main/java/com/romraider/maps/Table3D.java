@@ -328,7 +328,9 @@ public class Table3D extends Table {
                 }
             }
         }
-        this.curScale = curScale;
+        
+        this.curScale = curScale;     
+        if(tableView!=null) tableView.drawTable();
     }
 
     @Override

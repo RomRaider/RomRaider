@@ -494,6 +494,10 @@ public abstract class TableView extends JPanel implements Serializable {
     	return table.getTableFrame();
     }
     
+    public void setTable(Table t) {
+    	 this.table = t;
+    }
+    
     public Table getTable() {
     	return this.table;
     }
@@ -565,11 +569,6 @@ public abstract class TableView extends JPanel implements Serializable {
         for (DataCellView cell : data) {
                 cell.setSelected(false);
             }
-    }
-    
-    @Override
-    public void repaint() {
-    	drawTable();
     }
 
     public void startHighlight(int x, int y) {
@@ -878,6 +877,10 @@ public abstract class TableView extends JPanel implements Serializable {
         } else {
             tableLabel.setText(getName() + " (" + table.getCurrentScale().getUnit() + ")");
         }
+    }
+    
+    public String getName() {
+    	return table.getName();
     }
     
     public static void showBadScalePopup(Table table, Scale scale) {

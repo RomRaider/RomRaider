@@ -85,7 +85,7 @@ public class Table3DView extends TableView {
 	        for(DataCellView[] column : data) {
 	            for(DataCellView cell : column) {
 	                if(null != cell) {
-	                    cell.repaint();
+	                    cell.drawCell();
 	                }
 	            }
 	        }
@@ -95,34 +95,26 @@ public class Table3DView extends TableView {
     		xAxis.drawTable();
     	
     	if(yAxis!=null)
-        yAxis.drawTable();
+    		yAxis.drawTable();
     }
 
     @Override
+    //TODO
     public void populateTableVisual() {
     	// fill first empty cell
         centerPanel.add(new JLabel());
-        centerLayout.setColumns(xAxis.getTable().getDataSize());
-        centerLayout.setRows(yAxis.getTable().getDataSize());
+        centerLayout.setColumns(table.getSizeX()+1);
+        centerLayout.setRows(table.getSizeY()+1);
         
         // temporarily remove lock
         boolean tempLock = table.locked;
         table.locked = false;
-
-        // populate axes
-        try {
-            xAxis.populateTableVisual();
-            yAxis.populateTableVisual();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-
+            
         for (int x = 0; x < xAxis.getTable().getDataSize(); x++) {
             centerPanel.add(xAxis.getDataCell(x));
         }
 
-        
-        data = new DataCellView[xAxis.getTable().getDataSize()][yAxis.getTable().getDataSize()];
+        data = new DataCellView[table.getSizeX()][table.getSizeY()];
         
         int iMax = table.getSwapXY() ? xAxis.getTable().getDataSize() : yAxis.getTable().getDataSize();
         int jMax = table.getSwapXY() ? yAxis.getTable().getDataSize() : xAxis.getTable().getDataSize();
@@ -141,8 +133,7 @@ public class Table3DView extends TableView {
                 if (tempLock) {
                     data[x][y].setForeground(Color.GRAY);
                 }
-                
-             
+                            
                 data[x][y] = new DataCellView(table.get3dData()[x][y], this, x,y);
             }
         }
@@ -153,7 +144,7 @@ public class Table3DView extends TableView {
                 centerPanel.add(data[x][y]);
             }
         }
-
+        
         // reset locked status
         table.locked = tempLock;
 
@@ -196,6 +187,7 @@ public class Table3DView extends TableView {
         	xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
         
         if(presetPanel != null) presetPanel.populatePanel();
+        drawTable();
     }
 
     @Override

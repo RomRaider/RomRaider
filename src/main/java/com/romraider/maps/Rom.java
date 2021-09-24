@@ -386,13 +386,21 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Hide and dispose all frames.
         for(TableTreeNode tableTreeNode : tableNodes) {
             TableFrame frame = tableTreeNode.getFrame();
-            frame.setVisible(false);
-            try {
-                frame.setClosed(true);
-            } catch (PropertyVetoException e) {
-                ; // Do nothing.
+        
+            if(frame != null) {
+            	frame.getTableView().setVisible(false);            
+	            frame.setVisible(false);
+	            
+	            try {
+	                frame.setClosed(true);
+	            } catch (PropertyVetoException e) {
+	                ; // Do nothing.
+	            }
+	            frame.dispose();
+	            
+                frame.getTableView().setTable(null);
+                frame.setTableView(null);
             }
-            frame.dispose();
         }
 
         tableNodes.clear();

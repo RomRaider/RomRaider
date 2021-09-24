@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
+import com.romraider.maps.Table.TableType;
 import com.romraider.util.NumberUtil;
 
 public class Table1DView extends TableView {
@@ -34,6 +35,7 @@ public class Table1DView extends TableView {
     public Table1DView(Table1D table) {
 		super(table);
     	this.table = table;
+    	
     	populateTableVisual();
 	}
     
@@ -48,36 +50,40 @@ public class Table1DView extends TableView {
     }
     
     @Override
-    public void populateTableVisual()   {
-        centerLayout.setRows(1);
-        centerLayout.setColumns(table.getDataSize());
+    public void populateTableVisual() {
         super.populateTableVisual();
-
-        // add to table
-        for (int i = 0; i < table.getDataSize(); i++) {
-            centerPanel.add(this.getDataCell(i));
-        }
-
-        if(null == table.name || table.name.isEmpty()) {
-            ;// Do not add label.
-        } else if(null == table.getCurrentScale () || "0x" == table.getCurrentScale().getUnit()) {
-            // static or no scale exists.
-            tableLabel = new JLabel(getName(), JLabel.CENTER);
-            add(tableLabel, BorderLayout.NORTH);
-        } else {
-            tableLabel = new JLabel(getName() + " (" + table.getCurrentScale().getUnit() + ")", JLabel.CENTER);
-            add(tableLabel, BorderLayout.NORTH);
-        }
         
-        if(tableLabel != null)
-        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
-        
-        if(presetPanel != null) presetPanel.populatePanel();
+        //Only populate the rest if we aren't an axis
+    	if(table.getType() == TableType.TABLE_1D) {
+	        centerLayout.setRows(1);
+	        centerLayout.setColumns(table.getDataSize());
+
+	        // add to table
+	        for (int i = 0; i < table.getDataSize(); i++) {
+	            centerPanel.add(this.getDataCell(i));
+	        }
+	
+	        if(null == table.name || table.name.isEmpty()) {
+	            ;// Do not add label.
+	        } else if(null == table.getCurrentScale () || "0x" == table.getCurrentScale().getUnit()) {
+	            // static or no scale exists.
+	            tableLabel = new JLabel(getName(), JLabel.CENTER);
+	            add(tableLabel, BorderLayout.NORTH);
+	        } else {
+	            tableLabel = new JLabel(getName() + " (" + table.getCurrentScale().getUnit() + ")", JLabel.CENTER);
+	            add(tableLabel, BorderLayout.NORTH);
+	        }
+	        
+	        if(tableLabel != null)
+	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
+	        
+	        if(presetPanel != null) presetPanel.populatePanel();
+    	}
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (1D)";
+        return table.toString() + " View";
     }
 
     @Override

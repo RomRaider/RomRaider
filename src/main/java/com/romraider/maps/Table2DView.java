@@ -87,9 +87,10 @@ public class Table2DView extends TableView {
 
     @Override
     public void populateTableVisual(){
+        super.populateTableVisual();
+        
     	centerLayout.setRows(2);
         centerLayout.setColumns(table.getDataSize());
-        super.populateTableVisual();
 
         // add to table
         for (int i = 0; i < axis.getTable().getDataSize(); i++) {

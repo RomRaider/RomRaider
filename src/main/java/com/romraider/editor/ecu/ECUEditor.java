@@ -113,7 +113,6 @@ public class ECUEditor extends AbstractFrame {
     private TableToolBar tableToolBar;
     private final JPanel toolBarPanel = new JPanel();
     private OpenImageWorker openImageWorker;
-    private CloseImageWorker closeImageWorker;
     private SetUserLevelWorker setUserLevelWorker;
     private LaunchLoggerWorker launchLoggerWorker;
     private final ImageIcon editorIcon = new ImageIcon(getClass().getResource(
@@ -388,11 +387,27 @@ public class ECUEditor extends AbstractFrame {
         refreshUI();
     }
 
-    public void closeImage() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        closeImageWorker = new CloseImageWorker(getLastSelectedRom());
-        closeImageWorker.addPropertyChangeListener(getStatusPanel());
-        closeImageWorker.execute();
+    public void closeImage() {    	
+    	Rom rom = getLastSelectedRom();
+        ECUEditor editor = ECUEditorManager.getECUEditor();
+        RomTreeRootNode imageRoot = editor.getImageRoot();
+
+        rom.clearData();
+        rom.removeFromParent();
+        rom = null;
+
+        if (imageRoot.getChildCount() > 0) {
+            editor.setLastSelectedRom((Rom) imageRoot.getChildAt(0));
+        } else {
+            // no other images open
+            editor.setLastSelectedRom(null);
+        }
+
+        editor.refreshTableCompareMenus();
+        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
+        editor.setCursor(null);
+        editor.refreshUI();
+        System.gc(); 	
     }
 
     public void closeAllImages() {
@@ -590,9 +605,8 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
     }
 }
 
+//Do we really need this? Cant be compute intensive
 class SetUserLevelWorker extends SwingWorker<Void, Void> {
-    public SetUserLevelWorker() {
-    }
 
     @Override
     protected Void doInBackground() throws Exception {
@@ -619,45 +633,6 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
         setProgress(0);
         editor.setCursor(null);
         editor.refreshUI();
-    }
-}
-
-class CloseImageWorker extends SwingWorker<Void, Void> {
-    Rom rom;
-
-    public CloseImageWorker(Rom romToRemove) {
-        this.rom = romToRemove;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        RomTreeRootNode imageRoot = editor.getImageRoot();
-
-        rom.clearData();
-        rom.removeFromParent();
-        rom = null;
-
-        if (imageRoot.getChildCount() > 0) {
-            editor.setLastSelectedRom((Rom) imageRoot.getChildAt(0));
-        } else {
-            // no other images open
-            editor.setLastSelectedRom(null);
-        }
-
-        editor.refreshTableCompareMenus();
-
-        return null;
-    }
-
-    @Override
-    public void done() {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
-        setProgress(0);
-        editor.setCursor(null);
-        editor.refreshUI();
-        System.gc();
     }
 }
 

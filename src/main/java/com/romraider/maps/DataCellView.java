@@ -81,6 +81,8 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         this.addMouseListener(this);
         
         cell.setDataView(this);
+        this.y = cell.getIndexInTable();
+        this.setPreferredSize(getSettings().getCellSize());
     }
     
     public DataCellView(DataCell cell, TableView view, int x, int y) {
@@ -88,12 +90,12 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     	
         this.x = x;
         this.y = y;
-        this.setPreferredSize(getSettings().getCellSize());
     }
     
     public void setSelected(boolean selected) {
         if(!tableView.getTable().isStaticDataTable() && this.isSelected != selected) {
             this.isSelected = selected;
+            drawCell();
         }
     }
     

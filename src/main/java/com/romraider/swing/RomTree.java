@@ -121,8 +121,9 @@ public class RomTree extends JTree implements MouseListener {
 	        		v = new Table3DView((Table3D)node.getTable());
 	        	else
 	        		return;
-	        	
-	        	 f = new TableFrame("Title", v);
+	        	 Rom rom = getRomNode(node);
+	        	 
+	        	 f = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
         	}
             getEditor().displayTable(f);
         }

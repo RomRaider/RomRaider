@@ -348,6 +348,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
     	
     public void updateTableToolBar(Table selectedTable) {
+    	//Select the parent Table always instead?
+    	//if(selectedTable instanceof Table1D)selectedTable = ((Table1D)selectedTable).getAxisParent();
+    	
         if(selectedTable == null  && this.selectedTable == null) {
             // Skip if the table is the same to avoid multiple updates
             return;

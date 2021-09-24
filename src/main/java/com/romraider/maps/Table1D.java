@@ -43,6 +43,13 @@ public class Table1D extends Table {
         return axisParent;
     }
     
+    @Override
+    public void setCurrentScale(Scale curScale) {
+        this.curScale = curScale;
+        
+        if(tableView!=null) tableView.drawTable();
+    }
+  
 	@Override
 	public byte[] saveFile(byte[] binData) {
 		return binData;

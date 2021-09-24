@@ -500,9 +500,6 @@ public abstract class Table implements Serializable {
         this.minCompare = minCompare;
     }
 
-    
-
-
     public void setRevertPoint() {
         for (DataCell cell : data) {
             cell.setRevertPoint();
@@ -632,8 +629,6 @@ public abstract class Table implements Serializable {
 
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
-        
-        if(tableView!=null) tableView.repaint();
     }
 
     public Settings getSettings()

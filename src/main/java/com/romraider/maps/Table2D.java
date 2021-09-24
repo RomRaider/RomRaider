@@ -164,7 +164,7 @@ public class Table2D extends Table {
         }
         this.curScale = curScale;
         
-        if(tableView != null) tableView.repaint();
+        if(tableView != null) tableView.drawTable();
     }
     
     @Override
