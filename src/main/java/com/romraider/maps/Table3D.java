@@ -135,6 +135,8 @@ public class Table3D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    	validateScaling();
+    	
     	// fill first empty cell
         if (!beforeRam) {
             this.ramOffset = romRamOffset;

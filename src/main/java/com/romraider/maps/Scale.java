@@ -55,6 +55,8 @@ public class Scale implements Serializable {
     }
     
     public boolean validate() {
+    	if(expression.equals("x") && byteExpression.equals("x")) return true;
+    	
         double startValue = 5;
         double toReal = JEPUtil.evaluate(getExpression(), startValue); // convert real world value of "5"
         double endValue = JEPUtil.evaluate(getByteExpression(), toReal);

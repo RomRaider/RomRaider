@@ -85,6 +85,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Add nodes to ROM tree.
         for (TableTreeNode tableTreeNode : tableNodes) {
             Table table = tableTreeNode.getTable();
+                       
             String[] categories = table.getCategory().split("//");
                       
             if (settings.isDisplayHighTables() || settings.getUserLevel() >= table.getUserLevel()) {

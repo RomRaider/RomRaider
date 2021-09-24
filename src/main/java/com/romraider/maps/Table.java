@@ -118,7 +118,9 @@ public abstract class Table implements Serializable {
     }
     
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        // temporarily remove lock;
+    	validateScaling();
+    	
+    	// temporarily remove lock;
         boolean tempLock = locked;
         locked = false;
 
@@ -199,8 +201,6 @@ public abstract class Table implements Serializable {
         if(SettingsManager.getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
             this.curScale = scale;
         }
-
-        validateScaling();
     }
 
     public int getStorageAddress() {
@@ -580,13 +580,7 @@ public abstract class Table implements Serializable {
 	}
     
     public void validateScaling() {
-        if (getType() != TableType.SWITCH) {
-
-            // make sure a scale is present
-            if (scales.isEmpty()) {
-                scales.add(new Scale());
-            }
-            
+        if (getType() != TableType.SWITCH) {            
             for(Scale scale : scales) {
                 if (!scale.validate()) {
                 	TableView.showBadScalePopup(this, scale);

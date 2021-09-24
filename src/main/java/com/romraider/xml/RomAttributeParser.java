@@ -232,20 +232,17 @@ public final class RomAttributeParser {
 	}
 
     public static int parseFileSize(String input) throws NumberFormatException {
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException ex) {
-            if (input.substring(input.length() - 2).equalsIgnoreCase("kb")) {
-                return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024;
-            }
-            else if (input.substring(input.length() - 2).equalsIgnoreCase("mb")) {
-                return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024 * 1024;
-            }
-            else if (input.substring(input.length() - 1).equalsIgnoreCase("b")) {
-                return Integer.parseInt(input.substring(0, input.length() - 1));
-            }
-            throw new NumberFormatException();
+        if (input.substring(input.length() - 2).equalsIgnoreCase("kb")) {
+            return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024;
         }
+        else if (input.substring(input.length() - 2).equalsIgnoreCase("mb")) {
+            return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024 * 1024;
+        }
+        else if (input.substring(input.length() - 1).equalsIgnoreCase("b")) {
+            return Integer.parseInt(input.substring(0, input.length() - 1));
+        }
+        
+        return Integer.parseInt(input);
     }
 
     public static byte[] floatToByte(float input, Settings.Endian endian, Settings.Endian memModelEndian) {
