@@ -321,45 +321,67 @@ public abstract class TableView extends JPanel implements Serializable {
 				}
             }
         };
-        Action interpolate = new AbstractAction() {
+     
+        class InterpolateAction extends AbstractAction{
             private static final long serialVersionUID = -2357532575392447149L;
-
+            Table t;
+            
+            public InterpolateAction(Table t) {
+            	this.t = t;
+            }
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                	table.interpolate();
+                	t.interpolate();
 			} catch (UserLevelException e1) {
 				showInvalidUserLevelPopup(e1);
 			}
             }
         };
-        Action verticalInterpolate = new AbstractAction() {
+        
+        Action interpolate = new InterpolateAction(table);
+        
+        class VerticalInterpolateAction extends  AbstractAction {
             private static final long serialVersionUID = -2375322575392447149L;
-
+            Table t;
+            
+            public VerticalInterpolateAction(Table t) {
+            	this.t = t;
+            }
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                	table.verticalInterpolate();
-			} catch (UserLevelException e1) {
-				showInvalidUserLevelPopup(e1);
-			}
+                	t.verticalInterpolate();
+				} catch (UserLevelException e1) {
+					showInvalidUserLevelPopup(e1);
+				}
             }
         };
-        Action horizontalInterpolate = new AbstractAction() {
+        
+        Action verticalInterpolate = new VerticalInterpolateAction(table);
+
+        class HorizontalInterpolateAction extends AbstractAction {
             private static final long serialVersionUID = -6346750245035640773L;
-
+            Table t;
+                    
+            public HorizontalInterpolateAction(Table t) {
+            	this.t = t;
+            }
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                	table.horizontalInterpolate();
-			} catch (UserLevelException e1) {
-				showInvalidUserLevelPopup(e1);
-			}
+                	t.horizontalInterpolate();
+				} catch (UserLevelException e1) {
+					showInvalidUserLevelPopup(e1);
+				}
             }
         };
-        Action multiplyAction = new AbstractAction() {
-            private static final long serialVersionUID = -2753212575392447149L;
-
+        
+        Action horizontalInterpolate = new HorizontalInterpolateAction(table);
+        		
+        class MultiplyAction extends AbstractAction {
+            private static final long serialVersionUID = -2753212575392447149L;                       
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -369,6 +391,9 @@ public abstract class TableView extends JPanel implements Serializable {
     			}
             }
         };
+        
+        Action multiplyAction = new MultiplyAction();
+        
         Action numNegAction = new AbstractAction() {
             private static final long serialVersionUID = -7532750245035640773L;
 
