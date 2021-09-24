@@ -44,6 +44,10 @@ public class DataCell {
     private DataCellView view = null;
     private final Table table;
     
+    //This sounds like a View property, but the manipulations
+    //functions depend on this, so its better to put it here
+    private boolean isSelected = false;
+    
     private double binValue = 0.0;
     private double originalValue = 0.0;
     private double compareToValue = 0.0;
@@ -283,7 +287,18 @@ public class DataCell {
     {
         return SettingsManager.getSettings();
     }
-     
+    
+    public void setSelected(boolean selected) {
+        if(!table.isStaticDataTable() && this.isSelected != selected) {
+            this.isSelected = selected;
+            
+            if(view!=null) view.drawCell();
+        }
+    }
+    
+    public boolean isSelected() {
+    	return isSelected;
+    }
     public void updateBinValueFromMemory() {
     	this.binValue = getValueFromMemory();
     	updateView();

@@ -334,7 +334,158 @@ public class Table3D extends Table {
         this.curScale = curScale;     
         if(tableView!=null) tableView.drawTable();
     }
+    
+    private void setHighlightXY(int x, int y) {
+        if(tableView!=null) {
+        	tableView.highlightX = x;
+        	tableView.highlightY = y;
+        }
+    }
+    
+    public void deSelectCellAt(int x, int y) {
+        clearSelection();
+        data[x][y].setSelected(false);
+        setHighlightXY(x,y);
+    }
+    
+    public void selectCellAt(int x, int y) {
+        clearSelection();
+        data[x][y].setSelected(true);
+        setHighlightXY(x,y);
+    }
+    
+    public void selectCellAtWithoutClear(int x, int y) {
+        data[x][y].setSelected(true);
+        setHighlightXY(x,y);
+    }
+    
+    @Override
+    public void clearSelection() {
+        xAxis.clearSelection();
+        yAxis.clearSelection();
+        
+        for (int x = 0; x < getSizeX(); x++) {
+            for (int y = 0; y < getSizeY(); y++) {
+                data[x][y].setSelected(false);
+            }
+        }
+    }
+    
+    @Override
+    public void increment(double increment) throws UserLevelException {
+            for (int x = 0; x < getSizeX(); x++) {
+                for (int y = 0; y < getSizeY(); y++) {
+                    if (data[x][y].isSelected()) {
+                        data[x][y].increment(increment);
+                    }
+                }
+            }
+    }
 
+    @Override
+    public void multiply(double factor) throws UserLevelException {
+            for (int x = 0; x < getSizeX(); x++) {
+                for (int y = 0; y < getSizeY(); y++) {
+                    if (data[x][y].isSelected()) {                    
+                    		data[x][y].multiply(factor);                            
+                    }
+                }
+            }        
+    }
+    
+    @Override
+    public void setRealValue(String realValue) throws UserLevelException {
+        for(DataCell[] column : data) {
+            for(DataCell cell : column) {
+                if(cell.isSelected()) {
+                    cell.setRealValue(realValue);
+                }
+            }
+        }
+        xAxis.setRealValue(realValue);
+        yAxis.setRealValue(realValue);
+    }
+    
+    @Override
+    public void verticalInterpolate() throws UserLevelException {
+        int[] coords = { getSizeX(), getSizeY(), 0, 0};
+        DataCell[][] tableData = get3dData();
+        DataCell[] axisData = getYAxis().getData();
+        int i, j;
+        for (i = 0; i < getSizeX(); ++i) {
+            for (j = 0; j < getSizeY(); ++j) {
+                if (tableData[i][j].isSelected()) {
+                    if (i < coords[0])
+                        coords[0] = i;
+                    if (i > coords[2])
+                        coords[2] = i;
+                    if (j < coords[1])
+                        coords[1] = j;
+                    if (j > coords[3])
+                        coords[3] = j;
+                }
+            }
+        }
+        if (coords[3] - coords[1] > 1) {
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[1]].getBinValue();
+            x2 = axisData[coords[3]].getBinValue();
+            for (i = coords[0]; i <= coords[2]; ++i) {
+                y1 = tableData[i][coords[1]].getBinValue();
+                y2 = tableData[i][coords[3]].getBinValue();
+                for (j = coords[1] + 1; j < coords[3]; ++j) {
+                    x = axisData[j].getBinValue();
+                    tableData[i][j].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                }
+            }
+        }
+        // Interpolate y axis in case the y axis in selected.
+        getYAxis().verticalInterpolate();
+    }
+
+    @Override
+    public void horizontalInterpolate() throws UserLevelException {
+        int[] coords = { getSizeX(), getSizeY(), 0, 0 };
+        DataCell[][] tableData = get3dData();
+        DataCell[] axisData = getXAxis().getData();
+        int i, j;
+        for (i = 0; i < getSizeX(); ++i) {
+            for (j = 0; j < getSizeY(); ++j) {
+                if (tableData[i][j].isSelected()) {
+                    if (i < coords[0])
+                        coords[0] = i;
+                    if (i > coords[2])
+                        coords[2] = i;
+                    if (j < coords[1])
+                        coords[1] = j;
+                    if (j > coords[3])
+                        coords[3] = j;
+                }
+            }
+        }
+        if (coords[2] - coords[0] > 1) {
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[0]].getBinValue();
+            x2 = axisData[coords[2]].getBinValue();
+            for (i = coords[1]; i <= coords[3]; ++i) {
+                y1 = tableData[coords[0]][i].getBinValue();
+                y2 = tableData[coords[2]][i].getBinValue();
+                for (j = coords[0] + 1; j < coords[2]; ++j) {
+                    x = axisData[j].getBinValue();
+                    tableData[j][i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                }
+            }
+        }
+        // Interpolate x axis in case the x axis in selected.
+        getXAxis().horizontalInterpolate();
+    }
+
+    @Override
+    public void interpolate() throws UserLevelException {
+        verticalInterpolate();
+        horizontalInterpolate();
+    }
+    
     @Override
     public String getLogParamString() {
         StringBuilder sb = new StringBuilder();

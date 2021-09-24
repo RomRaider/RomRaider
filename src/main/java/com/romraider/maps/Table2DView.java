@@ -141,55 +141,7 @@ public class Table2DView extends TableView {
 
         tableLabel.setText(table.getCurrentScale().getUnit());
     }
-
-    @Override
-    public void interpolate() throws UserLevelException {
-        super.interpolate();
-        this.getAxis().interpolate();
-    }
-
-    @Override
-    public void verticalInterpolate() throws UserLevelException {
-        super.verticalInterpolate();
-        this.getAxis().verticalInterpolate();
-    }
-
-    @Override
-    public void horizontalInterpolate() throws UserLevelException {
-        int[] coords = { table.getDataSize(), 0};
-        DataCellView[] tableData = getData();
-        DataCellView[] axisData = getAxis().getData();
-
-        for (int i = 0; i < table.getDataSize(); ++i) {
-            if (tableData[i].isSelected()) {
-                if (i < coords[0])
-                    coords[0] = i;
-                if (i > coords[1])
-                    coords[1] = i;
-            }
-        }
-        if (coords[1] - coords[0] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getDataCell().getBinValue();
-            y1 = tableData[coords[0]].getDataCell().getBinValue();
-            x2 = axisData[coords[1]].getDataCell().getBinValue();
-            y2 = tableData[coords[1]].getDataCell().getBinValue();
-            for (int i = coords[0] + 1; i < coords[1]; ++i) {
-                x = axisData[i].getDataCell().getBinValue();
-                data[i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
-            }
-        }
-        // Interpolate x axis in case the x axis in selected.
-        this.getAxis().horizontalInterpolate();
-    }
-    
-    @Override
-    public void clearSelection() {
-        axis.clearSelection();
-        super.clearSelection();
-    }
-
-    
+  
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -199,7 +151,7 @@ public class Table2DView extends TableView {
     @Override
     public void cursorUp() {
         if (data[highlightY].isSelected()) {
-            axis.selectCellAt(highlightY);
+            axis.getTable().selectCellAt(highlightY);
         }
     }
 
@@ -219,7 +171,7 @@ public class Table2DView extends TableView {
     @Override
     public void cursorLeft() {
         if (highlightY > 0 && data[highlightY].isSelected()) {
-            selectCellAt(highlightY - 1);
+            table.selectCellAt(highlightY - 1);
         } else {
             axis.cursorLeft();
         }
@@ -228,7 +180,7 @@ public class Table2DView extends TableView {
     @Override
     public void cursorRight() {
         if (highlightY < data.length - 1 && data[highlightY].isSelected()) {
-            selectCellAt(highlightY + 1);
+            table.selectCellAt(highlightY + 1);
         } else {
             axis.cursorRight();
         }
@@ -237,9 +189,9 @@ public class Table2DView extends TableView {
 	@Override
 	public void shiftCursorUp() {
         if (data[highlightY].isSelected()) {
-        	data[highlightY].setSelected(false);
+        	data[highlightY].getDataCell().setSelected(false);
         }
-        axis.selectCellAt(highlightY);
+        axis.getTable().selectCellAt(highlightY);
 	}
 
 	@Override
@@ -250,7 +202,7 @@ public class Table2DView extends TableView {
 	@Override
 	public void shiftCursorLeft() {
         if (highlightY > 0 && data[highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightY - 1);
+        	table.selectCellAtWithoutClear(highlightY - 1);
         } else {
         	axis.shiftCursorLeft();
         }
@@ -259,7 +211,7 @@ public class Table2DView extends TableView {
 	@Override
 	public void shiftCursorRight() {
         if (highlightY < data.length - 1 && data[highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightY + 1);
+        	table.selectCellAtWithoutClear(highlightY + 1);
         } else {
         	axis.shiftCursorRight();
         }
@@ -267,7 +219,7 @@ public class Table2DView extends TableView {
 
     @Override
     public void startHighlight(int x, int y) {
-        axis.clearSelection();
+        axis.getTable().clearSelection();
         super.startHighlight(x, y);
     }
 

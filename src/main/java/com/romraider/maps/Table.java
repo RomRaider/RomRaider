@@ -27,7 +27,9 @@ import javax.naming.NameNotFoundException;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableFrame;
+import com.romraider.swing.TableToolBar;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
@@ -597,7 +599,97 @@ public abstract class Table implements Serializable {
         calcCellRanges();
         if(tableView != null) tableView.drawTable();
     }
+    
+    public void clearSelection() {
+        for (DataCell cell : data) {
+                cell.setSelected(false);
+            }
+    }
+    
+    public void selectCellAt(int y) {
+        if(y >= 0 && y < data.length) {
+            clearSelection();
+            data[y].setSelected(true);
+            if(tableView!=null) tableView.highlightY = y;
+            
+            TableToolBar bar = ECUEditorManager.getECUEditor().getTableToolBar();
+            
+            if(bar!=null)
+            	bar.updateTableToolBar(this);
+        }
+    }
 
+    public void selectCellAtWithoutClear(int y) {
+        if(y >= 0 && y < data.length) {
+            data[y].setSelected(true);
+            if(tableView!=null)tableView.highlightY = y;
+            
+            TableToolBar bar = ECUEditorManager.getECUEditor().getTableToolBar();
+            
+            if(bar!=null)
+            	bar.updateTableToolBar(this);
+        }
+    }
+    
+    public void verticalInterpolate() throws UserLevelException{
+    	horizontalInterpolate();
+    }
+
+    public void horizontalInterpolate() throws UserLevelException {
+        int[] coords = { getDataSize(), 0};
+        DataCell[] tableData = getData();
+
+        for (int i = 0; i < getDataSize(); ++i) {
+            if (tableData[i].isSelected()) {
+                if (i < coords[0])
+                    coords[0] = i;
+                if (i > coords[1])
+                    coords[1] = i;
+            }
+        }
+        
+        if (coords[1] - coords[0] > 1) {
+            double y1, y2;
+            y1 = tableData[coords[0]].getBinValue();
+            y2 = tableData[coords[1]].getBinValue();
+            for (int i = coords[0] + 1; i < coords[1]; ++i) {
+            	float p = (float)((i - coords[0]))/(coords[1] - coords[0]);
+                data[i].setBinValue((y2*p)+(y1 *(1-p)));
+            }
+        }       
+    }
+
+    public void interpolate() throws UserLevelException {
+        horizontalInterpolate();
+    }
+    
+    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
+        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
+    }
+    
+    public void increment(double increment) throws UserLevelException {
+	    for (DataCell cell : data) {
+	        if (cell.isSelected()) {
+	            cell.increment(increment);
+	        }
+	    }
+    }
+
+    public void multiply(double factor) throws UserLevelException{  	
+    	for (DataCell cell : data) {
+	        if (cell.isSelected()) {
+	        	cell.multiply(factor);               	
+            }
+         }
+    }
+
+    public void setRealValue(String realValue) throws UserLevelException {
+        for(DataCell cell : data) {
+            if (cell.isSelected()) {
+                cell.setRealValue(realValue);
+            }
+        }
+    }
 
     public abstract boolean isLiveDataSupported();
     

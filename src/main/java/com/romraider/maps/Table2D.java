@@ -36,8 +36,7 @@ public class Table2D extends Table {
     public Table1D getAxis() {
         return axis;
     }
-    
-    
+       
     public void setAxis(Table1D axis) {
         this.axis = axis;
         axis.setAxisParent(this);
@@ -143,6 +142,53 @@ public class Table2D extends Table {
         this.curScale = curScale;
         
         if(tableView != null) tableView.drawTable();
+    }
+    
+    @Override
+    public void clearSelection() {
+        axis.clearSelection();
+        super.clearSelection();
+    }
+    
+    @Override
+    public void interpolate() throws UserLevelException {
+        super.interpolate();
+        this.getAxis().interpolate();
+    }
+
+    @Override
+    public void verticalInterpolate() throws UserLevelException {
+        super.verticalInterpolate();
+        this.getAxis().verticalInterpolate();
+    }
+
+    @Override
+    public void horizontalInterpolate() throws UserLevelException {
+        int[] coords = { getDataSize(), 0};
+        DataCell[] tableData = getData();
+        DataCell[] axisData = getAxis().getData();
+
+        for (int i = 0; i < getDataSize(); ++i) {
+            if (tableData[i].isSelected()) {
+                if (i < coords[0])
+                    coords[0] = i;
+                if (i > coords[1])
+                    coords[1] = i;
+            }
+        }
+        if (coords[1] - coords[0] > 1) {
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[0]].getBinValue();
+            y1 = tableData[coords[0]].getBinValue();
+            x2 = axisData[coords[1]].getBinValue();
+            y2 = tableData[coords[1]].getBinValue();
+            for (int i = coords[0] + 1; i < coords[1]; ++i) {
+                x = axisData[i].getBinValue();
+                data[i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+            }
+        }
+        // Interpolate x axis in case the x axis in selected.
+        this.getAxis().horizontalInterpolate();
     }
     
     @Override

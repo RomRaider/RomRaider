@@ -237,39 +237,6 @@ public class Table3DView extends TableView {
                 yAxis;*/
     }
 
-    @Override
-    public void increment(double increment) throws UserLevelException {
-            for (int x = 0; x < table.getSizeX(); x++) {
-                for (int y = 0; y < table.getSizeY(); y++) {
-                    if (data[x][y].isSelected()) {
-                        data[x][y].getDataCell().increment(increment);
-                    }
-                }
-            }
-    }
-
-    @Override
-    public void multiply(double factor) throws UserLevelException {
-            for (int x = 0; x < table.getSizeX(); x++) {
-                for (int y = 0; y < table.getSizeY(); y++) {
-                    if (data[x][y].isSelected()) {                    
-                    		data[x][y].getDataCell().multiply(factor);                            
-                    }
-                }
-            }        
-    }
-
-    @Override
-    public void clearSelection() {
-        xAxis.clearSelection();
-        yAxis.clearSelection();
-        
-        for (int x = 0; x < table.getSizeX(); x++) {
-            for (int y = 0; y < table.getSizeY(); y++) {
-                data[x][y].setSelected(false);
-            }
-        }
-    }
 
     @Override
     public void highlight(int xCoord, int yCoord) {
@@ -296,7 +263,7 @@ public class Table3DView extends TableView {
         for (int x = 0; x < table.getSizeX(); x++) {
             for (int y = 0; y < table.getSizeY(); y++) {
                 if (data[x][y].isHighlighted()) {
-                    data[x][y].setSelected(true);
+                    data[x][y].getDataCell().setSelected(true);
                     data[x][y].setHighlighted(false);
                 }
             }
@@ -316,20 +283,6 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void setRealValue(String realValue) throws UserLevelException {
-        for(DataCellView[] column : data) {
-            for(DataCellView cell : column) {
-                if(cell.isSelected()) {
-                    cell.getDataCell().setRealValue(realValue);
-                }
-            }
-        }
-
-        xAxis.setRealValue(realValue);
-        yAxis.setRealValue(realValue);
-    }
-
-    @Override
     public void addKeyListener(KeyListener listener) {
         xAxis.addKeyListener(listener);
         yAxis.addKeyListener(listener);
@@ -342,39 +295,19 @@ public class Table3DView extends TableView {
 
     public void selectCellAt(int y, Table1D axisType) {
         if (axisType.getType() == Table.TableType.Y_AXIS) {
-            selectCellAt(0, y);
+            table.selectCellAt(0, y);
         } else { // y axis
-            selectCellAt(y, 0);
+            table.selectCellAt(y, 0);
         }
         ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
-    }
-
-    public void deSelectCellAt(int x, int y) {
-        clearSelection();
-        data[x][y].setSelected(false);
-        highlightX = x;
-        highlightY = y;
-    }
-
-    public void selectCellAt(int x, int y) {
-        clearSelection();
-        data[x][y].setSelected(true);
-        highlightX = x;
-        highlightY = y;
-    }
-
-    public void selectCellAtWithoutClear(int x, int y) {
-        data[x][y].setSelected(true);
-        highlightX = x;
-        highlightY = y;
     }
 
     @Override
     public void cursorUp() {
         if (highlightY > 0 && data[highlightX][highlightY].isSelected()) {
-            selectCellAt(highlightX, highlightY - 1);
+            table.selectCellAt(highlightX, highlightY - 1);
         } else if (data[highlightX][highlightY].isSelected()) {
-            xAxis.selectCellAt(highlightX);
+            xAxis.getTable().selectCellAt(highlightX);
         } else {
             xAxis.cursorUp();
             yAxis.cursorUp();
@@ -384,7 +317,7 @@ public class Table3DView extends TableView {
     @Override
     public void cursorDown() {
         if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
-            selectCellAt(highlightX, highlightY + 1);
+            table.selectCellAt(highlightX, highlightY + 1);
         } else {
             xAxis.cursorDown();
             yAxis.cursorDown();
@@ -394,9 +327,9 @@ public class Table3DView extends TableView {
     @Override
     public void cursorLeft() {
         if (highlightX > 0 && data[highlightX][highlightY].isSelected()) {
-            selectCellAt(highlightX - 1, highlightY);
+            table.selectCellAt(highlightX - 1, highlightY);
         } else if (data[highlightX][highlightY].isSelected()) {
-            yAxis.selectCellAt(highlightY);
+            yAxis.getTable().selectCellAt(highlightY);
         } else {
             xAxis.cursorLeft();
             yAxis.cursorLeft();
@@ -406,7 +339,7 @@ public class Table3DView extends TableView {
     @Override
     public void cursorRight() {
         if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
-            selectCellAt(highlightX + 1, highlightY);
+            table.selectCellAt(highlightX + 1, highlightY);
         } else {
             xAxis.cursorRight();
             yAxis.cursorRight();
@@ -416,10 +349,10 @@ public class Table3DView extends TableView {
 	@Override
 	public void shiftCursorUp() {
         if (highlightY > 0 && data[highlightX][highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightX, highlightY - 1);
+        	table.selectCellAtWithoutClear(highlightX, highlightY - 1);
         } else if (data[highlightX][highlightY].isSelected()) {
-        	data[highlightX][highlightY].setSelected(false);
-        	xAxis.selectCellAt(highlightX);
+        	data[highlightX][highlightY].getDataCell().setSelected(false);
+        	xAxis.getTable().selectCellAt(highlightX);
         } else {
         	xAxis.cursorUp();
         	yAxis.shiftCursorUp();
@@ -429,7 +362,7 @@ public class Table3DView extends TableView {
 	@Override
 	public void shiftCursorDown() {
         if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightX, highlightY + 1);
+        	table.selectCellAtWithoutClear(highlightX, highlightY + 1);
         } else {
             xAxis.shiftCursorDown();
             yAxis.shiftCursorDown();
@@ -439,9 +372,9 @@ public class Table3DView extends TableView {
 	@Override
 	public void shiftCursorLeft() {
         if (highlightX > 0 && data[highlightX][highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightX - 1, highlightY);
+        	table.selectCellAtWithoutClear(highlightX - 1, highlightY);
         } else if (data[highlightX][highlightY].isSelected()) {
-            yAxis.selectCellAt(highlightY);
+            yAxis.getTable().selectCellAt(highlightY);
         } else {
             xAxis.shiftCursorLeft();
             yAxis.shiftCursorLeft();
@@ -451,7 +384,7 @@ public class Table3DView extends TableView {
 	@Override
 	public void shiftCursorRight() {
         if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
-        	selectCellAtWithoutClear(highlightX + 1, highlightY);
+        	table.selectCellAtWithoutClear(highlightX + 1, highlightY);
         } else {
             xAxis.shiftCursorRight();
             yAxis.shiftCursorRight();
@@ -460,8 +393,8 @@ public class Table3DView extends TableView {
 
     @Override
     public void startHighlight(int x, int y) {
-        xAxis.clearSelection();
-        yAxis.clearSelection();
+        xAxis.getTable().clearSelection();
+        yAxis.getTable().clearSelection();
         super.startHighlight(x, y);
     }
 
@@ -577,85 +510,7 @@ public class Table3DView extends TableView {
         }
     }
 
-    @Override
-    public void verticalInterpolate() throws UserLevelException {
-        int[] coords = { table.getSizeX(), table.getSizeY(), 0, 0};
-        DataCellView[][] tableData = get3dData();
-        DataCellView[] axisData = table.getYAxis().getTableView().getData();
-        int i, j;
-        for (i = 0; i < table.getSizeX(); ++i) {
-            for (j = 0; j < table.getSizeY(); ++j) {
-                if (tableData[i][j].isSelected()) {
-                    if (i < coords[0])
-                        coords[0] = i;
-                    if (i > coords[2])
-                        coords[2] = i;
-                    if (j < coords[1])
-                        coords[1] = j;
-                    if (j > coords[3])
-                        coords[3] = j;
-                }
-            }
-        }
-        if (coords[3] - coords[1] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[1]].getDataCell().getBinValue();
-            x2 = axisData[coords[3]].getDataCell().getBinValue();
-            for (i = coords[0]; i <= coords[2]; ++i) {
-                y1 = tableData[i][coords[1]].getDataCell().getBinValue();
-                y2 = tableData[i][coords[3]].getDataCell().getBinValue();
-                for (j = coords[1] + 1; j < coords[3]; ++j) {
-                    x = axisData[j].getDataCell().getBinValue();
-                    tableData[i][j].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
-                }
-            }
-        }
-        // Interpolate y axis in case the y axis in selected.
-        table.getYAxis().getTableView().verticalInterpolate();
-    }
-
-    @Override
-    public void horizontalInterpolate() throws UserLevelException {
-        int[] coords = { table.getSizeX(), table.getSizeY(), 0, 0 };
-        DataCellView[][] tableData = get3dData();
-        DataCellView[] axisData = table.getXAxis().getTableView().getData();
-        int i, j;
-        for (i = 0; i < table.getSizeX(); ++i) {
-            for (j = 0; j < table.getSizeY(); ++j) {
-                if (tableData[i][j].isSelected()) {
-                    if (i < coords[0])
-                        coords[0] = i;
-                    if (i > coords[2])
-                        coords[2] = i;
-                    if (j < coords[1])
-                        coords[1] = j;
-                    if (j > coords[3])
-                        coords[3] = j;
-                }
-            }
-        }
-        if (coords[2] - coords[0] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getDataCell().getBinValue();
-            x2 = axisData[coords[2]].getDataCell().getBinValue();
-            for (i = coords[1]; i <= coords[3]; ++i) {
-                y1 = tableData[coords[0]][i].getDataCell().getBinValue();
-                y2 = tableData[coords[2]][i].getDataCell().getBinValue();
-                for (j = coords[0] + 1; j < coords[2]; ++j) {
-                    x = axisData[j].getDataCell().getBinValue();
-                    tableData[j][i].getDataCell().setBinValue(linearInterpolation(x, x1, x2, y1, y2));
-                }
-            }
-        }
-        // Interpolate x axis in case the x axis in selected.
-        table.getXAxis().getTableView().horizontalInterpolate();
-    }
-
-    @Override
-    public void interpolate() throws UserLevelException {
-        verticalInterpolate();
-        horizontalInterpolate();
-    }
+    
 
     @Override
     public void highlightLiveData(String liveValue) {

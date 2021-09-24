@@ -327,7 +327,7 @@ public abstract class TableView extends JPanel implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                interpolate();
+                	table.interpolate();
 			} catch (UserLevelException e1) {
 				showInvalidUserLevelPopup(e1);
 			}
@@ -339,7 +339,7 @@ public abstract class TableView extends JPanel implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                verticalInterpolate();
+                	table.verticalInterpolate();
 			} catch (UserLevelException e1) {
 				showInvalidUserLevelPopup(e1);
 			}
@@ -351,7 +351,7 @@ public abstract class TableView extends JPanel implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                horizontalInterpolate();
+                	table.horizontalInterpolate();
 			} catch (UserLevelException e1) {
 				showInvalidUserLevelPopup(e1);
 			}
@@ -548,19 +548,7 @@ public abstract class TableView extends JPanel implements Serializable {
     	}
     }
     
-    public void verticalInterpolate() throws UserLevelException{
-    }
 
-    public void horizontalInterpolate() throws UserLevelException {
-    }
-
-    public void interpolate() throws UserLevelException {
-        horizontalInterpolate();
-    }
-    
-    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
-        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
-    }
     
     public void populateTableVisual() {
     	//Populate Views from table here
@@ -588,11 +576,7 @@ public abstract class TableView extends JPanel implements Serializable {
         return new Dimension(width, height);
     }
 
-    public void clearSelection() {
-        for (DataCellView cell : data) {
-                cell.setSelected(false);
-            }
-    }
+
 
     public void startHighlight(int x, int y) {
         this.highlightY = y;
@@ -619,7 +603,7 @@ public abstract class TableView extends JPanel implements Serializable {
         for (DataCellView cell : data) {
             if (cell.isHighlighted()) {
                 cell.setHighlighted(false);
-                cell.setSelected(true);
+                cell.getDataCell().setSelected(true);
             }
         }
     }
@@ -655,31 +639,7 @@ public abstract class TableView extends JPanel implements Serializable {
                 rb.getString("TBLNOTMODIFY"),
                 JOptionPane.INFORMATION_MESSAGE);
     }
-   
-    public void increment(double increment) throws UserLevelException {
-	    for (DataCellView cell : data) {
-	        if (cell.isSelected()) {
-	            cell.getDataCell().increment(increment);
-	        }
-	    }
-    }
-
-    public void multiply(double factor) throws UserLevelException{  	
-    	for (DataCellView cell : data) {
-	        if (cell.isSelected()) {
-	        	cell.getDataCell().multiply(factor);               	
-            }
-         }
-    }
-
-    public void setRealValue(String realValue) throws UserLevelException {
-        for(DataCellView cell : data) {
-            if (cell.isSelected()) {
-                cell.getDataCell().setRealValue(realValue);
-            }
-        }
-    }
-    
+      
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -689,24 +649,7 @@ public abstract class TableView extends JPanel implements Serializable {
             }
         }
     }
-
-    public void selectCellAt(int y) {
-        if(y >= 0 && y < data.length) {
-            clearSelection();
-            data[y].setSelected(true);
-            highlightY = y;
-            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
-        }
-    }
-
-    public void selectCellAtWithoutClear(int y) {
-        if(y >= 0 && y < data.length) {
-            data[y].setSelected(true);
-            highlightY = y;
-            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
-        }
-    }
-      
+    
     public void copySelection() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 

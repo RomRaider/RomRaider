@@ -398,10 +398,11 @@ public class ECUEditor extends AbstractFrame {
 	        		v = new Table3DView((Table3D)node.getTable());
 	        	else
 	        		return;
-	        	 Rom rom = RomTree.getRomNode(node);
-	        	 
+	        	
+	        	 Rom rom = RomTree.getRomNode(node);	        	 
 	        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
             }
+            
             // frame not added.  Draw table and add the frame.
             frame.getTable().getTableView().drawTable();
             rightPanel.add(frame);

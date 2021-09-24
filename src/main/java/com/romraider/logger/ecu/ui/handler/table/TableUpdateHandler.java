@@ -63,7 +63,7 @@ public final class TableUpdateHandler implements DataUpdateHandler {
 		            }
 		        }
 	    	}
-	    	}
+	    }
     }
 
     @Override
