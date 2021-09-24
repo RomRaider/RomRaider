@@ -311,11 +311,13 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     }
 
     //Most of this function is useless now, since each Datacell is now responsible for each memory region
-    //It is only used in the Switch Tables, since those don't use DataCells
+    //It is only used to correct the Subaru Checksum. Should be moved somewhere else TODO
     public byte[] saveFile() {
 
         final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
         for (TableTreeNode tableNode : tableNodes) {
+        	
+        	//Only used in BitwiseSwitch Table...
             tableNode.getTable().saveFile(binData);
             if (tableNode.getTable().getName().contains("Checksum Fix")) {
                 checksumTables.add(tableNode);

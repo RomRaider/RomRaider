@@ -27,9 +27,7 @@ import javax.naming.NameNotFoundException;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableFrame;
-import com.romraider.swing.TableToolBar;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
@@ -610,24 +608,14 @@ public abstract class Table implements Serializable {
         if(y >= 0 && y < data.length) {
             clearSelection();
             data[y].setSelected(true);
-            if(tableView!=null) tableView.highlightY = y;
-            
-            TableToolBar bar = ECUEditorManager.getECUEditor().getTableToolBar();
-            
-            if(bar!=null)
-            	bar.updateTableToolBar(this);
+            if(tableView!=null) tableView.highlightY = y;          
         }
     }
 
     public void selectCellAtWithoutClear(int y) {
         if(y >= 0 && y < data.length) {
             data[y].setSelected(true);
-            if(tableView!=null)tableView.highlightY = y;
-            
-            TableToolBar bar = ECUEditorManager.getECUEditor().getTableToolBar();
-            
-            if(bar!=null)
-            	bar.updateTableToolBar(this);
+            if(tableView!=null)tableView.highlightY = y;            
         }
     }
     

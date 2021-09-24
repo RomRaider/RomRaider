@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.Settings.Endian;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
@@ -292,7 +293,10 @@ public class DataCell {
         if(!table.isStaticDataTable() && this.isSelected != selected) {
             this.isSelected = selected;
             
-            if(view!=null) view.drawCell();
+            if(view!=null) {
+            	ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
+            	view.drawCell();
+            }
         }
     }
     

@@ -48,9 +48,11 @@ public class TableBitwiseSwitchView extends TableView {
 
 	public TableBitwiseSwitchView(TableBitwiseSwitch table) {
 		super(table);
+		this.table = table;
 		removeAll();
 		setLayout(new BorderLayout());
 		checkboxes = new ArrayList<JCheckBox>();
+		populateTableVisual();
 	}
 
 	@Override

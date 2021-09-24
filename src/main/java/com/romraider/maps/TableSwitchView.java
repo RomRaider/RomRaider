@@ -22,6 +22,7 @@ package com.romraider.maps;
 public class TableSwitchView extends Table1DView {
 	private static final long serialVersionUID = 1L;
 
+	//Same as a Table1DView just hidden data
 	public TableSwitchView(TableSwitch t) {
     	super(t, true);
     }

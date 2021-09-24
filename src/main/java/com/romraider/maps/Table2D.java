@@ -94,11 +94,7 @@ public class Table2D extends Table {
     
 
     @Override
-    public byte[] saveFile(byte[] binData) {
-        /*
-        binData = super.saveFile(binData);
-        binData = axis.saveFile(binData);*/
-    	
+    public byte[] saveFile(byte[] binData) {  	
         return binData;
     }
 
