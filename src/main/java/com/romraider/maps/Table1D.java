@@ -129,7 +129,7 @@ public class Table1D extends Table {
         return getType() == Table.TableType.X_AXIS ||
                 getType() == Table.TableType.Y_AXIS || isStaticDataTable();
     }
-
+      
     @Override
     public boolean equals(Object other) {
         try {

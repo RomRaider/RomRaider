@@ -44,9 +44,6 @@ public final class JEPUtil {
     private static final Map<String, JEP> parserCache =
     		Collections.synchronizedMap(new LRUCache<String, JEP>(32));
 
-    private JEPUtil() {
-    }
-
     public static synchronized double evaluate(String expression, double value) {
         JEP parser = parserCache.get(expression);
         if (parser == null) {

@@ -120,7 +120,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         boolean found = false;
 
         for (int i = 0; i < tableNodes.size(); i++) {
-            if (tableNodes.get(i).getTable().equals(table)) {
+            if (tableNodes.get(i).getTable().equalsWithoutData(table)) {
                 tableNodes.remove(i);
                 tableNodes.add(i, new TableTreeNode(table));
                 found = true;

@@ -304,9 +304,9 @@ public abstract class Table implements Serializable {
         }
         return output;
     }
-
-    @Override
-    public boolean equals(Object other) {
+    
+    //Faster version of equals where data doesnt matter (yet)
+    public boolean equalsWithoutData(Object other) {
         try {
             if(null == other) {
                 return false;
@@ -321,7 +321,15 @@ public abstract class Table implements Serializable {
             }
 
             Table otherTable = (Table)other;
-
+            
+            if(storageAddress != otherTable.storageAddress) {
+            	return false;
+            }
+            
+            if(!this.name.equals(otherTable.name)) {
+            	return false;
+            }
+            
             if(this.data.length != otherTable.data.length)
             {
                 return false;
@@ -330,12 +338,22 @@ public abstract class Table implements Serializable {
 			if (this.bitMask != otherTable.bitMask) {
 				return false;
 			}
-			
-            if(this.data.equals(otherTable.data))
-            {
-                return true;
-            }
-
+			         
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        try {
+            boolean withoutData = equalsWithoutData(other);
+            if(!withoutData) return false;
+            
+            Table otherTable = (Table)other;
+            
             // Compare Bin Values
             for(int i=0 ; i < this.data.length ; i++) {
                 if(! this.data[i].equals(otherTable.data[i])) {
