@@ -67,6 +67,7 @@ public abstract class TableView extends JPanel implements Serializable {
     protected PresetPanel presetPanel;   
     protected DataCellView[] data;
     
+    protected boolean hide; //Hide the actual data
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
     protected JPanel centerPanel = new JPanel(centerLayout);
@@ -89,6 +90,7 @@ public abstract class TableView extends JPanel implements Serializable {
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;  
     protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
+
 
     protected TableView(Table table) {    	
     	this.table = table;
@@ -513,14 +515,31 @@ public abstract class TableView extends JPanel implements Serializable {
     public DataCellView getDataCell(int location) {
         return data[location];
     }
-
+    
+    public boolean isHidden() {
+    	return hide;
+    }
+    
+    public void setHidden(boolean b) {
+    	this.hide = b;
+    	
+    	if(this.hide!=b) {
+    		if(!b) {
+    			data = null;
+    		}
+    		else {
+    			populateTableVisual();
+    		}
+    	}
+    }
+    
     @Override
     public String toString() {
         return table.toString();
     }
      
     public void drawTable() {
-    	if(data!=null) {
+    	if(data!=null && !isHidden()) {
 	        for(DataCellView cell : data) {
 	            if(null != cell) {
 	                cell.drawCell();
@@ -545,10 +564,14 @@ public abstract class TableView extends JPanel implements Serializable {
     
     public void populateTableVisual() {
     	//Populate Views from table here
-    	data = new DataCellView[table.getDataSize()];
-
-    	for(int i= 0; i < table.getDataSize(); i++) {
-    		data[i] = new DataCellView(table.getData()[i], this);		
+    	if(getTable().presetManager != null) presetPanel = new PresetPanel(this, getTable().presetManager);
+    	
+    	if(!isHidden()) {
+	    	data = new DataCellView[table.getDataSize()];
+	
+	    	for(int i= 0; i < table.getDataSize(); i++) {
+	    		data[i] = new DataCellView(table.getData()[i], this);
+	    	}
     	}
     }
     

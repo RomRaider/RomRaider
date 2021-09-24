@@ -19,11 +19,7 @@
 
 package com.romraider.maps;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,66 +27,30 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import com.romraider.util.ByteUtil;
-import com.romraider.util.ResourceUtil;
-
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TableBitwiseSwitch extends Table {
-
-	@Override
-	public TableType getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public byte[] saveFile(byte[] binData) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isLiveDataSupported() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isButtonSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-/*
 	private static final long serialVersionUID = -4887718305447362308L;
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(
-            TableBitwiseSwitch.class.getName());
-	private final Map<String, Integer> controlBits = new HashMap<String, Integer>();
-	private ArrayList<JCheckBox> checkboxes;
-	private int dataSize = 1;
 
+	private final Map<String, Integer> controlBits = new HashMap<String, Integer>();
+	private int dataSize = 1;
+	private boolean[] bits_array;
 	public TableBitwiseSwitch() {
 		super();
 		storageType = 1;
-		removeAll();
-		setLayout(new BorderLayout());
-		checkboxes = new ArrayList<JCheckBox>();
 	}
 
 	@Override
 	public void populateTable(byte[] input, int romRamOffset)
 			throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
 		int maxBitPosition = ((dataSize * 8) - 1);
-		boolean[] bits_array = new boolean[maxBitPosition + 1];
+		bits_array = new boolean[maxBitPosition + 1];
 
 		for (int i = 0; i < dataSize; i++) {
 			boolean[] byte_values = ByteUtil.byteToBoolArr(input[storageAddress + i]);
@@ -101,24 +61,16 @@ public class TableBitwiseSwitch extends Table {
 
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 		radioPanel.add(new JLabel("  " + getName()));
-
-		for (Entry<String, Integer> entry : sortByValue(controlBits).entrySet()) {
-			if (entry.getValue() > maxBitPosition) {
-				String mismatch = MessageFormat.format(
-						rb.getString("OUTOFRANGE"), super.getName());
-				showMessageDialog(this, mismatch,
-				        rb.getString("DEFERROR"), ERROR_MESSAGE);
-				break;
-			} else {
-				JCheckBox cb = new JCheckBox(entry.getKey());
-				cb.setSelected(bits_array[entry.getValue()]);
-				checkboxes.add(cb);
-				radioPanel.add(cb);
-			}
-		}
-		add(radioPanel, BorderLayout.CENTER);
 	}
-
+	
+	public Map<String, Integer> getControlBits() {
+		return controlBits;
+	}
+	
+	public boolean[] getBitsArray() {
+		return bits_array;
+	}
+	
 	@Override
 	public void setName(String name) {
 		super.setName(name);
@@ -130,20 +82,6 @@ public class TableBitwiseSwitch extends Table {
 	}
 
 	@Override
-	public void setDescription(String description) {
-		super.setDescription(description);
-		JTextArea descriptionArea = new JTextArea(description);
-		descriptionArea.setOpaque(false);
-		descriptionArea.setEditable(false);
-		descriptionArea.setWrapStyleWord(true);
-		descriptionArea.setLineWrap(true);
-		descriptionArea.setMargin(new Insets(0, 5, 5, 5));
-
-		add(descriptionArea, BorderLayout.SOUTH);
-	}
-
-
-	@Override
 	public byte[] saveFile(byte[] input) {
 
 		for (Entry<String, Integer> entry : controlBits.entrySet()) {
@@ -152,13 +90,33 @@ public class TableBitwiseSwitch extends Table {
 
 			boolean[] bools = ByteUtil.byteToBoolArr(input[storageAddress + entry_offset]);
 			JCheckBox cb = getButtonByText(entry.getKey());
-			bools[bitpos] = cb.isSelected();
-			byte result = ByteUtil.booleanArrayToBit(bools);
-
-			input[storageAddress + entry_offset] = result;
+			
+			if(cb != null) {
+				bools[bitpos] = cb.isSelected();
+				byte result = ByteUtil.booleanArrayToBit(bools);
+	
+				input[storageAddress + entry_offset] = result;
+			}
 		}
 
 		return input;
+	}
+	
+	//This is bad design
+	private JCheckBox getButtonByText(String text) {
+		TableView v = getTableView();
+		
+		if(v != null) {
+			TableBitwiseSwitchView bv = (TableBitwiseSwitchView)v;
+			
+			for (JCheckBox cb : bv.getCheckboxes()) {
+				if (cb.getText().equalsIgnoreCase(text)) {
+					return cb;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
     @Override
@@ -172,38 +130,6 @@ public class TableBitwiseSwitch extends Table {
 
 	public Map<String, Integer> getSwitchStates() {
 		return this.controlBits;
-	}
-
-	@Override
-	public void cursorUp() {
-	}
-
-	@Override
-	public void cursorDown() {
-	}
-
-	@Override
-	public void cursorLeft() {
-	}
-
-	@Override
-	public void cursorRight() {
-	}
-
-	@Override
-	public void shiftCursorUp() {
-	}
-
-	@Override
-	public void shiftCursorDown() {
-	}
-
-	@Override
-	public void shiftCursorLeft() {
-	}
-
-	@Override
-	public void shiftCursorRight() {
 	}
 
 	@Override
@@ -270,16 +196,6 @@ public class TableBitwiseSwitch extends Table {
 	}
 
 	@Override
-	public void drawTable() {
-		return; // Do nothing.
-	}
-
-	@Override
-	public void updateTableLabel() {
-		return; // Do nothing.
-	}
-
-	@Override
 	public void setCurrentScale(Scale curScale) {
 		return; // Do nothing.
 	}
@@ -290,16 +206,7 @@ public class TableBitwiseSwitch extends Table {
 		return false;
 	}
 
-	private JCheckBox getButtonByText(String text) {
-		for (JCheckBox cb : checkboxes) {
-			if (cb.getText().equalsIgnoreCase(text)) {
-				return cb;
-			}
-		}
-		return null;
-	}
-
-	private Map<String, Integer> sortByValue(Map<String, Integer> unsortMap) {
+	static Map<String, Integer> sortByValue(Map<String, Integer> unsortMap) {
 		List<Map.Entry<String, Integer>> list =
 						new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
@@ -315,5 +222,5 @@ public class TableBitwiseSwitch extends Table {
 		}
 
 		return sortedMap;
-	}*/
+	}
 }

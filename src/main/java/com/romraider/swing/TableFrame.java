@@ -70,7 +70,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         addInternalFrameListener(this);
     }
-
+    
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
         ECUEditor parent = getEditor();

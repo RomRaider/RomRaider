@@ -53,10 +53,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     if (Table.TableType.SWITCH == table.getType()) {
         dim = 1;
         storageSize.setText("switch");
-        if(table.getClass() == TableSwitch.class) {
-            scrollPane.setViewportView(populateScalesTable(
-                    ((TableSwitch) table).getSwitchStates()));
-        }
     }
     else {
         if (Settings.STORAGE_TYPE_FLOAT == table.getStorageType()) {

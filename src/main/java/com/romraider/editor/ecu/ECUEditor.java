@@ -74,6 +74,17 @@ import org.xml.sax.SAXParseException;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
+import com.romraider.maps.Table1D;
+import com.romraider.maps.Table1DView;
+import com.romraider.maps.Table2D;
+import com.romraider.maps.Table2DView;
+import com.romraider.maps.Table3D;
+import com.romraider.maps.Table3DView;
+import com.romraider.maps.TableBitwiseSwitch;
+import com.romraider.maps.TableBitwiseSwitchView;
+import com.romraider.maps.TableSwitch;
+import com.romraider.maps.TableSwitchView;
+import com.romraider.maps.TableView;
 import com.romraider.net.BrowserControl;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
@@ -86,6 +97,7 @@ import com.romraider.swing.RomTree;
 import com.romraider.swing.RomTreeRootNode;
 import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableToolBar;
+import com.romraider.swing.TableTreeNode;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.DOMRomUnmarshaller;
@@ -333,8 +345,10 @@ public class ECUEditor extends AbstractFrame {
         }
     }
 
-    public void displayTable(TableFrame frame) {
-        try {
+    public void displayTable(TableTreeNode node) {
+    	TableFrame frame = node.getFrame();
+    	
+        try {	
             // check if frame has been added.
             for(JInternalFrame curFrame : getRightPanel().getAllFrames()) {
                 if(curFrame.equals(frame)) {
@@ -369,12 +383,32 @@ public class ECUEditor extends AbstractFrame {
                 }
             }
 
+            if(frame == null) {
+            	TableView v;
+            	
+	        	if(node.getTable() instanceof TableSwitch)
+	        		v = new TableSwitchView((TableSwitch)node.getTable());
+	        	else if(node.getTable() instanceof TableBitwiseSwitch)
+	        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)node.getTable());
+	        	else if(node.getTable() instanceof Table1D)
+	        		v = new Table1DView((Table1D)node.getTable());
+	        	else if(node.getTable() instanceof Table2D)
+	        		v = new Table2DView((Table2D)node.getTable());
+	        	else if(node.getTable() instanceof Table3D)
+	        		v = new Table3DView((Table3D)node.getTable());
+	        	else
+	        		return;
+	        	 Rom rom = RomTree.getRomNode(node);
+	        	 
+	        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
+            }
             // frame not added.  Draw table and add the frame.
             frame.getTable().getTableView().drawTable();
             rightPanel.add(frame);
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.
         }
+        
         frame.pack();
         rightPanel.repaint();
     }

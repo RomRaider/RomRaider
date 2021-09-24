@@ -134,7 +134,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void addTableByName(Table table) {
         boolean found = false;
-        String frameTitle = this.getFileName()+" - "+table.getName();
 
         for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
@@ -402,7 +401,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 frame.setTableView(null);
             }
         }
-
+        
+        checksumManagers.clear();
         tableNodes.clear();
         binData = null;
     }
@@ -472,10 +472,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     }
 
     public void updateChecksum() {
-        if (!checksumManagers.isEmpty()) {
-            for(ChecksumManager cm: checksumManagers) {
-            	cm.update(binData);
-            }
+        for(ChecksumManager cm: checksumManagers) {
+        	cm.update(binData);
         }
     }
 }

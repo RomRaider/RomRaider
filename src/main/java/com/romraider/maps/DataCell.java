@@ -77,6 +77,9 @@ public class DataCell {
         DataCell.registerDataCell(this);
     }
     
+    public byte[] getBinary() {
+    	return input;
+    }
     
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
@@ -138,7 +141,9 @@ public class DataCell {
     	}
     }
     
-    public void saveBinValueInFile() {
+    public void saveBinValueInFile() {    	
+    	if (table.getName().contains("Checksum Fix")) return;
+    	
         byte[] binData = input;
     	int userLevel = table.getUserLevel();
     	int storageType = table.getStorageType();
@@ -377,7 +382,7 @@ public class DataCell {
     }
 
     public void setBinValue(double newBinValue) throws UserLevelException {
-        if(binValue == newBinValue || table.locked) {
+        if(binValue == newBinValue || table.locked || table.getName().contains("Checksum Fix")) {
             return;
         }
         

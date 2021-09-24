@@ -20,36 +20,13 @@
 package com.romraider.maps;
 
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
-
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.StringTokenizer;
-
 import javax.naming.NameNotFoundException;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.border.EmptyBorder;
-
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D(Table.TableType.Y_AXIS);
-
-    private CopyTable2DWorker copyTable2DWorker;
-    private CopySelection2DWorker copySelection2DWorker;
-
+    private Table1D axis;
 
     @Override
     public TableType getType() {
@@ -159,6 +136,7 @@ public class Table2D extends Table {
                 try {
                     this.axis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
                 } catch (NameNotFoundException e1) {
+                	e1.printStackTrace();
                 }
             }
         }

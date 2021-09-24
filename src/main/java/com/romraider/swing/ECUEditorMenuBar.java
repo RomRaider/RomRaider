@@ -511,7 +511,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void saveImage(boolean quickSave) throws Exception {
-        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+    	Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
         if (lastSelectedRom != null) {
         	
         	File selectedFile = lastSelectedRom.getFullFileName();
@@ -526,10 +526,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private File getImageOutputFile() throws Exception {
         ECUEditor parent = ECUEditorManager.getECUEditor();
+       
         JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
         if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
+            
             if (selectedFile.exists()) {
                 int option = showConfirmDialog(parent,
                         MessageFormat.format(
@@ -541,6 +543,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     return null;
                 }
             }
+            
+            //Append suffix if user didnt set anything
+            if(!selectedFile.getName().contains(".")) {
+            	Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+            	String lastFile = lastSelectedRom.getFileName().toLowerCase();
+            	String format = ".bin";
+            	if(lastFile.endsWith(".hex")) format=".hex";
+            	selectedFile = new File(selectedFile + format);
+            }
+            
             return selectedFile;
         }
         return null;

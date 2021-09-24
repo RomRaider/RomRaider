@@ -595,6 +595,7 @@ public abstract class Table implements Serializable {
         }
 
         calcCellRanges();
+        if(tableView != null) tableView.drawTable();
     }
 
 
@@ -651,7 +652,7 @@ public abstract class Table implements Serializable {
     }
 
     public void setCompareTable(Table compareTable) {
-        this.compareTable = compareTable;
+        this.compareTable = compareTable;     
     }
 
     public void setCompareValueType(Settings.DataType compareValueType) {

@@ -33,12 +33,17 @@ public class Table1DView extends TableView {
 	private Table1D table;
 	
     public Table1DView(Table1D table) {
+		this(table, false);
+	}
+    
+    public Table1DView(Table1D table, boolean hide) {
 		super(table);
     	this.table = table;
+    	this.hide = hide;
     	
     	populateTableVisual();
 	}
-    
+       
     public void addStaticDataCell(DataCellView input) {
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
@@ -54,7 +59,7 @@ public class Table1DView extends TableView {
         super.populateTableVisual();
         
         //Only populate the rest if we aren't an axis
-    	if(table.getType() == TableType.TABLE_1D) {
+    	if(table.getType() != TableType.X_AXIS && table.getType() != TableType.Y_AXIS && !isHidden()) {
 	        centerLayout.setRows(1);
 	        centerLayout.setColumns(table.getDataSize());
 
@@ -75,10 +80,10 @@ public class Table1DView extends TableView {
 	        }
 	        
 	        if(tableLabel != null)
-	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
-	        
-	        if(presetPanel != null) presetPanel.populatePanel();
+	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));	       
     	}
+    	else if(table.getType() != TableType.X_AXIS && table.getType() != TableType.Y_AXIS)
+    		if(presetPanel != null) presetPanel.populatePanel();
     }
 
     @Override

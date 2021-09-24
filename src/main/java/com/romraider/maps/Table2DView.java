@@ -302,7 +302,7 @@ public class Table2DView extends TableView {
         String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, table.ST_DELIMITER);
+            st = new StringTokenizer(input, Table.ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -414,7 +414,7 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        String tableHeader = table.getSettings().getTable2DHeader();
+        String tableHeader = TableView.getSettings().getTable2DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(table.getTable().getTableAsString());
 

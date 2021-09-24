@@ -157,7 +157,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     private TableTreeNode findAndShowTable(Rom rom, String tableName) {
         for(TableTreeNode node : rom.getTableNodes()) {
             if(node != null && node.getTable().getName().equals(tableName)){
-                ECUEditorManager.getECUEditor().displayTable(node.getFrame());
+                ECUEditorManager.getECUEditor().displayTable(node);
                 return node;
             }
         }

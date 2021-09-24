@@ -116,7 +116,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
     
     public void drawCell() {
-        if(tableView == null) {
+        if(tableView == null || tableView.isHidden()) {
             // Table will be null in the static case.
             return;
         }
@@ -290,9 +290,12 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     }
 
     public String getCellText() {
-        if(tableView.getTable().isStaticDataTable()) {
+        if(tableView.getTable().getCurrentScale() == null) return "";
+        
+    	if(tableView.getTable().isStaticDataTable()) {
             return getStaticText();
         }
+        
 
         FORMATTER.applyPattern(tableView.getTable().getCurrentScale().getFormat());
         String displayString = "";

@@ -55,13 +55,18 @@ public class PresetPanel extends JPanel {
 		}
 				
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+		boolean isSwitchTable = table.getTable() instanceof TableSwitch;
 		
 		// Add presets
 		if(manager.getPresets().size() > 0) {
-			JLabel optionLabel = new JLabel(" Presets");
+			String s = isSwitchTable ? "Switch States    ": "Presets";
 			
+			JLabel optionLabel = new JLabel(s);
 			Font f = optionLabel.getFont();
-			optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));		
+			if (isSwitchTable)
+				optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD, 15));
+			else
+				optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
 			radioPanel.add(optionLabel);
 		}
 		
@@ -72,6 +77,11 @@ public class PresetPanel extends JPanel {
 			button.setText(entry.name);
 			button.setPresetData(entry.data);
 
+			if (isSwitchTable) {
+				Font f = button.getFont();
+				button.setFont(f.deriveFont(f.getStyle(), 15));
+			}
+				
 			button.addActionListener(new PresetListener());
 			
 			buttonGroup.add(button);
@@ -111,7 +121,8 @@ public class PresetPanel extends JPanel {
 			if (values != null) {
 				for (int i = 0; i < table.getTable().getDataSize(); i++) {
 					if(table.getTable().getDataSize() == values.size()) {
-						if ((int) table.data[i].getDataCell().getBinValue() != values.get(i)) {
+						DataCell[] data = table.getTable().data;
+						if ((int) data[i].getBinValue() != values.get(i)) {
 							found = false;
 							break;
 						}
@@ -130,8 +141,9 @@ public class PresetPanel extends JPanel {
 			if(table.getTable().getDataSize() == button.values.size()) {
 				for (int i = 0; i < table.getTable().getDataSize(); i++) {
 					try {
-						table.data[i].getDataCell().setBinValue(button.values.get(i));
+						table.getTable().data[i].setBinValue(button.values.get(i));
 					} catch (UserLevelException e) {
+						e.printStackTrace();
 					}
 				}
 			}

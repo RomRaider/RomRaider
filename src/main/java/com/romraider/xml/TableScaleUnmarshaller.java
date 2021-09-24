@@ -38,7 +38,6 @@ import org.w3c.dom.NodeList;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.DataCell;
-import com.romraider.maps.DataCellView;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
@@ -112,14 +111,9 @@ public class TableScaleUnmarshaller {
 	            if (tableNames.containsKey(tn) || type.contains("xis")) {
 	                if (type.equalsIgnoreCase("3D")) {
 	                    table = new Table3D();
-	                    table.getScales().add(rawScale);
-	                    ((Table3D) table).getXAxis().getScales().add(rawScale);
-	                    ((Table3D) table).getYAxis().getScales().add(rawScale);
 
 	                } else if (type.equalsIgnoreCase("2D")) {
 	                    table = new Table2D();
-	                    table.getScales().add(rawScale);
-	                    ((Table2D) table).getAxis().getScales().add(rawScale);
 
 	                } else if (type.equalsIgnoreCase("1D")) {
 	                    table = new Table1D(Table.TableType.TABLE_1D);
@@ -144,7 +138,8 @@ public class TableScaleUnmarshaller {
 	                else {
 	                    throw new XMLParseException("Table type " + type + " unknown for "
 	                            + tableNode.getAttributes().getNamedItem("name"));
-	                }
+	                }	                
+                    table.getScales().add(rawScale);
 	            }
 	            else {
 	                return table;
@@ -243,9 +238,8 @@ public class TableScaleUnmarshaller {
 	                            if (tempTable.getDataSize() != table.getDataSize()) {
 	                                tempTable.setDataSize(table.getDataSize());
 	                            }
-	                            tempTable.setData(((Table2D) table).getAxis()
-	                                    .getData());
 	                            ((Table2D) table).setAxis(tempTable);
+	                            tempTable.setData(((Table2D) table).getAxis().getData());
 
 	                        }
 	                    } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
@@ -263,9 +257,9 @@ public class TableScaleUnmarshaller {
 	                                tempTable.setDataSize(((Table3D) table)
 	                                        .getSizeX());
 	                            }
-	                            tempTable.setData(((Table3D) table).getXAxis()
-	                                    .getData());
+	                            
 	                            ((Table3D) table).setXAxis(tempTable);
+	                            tempTable.setData(((Table3D) table).getXAxis().getData());
 
 	                        } else if (RomAttributeParser
 	                                .parseTableType(unmarshallAttribute(n, "type",
@@ -278,9 +272,10 @@ public class TableScaleUnmarshaller {
 	                                tempTable.setDataSize(((Table3D) table)
 	                                        .getSizeY());
 	                            }
+	                            ((Table3D) table).setYAxis(tempTable);
 	                            tempTable.setData(((Table3D) table).getYAxis()
 	                                    .getData());
-	                            ((Table3D) table).setYAxis(tempTable);
+
 
 	                        }
 	                    }

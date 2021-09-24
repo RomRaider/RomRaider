@@ -35,13 +35,6 @@ import javax.swing.tree.TreePath;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
-import com.romraider.maps.Table1D;
-import com.romraider.maps.Table1DView;
-import com.romraider.maps.Table2D;
-import com.romraider.maps.Table2DView;
-import com.romraider.maps.Table3D;
-import com.romraider.maps.Table3DView;
-import com.romraider.maps.TableView;
 import com.romraider.util.SettingsManager;
 
 public class RomTree extends JTree implements MouseListener {
@@ -106,27 +99,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private void showTable(TableTreeNode selectedRow) {
-        TableTreeNode node = (TableTreeNode) selectedRow;
-        if (null != node) {
-        	TableFrame f = node.getFrame();
-        	
-        	if(f == null) {
-	        	TableView v;
-	        	
-	        	if(node.getTable() instanceof Table1D)
-	        		v = new Table1DView((Table1D)node.getTable());
-	        	else if(node.getTable() instanceof Table2D)
-	        		v = new Table2DView((Table2D)node.getTable());
-	        	else if(node.getTable() instanceof Table3D)
-	        		v = new Table3DView((Table3D)node.getTable());
-	        	else
-	        		return;
-	        	 Rom rom = getRomNode(node);
-	        	 
-	        	 f = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
-        	}
-            getEditor().displayTable(f);
-        }
+        getEditor().displayTable(selectedRow);
     }
 
     private void setLastSelectedRom(Object selectedNode) {
@@ -142,7 +115,7 @@ public class RomTree extends JTree implements MouseListener {
         getEditor().refreshUI();
     }
 
-    private Rom getRomNode(Object currentNode){
+    public static Rom getRomNode(Object currentNode){
         if (currentNode == null) {
             return null;
         } else if(currentNode instanceof Rom) {

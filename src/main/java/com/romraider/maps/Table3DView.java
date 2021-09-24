@@ -32,7 +32,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
@@ -45,12 +44,11 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
-import com.romraider.util.ResourceUtil;
 
 public class Table3DView extends TableView {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(Table3DView.class.getName());
+   // private static final ResourceBundle rb = new ResourceUtil().getBundle(Table3DView.class.getName());
     private Table3D table;
     private Table1DView xAxis;
     private Table1DView yAxis;
