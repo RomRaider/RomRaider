@@ -72,6 +72,8 @@ public final class TableUpdateHandler implements DataUpdateHandler {
 
     @Override
     public void cleanUp() {
+    	for(List<Table> t: tableMap.values())t.clear();
+    	tableMap.clear();
     }
 
     @Override

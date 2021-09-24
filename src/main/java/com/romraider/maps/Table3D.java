@@ -104,7 +104,24 @@ public class Table3D extends Table {
     public int getSizeY() {
         return data[0].length;
     }
-
+    
+    @Override
+    public void clearData() {
+        for(DataCell[] column : data) {
+            for(DataCell cell : column) {
+	    		cell.setTable(null);
+	    		cell.setRom(null);
+            }
+        }
+    	
+    	xAxis.clearData();
+    	yAxis.clearData();
+    	
+    	data = null;
+    	xAxis=null;
+    	yAxis=null;
+    }
+    
     @Override
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
@@ -134,12 +151,12 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTable(Rom rom) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
     	validateScaling();
     	
     	// fill first empty cell
         if (!beforeRam) {
-            this.ramOffset = romRamOffset;
+            this.ramOffset = rom.getRomID().getRamOffset();
         }
 
         // temporarily remove lock
@@ -148,8 +165,8 @@ public class Table3D extends Table {
 
         // populate axes
         try {
-            xAxis.populateTable(input, romRamOffset);
-            yAxis.populateTable(input, romRamOffset);
+            xAxis.populateTable(rom);
+            yAxis.populateTable(rom);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -168,7 +185,7 @@ public class Table3D extends Table {
                     x = y;
                     y = z;
                 }
-                DataCell c = new DataCell(this, offset, input);
+                DataCell c = new DataCell(this, offset, rom);
                 data[x][y] = c;
                 offset++;
             }

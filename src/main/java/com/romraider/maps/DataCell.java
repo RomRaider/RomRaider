@@ -37,13 +37,10 @@ import com.romraider.xml.RomAttributeParser;
 
 public class DataCell {
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-   
-    //This keeps track of DataCells on a byte level
-    static protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
-    
+     
     //View we need to keep up to date
     private DataCellView view = null;
-    private final Table table;
+    private Table table;
     
     //This sounds like a View property, but the manipulations
     //functions depend on this, so its better to put it here
@@ -54,18 +51,18 @@ public class DataCell {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
     private String staticText = null;
-    private byte[] input;
+    private Rom rom;
     
     //Index within table
     private int index;
 
-    public DataCell(Table table, byte[] input) {
+    public DataCell(Table table, Rom rom) {
         this.table = table;
-        this.input = input;
+        this.rom = rom;
     }
 
-    public DataCell(Table table, String staticText) {
-        this(table, new byte[] {});
+    public DataCell(Table table, String staticText, Rom rom) {
+        this(table, rom);
         final StringTokenizer st = new StringTokenizer(staticText, DataCellView.ST_DELIMITER);
         if (st.hasMoreTokens()) {
             this.staticText = st.nextToken();
@@ -73,22 +70,30 @@ public class DataCell {
         table.setStaticDataTable(true);
     }
 
-    public DataCell(Table table, int index, byte[] input) {
-        this(table, input);
+    public DataCell(Table table, int index, Rom rom) {
+        this(table, rom);
         this.index = index;
         
         updateBinValueFromMemory();   
         this.originalValue = this.binValue;
-        DataCell.registerDataCell(this);
+        registerDataCell(this);
+    }
+    
+    public void setTable(Table t) {
+    	this.table = t;
+    }
+    
+    public void setRom(Rom rom) {
+    	this.rom = rom;
     }
     
     public byte[] getBinary() {
-    	return input;
+    	return rom.getBinary();
     }
-    
+       
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
-       
+        byte[] input = getBinary();
         int storageType = table.getStorageType();
         Endian endian = table.getEndian();
         int ramOffset = table.getRamOffset();
@@ -149,7 +154,7 @@ public class DataCell {
     public void saveBinValueInFile() {    	
     	if (table.getName().contains("Checksum Fix")) return;
     	
-        byte[] binData = input;
+        byte[] binData = getBinary();
     	int userLevel = table.getUserLevel();
     	int storageType = table.getStorageType();
         Endian endian = table.getEndian();
@@ -250,30 +255,29 @@ public class DataCell {
         //On the Bosch substract model, we need to update all previous cells, because they depend on our value
         if(isBoschSubtract && index > 0) table.data[index-1].saveBinValueInFile();
         
-        DataCell.checkForDataUpdates(this);          
+        checkForDataUpdates();          
     }
     
-    public static void registerDataCell(DataCell cell) {
+    public void registerDataCell(DataCell cell) {
     	
     	int memoryIndex = getMemoryStartAddress(cell);
     	   	
-    	if (byteCellMapping.containsKey(memoryIndex))
+    	if (rom.byteCellMapping.containsKey(memoryIndex))
     		{
-    			byteCellMapping.get(memoryIndex).add(cell);
+    		rom.byteCellMapping.get(memoryIndex).add(cell);
     		}
     	else {
     		LinkedList<DataCell> l = new LinkedList<DataCell>();
     		l.add(cell);
-    		byteCellMapping.put(memoryIndex, l);
+    		rom.byteCellMapping.put(memoryIndex, l);
     	}
     }
     
-    public static void checkForDataUpdates(DataCell cell) {
-    	
-    	int memoryIndex = getMemoryStartAddress(cell);
+    public void checkForDataUpdates() {   	
+    	int memoryIndex = getMemoryStartAddress(this);
     	 	
-    	if (byteCellMapping.containsKey(memoryIndex)){
-    		for(DataCell c : byteCellMapping.get(memoryIndex)) {
+    	if (rom.byteCellMapping.containsKey(memoryIndex)){
+    		for(DataCell c : rom.byteCellMapping.get(memoryIndex)) {
     			c.updateBinValueFromMemory();
     		}
     	}

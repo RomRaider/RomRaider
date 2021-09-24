@@ -108,16 +108,29 @@ public abstract class Table implements Serializable {
         return data;
     }
 
+    //Cleans up all references to avoid data leaks
+    public void clearData() {
+    	
+    	for(int i=0;i<getDataSize();i++) {
+    		if(data[i]!=null) {
+	    		data[i].setTable(null);
+	    		data[i].setRom(null);
+	    		data[i] = null;
+    		}
+    	}
+    	
+    	data = null;
+    }
+    
     public void setData(DataCell[] data) {
         this.data = data;
     }
-    
-    
+     
     public int getRamOffset() {
     	return this.ramOffset;
     }
     
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
     	validateScaling();
     	
     	// temporarily remove lock;
@@ -125,11 +138,11 @@ public abstract class Table implements Serializable {
         locked = false;
 
         if (!beforeRam) {
-            this.ramOffset = romRamOffset;
+            this.ramOffset = rom.getRomID().getRamOffset();
         }
 
         for (int i = 0; i < data.length; i++) {          	
-        	data[i] = new DataCell(this, i, input);    
+        	data[i] = new DataCell(this, i, rom);    
         }
 
         // reset locked status

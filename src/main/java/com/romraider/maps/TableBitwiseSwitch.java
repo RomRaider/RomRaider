@@ -47,11 +47,11 @@ public class TableBitwiseSwitch extends Table {
 	}
 
 	@Override
-	public void populateTable(byte[] input, int romRamOffset)
-			throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+	public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
 		int maxBitPosition = ((dataSize * 8) - 1);
 		bits_array = new boolean[maxBitPosition + 1];
-
+		byte[] input = rom.getBinary();
+		
 		for (int i = 0; i < dataSize; i++) {
 			boolean[] byte_values = ByteUtil.byteToBoolArr(input[storageAddress + i]);
 			for (int j = 0; j < 8; j++) {

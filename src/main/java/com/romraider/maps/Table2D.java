@@ -48,6 +48,13 @@ public class Table2D extends Table {
     }    
     
     @Override
+    public void clearData() {
+    	super.clearData();
+    	axis.clearData();
+    	axis=null;
+    }
+    
+    @Override
     public void populateCompareValues(Table otherTable) {
         if(null == otherTable || !(otherTable instanceof Table2D)) {
             return;
@@ -70,10 +77,10 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {   	
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {   	
         try {
-            axis.populateTable(input, romRamOffset);
-            super.populateTable(input, romRamOffset);
+            axis.populateTable(rom);
+            super.populateTable(rom);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }

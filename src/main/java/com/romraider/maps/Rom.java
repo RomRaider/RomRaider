@@ -35,6 +35,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -67,6 +68,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
+    
+    //This keeps track of DataCells on a byte level
+    //This might also be possible to achieve by using the same Data Tables
+    protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
+    
     private boolean isAbstract = false;
     
     private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
@@ -122,6 +128,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
         for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().equalsWithoutData(table)) {
+            	tableNodes.get(i).setUserObject(null);
                 tableNodes.remove(i);
                 tableNodes.add(i, new TableTreeNode(table));
                 found = true;
@@ -201,7 +208,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             try {
                 if (table.getStorageAddress() >= 0) {
                     try {
-                        table.populateTable(binData, this.getRomID().getRamOffset());
+                        table.populateTable(this);
                         TableUpdateHandler.getInstance().registerTable(table);
 
                         if (null != table.getName() && table.getName().equalsIgnoreCase("Checksum Fix")){
@@ -240,7 +247,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
             } catch (NullPointerException ex) {
                 LOGGER.error("Error Populating Table", ex);
-                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
+                JOptionPane.showMessageDialog(null,
                         MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
                         rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                 tableNodes.removeElementAt(i);
@@ -278,7 +285,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public String getRomIDString() {
         return romID.getXmlid();
     }
-
+    
+    public byte[] getBinary() {
+    	return binData;
+    }
+    
     @Override
     public String toString() {
         String output = "";
@@ -388,7 +399,10 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Hide and dispose all frames.
         for(TableTreeNode tableTreeNode : tableNodes) {
             TableFrame frame = tableTreeNode.getFrame();
-        
+            
+            TableUpdateHandler.getInstance().deregisterTable(tableTreeNode.getTable());      
+            tableTreeNode.getTable().clearData();
+            
             if(frame != null) {
             	frame.getTableView().setVisible(false);            
 	            frame.setVisible(false);
@@ -400,16 +414,27 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 	            }
 	            frame.dispose();
 	            
+	            frame.getTableView().setData(null);
                 frame.getTableView().setTable(null);
                 frame.setTableView(null);
             }
+            
+            tableTreeNode.setUserObject(null);
         }
         
+        clearByteMapping();
         checksumManagers.clear();
         tableNodes.clear();
         binData = null;
     }
-
+    
+    public void clearByteMapping() {
+    	for(List<?> l: byteCellMapping.values())l.clear();
+    	
+    	byteCellMapping.clear();
+    	byteCellMapping = null;
+    }
+    
     public int getRealFileSize() {
         return binData.length;
     }

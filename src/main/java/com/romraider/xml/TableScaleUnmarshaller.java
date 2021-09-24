@@ -288,7 +288,7 @@ public class TableScaleUnmarshaller {
 
 	                } else if (n.getNodeName().equalsIgnoreCase("data")) {
 	                    // parse and add data to table
-	                    DataCell c = new DataCell(table, unmarshallText(n));
+	                    DataCell c = new DataCell(table, unmarshallText(n), null);
 	                    if(table instanceof Table1D) {
 	                        ((Table1D)table).addStaticDataCell(c);
 	                    } else {

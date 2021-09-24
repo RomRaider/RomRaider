@@ -46,8 +46,8 @@ public class TableSwitch extends Table1D {
     
     //TODO: Clean this up!
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        super.populateTable(input,romRamOffset);
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+        super.populateTable(rom);
         
 	    // Validate the ROM image checksums.
 	    // if the result is >0: position of failed checksum

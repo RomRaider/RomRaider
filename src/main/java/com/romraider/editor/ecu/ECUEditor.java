@@ -429,12 +429,10 @@ public class ECUEditor extends AbstractFrame {
 
         rom.clearData();
         rom.removeFromParent();
-        rom = null;
 
         if (imageRoot.getChildCount() > 0) {
             editor.setLastSelectedRom((Rom) imageRoot.getChildAt(0));
         } else {
-            // no other images open
             editor.setLastSelectedRom(null);
         }
 

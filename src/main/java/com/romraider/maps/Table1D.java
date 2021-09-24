@@ -80,34 +80,11 @@ public class Table1D extends Table {
       
         }
     }
-        
+    
     @Override
-    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
-        super.populateTable(input, romRamOffset);
-        /*
-    	centerLayout.setRows(1);
-        centerLayout.setColumns(this.getDataSize());
-
-        // add to table
-        for (int i = 0; i < this.getDataSize(); i++) {
-            centerPanel.add(this.getDataCell(i));
-        }
-
-        if(null == name || name.isEmpty()) {
-            ;// Do not add label.
-        } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
-            // static or no scale exists.
-            tableLabel = new JLabel(getName(), JLabel.CENTER);
-            add(tableLabel, BorderLayout.NORTH);
-        } else {
-            tableLabel = new JLabel(getName() + " (" + getCurrentScale().getUnit() + ")", JLabel.CENTER);
-            add(tableLabel, BorderLayout.NORTH);
-        }
-        
-        if(tableLabel != null)
-        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
-        
-        if(presetPanel != null) presetPanel.populatePanel();*/
+    public void clearData() {
+    	super.clearData();
+    	axisParent = null;
     }
 
     @Override
