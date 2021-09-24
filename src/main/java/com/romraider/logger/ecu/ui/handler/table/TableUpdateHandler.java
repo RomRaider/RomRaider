@@ -92,6 +92,8 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     }
 
     public void deregisterTable(Table table) {
+    	if(table == null) return;
+    	
         String logParam = table.getLogParam();
         if (tableMap.containsKey(logParam)) {
             List<Table> tables = tableMap.get(logParam);
