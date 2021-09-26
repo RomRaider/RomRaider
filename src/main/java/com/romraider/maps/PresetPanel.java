@@ -66,11 +66,10 @@ public class PresetPanel extends JPanel {
 		radioPanel.setBorder(new EmptyBorder(0, 2, 7, 0));
 		boolean isSwitchTable = table.getTable() instanceof TableSwitch;
 
-		JLabel optionLabel = new JLabel();
-			
+		JLabel optionLabel = new JLabel();			
 		String s = isSwitchTable ? table.getName(): "Presets";
 		optionLabel.setText(s);
-		optionLabel.setPreferredSize(new Dimension(500, 20));		
+		optionLabel.setPreferredSize(new Dimension(minimumWidth, 20));		
 		
 		Font f = optionLabel.getFont();
 		if (isSwitchTable)
