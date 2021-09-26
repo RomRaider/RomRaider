@@ -18,7 +18,6 @@
  */
 
 package com.romraider.maps;
-
 import com.romraider.Settings;
 
 public class Table1D extends Table {
@@ -55,10 +54,12 @@ public class Table1D extends Table {
 		return binData;
 	}
 	
-    public void addStaticDataCell(DataCell input) {
+    public void addStaticDataCell(String s) {
+    	DataCell c = new DataCell(this, s, null);
+    	
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
-                data[i] = input;
+                data[i] = c;
                 break;
             }
         }
