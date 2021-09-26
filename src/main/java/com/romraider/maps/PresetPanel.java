@@ -20,7 +20,10 @@
 package com.romraider.maps;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +34,8 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import com.romraider.maps.PresetManager.PresetEntry;
 
@@ -39,10 +44,13 @@ public class PresetPanel extends JPanel {
 	private final List<PresetButton> buttonGroup = new ArrayList<PresetButton>();
 	private PresetManager manager;
 	private TableView table;
+	private final int minimumWidth = 500;
 	
 	public PresetPanel(TableView t, PresetManager manager) {
 		this.manager = manager;
 		this.table = t;
+		setBorder(new EmptyBorder(2, 2, 2, 2));
+		setLayout(new GridBagLayout());
 	}
 	
 	public void populatePanel() {
@@ -54,21 +62,23 @@ public class PresetPanel extends JPanel {
 			}
 		}
 				
-		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+		JPanel radioPanel = new JPanel(new GridLayout(0, 1));		
+		radioPanel.setBorder(new EmptyBorder(0, 2, 7, 0));
 		boolean isSwitchTable = table.getTable() instanceof TableSwitch;
-		
-		// Add presets
-		if(manager.getPresets().size() > 0) {
-			String s = isSwitchTable ? "Switch States    ": "Presets";
+
+		JLabel optionLabel = new JLabel();
 			
-			JLabel optionLabel = new JLabel(s);
-			Font f = optionLabel.getFont();
-			if (isSwitchTable)
-				optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD, 15));
-			else
-				optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-			radioPanel.add(optionLabel);
-		}
+		String s = isSwitchTable ? table.getName(): "Presets";
+		optionLabel.setText(s);
+		optionLabel.setPreferredSize(new Dimension(500, 20));		
+		
+		Font f = optionLabel.getFont();
+		if (isSwitchTable)
+			optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD, 15));
+		else
+			optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+	
+		radioPanel.add(optionLabel);
 		
 		//Setup button for each preset
 		for (PresetEntry entry : manager.getPresets()) {
@@ -78,17 +88,45 @@ public class PresetPanel extends JPanel {
 			button.setPresetData(entry.data);
 
 			if (isSwitchTable) {
-				Font f = button.getFont();
-				button.setFont(f.deriveFont(f.getStyle(), 15));
+				Font x = button.getFont();
+				button.setFont(x.deriveFont(x.getStyle(), 15));
 			}
 				
-			button.addActionListener(new PresetListener());
-			
+			button.addActionListener(new PresetListener());			
 			buttonGroup.add(button);
 			radioPanel.add(button);
 		}
-
-		table.add(radioPanel, BorderLayout.SOUTH);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.gridx = 0;       
+		c.gridy = 0;	
+		add(radioPanel, c);
+		
+		//Add description if its a switch
+		if(isSwitchTable) {
+			JTextArea desc = new JTextArea(table.getTable().getDescription());
+			desc.setLineWrap(true);
+			desc.setWrapStyleWord(true);
+			desc.setOpaque(false);
+	
+			Font x = optionLabel.getFont();
+			desc.setFont(x.deriveFont(x.getStyle(), 12));
+				
+			c.gridx = 0;        
+			c.gridy = 1;			
+			c.anchor = GridBagConstraints.LAST_LINE_START; 
+			add(desc, c);			
+		}
+		
+		//Move it to the bottom and left
+		//For sure better way to do this...
+		JPanel temp = new JPanel();
+		temp.setLayout(new BorderLayout());
+		temp.add(this, BorderLayout.WEST);
+		
+		table.add(temp, BorderLayout.SOUTH);
 		repaint();
 	}	
 	

@@ -91,7 +91,6 @@ public abstract class TableView extends JPanel implements Serializable {
     protected CopySelectionWorker copySelectionWorker;  
     protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
 
-
     protected TableView(Table table) {    	
     	this.table = table;
     	table.setTableView(this);
@@ -574,10 +573,13 @@ public abstract class TableView extends JPanel implements Serializable {
     }
     
 
+    protected void addPresetPanel(PresetManager m) {
+    	 presetPanel = new PresetPanel(this, m);
+    }
     
     public void populateTableVisual() {
     	//Populate Views from table here
-    	if(getTable().presetManager != null) presetPanel = new PresetPanel(this, getTable().presetManager);
+    	if(getTable().presetManager != null) addPresetPanel(getTable().presetManager);
     	
     	if(!isHidden()) {
 	    	data = new DataCellView[table.getDataSize()];

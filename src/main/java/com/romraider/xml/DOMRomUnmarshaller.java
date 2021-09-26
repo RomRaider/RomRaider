@@ -62,7 +62,7 @@ public final class DOMRomUnmarshaller {
         	Rom rom = new Rom(romId);
 	        Rom output = unmarshallRom(n, rom);
 	        
-	        // set ram offset
+	        //Set ram offset
 	        output.getRomID().setRamOffset(
 	                output.getRomID().getFileSize()
 	                - input.length);

@@ -97,7 +97,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final ECUEditorNumberField incrementByCoarse = new ECUEditorNumberField();
     private final ECUEditorNumberField setValueText = new ECUEditorNumberField();
 
-    private final JComboBox<String> scaleSelection = new JComboBox<String>();
+    private final JComboBox scaleSelection = new JComboBox();
 
     private final JPanel liveDataPanel = new JPanel();
     private final JCheckBox overlayLog = new JCheckBox(rb.getString("OVERLAYLOG"));
@@ -312,7 +312,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar() {
-        this.updateTableToolBar(getTable());
+    	Table t = getTable();
+    	
+    	if(t != null)
+    		this.updateTableToolBar(getTable());
     }
 
     

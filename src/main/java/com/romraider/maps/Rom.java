@@ -232,7 +232,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 table.getStorageAddress() + " " + binData.length + " filesize", iex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
+                        JOptionPane.showMessageDialog(null,
                                 MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
                                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
