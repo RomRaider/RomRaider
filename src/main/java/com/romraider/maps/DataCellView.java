@@ -278,14 +278,11 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         return border;
     }
 
-    public String getCellText() {
-        if(tableView.getTable().getCurrentScale() == null) return "";
-        
+    public String getCellText() {        
     	if(tableView.getTable().isStaticDataTable()) {
             return getStaticText();
         }
-        
-
+               
         FORMATTER.applyPattern(tableView.getTable().getCurrentScale().getFormat());
         String displayString = "";
 

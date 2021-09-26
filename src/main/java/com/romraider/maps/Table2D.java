@@ -26,7 +26,7 @@ import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis;
+    private Table1D axis = new Table1D(TableType.Y_AXIS);
 
     @Override
     public TableType getType() {
@@ -78,12 +78,8 @@ public class Table2D extends Table {
 
     @Override
     public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {   	
-        try {
             axis.populateTable(rom);
             super.populateTable(rom);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
     }
 
 

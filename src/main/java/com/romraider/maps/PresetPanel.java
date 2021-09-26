@@ -104,8 +104,10 @@ public class PresetPanel extends JPanel {
 		add(radioPanel, c);
 		
 		//Add description if its a switch
-		if(isSwitchTable) {
-			JTextArea desc = new JTextArea(table.getTable().getDescription());
+		String stringDesc = table.getTable().getDescription();
+		
+		if(isSwitchTable && stringDesc != null && stringDesc.trim().length() > 0) {
+			JTextArea desc = new JTextArea(stringDesc);
 			desc.setLineWrap(true);
 			desc.setWrapStyleWord(true);
 			desc.setOpaque(false);

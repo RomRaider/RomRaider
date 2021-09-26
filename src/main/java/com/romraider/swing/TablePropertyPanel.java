@@ -345,7 +345,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         final String[] paramEntries = logParams.split(", ");
         for (String entry : paramEntries) {
             final String[] entries = entry.split(":");
-            if(!paramMap.containsKey(entries[0])){
+            if(entries.length > 0 && !paramMap.containsKey(entries[0])){
                 paramMap.put(entries[0], entries.length > 1 ? entries[1] : "n/a");
             }
         }

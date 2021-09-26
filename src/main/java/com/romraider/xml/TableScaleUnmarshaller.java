@@ -238,8 +238,9 @@ public class TableScaleUnmarshaller {
 	                            if (tempTable.getDataSize() != table.getDataSize()) {
 	                                tempTable.setDataSize(table.getDataSize());
 	                            }
-	                            ((Table2D) table).setAxis(tempTable);
 	                            tempTable.setData(((Table2D) table).getAxis().getData());
+	                            ((Table2D) table).setAxis(tempTable);
+	                            
 
 	                        }
 	                    } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
@@ -257,9 +258,9 @@ public class TableScaleUnmarshaller {
 	                                tempTable.setDataSize(((Table3D) table)
 	                                        .getSizeX());
 	                            }
-	                            
-	                            ((Table3D) table).setXAxis(tempTable);
 	                            tempTable.setData(((Table3D) table).getXAxis().getData());
+	                            ((Table3D) table).setXAxis(tempTable);
+	                            
 
 	                        } else if (RomAttributeParser
 	                                .parseTableType(unmarshallAttribute(n, "type",
@@ -272,11 +273,8 @@ public class TableScaleUnmarshaller {
 	                                tempTable.setDataSize(((Table3D) table)
 	                                        .getSizeY());
 	                            }
+	                            tempTable.setData(((Table3D) table).getYAxis().getData());
 	                            ((Table3D) table).setYAxis(tempTable);
-	                            tempTable.setData(((Table3D) table).getYAxis()
-	                                    .getData());
-
-
 	                        }
 	                    }
 

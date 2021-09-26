@@ -131,6 +131,8 @@ public abstract class Table implements Serializable {
     }
     
     public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    	if(isStaticDataTable()) return;
+    	
     	validateScaling();
     	
     	// temporarily remove lock;
