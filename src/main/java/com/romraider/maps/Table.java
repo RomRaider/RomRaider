@@ -213,9 +213,12 @@ public abstract class Table implements Serializable {
         if(null == curScale) {
             this.curScale = scale;
         }
-
+       
         if(SettingsManager.getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
             this.curScale = scale;
+        }
+        else if("Default".equalsIgnoreCase(scale.getName())) {
+        	this.curScale = scale;
         }
     }
 
