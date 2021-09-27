@@ -365,10 +365,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
 
         //Save the current inc/dec values in the table
-        saveFineCourseValuesInTable(this.selectedTable);
-        
-        if(this.selectedTable!=null)
-        	this.selectedTable.clearSelection();
+        saveFineCourseValuesInTable(this.selectedTable);    
         this.selectedTable = selectedTable;
 
         setBorder(toolbarBorder);

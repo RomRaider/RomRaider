@@ -21,11 +21,8 @@ package com.romraider.maps;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
@@ -227,20 +224,16 @@ public class Table2DView extends TableView {
         output.append(table.getTableAsString());
 
         //copy to clipboard
+        try {
+            Thread.sleep(1);
+         } catch(Exception e) {}
+        
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
     }
 
     @Override
-    public void paste() throws UserLevelException {
-        StringTokenizer st = new StringTokenizer(Settings.BLANK);
-        String input = Settings.BLANK;
-        try {
-            input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, Table.ST_DELIMITER);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
+    public void paste(String s) throws UserLevelException {        
+    	StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
         String pasteType = st.nextToken();
 
         if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table
@@ -252,33 +245,13 @@ public class Table2DView extends TableView {
             String axisValues = "[Table1D]" + Settings.NEW_LINE + currentToken;
             String dataValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
 
-            // put axis in clipboard and paste
-            //For whatever reason you need to add a small sleep command or you cant copy everything sometimes...
-            //https://stackoverflow.com/questions/51797673/in-java-why-do-i-get-java-lang-illegalstateexception-cannot-open-system-clipboa
-            try {
-                Thread.sleep(1);
-             } catch(Exception e) {}
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
-            axis.paste();
-            
-            // put datavalues in clipboard and paste
-            try {
-                Thread.sleep(1);
-             } catch(Exception e) {}
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
-            super.paste();
-            
-            // reset clipboard
-            try {
-                Thread.sleep(1);
-             } catch(Exception e) {}     
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
-
+            axis.paste(axisValues);           
+            super.paste(dataValues);
         } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection
             if (data[highlightBeginY].isSelected()) {
-                super.paste();
+                super.paste(s);
             } else {
-                axis.paste();
+                axis.paste(s);
             }
         }
     }

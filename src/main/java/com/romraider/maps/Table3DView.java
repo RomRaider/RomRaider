@@ -24,11 +24,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 
 import java.util.StringTokenizer;
 
@@ -458,20 +455,17 @@ public class Table3DView extends TableView {
         String tableHeader = TableView.getSettings().getTable3DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(getTable().getTableAsString());
+        
+        try {
+            Thread.sleep(1);
+         } catch(Exception e) {}
+        
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
     }
 
     @Override
-    public void paste() throws UserLevelException {
-        StringTokenizer st = new StringTokenizer(Settings.BLANK);
-        String input = Settings.BLANK;
-        try {
-            input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, Table.ST_DELIMITER);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
+    public void paste(String s) throws UserLevelException {        
+    	StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
         String pasteType = st.nextToken();
 
         if ("[Table3D]".equalsIgnoreCase(pasteType)) { // Paste table
@@ -489,40 +483,25 @@ public class Table3DView extends TableView {
                 dataValues.append(Settings.NEW_LINE).append(st.nextToken("\t")).append(st.nextToken(Settings.NEW_LINE));
             }
 
-            // put x axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues), null);
-            xAxis.paste();
-            // put y axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(yAxisValues)), null);
-            yAxis.paste();
-            // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(dataValues)), null);
-            pasteValues();
-            // reset clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
-
+            xAxis.paste(xAxisValues);
+            yAxis.paste(String.valueOf(yAxisValues));           
+            pasteValues(String.valueOf(dataValues));
+            
         } else if ("[Selection3D]".equalsIgnoreCase(pasteType)) { // paste selection
-            pasteValues();
+            pasteValues(s);
         } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // paste selection
             xAxis.paste();
             yAxis.paste();
         }
     }
 
-    public void pasteValues() throws UserLevelException {
-        StringTokenizer st = new StringTokenizer(Settings.BLANK);
-        try {
-            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input, Table.ST_DELIMITER);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
+    public void pasteValues(String s) throws UserLevelException {
+        StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
         String pasteType = st.nextToken();
 
         // figure paste start cell
-        int startX = 0;
-        int startY = 0;
+        int startX = -1;
+        int startY = -1;
         
         // if pasting a table, startX and Y at 0, else find highlight
         if ("[Selection3D]".equalsIgnoreCase(pasteType)) {      	
@@ -535,8 +514,11 @@ public class Table3DView extends TableView {
                 	}
                 }
             }
+            
+            //Nothing selected
+            if(startX == -1 && startY == -1) return;
         }
-
+        
         // set values
         for (int y = startY; st.hasMoreTokens() && y < table.getSizeY(); y++) {
             String checkToken = st.nextToken(Settings.NEW_LINE);
@@ -555,8 +537,6 @@ public class Table3DView extends TableView {
             }
         }
     }
-
-    
 
     @Override
     public void highlightLiveData(String liveValue) {

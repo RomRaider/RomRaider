@@ -708,6 +708,7 @@ public abstract class TableView extends JPanel implements Serializable {
             try {
                 Thread.sleep(1);
              } catch(Exception e) {}
+            
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
         } 
     }
@@ -720,6 +721,7 @@ public abstract class TableView extends JPanel implements Serializable {
         try {
             Thread.sleep(1);
          } catch(Exception e) {}
+        
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
     }
 
@@ -738,16 +740,23 @@ public abstract class TableView extends JPanel implements Serializable {
     }
 
     public void paste() throws UserLevelException {
-        // TODO: This sounds like desearialize.
-        if (!table.isStaticDataTable()) {
-            StringTokenizer st = new StringTokenizer(Settings.BLANK);
-            try {
-                String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-                st = new StringTokenizer(input, Table.ST_DELIMITER);
-            } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-            } catch (IOException ex) {
-            }
+    	String input;
+    	
+        try {
+            input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException ex) {
+        	return;
+        } catch (IOException ex) {
+        	return;
+        }
+        
+        paste(input);
+    }
     
+    public void paste(String s) throws UserLevelException {
+    	StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
+        
+        if (!table.isStaticDataTable()) {  
             String pasteType = st.nextToken();
             boolean selectedOnly = false;
             if ("[Selection1D]".equalsIgnoreCase(pasteType)) selectedOnly = true;

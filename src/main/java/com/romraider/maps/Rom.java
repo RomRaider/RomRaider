@@ -195,7 +195,25 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         }
         return result;
     }
+    
+    // Table storage address extends beyond end of file
+    private void showBadTablePopup(Table table, Exception ex) {
+        LOGGER.error(table.getName() +
+                " type " + table.getType() + " start " +
+                table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
+        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
+                MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
+                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void showNullExceptionPopup(Table table, Exception ex) {
+        LOGGER.error("Error Populating Table", ex);
+        JOptionPane.showMessageDialog(null,
+                MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
+                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
+    }
+    
     public void populateTables(byte[] binData, JProgressPane progress) {
         this.binData = binData;
         for (int i = 0; i < tableNodes.size(); i++) {
@@ -215,30 +233,15 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                             setEditStamp(binData, table.getStorageAddress());
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) {
-
-                        LOGGER.error(table.getName() +
-                                " type " + table.getType() + " start " +
-                                table.getStorageAddress() + " " + binData.length + " filesize", ex);
-
-                        // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
-                                MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
-                                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
+                    	showBadTablePopup(table, ex);
                         tableNodes.removeElementAt(i);
                         i--;
                     } catch (IndexOutOfBoundsException iex) {
-                        LOGGER.error(table.getName() +
-                                " type " + table.getType() + " start " +
-                                table.getStorageAddress() + " " + binData.length + " filesize", iex);
-
-                        // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(null,
-                                MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
-                                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
+                    	showBadTablePopup(table, iex);
                         tableNodes.removeElementAt(i);
                         i--;
                     }
-
+                    
                 } else {
                     tableNodes.removeElementAt(i);
                     // decrement i because length of vector has changed
@@ -246,10 +249,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 }
 
             } catch (NullPointerException ex) {
-                LOGGER.error("Error Populating Table", ex);
-                JOptionPane.showMessageDialog(null,
-                        MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
-                        rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
+            	showNullExceptionPopup(table, ex);
                 tableNodes.removeElementAt(i);
                 i--;
             }
@@ -321,7 +321,29 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-
+    
+    private void showChecksumFixPopup(TableTreeNode checksum) {
+    	 Object[] options = {rb.getString("YES"), rb.getString("NO")};
+         final String message = rb.getString("CHKSUMINVALID");
+         
+         int answer = showOptionDialog(
+                 SwingUtilities.windowForComponent(checksum.getTable().getTableView()),
+                 message,
+                 rb.getString("CHECKSUMFIX"),
+                 DEFAULT_OPTION,
+                 QUESTION_MESSAGE,
+                 null,
+                 options,
+                 options[0]);
+         if (answer == 0) {
+             calculateRomChecksum(
+                     binData,
+                     checksum.getTable().getStorageAddress(),
+                     checksum.getTable().getDataSize()
+             );
+         }
+    }
+    
     //Most of this function is useless now, since each Datacell is now responsible for each memory region
     //It is only used to correct the Subaru Checksum. Should be moved somewhere else TODO
     public byte[] saveFile() {
@@ -367,25 +389,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             }
             else if (checksum.getTable().isLocked() &&
                     !checksum.getTable().isButtonSelected()) {
-                
-                Object[] options = {rb.getString("YES"), rb.getString("NO")};
-                final String message = rb.getString("CHKSUMINVALID");
-                int answer = showOptionDialog(
-                        SwingUtilities.windowForComponent(checksum.getTable().getTableView()),
-                        message,
-                        rb.getString("CHECKSUMFIX"),
-                        DEFAULT_OPTION,
-                        QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[0]);
-                if (answer == 0) {
-                    calculateRomChecksum(
-                            binData,
-                            checksum.getTable().getStorageAddress(),
-                            checksum.getTable().getDataSize()
-                    );
-                }
+                	showChecksumFixPopup(checksum);            
             }
         }
     	
