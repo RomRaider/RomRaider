@@ -54,7 +54,6 @@ public class TableScaleUnmarshaller {
 	private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
     private final List<Scale> scales = new ArrayList<Scale>();
     private String memModelEndian = null;
-    private final Scale rawScale = new Scale();
     
     public void setMemModelEndian(String endian) {
     	memModelEndian = endian;
@@ -138,7 +137,6 @@ public class TableScaleUnmarshaller {
 	                    throw new XMLParseException("Table type " + type + " unknown for "
 	                            + tableNode.getAttributes().getNamedItem("name"));
 	                }	                
-                    table.getScales().add(rawScale);
 	            }
 	            else {
 	                return table;

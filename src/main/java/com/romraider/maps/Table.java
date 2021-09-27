@@ -85,7 +85,8 @@ public abstract class Table implements Serializable {
     }
     
     protected Table() {
-        scales.clear();     
+    	//Add Raw Scale
+        addScale(new Scale());   
     };
 
     public void setTableView(TableView v) {
