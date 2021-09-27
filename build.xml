@@ -76,10 +76,7 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
-        <condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
-                   else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
-            <isset property="env.JRE_DIR" />
-        </condition>
+        <property name="bootclasspath.dir" value="${env.JAVA_HOME}/jre/lib"/>
         <property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />
