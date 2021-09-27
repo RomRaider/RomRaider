@@ -145,7 +145,9 @@ public class Table2D extends Table {
     
     @Override
     public void clearSelection() {
-        axis.clearSelection();
+    	if(axis!=null)
+    		axis.clearSelection();
+    	
         super.clearSelection();
     }
     

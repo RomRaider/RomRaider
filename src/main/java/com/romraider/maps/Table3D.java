@@ -356,8 +356,8 @@ public class Table3D extends Table {
     
     private void setHighlightXY(int x, int y) {
         if(tableView!=null) {
-        	tableView.highlightX = x;
-        	tableView.highlightY = y;
+        	tableView.highlightBeginX = x;
+        	tableView.highlightBeginY = y;
         }
     }
     
@@ -380,14 +380,19 @@ public class Table3D extends Table {
     
     @Override
     public void clearSelection() {
-        xAxis.clearSelection();
-        yAxis.clearSelection();
+    	if(xAxis!=null)
+    		xAxis.clearSelection();
+    	
+    	if(yAxis!=null)
+    		yAxis.clearSelection();
         
-        for (int x = 0; x < getSizeX(); x++) {
-            for (int y = 0; y < getSizeY(); y++) {
-                data[x][y].setSelected(false);
-            }
-        }
+    	if(data!=null) {
+	        for (int x = 0; x < getSizeX(); x++) {
+	            for (int y = 0; y < getSizeY(); y++) {
+	                data[x][y].setSelected(false);
+	            }
+	        }
+    	}
     }
     
     @Override

@@ -626,23 +626,25 @@ public abstract class Table implements Serializable {
     }
     
     public void clearSelection() {
-        for (DataCell cell : data) {
+    	if(data!=null) {
+    		for (DataCell cell : data) {
                 cell.setSelected(false);
             }
+    	}
     }
     
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
             clearSelection();
             data[y].setSelected(true);
-            if(tableView!=null) tableView.highlightY = y;          
+            if(tableView!=null) tableView.highlightBeginY = y;          
         }
     }
 
     public void selectCellAtWithoutClear(int y) {
         if(y >= 0 && y < data.length) {
             data[y].setSelected(true);
-            if(tableView!=null)tableView.highlightY = y;            
+            if(tableView!=null)tableView.highlightBeginY = y;            
         }
     }
     

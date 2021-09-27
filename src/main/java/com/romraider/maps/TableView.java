@@ -20,11 +20,9 @@
 package com.romraider.maps;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -46,8 +44,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
@@ -79,16 +75,16 @@ public abstract class TableView extends JPanel implements Serializable {
     protected int minHeight = 100;
     protected int minWidthNoOverlay = 465;
     protected int minWidthOverlay = 700;
-    protected int highlightX;
-    protected int highlightY;
+    
+    protected int highlightBeginX;
+    protected int highlightBeginY;
+    
     protected boolean highlight = false;
     protected boolean overlayLog = false;
     protected String liveAxisValue = Settings.BLANK;
     protected int liveDataIndex = 0;
     protected int previousLiveDataIndex = 0;
-    
-    protected CopyTableWorker copyTableWorker;
-    protected CopySelectionWorker copySelectionWorker;  
+  
     protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
 
     protected TableView(Table table) {    	
@@ -606,16 +602,16 @@ public abstract class TableView extends JPanel implements Serializable {
 
 
     public void startHighlight(int x, int y) {
-        this.highlightY = y;
-        this.highlightX = x;
+        this.highlightBeginY = y;
+        this.highlightBeginX = x;        
         highlight = true;
         highlight(x, y);
     }
 
     public void highlight(int x, int y) {
-        if (highlight) {
+        if (highlight) {         	
             for (int i = 0; i < data.length; i++) {
-                if ((i >= highlightY && i <= y) || (i <= highlightY && i >= y)) {
+                if ((i >= highlightBeginY && i <= y) || (i <= highlightBeginY && i >= y)) {
                     data[i].setHighlighted(true);
                 } else {
                     data[i].setHighlighted(false);
@@ -676,29 +672,55 @@ public abstract class TableView extends JPanel implements Serializable {
     }
     
     public void copySelection() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        StringBuilder output =  new StringBuilder("[Selection1D]" + Settings.NEW_LINE);
+        
+        boolean copy = false;
+        int[] coords = new int[2];
+        coords[0] = table.getDataSize();
 
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        for (int i = 0; i < table.getDataSize(); i++) {
+            if (getData()[i].isSelected()) {
+                if (i < coords[0]) {
+                    coords[0] = i;
+                    copy = true;
+                }
+                if (i > coords[1]) {
+                    coords[1] = i;
+                    copy = true;
+                }
+            }
         }
-
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copySelectionWorker = new CopySelectionWorker(this);
-        copySelectionWorker.execute();
+        
+        //Make a string of the selection
+        for (int i = coords[0]; i <= coords[1]; i++) {
+            if (getData()[i].isSelected()) {
+                output.append(NumberUtil.stringValue(table.getData()[i].getRealValue()));
+            } else {
+            	output.append("x"); // x represents non-selected cell
+            }
+            if (i < coords[1]) {
+            	output.append("\t");
+            }
+        }
+        
+        //Copy to clipboard
+        if (copy) {
+            try {
+                Thread.sleep(1);
+             } catch(Exception e) {}
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
+        } 
     }
 
-
-
     public void copyTable() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTableWorker = new CopyTableWorker(this);
-        copyTableWorker.execute();
+        String tableHeader = table.getSettings().getTableHeader();
+        StringBuffer output = new StringBuffer(tableHeader);
+        output.append(table.getTableAsString());
+        
+        try {
+            Thread.sleep(1);
+         } catch(Exception e) {}
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
     }
 
     public String getCellAsString(int index) {
@@ -727,28 +749,31 @@ public abstract class TableView extends JPanel implements Serializable {
             }
     
             String pasteType = st.nextToken();
-    
-            if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
-                int i = 0;
-                while (st.hasMoreTokens()) {
-                    String currentToken = st.nextToken();
-                    try {
-                        if (!data[i].getText().equalsIgnoreCase(currentToken)) {
-                            data[i].getDataCell().setRealValue(currentToken);
-                        }
-                    } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
-                    i++;
-                }
-            } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // copied selection
-                if (data[highlightY].isSelected()) {
+            boolean selectedOnly = false;
+            if ("[Selection1D]".equalsIgnoreCase(pasteType)) selectedOnly = true;
+            
+            if ("[Table1D]".equalsIgnoreCase(pasteType) || "[Selection1D]".equalsIgnoreCase(pasteType)) {
+            	
+            	//Find the leftmost selected cell as start
+            	int startSelection = 0;           	
+            	for(int i=0; i < data.length;i++) {
+            		if(data[i].isSelected()) {
+            			startSelection=i;
+            			break;
+            		}
+            	}
+            	
+                if ((selectedOnly && data[startSelection].isSelected()) || !selectedOnly) {
                     int i = 0;
                     while (st.hasMoreTokens()) {
                         String currentToken = st.nextToken();
                         try {
-                            if (!data[highlightY + i].getText().equalsIgnoreCase(currentToken)) {
-                                data[highlightY + i].getDataCell().setRealValue(currentToken);
+                            if (!data[startSelection + i].getText().equalsIgnoreCase(currentToken)) {
+                                data[startSelection + i].getDataCell().setRealValue(currentToken);
                             }
-                        } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
+                        } catch (ArrayIndexOutOfBoundsException ex) {
+                        	break;
+                        }
                         i++;
                     }
                 }
@@ -901,88 +926,4 @@ public abstract class TableView extends JPanel implements Serializable {
         JOptionPane.showMessageDialog(null, panel,
                 rb.getString("WARNING"), JOptionPane.ERROR_MESSAGE);
     }
-
-class CopySelectionWorker extends SwingWorker<Void, Void> {
-    TableView tableView;
-
-    public CopySelectionWorker(TableView tableView) {
-        this.tableView = tableView;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        // find bounds of selection
-        // coords[0] = x min, y min, x max, y max
-        String output = "[Selection1D]" + Settings.NEW_LINE;
-        boolean copy = false;
-        int[] coords = new int[2];
-        coords[0] = table.getDataSize();
-
-        for (int i = 0; i < table.getDataSize(); i++) {
-            if (tableView.getData()[i].isSelected()) {
-                if (i < coords[0]) {
-                    coords[0] = i;
-                    copy = true;
-                }
-                if (i > coords[1]) {
-                    coords[1] = i;
-                    copy = true;
-                }
-            }
-        }
-        //make a string of the selection
-        for (int i = coords[0]; i <= coords[1]; i++) {
-            if (tableView.getData()[i].isSelected()) {
-                output = output + NumberUtil.stringValue(table.getData()[i].getRealValue());
-            } else {
-                output = output + "x"; // x represents non-selected cell
-            }
-            if (i < coords[1]) {
-                output = output + "\t";
-            }
-        }
-        //copy to clipboard
-        if (copy) {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
-        }
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class CopyTableWorker extends SwingWorker<Void, Void> {
-    TableView tableView;
-
-    public CopyTableWorker(TableView t) {
-        this.tableView = t;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        String tableHeader = table.getSettings().getTableHeader();
-        StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTableAsString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        tableView.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-	}
 }

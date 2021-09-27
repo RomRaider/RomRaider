@@ -19,10 +19,8 @@
 
 package com.romraider.maps;
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -30,22 +28,15 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 
 public class Table2DView extends TableView {
 	private static final long serialVersionUID = -7684570967109324784L;
     private JLabel axisLabel;
     private Table1DView axis;
-
-    private CopyTable2DWorker copyTable2DWorker;
-    private CopySelection2DWorker copySelection2DWorker;
    
     public Table2DView(Table2D table) {
 		super(table);
@@ -150,8 +141,8 @@ public class Table2DView extends TableView {
 
     @Override
     public void cursorUp() {
-        if (data[highlightY].isSelected()) {
-            axis.getTable().selectCellAt(highlightY);
+        if (data[highlightBeginY].isSelected()) {
+            axis.getTable().selectCellAt(highlightBeginY);
         }
     }
 
@@ -170,8 +161,8 @@ public class Table2DView extends TableView {
 
     @Override
     public void cursorLeft() {
-        if (highlightY > 0 && data[highlightY].isSelected()) {
-            table.selectCellAt(highlightY - 1);
+        if (highlightBeginY > 0 && data[highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginY - 1);
         } else {
             axis.cursorLeft();
         }
@@ -179,8 +170,8 @@ public class Table2DView extends TableView {
 
     @Override
     public void cursorRight() {
-        if (highlightY < data.length - 1 && data[highlightY].isSelected()) {
-            table.selectCellAt(highlightY + 1);
+        if (highlightBeginY < data.length - 1 && data[highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginY + 1);
         } else {
             axis.cursorRight();
         }
@@ -188,10 +179,10 @@ public class Table2DView extends TableView {
 
 	@Override
 	public void shiftCursorUp() {
-        if (data[highlightY].isSelected()) {
-        	data[highlightY].getDataCell().setSelected(false);
+        if (data[highlightBeginY].isSelected()) {
+        	data[highlightBeginY].getDataCell().setSelected(false);
         }
-        axis.getTable().selectCellAt(highlightY);
+        axis.getTable().selectCellAt(highlightBeginY);
 	}
 
 	@Override
@@ -201,8 +192,8 @@ public class Table2DView extends TableView {
 
 	@Override
 	public void shiftCursorLeft() {
-        if (highlightY > 0 && data[highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightY - 1);
+        if (highlightBeginY > 0 && data[highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginY - 1);
         } else {
         	axis.shiftCursorLeft();
         }
@@ -210,8 +201,8 @@ public class Table2DView extends TableView {
 
 	@Override
 	public void shiftCursorRight() {
-        if (highlightY < data.length - 1 && data[highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightY + 1);
+        if (highlightBeginY < data.length - 1 && data[highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginY + 1);
         } else {
         	axis.shiftCursorRight();
         }
@@ -225,27 +216,18 @@ public class Table2DView extends TableView {
 
     @Override
     public void copySelection() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         super.copySelection();
-        copySelection2DWorker = new CopySelection2DWorker(this);
-        copySelection2DWorker.execute();
+        axis.copySelection();
     }
 
     @Override
     public void copyTable() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTable2DWorker = new CopyTable2DWorker(this);
-        copyTable2DWorker.execute();
+        String tableHeader = TableView.getSettings().getTable2DHeader();
+        StringBuffer output = new StringBuffer(tableHeader);
+        output.append(table.getTableAsString());
+
+        //copy to clipboard
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
     }
 
     @Override
@@ -271,16 +253,29 @@ public class Table2DView extends TableView {
             String dataValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
 
             // put axis in clipboard and paste
+            //For whatever reason you need to add a small sleep command or you cant copy everything sometimes...
+            //https://stackoverflow.com/questions/51797673/in-java-why-do-i-get-java-lang-illegalstateexception-cannot-open-system-clipboa
+            try {
+                Thread.sleep(1);
+             } catch(Exception e) {}
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
             axis.paste();
+            
             // put datavalues in clipboard and paste
+            try {
+                Thread.sleep(1);
+             } catch(Exception e) {}
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
             super.paste();
+            
             // reset clipboard
+            try {
+                Thread.sleep(1);
+             } catch(Exception e) {}     
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
 
         } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection
-            if (data[highlightY].isSelected()) {
+            if (data[highlightBeginY].isSelected()) {
                 super.paste();
             } else {
                 axis.paste();
@@ -328,61 +323,4 @@ public class Table2DView extends TableView {
             axis.repaint();
         }
     } 
-}
-
-class CopySelection2DWorker extends SwingWorker<Void, Void> {
-	Table2DView table;
-    TableView extendedTable;
-
-    public CopySelection2DWorker(Table2DView table)
-    {
-        this.table = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        table.getAxis().copySelection();
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        table.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class CopyTable2DWorker extends SwingWorker<Void, Void> {
-    Table2DView table;
-
-    public CopyTable2DWorker(Table2DView table)
-    {
-        this.table = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        String tableHeader = TableView.getSettings().getTable2DHeader();
-        StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTable().getTableAsString());
-
-        //copy to clipboard
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
-        return null;
-
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        table.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
 }

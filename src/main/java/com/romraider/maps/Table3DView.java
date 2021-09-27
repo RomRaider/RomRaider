@@ -21,11 +21,9 @@ package com.romraider.maps;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -36,8 +34,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
@@ -56,9 +52,6 @@ public class Table3DView extends TableView {
     private JLabel yAxisLabel;
 
     DataCellView[][] data;
-
-    CopyTable3DWorker copyTable3DWorker;
-    CopySelection3DWorker copySelection3DWorker;
 
     public Table3DView(Table3D table) {
     	super(table);
@@ -97,7 +90,6 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    //TODO
     public void populateTableVisual() {
     	// fill first empty cell
         centerPanel.add(new JLabel());
@@ -243,10 +235,10 @@ public class Table3DView extends TableView {
         if (highlight) {
             for (int x = 0; x < table.getSizeX(); x++) {
                 for (int y = 0; y < table.getSizeY(); y++) {
-                    if (((y >= highlightY && y <= yCoord) ||
-                            (y <= highlightY && y >= yCoord)) &&
-                            ((x >= highlightX && x <= xCoord) ||
-                                    (x <= highlightX && x >= xCoord))) {
+                    if (((y >= highlightBeginY && y <= yCoord) ||
+                            (y <= highlightBeginY && y >= yCoord)) &&
+                            ((x >= highlightBeginX && x <= xCoord) ||
+                                    (x <= highlightBeginX && x >= xCoord))) {
                         data[x][y].setHighlighted(true);
                     } else {
                         data[x][y].setHighlighted(false);
@@ -304,10 +296,10 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorUp() {
-        if (highlightY > 0 && data[highlightX][highlightY].isSelected()) {
-            table.selectCellAt(highlightX, highlightY - 1);
-        } else if (data[highlightX][highlightY].isSelected()) {
-            xAxis.getTable().selectCellAt(highlightX);
+        if (highlightBeginY > 0 && data[highlightBeginX][highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginX, highlightBeginY - 1);
+        } else if (data[highlightBeginX][highlightBeginY].isSelected()) {
+            xAxis.getTable().selectCellAt(highlightBeginX);
         } else {
             xAxis.cursorUp();
             yAxis.cursorUp();
@@ -316,8 +308,8 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorDown() {
-        if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
-            table.selectCellAt(highlightX, highlightY + 1);
+        if (highlightBeginY < table.getSizeY() - 1 && data[highlightBeginX][highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginX, highlightBeginY + 1);
         } else {
             xAxis.cursorDown();
             yAxis.cursorDown();
@@ -326,10 +318,10 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorLeft() {
-        if (highlightX > 0 && data[highlightX][highlightY].isSelected()) {
-            table.selectCellAt(highlightX - 1, highlightY);
-        } else if (data[highlightX][highlightY].isSelected()) {
-            yAxis.getTable().selectCellAt(highlightY);
+        if (highlightBeginX > 0 && data[highlightBeginX][highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginX - 1, highlightBeginY);
+        } else if (data[highlightBeginX][highlightBeginY].isSelected()) {
+            yAxis.getTable().selectCellAt(highlightBeginY);
         } else {
             xAxis.cursorLeft();
             yAxis.cursorLeft();
@@ -338,8 +330,8 @@ public class Table3DView extends TableView {
 
     @Override
     public void cursorRight() {
-        if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
-            table.selectCellAt(highlightX + 1, highlightY);
+        if (highlightBeginX < table.getSizeX() - 1 && data[highlightBeginX][highlightBeginY].isSelected()) {
+            table.selectCellAt(highlightBeginX + 1, highlightBeginY);
         } else {
             xAxis.cursorRight();
             yAxis.cursorRight();
@@ -348,11 +340,11 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorUp() {
-        if (highlightY > 0 && data[highlightX][highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightX, highlightY - 1);
-        } else if (data[highlightX][highlightY].isSelected()) {
-        	data[highlightX][highlightY].getDataCell().setSelected(false);
-        	xAxis.getTable().selectCellAt(highlightX);
+        if (highlightBeginY > 0 && data[highlightBeginX][highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginX, highlightBeginY - 1);
+        } else if (data[highlightBeginX][highlightBeginY].isSelected()) {
+        	data[highlightBeginX][highlightBeginY].getDataCell().setSelected(false);
+        	xAxis.getTable().selectCellAt(highlightBeginX);
         } else {
         	xAxis.cursorUp();
         	yAxis.shiftCursorUp();
@@ -361,8 +353,8 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorDown() {
-        if (highlightY < table.getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightX, highlightY + 1);
+        if (highlightBeginY < table.getSizeY() - 1 && data[highlightBeginX][highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginX, highlightBeginY + 1);
         } else {
             xAxis.shiftCursorDown();
             yAxis.shiftCursorDown();
@@ -371,10 +363,10 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorLeft() {
-        if (highlightX > 0 && data[highlightX][highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightX - 1, highlightY);
-        } else if (data[highlightX][highlightY].isSelected()) {
-            yAxis.getTable().selectCellAt(highlightY);
+        if (highlightBeginX > 0 && data[highlightBeginX][highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginX - 1, highlightBeginY);
+        } else if (data[highlightBeginX][highlightBeginY].isSelected()) {
+            yAxis.getTable().selectCellAt(highlightBeginY);
         } else {
             xAxis.shiftCursorLeft();
             yAxis.shiftCursorLeft();
@@ -383,8 +375,8 @@ public class Table3DView extends TableView {
 
 	@Override
 	public void shiftCursorRight() {
-        if (highlightX < table.getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightX + 1, highlightY);
+        if (highlightBeginX < table.getSizeX() - 1 && data[highlightBeginX][highlightBeginY].isSelected()) {
+        	table.selectCellAtWithoutClear(highlightBeginX + 1, highlightBeginY);
         } else {
             xAxis.shiftCursorRight();
             yAxis.shiftCursorRight();
@@ -400,27 +392,73 @@ public class Table3DView extends TableView {
 
     @Override
     public void copySelection() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copySelection3DWorker = new CopySelection3DWorker(this);
-        copySelection3DWorker.execute();
+    	// find bounds of selection
+        // coords[0] = x min, y min, x max, y max
+        boolean copy = false;
+        int[] coords = new int[4];
+        coords[0] = getTable().getSizeX();
+        coords[1] = getTable().getSizeY();
 
+        for (int x = 0; x < getTable().getSizeX(); x++) {
+            for (int y = 0; y < getTable().getSizeY(); y++) {
+                if (get3dData()[x][y].isSelected()) {
+                    if (x < coords[0]) {
+                        coords[0] = x;
+                        copy = true;
+                    }
+                    if (x > coords[2]) {
+                        coords[2] = x;
+                        copy = true;
+                    }
+                    if (y < coords[1]) {
+                        coords[1] = y;
+                        copy = true;
+                    }
+                    if (y > coords[3]) {
+                        coords[3] = y;
+                        copy = true;
+                    }
+                }
+            }
+        }
+        // make string of selection
+        if (copy) {
+            StringBuffer output = new StringBuffer("[Selection3D]" + Settings.NEW_LINE);
+            for (int y = coords[1]; y <= coords[3]; y++) {
+                for (int x = coords[0]; x <= coords[2]; x++) {
+                    if (get3dData()[x][y].isSelected()) {
+                        output.append(NumberUtil.stringValue(get3dData()[x][y].getDataCell().getRealValue()));
+                    } else {
+                        output.append("x"); // x represents non-selected cell
+                    }
+                    if (x < coords[2]) {
+                        output.append("\t");
+                    }
+                }
+                if (y < coords[3]) {
+                    output.append(Settings.NEW_LINE);
+                }
+                
+                //For whatever reason you need to add a small sleep command or you cant copy everything sometimes...
+                //https://stackoverflow.com/questions/51797673/in-java-why-do-i-get-java-lang-illegalstateexception-cannot-open-system-clipboa
+                try {
+                    Thread.sleep(1);
+                 } catch(Exception e) {}
+                
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+            }
+        } else {
+            getTable().getXAxis().getTableView().copySelection();
+            getTable().getYAxis().getTableView().copySelection();
+        }
     }
 
     @Override
     public void copyTable() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTable3DWorker = new CopyTable3DWorker(this);
-        copyTable3DWorker.execute();
+        String tableHeader = TableView.getSettings().getTable3DHeader();
+        StringBuffer output = new StringBuffer(tableHeader);
+        output.append(getTable().getTableAsString());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
     }
 
     @Override
@@ -485,10 +523,18 @@ public class Table3DView extends TableView {
         // figure paste start cell
         int startX = 0;
         int startY = 0;
-        // if pasting a table, startX and Y at 0, else highlight is start
-        if ("[Selection3D]".equalsIgnoreCase(pasteType)) {
-            startX = highlightX;
-            startY = highlightY;
+        
+        // if pasting a table, startX and Y at 0, else find highlight
+        if ("[Selection3D]".equalsIgnoreCase(pasteType)) {      	
+            for (int x = getTable().getSizeX() - 1; x >=0 ; x--) {
+                for (int y = 0; y < getTable().getSizeY(); y++) {
+                	if(data[x][y].isSelected()) {
+                		startX = x;
+                		startY = y;
+                		break;
+                	}
+                }
+            }
         }
 
         // set values
@@ -583,110 +629,5 @@ public class Table3DView extends TableView {
         if(null != yAxis) {
             yAxis.repaint();
         }
-    }
-}
-
-class CopySelection3DWorker extends SwingWorker<Void, Void> {
-    Table3DView tableView;
-
-    public CopySelection3DWorker(Table3DView table)
-    {
-        this.tableView = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        // find bounds of selection
-        // coords[0] = x min, y min, x max, y max
-        boolean copy = false;
-        int[] coords = new int[4];
-        coords[0] = tableView.getTable().getSizeX();
-        coords[1] = tableView.getTable().getSizeY();
-
-        for (int x = 0; x < tableView.getTable().getSizeX(); x++) {
-            for (int y = 0; y < tableView.getTable().getSizeY(); y++) {
-                if (tableView.get3dData()[x][y].isSelected()) {
-                    if (x < coords[0]) {
-                        coords[0] = x;
-                        copy = true;
-                    }
-                    if (x > coords[2]) {
-                        coords[2] = x;
-                        copy = true;
-                    }
-                    if (y < coords[1]) {
-                        coords[1] = y;
-                        copy = true;
-                    }
-                    if (y > coords[3]) {
-                        coords[3] = y;
-                        copy = true;
-                    }
-                }
-            }
-        }
-        // make string of selection
-        if (copy) {
-            StringBuffer output = new StringBuffer("[Selection3D]" + Settings.NEW_LINE);
-            for (int y = coords[1]; y <= coords[3]; y++) {
-                for (int x = coords[0]; x <= coords[2]; x++) {
-                    if (tableView.get3dData()[x][y].isSelected()) {
-                        output.append(NumberUtil.stringValue(tableView.get3dData()[x][y].getDataCell().getRealValue()));
-                    } else {
-                        output.append("x"); // x represents non-selected cell
-                    }
-                    if (x < coords[2]) {
-                        output.append("\t");
-                    }
-                }
-                if (y < coords[3]) {
-                    output.append(Settings.NEW_LINE);
-                }
-                //copy to clipboard
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
-            }
-        } else {
-            tableView.getTable().getXAxis().getTableView().copySelection();
-            tableView.getTable().getYAxis().getTableView().copySelection();
-        }
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        tableView.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class CopyTable3DWorker extends SwingWorker<Void, Void> {
-    Table3DView tableView;
-
-    public CopyTable3DWorker(Table3DView v)
-    {
-        this.tableView = v;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        String tableHeader = TableView.getSettings().getTable3DHeader();
-        StringBuffer output = new StringBuffer(tableHeader);
-        output.append(tableView.getTable().getTableAsString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(tableView);
-        if(null != ancestorWindow){
-            ancestorWindow.setCursor(null);
-        }
-        tableView.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
     }
 }

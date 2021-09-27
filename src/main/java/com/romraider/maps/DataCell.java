@@ -20,7 +20,6 @@
 package com.romraider.maps;
 
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
