@@ -150,6 +150,24 @@ public class Table2D extends Table {
     }
     
     @Override
+    public void setRealValue(String realValue) throws UserLevelException {
+        super.setRealValue(realValue);
+        axis.setRealValue(realValue);
+    }
+    
+    @Override
+    public void increment(double increment) throws UserLevelException {
+	    super.increment(increment);
+	    axis.increment(increment);
+    }
+    
+    @Override
+    public void multiply(double factor) throws UserLevelException{  	
+    	super.multiply(factor);
+    	axis.multiply(factor);
+    }
+    
+    @Override
     public void interpolate() throws UserLevelException {
         super.interpolate();
         this.getAxis().interpolate();

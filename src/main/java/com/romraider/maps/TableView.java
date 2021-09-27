@@ -671,9 +671,7 @@ public abstract class TableView extends JPanel implements Serializable {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (DataCellView cell : data) {
-            for (int z = 0; z < table.getStorageType(); z++) {
-                cell.addKeyListener(listener);
-            }
+        	cell.addKeyListener(listener);
         }
     }
     
