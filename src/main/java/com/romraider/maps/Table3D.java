@@ -333,7 +333,11 @@ public class Table3D extends Table {
                     try {
                         this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
                     } catch (NameNotFoundException e1) {
-                    	e1.printStackTrace();
+                    	try {
+                            this.xAxis.setScaleByName("Default");
+                        } catch (NameNotFoundException e2) {
+                        	e2.printStackTrace();
+                        }
                     }
                 }
             }
@@ -344,7 +348,11 @@ public class Table3D extends Table {
                     try {
                         this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
                     } catch (NameNotFoundException e1) {
-                    	e1.printStackTrace();
+                    	try {
+                            this.yAxis.setScaleByName("Default");
+                        } catch (NameNotFoundException e2) {
+                        	e2.printStackTrace();
+                        }
                     }
                 }
             }

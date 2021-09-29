@@ -134,7 +134,11 @@ public class Table2D extends Table {
                 try {
                     this.axis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
                 } catch (NameNotFoundException e1) {
-                	e1.printStackTrace();
+                	try {
+                        this.axis.setScaleByName("Default");
+                    } catch (NameNotFoundException e2) {
+                    	e2.printStackTrace();
+                    }
                 }
             }
         }

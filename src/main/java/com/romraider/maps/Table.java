@@ -726,7 +726,7 @@ public abstract class Table implements Serializable {
             userLevel = 1;
         }
     }
-
+        
     public void setScaleByName(String scaleName) throws NameNotFoundException {
         for(Scale scale : scales) {
             if(scale.getName().equalsIgnoreCase(scaleName)) {

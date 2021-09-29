@@ -559,6 +559,8 @@ public abstract class TableView extends JPanel implements Serializable {
     }
      
     public void drawTable() {
+    	updateTableLabel();
+    	
     	if(data!=null && !isHidden()) {
 	        for(DataCellView cell : data) {
 	            if(null != cell) {
