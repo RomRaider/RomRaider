@@ -365,8 +365,11 @@ public class Table1DView extends TableView {
         }
     }
 
+   
     @Override
     public void updateTableLabel() {
-        this.table.getAxisParent().getTableView().updateTableLabel();
+    	if(this.table.getAxisParent() == null) {
+    		super.updateTableLabel();
+    	}   	
     }
 }

@@ -84,11 +84,6 @@ public abstract class Table implements Serializable {
     	BOSCH_SUBTRACT
     }
     
-    protected Table() {
-    	//Add Raw Scale
-        addScale(new Scale());   
-    };
-
     public void setTableView(TableView v) {
     	this.tableView = v;
     }
@@ -151,6 +146,9 @@ public abstract class Table implements Serializable {
         // reset locked status
         locked = tempLock;
         calcCellRanges();
+        
+    	//Add Raw Scale
+        addScale(new Scale()); 
     }
 
     public abstract TableType getType();

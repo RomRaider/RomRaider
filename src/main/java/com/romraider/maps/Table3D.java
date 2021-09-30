@@ -194,6 +194,9 @@ public class Table3D extends Table {
         // reset locked status
         locked = tempLock;      
         calcCellRanges();
+        
+    	//Add Raw Scale
+        addScale(new Scale()); 
     }
 
     @Override

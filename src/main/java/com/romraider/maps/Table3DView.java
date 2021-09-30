@@ -84,6 +84,8 @@ public class Table3DView extends TableView {
     	
     	if(yAxis!=null)
     		yAxis.drawTable();
+    	
+    	updateTableLabel();
     }
 
     @Override

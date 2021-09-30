@@ -45,8 +45,10 @@ public class Table1D extends Table {
     @Override
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
-        
-        if(tableView!=null) tableView.drawTable();
+    	
+        if(getAxisParent() == null && tableView!=null) {
+    		tableView.drawTable();
+    	}
     }
   
 	@Override
