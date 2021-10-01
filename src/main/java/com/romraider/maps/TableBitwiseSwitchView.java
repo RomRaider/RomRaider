@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ public class TableBitwiseSwitchView extends TableView {
 	private ArrayList<JCheckBox> checkboxes;
 	private TableBitwiseSwitch table;
 
-
 	public TableBitwiseSwitchView(TableBitwiseSwitch table) {
 		super(table);
 		this.table = table;
@@ -56,8 +55,7 @@ public class TableBitwiseSwitchView extends TableView {
 	}
 
 	@Override
-	public void populateTableVisual()
-			throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+	public void populateTableVisual() {
 		int maxBitPosition = ((table.getDataSize() * 8) - 1);
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 		radioPanel.add(new JLabel("  " + getName()));
@@ -65,7 +63,7 @@ public class TableBitwiseSwitchView extends TableView {
 		for (Entry<String, Integer> entry : TableBitwiseSwitch.sortByValue(table.getControlBits()).entrySet()) {
 			if (entry.getValue() > maxBitPosition) {
 				String mismatch = MessageFormat.format(
-						rb.getString("OUTOFRANGE"), super.getName());
+						rb.getString("OUTOFRANGE"), table.getName());
 				showMessageDialog(this, mismatch,
 				        rb.getString("DEFERROR"), ERROR_MESSAGE);
 				break;

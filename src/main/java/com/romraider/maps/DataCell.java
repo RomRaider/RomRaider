@@ -66,7 +66,6 @@ public class DataCell {
         if (st.hasMoreTokens()) {
             this.staticText = st.nextToken();
         }
-        table.setStaticDataTable(true);
     }
 
     public DataCell(Table table, int index, Rom rom) {

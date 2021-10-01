@@ -593,14 +593,26 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 LOGGER.info(loadResult);
             } catch (ConfigurationException cfe) {
                 reportError(cfe);
-                showMissingConfigDialog();
+                showErrorConfigDialog(cfe);
             }
             catch (Exception e) {
                 reportError(e);
             }
         }
     }
-
+    
+    private void showErrorConfigDialog(Exception e) {
+        Object[] options = {"OK"};
+        showOptionDialog(this,
+                rb.getString("LOGGERDEFERROR") + e.getMessage(),
+                rb.getString("LOGGERCONFIG"),
+                DEFAULT_OPTION,
+                ERROR_MESSAGE,
+                null,
+                options,
+                options[0]);
+    }
+    
     private void showMissingConfigDialog() {
         Object[] options = {rb.getString("YES"), rb.getString("NO")};
         int answer = showOptionDialog(this,

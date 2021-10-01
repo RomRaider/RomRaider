@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 package com.romraider.maps;
 
-import java.awt.GridLayout;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -30,9 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import com.romraider.util.ByteUtil;
 
 public class TableBitwiseSwitch extends Table {
@@ -58,10 +54,12 @@ public class TableBitwiseSwitch extends Table {
 				bits_array[((dataSize - 1 - i) *8)+ j] = byte_values[7-j];
 			}
 		}
-
-		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-		radioPanel.add(new JLabel("  " + getName()));
 	}
+	
+    //Cleans up all references to avoid data leaks
+    public void clearData() {   	
+    	controlBits.clear();
+    }
 	
 	public Map<String, Integer> getControlBits() {
 		return controlBits;

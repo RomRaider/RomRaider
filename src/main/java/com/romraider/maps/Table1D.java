@@ -55,18 +55,7 @@ public class Table1D extends Table {
 	public byte[] saveFile(byte[] binData) {
 		return binData;
 	}
-	
-    public void addStaticDataCell(String s) {
-    	DataCell c = new DataCell(this, s, null);
-    	
-        for(int i = 0; i < data.length; i++) {
-            if(data[i] == null) {
-                data[i] = c;
-                break;
-            }
-        }
-    }
-    
+ 
     @Override
     public StringBuffer getTableAsString() {
         if(isStaticDataTable()) {

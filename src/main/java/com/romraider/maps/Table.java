@@ -103,7 +103,19 @@ public abstract class Table implements Serializable {
     public DataCell[] getData() {
         return data;
     }
-
+    
+    public void addStaticDataCell(String s) {
+    	setStaticDataTable(true);
+    	DataCell c = new DataCell(this, s, null);
+    	
+        for(int i = 0; i < data.length; i++) {
+            if(data[i] == null) {
+                data[i] = c;
+                break;
+            }
+        }
+    }
+    
     //Cleans up all references to avoid data leaks
     public void clearData() {
     	

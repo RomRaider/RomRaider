@@ -136,7 +136,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             } finally {
                 inputStream.close();
             }
-        } catch (FileNotFoundException fnfe) {
+        }/* catch (FileNotFoundException fnfe) {
             throw new ConfigurationException(MessageFormat.format(
                     rb.getString("LOGFNF"), loggerConfigFilePath));
         } catch (SAXParseException spe) {
@@ -144,7 +144,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             // unzip the defs that a better error message is in order
             throw new ConfigurationException(MessageFormat.format(
                     rb.getString("UNZIPLOG"), loggerConfigFilePath));
-        } catch (Exception e) {
+        } */catch (Exception e) {
             throw new ConfigurationException(e);
         }
         

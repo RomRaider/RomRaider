@@ -601,8 +601,6 @@ public abstract class TableView extends JPanel implements Serializable {
         return new Dimension(width, height);
     }
 
-
-
     public void startHighlight(int x, int y) {
         this.highlightBeginY = y;
         this.highlightBeginX = x;        
@@ -896,14 +894,16 @@ public abstract class TableView extends JPanel implements Serializable {
 
 
     public void updateTableLabel() {
-        if(null == table.name || table.name.isEmpty()) {
-            ;// Do not update label.
-        } else if(null == table.getCurrentScale () || "0x" == table.getCurrentScale().getUnit()) {
-            // static or no scale exists.
-            tableLabel.setText(getName());
-        } else {
-            tableLabel.setText(getName() + " (" + table.getCurrentScale().getUnit() + ")");
-        }
+    	if(tableLabel != null) {
+	        if(null == table.name || table.name.isEmpty()) {
+	            ;// Do not update label.
+	        } else if(null == table.getCurrentScale () || "0x" == table.getCurrentScale().getUnit()) {
+	            // static or no scale exists.
+	            tableLabel.setText(getName());
+	        } else {
+	            tableLabel.setText(getName() + " (" + table.getCurrentScale().getUnit() + ")");
+	        }
+    	}
     }
     
     public String getName() {
