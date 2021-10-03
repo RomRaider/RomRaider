@@ -91,7 +91,7 @@ public class RomTree extends JTree implements MouseListener {
         }
 
         if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()
-                && selectedRow instanceof TableTreeNode) {
+                && selectedRow instanceof TableTreeNode && getRomNode((TableTreeNode)selectedRow) != null) {
             showTable((TableTreeNode)selectedRow);
         }
 
