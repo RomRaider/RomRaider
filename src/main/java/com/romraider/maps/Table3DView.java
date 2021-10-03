@@ -23,12 +23,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyListener;
 
 import java.util.StringTokenizer;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -438,13 +435,7 @@ public class Table3DView extends TableView {
                     output.append(Settings.NEW_LINE);
                 }
                 
-                //For whatever reason you need to add a small sleep command or you cant copy everything sometimes...
-                //https://stackoverflow.com/questions/51797673/in-java-why-do-i-get-java-lang-illegalstateexception-cannot-open-system-clipboa
-                try {
-                    Thread.sleep(20);
-                 } catch(Exception e) {}
-   
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+                setClipboard(String.valueOf(output));
             }
         } else {
             getTable().getXAxis().getTableView().copySelection();
@@ -458,11 +449,7 @@ public class Table3DView extends TableView {
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(getTable().getTableAsString());
         
-        try {
-            Thread.sleep(10);
-         } catch(Exception e) {}
-        
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        setClipboard(String.valueOf(output));
     }
 
     @Override

@@ -20,8 +20,6 @@
 package com.romraider.maps;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyListener;
 import java.util.StringTokenizer;
 
@@ -223,12 +221,7 @@ public class Table2DView extends TableView {
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(table.getTableAsString());
 
-        //copy to clipboard
-        try {
-            Thread.sleep(1);
-         } catch(Exception e) {}
-        
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
+        setClipboard(output.toString());
     }
 
     @Override

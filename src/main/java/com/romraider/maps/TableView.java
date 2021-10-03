@@ -708,24 +708,30 @@ public abstract class TableView extends JPanel implements Serializable {
         
         //Copy to clipboard
         if (copy) {
-            try {
-                Thread.sleep(1);
-             } catch(Exception e) {}
-            
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
+            setClipboard(output.toString());
         } 
     }
-
+    
+    //TODO: Clean this up
+    protected void setClipboard(String s) {
+        try {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+         } catch(IllegalStateException e) {
+        	 
+             try {
+				Thread.sleep(20);
+			} catch (InterruptedException e1) {}
+             
+             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+         }
+    }
+    
     public void copyTable() {
         String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(table.getTableAsString());
         
-        try {
-            Thread.sleep(1);
-         } catch(Exception e) {}
-        
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        setClipboard(String.valueOf(output));
     }
 
     public String getCellAsString(int index) {
