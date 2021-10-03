@@ -118,16 +118,17 @@ public abstract class Table implements Serializable {
     
     //Cleans up all references to avoid data leaks
     public void clearData() {
-    	
-    	for(int i=0;i<getDataSize();i++) {
-    		if(data[i]!=null) {
-	    		data[i].setTable(null);
-	    		data[i].setRom(null);
-	    		data[i] = null;
-    		}
+    	if(data != null) {
+	    	for(int i=0;i<getDataSize();i++) {
+	    		if(data[i]!=null) {
+		    		data[i].setTable(null);
+		    		data[i].setRom(null);
+		    		data[i] = null;
+	    		}
+	    	}
+	
+	    	data = null;
     	}
-    	
-    	data = null;
     }
     
     public void setData(DataCell[] data) {

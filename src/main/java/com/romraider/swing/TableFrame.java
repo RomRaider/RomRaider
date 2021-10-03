@@ -114,6 +114,8 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
 
     public Table getTable() {
+    	if(tableView == null) return null;
+    	
         return tableView.getTable();
     }
     public TableView getTableView() {

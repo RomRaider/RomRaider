@@ -74,6 +74,7 @@ import org.xml.sax.SAXParseException;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table1DView;
 import com.romraider.maps.Table2D;
@@ -385,27 +386,30 @@ public class ECUEditor extends AbstractFrame {
 
             if(frame == null) {
             	TableView v;
+            	Table t = node.getTable();
             	
-	        	if(node.getTable() instanceof TableSwitch)
-	        		v = new TableSwitchView((TableSwitch)node.getTable());
-	        	else if(node.getTable() instanceof TableBitwiseSwitch)
-	        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)node.getTable());
-	        	else if(node.getTable() instanceof Table1D)
-	        		v = new Table1DView((Table1D)node.getTable());
-	        	else if(node.getTable() instanceof Table2D)
-	        		v = new Table2DView((Table2D)node.getTable());
-	        	else if(node.getTable() instanceof Table3D)
-	        		v = new Table3DView((Table3D)node.getTable());
-	        	else
-	        		return;
-	        	
-	        	 Rom rom = RomTree.getRomNode(node);	        	 
-	        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
-            }
-            
-            // frame not added.  Draw table and add the frame.
-            frame.getTable().getTableView().drawTable();
-            rightPanel.add(frame);
+            	if (t!=null) {
+		        	if(t instanceof TableSwitch)
+		        		v = new TableSwitchView((TableSwitch)t);
+		        	else if(t instanceof TableBitwiseSwitch)
+		        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
+		        	else if(t instanceof Table1D)
+		        		v = new Table1DView((Table1D)t);
+		        	else if(t instanceof Table2D)
+		        		v = new Table2DView((Table2D)t);
+		        	else if(t instanceof Table3D)
+		        		v = new Table3DView((Table3D)t);
+		        	else
+		        		return;
+		        	
+		        	 Rom rom = RomTree.getRomNode(node);	        	 
+		        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
+		        	 
+		             // frame not added.  Draw table and add the frame.
+		             frame.getTableView().drawTable();
+		             rightPanel.add(frame);
+	            }
+            }        
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.
         }
@@ -427,7 +431,6 @@ public class ECUEditor extends AbstractFrame {
         ECUEditor editor = ECUEditorManager.getECUEditor();
         RomTreeRootNode imageRoot = editor.getImageRoot();
 
-        rom.clearData();
         rom.removeFromParent();
 
         if (imageRoot.getChildCount() > 0) {
@@ -440,6 +443,8 @@ public class ECUEditor extends AbstractFrame {
         editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         editor.setCursor(null);
         editor.refreshUI();
+        
+        rom.clearData();
         System.gc(); 	
     }
 

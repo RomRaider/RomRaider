@@ -315,7 +315,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     	Table t = getTable();
     	
     	if(t != null)
-    		this.updateTableToolBar(getTable());
+    		this.updateTableToolBar(t);
     }
 
     

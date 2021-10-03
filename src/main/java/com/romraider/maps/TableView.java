@@ -579,11 +579,14 @@ public abstract class TableView extends JPanel implements Serializable {
     	//Populate Views from table here
     	if(getTable().presetManager != null) addPresetPanel(getTable().presetManager);
     	
-    	if(!isHidden()) {
+    	if(!isHidden() && table.getData() != null) {
 	    	data = new DataCellView[table.getDataSize()];
 	
 	    	for(int i= 0; i < table.getDataSize(); i++) {
-	    		data[i] = new DataCellView(table.getData()[i], this);
+	    		DataCell c = table.getData()[i];
+	    		if (c!=null) {
+	    			data[i] = new DataCellView(c, this);
+	    		}
 	    	}
     	}
     }

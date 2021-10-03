@@ -82,7 +82,8 @@ public class Table2DView extends TableView {
 
         // add to table
         for (int i = 0; i < axis.getTable().getDataSize(); i++) {
-            centerPanel.add(axis.getDataCell(i));
+        	DataCellView v = axis.getDataCell(i);
+        	if(v != null)centerPanel.add(v);
         }
         
         if (table.flip) {
