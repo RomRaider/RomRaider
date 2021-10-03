@@ -441,9 +441,9 @@ public class Table3DView extends TableView {
                 //For whatever reason you need to add a small sleep command or you cant copy everything sometimes...
                 //https://stackoverflow.com/questions/51797673/in-java-why-do-i-get-java-lang-illegalstateexception-cannot-open-system-clipboa
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(20);
                  } catch(Exception e) {}
-                
+   
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
             }
         } else {
@@ -459,7 +459,7 @@ public class Table3DView extends TableView {
         output.append(getTable().getTableAsString());
         
         try {
-            Thread.sleep(1);
+            Thread.sleep(10);
          } catch(Exception e) {}
         
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
@@ -502,23 +502,25 @@ public class Table3DView extends TableView {
         String pasteType = st.nextToken();
 
         // figure paste start cell
-        int startX = -1;
-        int startY = -1;
+        int startX = 0;
+        int startY = 0;
         
         // if pasting a table, startX and Y at 0, else find highlight
-        if ("[Selection3D]".equalsIgnoreCase(pasteType)) {      	
+        if ("[Selection3D]".equalsIgnoreCase(pasteType)) {
+        	boolean somethingSelected = false;
+        	
             for (int x = getTable().getSizeX() - 1; x >=0 ; x--) {
                 for (int y = 0; y < getTable().getSizeY(); y++) {
                 	if(data[x][y].isSelected()) {
                 		startX = x;
                 		startY = y;
+                		somethingSelected = true;
                 		break;
                 	}
                 }
             }
             
-            //Nothing selected
-            if(startX == -1 && startY == -1) return;
+            if(!somethingSelected) return;
         }
         
         // set values

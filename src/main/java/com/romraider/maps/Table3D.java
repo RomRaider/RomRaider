@@ -261,6 +261,7 @@ public class Table3D extends Table {
         yAxis.populateCompareValues(compareTable3D.getYAxis());
 
         calcCellRanges();
+        if(tableView != null) tableView.drawTable();
     }
 
     @Override
@@ -275,8 +276,6 @@ public class Table3D extends Table {
     public String toString() {
         return super.toString() + " (3D)";
     }
-
-    
 
     @Override
     public void setRevertPoint() {

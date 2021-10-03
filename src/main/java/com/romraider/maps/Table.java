@@ -776,11 +776,14 @@ public abstract class Table implements Serializable {
     }
 
     public void setCompareTable(Table compareTable) {
-        this.compareTable = compareTable;     
+        this.compareTable = compareTable;
+        
+        if(tableView!= null)tableView.drawTable();
     }
 
     public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
+        if(tableView!= null)tableView.drawTable();
     }
 
     public Settings.DataType getCompareValueType() {

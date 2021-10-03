@@ -394,7 +394,7 @@ public class ECUEditor extends AbstractFrame {
 		        	else if(t instanceof TableBitwiseSwitch)
 		        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
 		        	else if(t instanceof Table1D)
-		        		v = new Table1DView((Table1D)t);
+		        		v = new Table1DView((Table1D)node.getTable());
 		        	else if(t instanceof Table2D)
 		        		v = new Table2DView((Table2D)t);
 		        	else if(t instanceof Table3D)
@@ -403,17 +403,18 @@ public class ECUEditor extends AbstractFrame {
 		        		return;
 		        	
 		        	 Rom rom = RomTree.getRomNode(node);	        	 
-		        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
-		        	 
-		             // frame not added.  Draw table and add the frame.
-		             frame.getTableView().drawTable();
-		             rightPanel.add(frame);
+		        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);		        	
 	            }
-            }        
+            }            
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.
         }
         
+        // frame not added.  Draw table and add the frame.
+        TableView v = frame.getTableView();
+        if(v!=null)v.drawTable();
+        
+        rightPanel.add(frame);
         frame.pack();
         rightPanel.repaint();
     }
