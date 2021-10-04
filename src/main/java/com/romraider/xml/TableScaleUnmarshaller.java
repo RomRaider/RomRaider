@@ -370,33 +370,34 @@ public class TableScaleUnmarshaller {
 	                }
 	            }
 	        }
-
-	        // set remaining attributes
+	        
+	        //Name should always be set to Default even if missing
 	        scale.setName(unmarshallAttribute(scaleNode, "name", "Default"));
-	        scale.setUnit(unmarshallAttribute(scaleNode, "units", scale.getUnit()));
-	        scale.setExpression(unmarshallAttribute(scaleNode, "expression",
-	                scale.getExpression()));
-	        scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte",
-	                scale.getByteExpression()));
-	        scale.setFormat(unmarshallAttribute(scaleNode, "format", "#"));
-	        scale.setMax(unmarshallAttribute(scaleNode, "max", 0.0));
-	        scale.setMin(unmarshallAttribute(scaleNode, "min", 0.0));
-
-	        // get coarse increment with new attribute name (coarseincrement), else
-	        // look for old (increment)
-	        scale.setCoarseIncrement(unmarshallAttribute(
-	                scaleNode,
-	                "coarseincrement",
-	                unmarshallAttribute(scaleNode, "increment",
-	                        scale.getCoarseIncrement())));
-
-	        scale.setFineIncrement(unmarshallAttribute(scaleNode, "fineincrement",
-	                scale.getFineIncrement()));
+	        
+	        
+	        //Iterate over available attributes
+	        for(int i=0; i < scaleNode.getAttributes().getLength(); i++) {
+	        	Node attr = scaleNode.getAttributes().item(i);
+	        	String name = attr.getNodeName();
+	        	String value = attr.getNodeValue();
+	        	
+	        	if(name.equalsIgnoreCase("units"))scale.setUnit(value);
+	        	else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
+	        	else if(name.equalsIgnoreCase("to_byte")) scale.setByteExpression(value);
+	        	else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
+	        	else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
+	        	else if(name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));
+	        	else if(name.equalsIgnoreCase("coarseincrement") || name.equalsIgnoreCase("increment"))
+	        		scale.setCoarseIncrement(Double.parseDouble(value));
+	        	else if(name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
+	        }
+	        
 	        for (Scale s : scales) {
 	            if (s.equals(scale)) {
 	                return s;
 	            }
 	        }
+	        
 	        scales.add(scale);
 	        return scale;
 	    }
