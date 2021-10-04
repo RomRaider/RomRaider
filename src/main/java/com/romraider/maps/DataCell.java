@@ -19,6 +19,7 @@
 
 package com.romraider.maps;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
@@ -34,8 +35,9 @@ import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
-public class DataCell {
-    private static final Logger LOGGER = Logger.getLogger(DataCell.class);
+public class DataCell implements Serializable  {
+	private static final long serialVersionUID = 1111479947434817639L;
+	private static final Logger LOGGER = Logger.getLogger(DataCell.class);
      
     //View we need to keep up to date
     private DataCellView view = null;

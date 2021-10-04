@@ -84,7 +84,6 @@ public class TableScaleUnmarshaller {
 	        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase(
 	                "none")) { // copy base table for inheritance
 	            try {
-	            	//Why is this needed?
 	                table = (Table) ObjectCloner
 	                        .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
 	                                "base", "none")));
