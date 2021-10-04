@@ -42,15 +42,6 @@ public class Table1D extends Table {
         return axisParent;
     }
     
-    @Override
-    public void setCurrentScale(Scale curScale) {
-        this.curScale = curScale;
-    	
-        if(getAxisParent() == null && tableView!=null) {
-    		tableView.drawTable();
-    	}
-    }
-  
 	@Override
 	public byte[] saveFile(byte[] binData) {
 		return binData;

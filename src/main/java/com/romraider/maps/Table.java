@@ -754,6 +754,10 @@ public abstract class Table implements Serializable {
 
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
+        
+        if(tableView!=null) {
+    		tableView.drawTable();
+    	}
     }
 
     public Settings getSettings()
@@ -783,6 +787,7 @@ public abstract class Table implements Serializable {
 
     public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
+        
         if(tableView!= null)tableView.drawTable();
     }
 
@@ -792,6 +797,8 @@ public abstract class Table implements Serializable {
 
     public void colorCells() {
         calcCellRanges();
+        
+        if(tableView!=null)tableView.drawTable();
     }
 
     public void refreshCompare() {
