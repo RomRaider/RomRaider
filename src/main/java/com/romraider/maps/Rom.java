@@ -202,7 +202,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 " type " + table.getType() + " start " +
                 table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
-        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table.getTableView()),
+        JOptionPane.showMessageDialog(null,
                 MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
     }
