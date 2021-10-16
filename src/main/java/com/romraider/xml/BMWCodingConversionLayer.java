@@ -23,7 +23,10 @@ import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
 import static com.romraider.util.LogManager.initDebugLogging;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -99,6 +102,30 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		return s.toString();
 	}
 	
+    private HashMap<String, String> readTranslationFile(File transF) {
+    	HashMap<String, String> map = new HashMap<String, String>();
+    	
+    	try (BufferedReader br = new BufferedReader(new FileReader(transF))) {
+    	    String line;
+    	    
+    	    //Skip the first two line
+    	    br.readLine();
+    	    br.readLine();
+    	    
+    	    while ((line = br.readLine()) != null) {
+    	        String[] values = line.split(",");
+    	        if(values.length == 2) map.put(values[0], values[1]);
+    	    }
+    	    
+    	} catch (FileNotFoundException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+    	
+		return map;
+	}
+
 	private static HashMap<Integer, String> createMapFromNCSDict(File f) {
 		//Parse name dictionary
 		HashMap <Integer, String> map= new HashMap<Integer, String>();
@@ -160,6 +187,13 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		File pswF = new File(f.getParent(), "SWTPSW01.DAT");
 		
 		if(!fswF.exists() || !pswF.exists()) return null;
+		
+		File transF = new File(f, "../../Translations.csv");
+		
+		//Optional translation file that has to be in the DATEN folder
+		//Created from NCSDummy developers
+		HashMap <String, String> transMap = null;
+		if(transF.exists())transMap = readTranslationFile(transF);
 		
 		HashMap <Integer, String> fswMap= createMapFromNCSDict(fswF);
 		HashMap <Integer, String> pswMap= createMapFromNCSDict(pswF);
@@ -246,6 +280,12 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			//int byteCountBlock = dataBuffer.getShort(i+4);        			
         		     			
         			currentCategory = readString(input, i+7);
+        			
+        			//Add optional translation
+        			if(transMap != null && transMap.containsKey(currentCategory)) {
+        				currentCategory = currentCategory + " | " + transMap.get(currentCategory);
+        			}
+        			
         			break;
         		case PARZUWEISUNG_FSW:
            			//Skip blocknumber
@@ -254,7 +294,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			int byteCount = dataBuffer.getShort(i+4);
         			int functionKeyword = dataBuffer.getShort(i+6);
         			
-        			System.out.println(fswMap.get(functionKeyword));
+        			String nameFSW = fswMap.get(functionKeyword);
+        					
+        			//Add optional translation
+        			if(transMap != null && transMap.containsKey(nameFSW)) {
+        				nameFSW = nameFSW + " | " + transMap.get(nameFSW);
+        			}
+        			
+        			System.out.println(nameFSW);
         			
         		//	byte index = dataBuffer.get(i+8);
         			
@@ -300,9 +347,16 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         				PSW1_s+=" " + Integer.toHexString(Byte.toUnsignedInt(presetValuesPSW1[j]));
         			}
         			
+        			String namePSW = pswMap.get(functionKeywordPSW);
+					
+        			//Add optional translation
+        			if(transMap != null && transMap.containsKey(namePSW)) {
+        				namePSW = namePSW + " | " + transMap.get(namePSW);
+        			}
+        			
         			Element statePSW1 = doc.createElement("state");      		      			
         			statePSW1.setAttribute("data", PSW1_s);
-        			statePSW1.setAttribute("name", pswMap.get(functionKeywordPSW));
+        			statePSW1.setAttribute("name", namePSW);
         			currentTable.appendChild(statePSW1);
         			
         			break;
@@ -340,7 +394,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         return doc;
 	}
 		
-    public static void main(String args[]) {
+
+	public static void main(String args[]) {
         initDebugLogging();
         initLookAndFeel();
         ECUEditor editor = getECUEditor();
