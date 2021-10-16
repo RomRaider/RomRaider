@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,10 @@ public final class SSMLoggerConnection implements LoggerConnection {
         this.protocol = ProtocolFactory.getProtocol(
                 settings.getLoggerProtocol(),
                 settings.getTransportProtocol());
+    }
+
+    @Override
+    public void open(Module module) {
     }
 
     @Override

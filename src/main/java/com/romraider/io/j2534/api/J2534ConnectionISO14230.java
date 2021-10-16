@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,16 +46,28 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
     private byte[] lastResponse;
     private long timeout;
     private boolean commsStarted;
-    private final byte[] startReq = {
-            (byte) 0x81, (byte) 0x10, (byte) 0xFC, (byte) 0x81, (byte) 0x0E};
-    private final byte[] stopReq = {
-            (byte) 0x81, (byte) 0x10, (byte) 0xFC, (byte) 0x82, (byte) 0x0F};
+    private PollingState.State currentPollState;
+    private ConnectionProperties connectionProperties;
+    private String library;
+    private byte[] startRequest;
+    private byte[] stopRequest;
 
     public J2534ConnectionISO14230(ConnectionProperties connectionProperties, String library) {
         checkNotNull(connectionProperties, "connectionProperties");
+        checkNotNull(library, "library");
         deviceId = -1;
         commsStarted = false;
+        this.connectionProperties = connectionProperties;
         timeout = (long)connectionProperties.getConnectTimeout();
+        this.library = library;
+    }
+
+    @Override
+    public void open(byte[] start, byte[] stop) {
+        checkNotNull(start, "start");
+        checkNotNull(stop, "stop");
+        startRequest = start;
+        stopRequest = stop;
         initJ2534(connectionProperties, library);
         LOGGER.info("J2534/ISO14230 connection initialised");
     }
@@ -65,7 +77,7 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
         checkNotNull(request, "request");
         checkNotNull(response, "response");
         checkNotNull(pollState, "pollState");
-
+        
         if (pollState.getCurrentState() == PollingState.State.STATE_0 &&
                 pollState.getLastState() == PollingState.State.STATE_1) {
             clearLine();
@@ -90,6 +102,7 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                 pollState.setNewQuery(true);
             }
         }
+        currentPollState = pollState.getCurrentState();
     }
 
     // Send request and wait specified time for response with unknown length
@@ -101,13 +114,17 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
 
     public void clearLine() {
         boolean repeat = true;
+        if (currentPollState == PollingState.State.STATE_0) {
+            // Slow poll, no need to send break and clear the line
+            return;
+        }
         while (repeat) {
             LOGGER.debug("J2534/ISO14230 sending line break");
             int p3_min = getP3Min();
             setP3Min(2);
             api.writeMsg(
                     channelId, 
-                    stopReq, 
+                    stopRequest, 
                     0L, 
                     TxFlags.WAIT_P3_MIN_ONLY);
             setP3Min(p3_min);
@@ -129,6 +146,7 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
             } while (!empty && i <= 3);
         }
         try {
+            // if we are clearing the line due to a comms error, re-init to continue logging
             fastInit();
         }
         catch (J2534Exception e) {
@@ -172,7 +190,6 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                         "J2534/ISO14230 connection success: deviceId:%d, channelId:%d, msgId:%d, baud:%d",
                         deviceId, channelId, msgId, connectionProperties.getBaudRate()));
                 fastInit();
-                commsStarted = true;
             } catch (Exception e) {
                 LOGGER.debug(String.format(
                         "J2534/ISO14230 exception: deviceId:%d, channelId:%d, msgId:%d",
@@ -250,14 +267,15 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
     }
 
     private void fastInit() {
-        final byte[] timing = api.fastInit(channelId, startReq);
+        final byte[] timing = api.fastInit(channelId, startRequest);
         LOGGER.debug(String.format(
                 "J2534/ISO14230 Fast Init: deviceId:%d, channelId:%d, timing:%s",
                 deviceId, channelId, asHex(timing)));
+        commsStarted = true;
     }
 
     private void stopComms() {
-        final byte[] response = send(stopReq);
+        final byte[] response = send(stopRequest);
         LOGGER.debug(String.format("Stop comms Response = %s", asHex(response)));
     }
 

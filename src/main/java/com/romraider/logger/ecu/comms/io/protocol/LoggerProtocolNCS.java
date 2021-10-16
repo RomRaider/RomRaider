@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,4 +44,18 @@ public interface LoggerProtocolNCS extends LoggerProtocol {
     byte[] constructEcuIdRequest(Module module);
 
     byte[] processEcuIdResponse(byte[] response);
+
+    byte[] constructEcuStopRequest(Module module);
+
+    byte[] constructStartDiagRequest(Module module);
+
+    byte[] constructElevatedDiagRequest(Module module);
+
+    Collection<EcuQuery> filterDuplicates(Collection<EcuQuery> queries);
+
+    byte[] constructReadMemoryRequest(Module module, Collection<EcuQuery> queries, int length);
+
+    byte[] constructReadMemoryResponse(int requestSize, int length);
+
+    void processReadMemoryResponses(Collection<EcuQuery> queries, byte[] response);
 }

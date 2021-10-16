@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 
 package com.romraider.logger.ecu.comms.query;
 
+import static com.romraider.util.HexUtil.hexToInt;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,10 +37,18 @@ public final class EcuQueryRangeTest {
             Logger.getLogger(EcuQueryRangeTest.class);
     private final Collection<EcuQuery> queries;
     private int datalength;
+    private int maxLength;
 
 
-    public EcuQueryRangeTest(Collection<EcuQuery> queries) {
+    /**
+     * Initialize the class with a collection of queries and the maximum
+     * distance between the lowest and highest allowed.
+     * @param queries - collection of queries
+     * @param maxLength - the maximum data length
+     */
+    public EcuQueryRangeTest(Collection<EcuQuery> queries, int maxLength) {
         this.queries = queries;
+        this.maxLength = maxLength;
     }
 
     /**
@@ -58,28 +68,56 @@ public final class EcuQueryRangeTest {
         int lowestAddress = Integer.MAX_VALUE;
         int highestAddress = 0;
         for (EcuQuery query : queryList) {
-            int dataSize = EcuQueryData.getDataLength(query);
-            final int address = Integer.parseInt(query.getHex(), 16);
-            if (address < lowestAddress) {
-                lowestAddress = address;
-                newQuery.clear();
-                newQuery.add(query);
+            final int dataTypeLength = EcuQueryData.getDataLength(query);
+            // Query has the same number or more addresses as the storagetype defines
+            // Data length is defined in the definition as <address length="2">
+            // or, by the storagetype="uint16" attribute in a <conversion>
+            if (dataTypeLength <= query.getAddresses().length) {
+                for (String addressStr : query.getAddresses()) {
+                    final int address = hexToInt(addressStr);
+                    if (address < lowestAddress) {
+                        lowestAddress = address;
+                        newQuery.clear();
+                        newQuery.add(query);
+                    }
+                    if (address > highestAddress) {
+                        highestAddress = address;
+                    }
+                    LOGGER.trace(
+                            String.format(
+                                    "addr:%d size:%d lowest:%d highest:%d",
+                                    address, highestAddress - lowestAddress + 1,
+                                    lowestAddress, highestAddress));
+                }
             }
-            if (address > highestAddress) {
-                highestAddress = address + dataSize - 1;
+            else {
+                // Query data length is defined in the storagetype="uint16"
+                // attribute in a <conversion>
+                int address = hexToInt(query.getAddresses()[0]);
+                for (int i = 0; i < dataTypeLength; i++) {
+                    address = address + i;
+                    if (address < lowestAddress) {
+                        lowestAddress = address;
+                        newQuery.clear();
+                        newQuery.add(query);
+                    }
+                    if (address > highestAddress) {
+                        highestAddress = address;
+                    }
+                    LOGGER.trace(
+                            String.format(
+                                    "addr:%d size:%d lowest:%d highest:%d",
+                                    address, highestAddress - lowestAddress + 1,
+                                    lowestAddress, highestAddress));
+                }
             }
-            LOGGER.trace(
-                    String.format(
-                            "addr:%d size:%d lowest:%d highest:%d",
-                            address, dataSize, lowestAddress, highestAddress));
         }
-        datalength = highestAddress - lowestAddress;
-        if (datalength <= 128) {
-            datalength ++;
-            return newQuery;
+        datalength = highestAddress - lowestAddress + 1;
+        if (datalength > maxLength) {
+            datalength = 0;
+            newQuery.clear();
         }
-        datalength = 0;
-        return null;
+        return newQuery;
     }
 
     /**

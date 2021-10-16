@@ -17,10 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.io.protocol.ncs.iso14230;
+package com.romraider.io.protocol.ncs.iso15765;
 
-import static com.romraider.io.protocol.ncs.iso14230.NCSResponseProcessor.extractResponseData;
-import static com.romraider.io.protocol.ncs.iso14230.NCSResponseProcessor.filterRequestFromResponse;
+import static com.romraider.io.protocol.ncs.iso15765.NCSProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ncs.iso15765.NCSResponseProcessor.extractResponseData;
+import static com.romraider.io.protocol.ncs.iso15765.NCSResponseProcessor.filterRequestFromResponse;
+import static com.romraider.util.HexUtil.hexToInt;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static java.lang.System.arraycopy;
@@ -59,13 +61,13 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     }
 
     @Override
-    public byte[] constructEcuStopRequest(Module module) {
-        return protocol.constructEcuStopRequest(module);
+    public byte[] constructEcuInitRequest(Module module) {
+        return protocol.constructEcuInitRequest(module);
     }
 
     @Override
-    public byte[] constructEcuInitRequest(Module module) {
-        return protocol.constructEcuInitRequest(module);
+    public byte[] constructEcuStopRequest(Module module) {
+        return protocol.constructEcuStopRequest(module);
     }
 
     @Override
@@ -82,7 +84,7 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     public byte[] constructReadAddressRequest(Module module,
             Collection<EcuQuery> queries) {
     return protocol.constructReadAddressRequest(
-            module, new byte[0][0]);
+            module, convertToByteAddresses(queries));
     }
 
     @Override
@@ -109,12 +111,14 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     @Override
     public byte[] constructReadMemoryRequest(Module module,
             Collection<EcuQuery> queries, int length) {
-        return null;
+
+        return protocol.constructReadMemoryRequest(
+                module, convertToByteAddresses(queries), length);
     }
 
     @Override
     public byte[] constructReadMemoryResponse(int requestSize, int length) {
-        return null;
+        return new byte[RESPONSE_NON_DATA_BYTES + requestSize + length];
     }
 
     @Override
@@ -127,17 +131,21 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
             Collection<EcuQuery> queries, PollingState pollState) {
 
         checkNotNullOrEmpty(queries, "queries");
-        // length
+        int numBytes = 4;
+        if (pollState.isFastPoll()) {
+            numBytes = 3;
+        }
+        // CAN addr
         // one byte  - Response sid
+        // one byte  - Response pid
         // one byte  - option
         // variable bytes of data defined for pid
-        // checksum
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
-        int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
-            numAddresses += EcuQueryData.getDataLength(ecuQuery); 
+            numBytes += ecuQuery.getBytes().length;
+            numBytes += EcuQueryData.getDataLength(ecuQuery); 
         }
-        return new byte[(numAddresses + 4)];
+        return new byte[(numBytes)];
     }
 
     @Override
@@ -196,8 +204,43 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
         }
     }
 
-    @Override
-    public void processReadMemoryResponses(Collection<EcuQuery> queries, byte[] response) {
+    /**
+     * Processes the response bytes and set individual response on corresponding
+     * query objects.
+     * The response data is based on the lowest EcuData address and the length
+     * is the result of the difference between the highest and lowest address.
+     * The index into the response array is based in the lowest address. 
+     **/
+    public void processReadMemoryResponses(
+            Collection<EcuQuery> queries, byte[] response) {
+        
+        checkNotNullOrEmpty(queries, "queries");
+        checkNotNullOrEmpty(response, "response");
+        final byte[] responseData = extractResponseData(response);
+        final Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        final Map<String, byte[]> addressResults = new HashMap<String, byte[]>();
+
+        int lowestAddress = Integer.MAX_VALUE;
+        for (EcuQuery filteredQuery : filteredQueries) {
+            final int address = hexToInt(filteredQuery.getAddresses()[0]);
+            if (address < lowestAddress) {
+                lowestAddress = address;
+            }
+        }
+
+        int srcPos = 0;
+        for (EcuQuery filteredQuery : filteredQueries) {
+            int dataTypeLength = getDataTypeLength(filteredQuery);
+            final byte[] bytes = new byte[dataTypeLength];
+            final int address = hexToInt(filteredQuery.getAddresses()[0]);
+            srcPos = address - lowestAddress;
+            arraycopy(responseData, srcPos, bytes, 0, bytes.length);
+            addressResults.put(filteredQuery.getHex(), bytes);
+        }
+
+        for (EcuQuery query : queries) {
+            query.setResponse(addressResults.get(query.getHex()));
+        }
     }
 
     @Override
@@ -248,5 +291,22 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
             }
         }
         return addresses;
+    }
+
+    /**
+     * Get the response data length from the query definition.
+     * A query has its data length encoded in the definition using either
+     * the length="#" attribute of an address element or, by the
+     * storagetype="?" attribute in a conversion element.
+     * @param query - the EcuQuery to evaluate
+     * @return the length of the data response
+     */
+    private int getDataTypeLength(EcuQuery query) {
+        int dataTypeLength = EcuQueryData.getDataLength(query);
+        final int addressLength = query.getAddresses().length;
+        if (addressLength > dataTypeLength) {
+            dataTypeLength = addressLength;
+        }
+        return dataTypeLength;
     }
 }

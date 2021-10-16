@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,10 @@ public final class OBDLoggerConnection implements LoggerConnection {
         this.manager = manager;
         final Settings settings = SettingsManager.getSettings();        
         this.protocol = (LoggerProtocolOBD) ProtocolFactory.getProtocol(settings.getLoggerProtocol(), settings.getTransportProtocol());
+    }
+
+    @Override
+    public void open(Module module) {
     }
 
     @Override
