@@ -19,12 +19,14 @@ import com.romraider.Settings;
 import com.romraider.maps.Rom;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.BMWCodingConversionLayer;
+import com.romraider.xml.ConversionLayer;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 
 public class OpenImageWorker extends SwingWorker<Void, Void> {
     private final File inputFile;
-
+    private final ConversionLayer[] convLayers = {new BMWCodingConversionLayer()};
+    
     public OpenImageWorker(File inputFile) {
         this.inputFile = inputFile;
     }
@@ -74,16 +76,22 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                 
                 Rom rom;
                 
-                if(f.getName().toLowerCase().endsWith(".xml")) {
-                	doc = docBuilder.parse(fileStream, f.getAbsolutePath());
-                }
+                //Check if definition is standard or
+                //if it has to be converted first                
+                boolean found = false;
                 
-                //Matches xxx.CXX
-                else if(f.getName().matches("\\w*\\.C\\d\\d")) {
-                	doc = BMWCodingConversionLayer.convertToDocumentTree(f);
+                for(ConversionLayer l: convLayers) {
+                	if(l.isFileSupported(f)) {
+	        			doc = l.convertToDocumentTree(f);
+	        			found = true;
+	        			break;
+                	}
                 }
+            	
+            	//Default case
+            	if(!found) doc = docBuilder.parse(fileStream, f.getAbsolutePath());
                 
-                try {
+                try {	
                     rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
                 } catch (RomNotFoundException rex) {
                     // rom was not found in current file, skip to next

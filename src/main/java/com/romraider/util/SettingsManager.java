@@ -47,6 +47,7 @@ public class SettingsManager {
     private static String settingsDir = USER_HOME;
 
     private static Settings settings = null;
+    private static boolean testing = false;
 
     public static Settings getSettings() {
         if(null == settings) {
@@ -54,7 +55,11 @@ public class SettingsManager {
         }
         return settings;
     }
-
+    
+    public static void setTesting(boolean b) {
+    	testing = b;
+    }
+    
     private static Settings load() {
         Settings loadedSettings;
         try {
@@ -91,6 +96,8 @@ public class SettingsManager {
     }
 
     public static void save(Settings newSettings, JProgressPane progress) {
+    	if(testing) return;
+    	
         final DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
             final File newDir = new File(settingsDir);

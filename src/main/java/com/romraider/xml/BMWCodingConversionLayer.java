@@ -25,7 +25,6 @@ import static com.romraider.util.LogManager.initDebugLogging;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
@@ -49,7 +48,9 @@ import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.SettingsManager;
 
-public class BMWCodingConversionLayer {
+public class BMWCodingConversionLayer implements ConversionLayer {
+	private int splitAddress = 0;
+	boolean guessChecksums = false;
 	
 	//Naming stays german, because the file is also german
 	static final int TYPE_DATEINAME = 0x0000;			//Filename
@@ -72,9 +73,19 @@ public class BMWCodingConversionLayer {
 	static final int PARZUWEISUNG_DIR = 0x0011;			//?
 	static final int PARZUWEISUNG_FSW = 0x0012;			//Coding data memory storage information
 	
-	public static Document convertToDocumentTree(File f) throws 
-	ParserConfigurationException, IOException, TransformerException  {
-		return convertToDocumentTree(f, 0, false);
+	//Gets called when ROM is opened directly
+	public BMWCodingConversionLayer() {
+		 this(0, false);
+	}
+	
+	//Gets called from the toolbar with more options
+	public BMWCodingConversionLayer(int splitAddress, boolean guessChecksums) {
+		this.splitAddress = splitAddress;
+		this.guessChecksums = guessChecksums;
+	}
+		
+	public boolean isFileSupported(File f) {
+		return f.getName().matches("^[\\w,\\s-]+\\.C\\d\\d");
 	}
 	
 	private static String readString(byte[] input, int offset) {
@@ -88,10 +99,16 @@ public class BMWCodingConversionLayer {
 		return s.toString();
 	}
 	
-	private static HashMap<Integer, String> createMapFromNCSDict(File f) throws IOException {
+	private static HashMap<Integer, String> createMapFromNCSDict(File f) {
 		//Parse name dictionary
 		HashMap <Integer, String> map= new HashMap<Integer, String>();
-		byte[] fswInput = ECUEditor.readFile(f);
+		byte[] fswInput;
+		
+		try {
+			fswInput = ECUEditor.readFile(f);
+		} catch (IOException e) {
+			return null;
+		}
 		
 		ByteBuffer fswBuffer = ByteBuffer.wrap(fswInput);
 		fswBuffer = fswBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -126,11 +143,16 @@ public class BMWCodingConversionLayer {
         return map;
 	}
 	
-	public static Document convertToDocumentTree(File f, int splitAddr, boolean guessChecksums) 
-			throws ParserConfigurationException, IOException, TransformerException {
-		
+	public Document convertToDocumentTree(File f) {		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = dbf.newDocumentBuilder();
+        DocumentBuilder builder = null;;
+        
+		try {
+			builder = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		
         Document doc = builder.newDocument();
         
 		//Check first if the SWTFSW01.DAT file is there (contains the names)
@@ -142,7 +164,14 @@ public class BMWCodingConversionLayer {
 		HashMap <Integer, String> fswMap= createMapFromNCSDict(fswF);
 		HashMap <Integer, String> pswMap= createMapFromNCSDict(pswF);
        			        			        
-        byte[] input = ECUEditor.readFile(f);
+        byte[] input;
+        
+		try {
+			input = ECUEditor.readFile(f);
+		} catch (IOException e) {
+			return null;
+		}
+		
 		ByteBuffer dataBuffer = ByteBuffer.wrap(input);
 		dataBuffer = dataBuffer.order(ByteOrder.LITTLE_ENDIAN);
         
@@ -242,7 +271,7 @@ public class BMWCodingConversionLayer {
         			//byte individual = dataBuffer.get(i+2);
         			
         			//Create actual node in rom
-        			Node currentRom = splitAddr == 0 || storageAddress < splitAddr ? rom1: rom2;
+        			Node currentRom = splitAddress == 0 || storageAddress < splitAddress ? rom1: rom2;
         			
         			Element table = doc.createElement("table");
         			table.setAttribute("name", fswMap.get(functionKeyword));
@@ -318,9 +347,10 @@ public class BMWCodingConversionLayer {
         editor.initializeEditorUI();
         editor.checkDefinitions();
         
-		Settings settings = SettingsManager.getSettings();
+		//Make sure we dont override any settings
+		SettingsManager.setTesting(true);
+		Settings settings = SettingsManager.getSettings();	
 		
-		//This will clear your settings!
 		settings.getEcuDefinitionFiles().clear();
 		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E36\\KMB_E36.C25"));
 		OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Sonstiges\\220_c25.hex"));
