@@ -44,8 +44,10 @@ public class RomID implements Serializable {
     private String flashMethod;         //flash method string used for ecuflash
     private String memModel;            //model used for reflashing with ecuflash
     private String editStamp;           //YYYY-MM-DD and v, the save count for this ROM
-    private int    fileSize;
-    private int    ramOffset;
+    private int fileSize;
+    private int ramOffset;
+    
+    private boolean noRamOffset;
     private boolean obsolete;           // whether a more recent revision exists
     private String checksum;            // checksum method used to validate ROM contents
     
@@ -229,8 +231,15 @@ public class RomID implements Serializable {
     public int getRamOffset() {
         return ramOffset;
     }
-
+    
+    public void disableRamOffset() {
+        noRamOffset = true;
+        ramOffset = 0;
+    }
+    
     public void setRamOffset(int ramOffset) {
+    	if(noRamOffset) return;
+    	
         this.ramOffset = ramOffset;
     }
 

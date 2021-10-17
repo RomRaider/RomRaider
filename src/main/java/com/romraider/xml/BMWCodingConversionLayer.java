@@ -107,11 +107,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
     	
     	try (BufferedReader br = new BufferedReader(new FileReader(transF))) {
     	    String line;
-    	    
-    	    //Skip the first two line
-    	    br.readLine();
-    	    br.readLine();
-    	    
+   	        	    
     	    while ((line = br.readLine()) != null) {
     	        String[] values = line.split(",");
     	        if(values.length == 2) map.put(values[0], values[1]);
@@ -169,7 +165,78 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         
         return map;
 	}
-	
+		
+	private static HashMap<Integer, String> createMapFromCVT(File f, HashMap<Integer, String> aswMap) {
+		//Parse name dictionary
+		HashMap <Integer, String> map= new HashMap<Integer, String>();
+		byte[] fswInput;
+		
+		try {
+			fswInput = ECUEditor.readFile(f);
+		} catch (IOException e) {
+			return null;
+		}
+		
+		ByteBuffer cvtBuffer = ByteBuffer.wrap(fswInput);
+		cvtBuffer = cvtBuffer.order(ByteOrder.LITTLE_ENDIAN);
+				
+		/*
+			0000 - DATEINAME - S - NAME
+			0001 - GRUPPE - {S} - NAME
+			0002 - INDIVID - {S} - NAME
+			0003 - AUFTRAGSAUSDRUCK - A - AUFTRAGSAUSDRUCK
+			0004 - FSW_PSW - WW - FSWINDEX,PSWINDEX
+			0005 - FSW - W - FSWINDEX
+		 */
+		String currentOption = "";
+		
+
+        for(int i=0xEA; i < fswInput.length;) {
+        	int oldIndex = i;
+        	
+        	int length = cvtBuffer.get(i);
+        	int frameType = cvtBuffer.getShort(i+1);
+       	    i+=3;
+       	     
+        	switch(frameType) {
+        		//Name
+        		case 0x0000:
+        			break;     			
+        		//Option/Auftrag
+        		case 0x0003:      	       		       			
+        			int lengthOption = cvtBuffer.get(i);
+        			i++;
+        			String optionCode = "";
+        			
+        			for(int j = 0; j < lengthOption;) {
+        				if(cvtBuffer.get(j + i) == 0x53) {
+		        			int keyId = cvtBuffer.getShort(j+i+1);
+		        			currentOption = aswMap.get(keyId);
+		        			optionCode = optionCode + currentOption;
+		        			j+=3;
+        				}
+        				else {
+        					optionCode+=(char) cvtBuffer.get(j+i);
+        					j++; 
+        				} 		
+        			}    
+        			
+    				currentOption = optionCode;      			
+        			break;
+        		//Link FSW/PSW combination to option
+        		case 0x0004:      			
+        			int fsw = cvtBuffer.getShort(i);
+        			int psw = cvtBuffer.getShort(i+2);
+        			map.put(fsw << 16 | psw, currentOption);
+        			break; 
+        	}
+        	
+        	i = oldIndex+length + 4;
+        }
+        
+        return map;
+	}
+		
 	public Document convertToDocumentTree(File f) {		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;;
@@ -182,22 +249,26 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		
         Document doc = builder.newDocument();
         
-		//Check first if the SWTFSW01.DAT file is there (contains the names)
+		//Check first if naming conversion files are there
 		File fswF = new File(f.getParent(), "SWTFSW01.DAT");		
 		File pswF = new File(f.getParent(), "SWTPSW01.DAT");
+		File aswF = new File(f.getParent(), "SWTASW01.DAT");
+		File csvF = new File(f.getParent(), f.getParentFile().getName() + "CVT.000");
 		
-		if(!fswF.exists() || !pswF.exists()) return null;
+		if(!fswF.exists() || !pswF.exists() || !aswF.exists() || !csvF.exists()) return null;
 		
-		File transF = new File(f, "../../Translations.csv");
+		HashMap <Integer, String> fswMap= createMapFromNCSDict(fswF);
+		HashMap <Integer, String> pswMap= createMapFromNCSDict(pswF);
+		HashMap <Integer, String> aswMap= createMapFromNCSDict(aswF);
+		HashMap <Integer, String> csvMap= createMapFromCVT(csvF, aswMap);
 		
 		//Optional translation file that has to be in the DATEN folder
 		//Created from NCSDummy developers
 		HashMap <String, String> transMap = null;
-		if(transF.exists())transMap = readTranslationFile(transF);
 		
-		HashMap <Integer, String> fswMap= createMapFromNCSDict(fswF);
-		HashMap <Integer, String> pswMap= createMapFromNCSDict(pswF);
-       			        			        
+		File transF = new File(f, "../../Translations.csv");		
+		if(transF.exists()) transMap = readTranslationFile(transF);
+		    			        			        
         byte[] input;
         
 		try {
@@ -208,6 +279,22 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		
 		ByteBuffer dataBuffer = ByteBuffer.wrap(input);
 		dataBuffer = dataBuffer.order(ByteOrder.LITTLE_ENDIAN);
+       		
+        Node roms = doc.createElement("roms");
+        doc.appendChild(roms);
+        
+        BMWRomManager[] romManagers = null;
+        
+        if(splitAddress == 0) romManagers= new BMWRomManager[] {new BMWRomManager(0, doc, roms)};
+        else
+        	romManagers= new BMWRomManager[] {
+        			new BMWRomManager(0, doc, roms),
+        			new BMWRomManager(splitAddress, doc, roms)};
+
+        
+        String currentCategory = "";
+        int currentFSW = 0;       
+        Node currentTable = null;
         
         /*
          *  0000 - DATEINAME - S - NAME
@@ -230,36 +317,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			0011 - PARZUWEISUNG_DIR - {L}LWW{B}(B)(A)B - BLOCKNR,WORTADR,BYTEADR,FSW,INDEX,MASKE,OPERATION,EINHEIT
 			0012 - PARZUWEISUNG_FSW - {L}LWW{B}(B){B}{B} - BLOCKNR,WORTADR,BYTEADR,FSW,INDEX,MASKE,EINHEIT,INDIVID
          */
-		
-        Node roms = doc.createElement("roms");
-        Node rom1 = doc.createElement("rom");
-        Node rom2 = null;
-        
-        for(Node rom: new Node[] {rom1, rom2}){
-        	if(rom == null) continue;
-        	
-        	rom.setTextContent("Test");
-        	Node idAddress = doc.createElement("internalidaddress");
-        	idAddress.setTextContent("0x24");
-        	Node idString = doc.createElement("internalidstring");
-        	idString.setTextContent("0x040404045023C001");
-        	
-        	Node fileSize = doc.createElement("filesize");
-        	fileSize.setTextContent("256b");
-        	
-        	Node romID = doc.createElement("romid");
-        	rom.appendChild(romID);
-        	romID.appendChild(fileSize);
-        	romID.appendChild(idAddress);
-        	romID.appendChild(idString);     	
-        }
-                
-        doc.appendChild(roms);
-        roms.appendChild(rom1);
-        
-        String currentCategory = "";
-        Node currentTable = null;
-        
+               
         for(int i=0x481; i < input.length;) {
         	int oldIndex = i;
         	
@@ -268,6 +326,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         	i+=2;
        	       	
         	switch(frameType) {
+        		case TYPE_DATEINAME:
+        			//fileNameInFile = readString(input, i+1);
         		//Coding Block (=category)
         		case CODIERDATENBLOCK:
         		case HERSTELLERDATENBLOCK:
@@ -293,15 +353,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			int storageAddress = dataBuffer.getInt(i);
         			int byteCount = dataBuffer.getShort(i+4);
         			int functionKeyword = dataBuffer.getShort(i+6);
+        			currentFSW = functionKeyword;
         			
         			String nameFSW = fswMap.get(functionKeyword);
         					
         			//Add optional translation
         			if(transMap != null && transMap.containsKey(nameFSW)) {
         				nameFSW = nameFSW + " | " + transMap.get(nameFSW);
-        			}
-        			
-        			System.out.println(nameFSW);
+        			}        			
         			
         		//	byte index = dataBuffer.get(i+8);
         			
@@ -318,20 +377,13 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			//byte individual = dataBuffer.get(i+2);
         			
         			//Create actual node in rom
-        			Node currentRom = splitAddress == 0 || storageAddress < splitAddress ? rom1: rom2;
-        			
-        			Element table = doc.createElement("table");
-        			table.setAttribute("name", fswMap.get(functionKeyword));
-        			table.setAttribute("category", currentCategory);
-        			table.setAttribute("storagetype", "uint8");
-        			table.setAttribute("storageaddress", "0x" + Integer.toHexString(storageAddress));
-        			table.setAttribute("endian", "little");
-        			table.setAttribute("sizey", Integer.toString(byteCount));
-        			table.setAttribute("type", "1D");
-        			table.setAttribute("mask", Integer.toHexString(Byte.toUnsignedInt(mask[0])));
-   			
-        			currentRom.appendChild(table);
-        			currentTable = table;
+        	        for(BMWRomManager man: romManagers){
+        	        	Element table = man.createTable(fswMap.get(functionKeyword),
+        	        			currentCategory, storageAddress, byteCount, mask);
+        	        	
+        	        	if(table != null) currentTable = table;
+        	        }
+        	        
         			break;
 
         		case PARZUWEISUNG_PSW1:
@@ -344,20 +396,23 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			
         			for(int j=0;j<numValuesPSW1;j++) {
         				presetValuesPSW1[j] = dataBuffer.get(i+4+j);  	
-        				PSW1_s+=" " + Integer.toHexString(Byte.toUnsignedInt(presetValuesPSW1[j]));
+        				PSW1_s+=" " + String.format("%02X", (Byte.toUnsignedInt(presetValuesPSW1[j])));
         			}
         			
         			String namePSW = pswMap.get(functionKeywordPSW);
 					
         			//Add optional translation
         			if(transMap != null && transMap.containsKey(namePSW)) {
-        				namePSW = namePSW + " | " + transMap.get(namePSW);
+        				namePSW += " | " + transMap.get(namePSW);
         			}
         			
-        			Element statePSW1 = doc.createElement("state");      		      			
-        			statePSW1.setAttribute("data", PSW1_s);
-        			statePSW1.setAttribute("name", namePSW);
-        			currentTable.appendChild(statePSW1);
+        			//Add option combinations
+        			int key = currentFSW << 16 | functionKeywordPSW;
+        			if(csvMap.containsKey(key))namePSW += " | " + csvMap.get(key);
+        	        
+        			for(BMWRomManager man: romManagers){
+        	        	man.addPreset(PSW1_s, namePSW, currentTable);
+        	        }
         			
         			break;
         		case PARZUWEISUNG_PSW2:
@@ -366,15 +421,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			byte[] presetValuesPSW2 = new byte[numValuesPSW];
         			
         			String PSW2_s = "";
-        			for(int j=0;j<numValuesPSW;j++) {
+        			for(int j = 0 ; j < numValuesPSW; j++) {
         				presetValuesPSW2[j] = dataBuffer.get(i+4+j);  
-        				PSW2_s+=" " + Integer.toHexString(Byte.toUnsignedInt(presetValuesPSW2[j]));
+        				PSW2_s+= " " + Integer.toHexString(Byte.toUnsignedInt(presetValuesPSW2[j]));
         			}
         			
-        			Element statePSW2 = doc.createElement("state");      		      			
-        			statePSW2.setAttribute("data", PSW2_s);
-        			statePSW2.setAttribute("name", "");
-        			currentTable.appendChild(statePSW2);
+        			for(BMWRomManager man: romManagers){
+        	        	man.addPreset(PSW2_s, "Unnamed", currentTable);
+        	        }
         			
         			break;
         	}        	  	        	
@@ -384,6 +438,10 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         	i = oldIndex+length + 4;
         }
         
+		for(BMWRomManager man: romManagers){
+        	man.calculateRomID(f);
+        }
+           
         /*
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer trans = tf.newTransformer();
@@ -394,7 +452,142 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         return doc;
 	}
 		
-
+	
+	class BMWRomManager{
+		int offsetAddress = 0;
+		
+		Document doc;
+		Element romNode;
+		
+		Element lastTable;
+		int lastStorageAddress;
+		int maxStorageAddress;
+		
+		//Variables to find the best ID settings
+		int bestIDFitAddress;
+		String bestIDFitData = "";
+		int bestIDFitAddressTemp;
+		String bestIDFitDataTemp = "";
+		int lastPresetCount = 0;
+		
+		BMWRomManager(int offsetAddress, Document doc, Node root){
+			this.doc = doc;
+			this.offsetAddress = offsetAddress;
+			this.romNode = doc.createElement("rom");			
+			root.appendChild(romNode);
+		}
+		
+		public Element getRomNode() {
+			return romNode;
+		}
+		
+		
+		public Element createTable(String name, String category, int storageAddress, int byteCount, byte[] mask) {
+			
+			//This handles the correct rom splitting
+			if(offsetAddress == 0 || storageAddress >= offsetAddress) {	
+				
+				if(!bestIDFitDataTemp.equals("") && lastPresetCount == 1) {
+					bestIDFitData = bestIDFitDataTemp;
+					bestIDFitAddress = bestIDFitAddressTemp;
+				}				
+				
+				lastPresetCount = 0;
+				
+				Element table = doc.createElement("table");
+				table.setAttribute("name", name);
+				table.setAttribute("category", category);
+				table.setAttribute("storagetype", "uint8");
+				table.setAttribute("storageaddress", "0x" + 
+						Integer.toHexString(storageAddress - offsetAddress));
+				table.setAttribute("endian", "little");
+				table.setAttribute("sizey", Integer.toString(byteCount));
+				table.setAttribute("type", "1D");
+				table.setAttribute("mask", Integer.toHexString(Byte.toUnsignedInt(mask[0])));
+				
+				romNode.appendChild(table);
+				lastTable = table;
+				
+				lastStorageAddress = storageAddress - offsetAddress;							
+				if(lastStorageAddress > maxStorageAddress) maxStorageAddress = lastStorageAddress;
+											
+				return table;
+			}
+			else {
+				return null;
+			}
+		}
+		
+		public Element addPreset(String data, String name, Node table) {
+			if(offsetAddress == 0 || this.lastTable == table) {	
+				Element statePSW1 = doc.createElement("state");      		      			
+				statePSW1.setAttribute("data", data);
+				statePSW1.setAttribute("name", name);
+				lastTable.appendChild(statePSW1);
+				
+				if(lastPresetCount >= 1) {
+					bestIDFitDataTemp = "";
+				}			
+				else if(bestIDFitData.length() == 0 || (bestIDFitData.length() <= data.length() &&
+						!data.replace("0", "").equals("x") && !data.replace("F", "").equals("0x"))){
+					bestIDFitDataTemp = data;
+					bestIDFitAddressTemp = lastStorageAddress;
+				}
+				
+				lastPresetCount++;
+				
+				return statePSW1;
+			}
+			else {
+				return null;
+			}	
+		}
+		
+		public void calculateRomID(File f) {
+        	Element romIDNode = doc.createElement("romid");
+			
+        	//romNode.setTextContent("Test");
+        	Node idAddress = doc.createElement("internalidaddress");
+        	idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
+        	Node idString = doc.createElement("internalidstring");
+        	idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
+        	Node ramoffset = doc.createElement("noramoffset");
+        	
+        	//Set filesize based on largest address and round up to a power of 2
+        	Node fileSize = doc.createElement("filesize");
+        	String fileS = ((int)Math.pow(2, 32 - Integer.numberOfLeadingZeros(lastStorageAddress - 1)) + "b");
+        	fileSize.setTextContent(fileS);
+        	
+        	Node make = doc.createElement("make");
+        	make.setTextContent("BMW");
+        	
+        	Node model = doc.createElement("model");
+        	model.setTextContent(f.getParentFile().getName());
+        	
+        	Node ecuID = doc.createElement("ecuid");
+        	String[] nameSplit = f.getName().split("\\.");
+        	ecuID.setTextContent(nameSplit[1]);
+        	
+        	Node subModel = doc.createElement("submodel");
+        	subModel.setTextContent(nameSplit[0]);
+        	
+        	romIDNode.appendChild(make);
+        	romIDNode.appendChild(ecuID);
+        	romIDNode.appendChild(model);
+        	romIDNode.appendChild(subModel);
+        	romIDNode.appendChild(ramoffset);
+        	romIDNode.appendChild(fileSize);
+        	romIDNode.appendChild(idAddress);
+        	romIDNode.appendChild(idString);
+        	romIDNode.appendChild(doc.createElement("year"));
+        	romIDNode.appendChild(doc.createElement("market"));
+        	romIDNode.appendChild(doc.createElement("transmission"));
+        	romIDNode.appendChild(doc.createElement("xmlid"));
+        	romNode.appendChild(romIDNode); 	         	
+        	
+		}
+	}
+	
 	public static void main(String args[]) {
         initDebugLogging();
         initLookAndFeel();
@@ -408,7 +601,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		
 		settings.getEcuDefinitionFiles().clear();
 		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E36\\KMB_E36.C25"));
-		OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Sonstiges\\220_c25.hex"));
+		OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Tacho Grau\\C25_352k_248_oil_6Cyl.hex"));
 		w.execute();
 	}
 }
+

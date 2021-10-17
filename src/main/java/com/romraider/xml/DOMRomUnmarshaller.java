@@ -241,7 +241,8 @@ public final class DOMRomUnmarshaller {
 
                 } else if (nodeName.equalsIgnoreCase("year")) {
                     romID.setYear(unmarshallText(n));
-
+                } else if (nodeName.equalsIgnoreCase("noramoffset")) {
+                    romID.disableRamOffset();
                 } else if (nodeName.equalsIgnoreCase("flashmethod")) {
                     romID.setFlashMethod(unmarshallText(n));
 
