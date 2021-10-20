@@ -30,6 +30,7 @@ import static java.lang.System.arraycopy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.romraider.io.protocol.Protocol;
@@ -104,8 +105,9 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
     @Override
     public byte[] constructLoadAddressRequest(Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        // convert to address and data length
         return protocol.constructLoadAddressRequest(
-                convertToByteAddresses(filteredQueries));
+                convertToByteAddressAndLen(filteredQueries));
     }
 
     @Override
@@ -131,9 +133,9 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
             Collection<EcuQuery> queries, PollingState pollState) {
 
         checkNotNullOrEmpty(queries, "queries");
-        int numBytes = 4;
+        int numBytes = 7;
         if (pollState.isFastPoll()) {
-            numBytes = 3;
+            numBytes = 6;
         }
         // CAN addr
         // one byte  - Response sid
@@ -142,7 +144,7 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
         // variable bytes of data defined for pid
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         for (EcuQuery ecuQuery : filteredQueries) {
-            numBytes += ecuQuery.getBytes().length;
+            //numBytes += ecuQuery.getBytes().length;
             numBytes += EcuQueryData.getDataLength(ecuQuery); 
         }
         return new byte[(numBytes)];
@@ -230,7 +232,7 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
 
         int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
-            int dataTypeLength = getDataTypeLength(filteredQuery);
+            int dataTypeLength = EcuQueryData.getDataLength(filteredQuery);
             final byte[] bytes = new byte[dataTypeLength];
             final int address = hexToInt(filteredQuery.getAddresses()[0]);
             srcPos = address - lowestAddress;
@@ -293,20 +295,11 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
         return addresses;
     }
 
-    /**
-     * Get the response data length from the query definition.
-     * A query has its data length encoded in the definition using either
-     * the length="#" attribute of an address element or, by the
-     * storagetype="?" attribute in a conversion element.
-     * @param query - the EcuQuery to evaluate
-     * @return the length of the data response
-     */
-    private int getDataTypeLength(EcuQuery query) {
-        int dataTypeLength = EcuQueryData.getDataLength(query);
-        final int addressLength = query.getAddresses().length;
-        if (addressLength > dataTypeLength) {
-            dataTypeLength = addressLength;
+    private Map<byte[], Integer> convertToByteAddressAndLen(Collection<EcuQuery> queries) {
+        final Map<byte[], Integer> queryMap = new LinkedHashMap<byte[], Integer>();
+        for (EcuQuery query : queries) {
+            queryMap.put(query.getBytes(), EcuQueryData.getDataLength(query));
         }
-        return dataTypeLength;
+        return queryMap;
     }
 }

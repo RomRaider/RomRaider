@@ -28,12 +28,21 @@ import com.romraider.logger.ecu.definition.LoggerData;
 public final class EcuQueryData {
 
     /**
-     * Return the length for an ECU Query item.
+     * Return the length for an ECU Query item. The larger of either the
+     * number of addresses or the length defined by the data storagetype.
      * @param ecuQuery - the ECU query to evaluate
      * @return the length of the data type
      */
     public final static int getDataLength(EcuQuery ecuQuery) {
-        return getDataLength(ecuQuery.getLoggerData());
+        // A query has its data length encoded in the definition using either
+        // the length="#" attribute of an address element or, by the
+        // storagetype="?" attribute in a conversion element.
+        final int addressLength = ecuQuery.getAddresses().length;
+        int dataTypeLength = getDataLength(ecuQuery.getLoggerData());
+        if (addressLength > dataTypeLength) {
+            dataTypeLength = addressLength;
+        }
+        return dataTypeLength;
     }
 
     /**

@@ -26,6 +26,8 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
+
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.connection.KwpConnectionProperties;
 import com.romraider.io.protocol.ProtocolNCS;
@@ -175,10 +177,10 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     @Override
-    public byte[] constructLoadAddressRequest(byte[][] addresses) {
-        checkNotNullOrEmpty(addresses, "addresses");
+    public byte[] constructLoadAddressRequest(Map<byte[], Integer> queryMap) {
+        checkNotNullOrEmpty(queryMap, "queryMap");
         // ID 0x2C 0xE0 DEFMODE ... DEFMODE ... DEFMODE ...
-        return buildLoadAddrRequest(addresses);
+        return buildLoadAddrRequest(queryMap);
     }
 
     @Override
@@ -339,7 +341,7 @@ public final class NCSProtocol implements ProtocolNCS {
         return bb.toByteArray();
     }
 
-    private final byte[] buildLoadAddrRequest(byte[]... content) {
+    private final byte[] buildLoadAddrRequest(Map<byte[], Integer> queryMap) {
     
         int PIDYDLID = 1;
         byte[] request = new byte[0];
@@ -348,16 +350,11 @@ public final class NCSProtocol implements ProtocolNCS {
             bb.write(module.getTester());
             bb.write(LOAD_ADDRESS_COMMAND);
             bb.write(DDLOCID);
-            for (byte[] tmp : content) {
+            for (byte[] tmp : queryMap.keySet()) {
                 if (tmp[0] == SID_22) {
                     bb.write(FIELD_TYPE_02);    //definitionMode
                     bb.write(PIDYDLID++);       //positionIn
-                    if (tmp[1] == 0x11) {
-                        bb.write(1);            //size
-                    }
-                    if ((tmp[1] == 0x12) || (tmp[1] == 0x13)) {
-                        bb.write(2);            //size
-                    }
+                    bb.write(queryMap.get(tmp)); //size
                     bb.write(tmp, 1, tmp.length - 1);//CID
                     bb.write(1);                //positionInRecord
                     continue;
@@ -365,11 +362,9 @@ public final class NCSProtocol implements ProtocolNCS {
                 else if (tmp[0] == (byte) 0xFF) {
                     bb.write(FIELD_TYPE_03);    //definitionMode
                     bb.write(PIDYDLID++);       //positionIn
-                    bb.write(1);                //size
-                    if (tmp.length == 3) {
-                        bb.write((byte) 0xFF);   //RAM addr high byte
-                    }
-                    bb.write(tmp, 0, tmp.length);//RAM addr
+                    bb.write(queryMap.get(tmp));//size (could be 1, 2 or 4)
+                    bb.write((byte) 0xFF);      //RAM addr high byte
+                    bb.write(tmp, 0, 3);        //RAM addr
                 }
             }
             request = bb.toByteArray();

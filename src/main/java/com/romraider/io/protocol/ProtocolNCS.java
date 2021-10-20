@@ -19,6 +19,8 @@
 
 package com.romraider.io.protocol;
 
+import java.util.Map;
+
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.definition.Module;
 
@@ -29,7 +31,7 @@ public interface ProtocolNCS extends Protocol {
 
     byte[] constructReadSidPidRequest(Module module, byte sid, byte[][] pid);
 
-    byte[] constructLoadAddressRequest(byte[][] addresses);
+    byte[] constructLoadAddressRequest(Map<byte[], Integer> queryMap);
 
     void validateLoadAddressResponse(byte[] response);
 

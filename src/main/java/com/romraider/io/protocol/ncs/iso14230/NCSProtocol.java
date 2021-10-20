@@ -26,6 +26,7 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.connection.KwpConnectionProperties;
@@ -167,12 +168,17 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     @Override
-    public byte[] constructLoadAddressRequest(byte[][] addresses) {
-        checkNotNullOrEmpty(addresses, "addresses");
+    public byte[] constructLoadAddressRequest(Map<byte[], Integer> queries) {
+        checkNotNullOrEmpty(queries, "queries");
         // short header - false, length encoded into lower 5 bits of first byte
         // 0x8Len 0x10 0xFC 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
         // short header - true
         // Len 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
+        byte [][] addresses = new byte[queries.size()][];
+        int i = 0;
+        for (byte [] query : queries.keySet()) {
+                addresses[i++] = query;
+        }
         return buildLoadAddrRequest(true, addresses);
     }
 
@@ -410,7 +416,7 @@ public final class NCSProtocol implements ProtocolNCS {
                 if (tmp[0] == (byte) 0xFF) {
                     bb.write(FIELD_TYPE_83);
                     bb.write((byte) 0xFF);
-                    bb.write(tmp);
+                    bb.write(tmp, 0, 3);
                 }
                 else {  //assume a short length ROM address
                     bb.write(FIELD_TYPE_83);

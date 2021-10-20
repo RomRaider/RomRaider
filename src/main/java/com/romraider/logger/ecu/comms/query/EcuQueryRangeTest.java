@@ -69,47 +69,21 @@ public final class EcuQueryRangeTest {
         int highestAddress = 0;
         for (EcuQuery query : queryList) {
             final int dataTypeLength = EcuQueryData.getDataLength(query);
-            // Query has the same number or more addresses as the storagetype defines
-            // Data length is defined in the definition as <address length="2">
-            // or, by the storagetype="uint16" attribute in a <conversion>
-            if (dataTypeLength <= query.getAddresses().length) {
-                for (String addressStr : query.getAddresses()) {
-                    final int address = hexToInt(addressStr);
-                    if (address < lowestAddress) {
-                        lowestAddress = address;
-                        newQuery.clear();
-                        newQuery.add(query);
-                    }
-                    if (address > highestAddress) {
-                        highestAddress = address;
-                    }
-                    LOGGER.trace(
-                            String.format(
-                                    "addr:%d size:%d lowest:%d highest:%d",
-                                    address, highestAddress - lowestAddress + 1,
-                                    lowestAddress, highestAddress));
+            for (int i = 0; i < dataTypeLength; i++) {
+                int address = hexToInt(query.getAddresses()[0]) + i;
+                if (address < lowestAddress) {
+                    lowestAddress = address;
+                    newQuery.clear();
+                    newQuery.add(query);
                 }
-            }
-            else {
-                // Query data length is defined in the storagetype="uint16"
-                // attribute in a <conversion>
-                int address = hexToInt(query.getAddresses()[0]);
-                for (int i = 0; i < dataTypeLength; i++) {
-                    address = address + i;
-                    if (address < lowestAddress) {
-                        lowestAddress = address;
-                        newQuery.clear();
-                        newQuery.add(query);
-                    }
-                    if (address > highestAddress) {
-                        highestAddress = address;
-                    }
-                    LOGGER.trace(
-                            String.format(
-                                    "addr:%d size:%d lowest:%d highest:%d",
-                                    address, highestAddress - lowestAddress + 1,
-                                    lowestAddress, highestAddress));
+                if (address > highestAddress) {
+                    highestAddress = address;
                 }
+                LOGGER.trace(
+                        String.format(
+                                "addr:%d size:%d lowest:%d highest:%d",
+                                address, highestAddress - lowestAddress + 1,
+                                lowestAddress, highestAddress));
             }
         }
         datalength = highestAddress - lowestAddress + 1;

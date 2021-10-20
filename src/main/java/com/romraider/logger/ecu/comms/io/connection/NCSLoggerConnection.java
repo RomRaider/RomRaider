@@ -228,130 +228,17 @@ public final class NCSLoggerConnection implements LoggerConnection {
         // ConnectionManger must have completed a fastInit to start comms
         if (!commsStarted) open(module);
 
-        // CAN max of 63 parameters
-        if (queries.size() > 63) {
-            throw new SerialCommunicationException(
-                    rb.getString("TOOLARGE"));
-        }
-
         // CAN Slow poll, read each parameter in a separate query, inefficient
         if (settings.isCanBus() && !pollState.isFastPoll()) {
             doSlowCanQueries(queries, module, pollState);
         }
         // Use CAN UDS 2C to load parameters and then request to read all loaded
         else if (settings.isCanBus() && pollState.isFastPoll()) {
-            // When parameter selection changes or there are RAM parameters present
-            // load and read the SID/CID parameters separate from the RAM parameters
-            if (queries.size() != queryCount
-                    || pollState.isNewQuery()) {
-
-                splitSidFromRamQueries(queries);
-                queryCount = queries.size();
-            }
-
-            byte[] request;
-            byte[] response;
-            if (!scQuery.isEmpty()) {   // SID/CID queries
-                if ((queries.size() != queryCount
-                        || pollState.isNewQuery())
-                        || !ramQuery.isEmpty()) {
-                    request = protocol.constructLoadAddressRequest(scQuery);
-                    LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
-                            pollState.getCurrentState(), module, asHex(request)));
-                    response = manager.send(request);
-                    LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
-                            pollState.getCurrentState(), module, asHex(response)));
-                    protocol.validateLoadAddressResponse(response);
-                }
-                request = protocol.constructReadAddressRequest(
-                        module, scQuery, pollState);
-                if (pollState.getCurrentState() == PollingState.State.STATE_0) {
-                    LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
-                            pollState.getCurrentState(), module, asHex(request)));
-                    pollState.setLastState(PollingState.State.STATE_0);
-                }
-                response = protocol.constructReadAddressResponse(
-                        scQuery, pollState);
-                manager.send(request, response, pollState);
-                LOGGER.debug(String.format("Mode:%s %s Read response <--- %s",
-                        pollState.getCurrentState(), module, asHex(response)));
-                protocol.processReadAddressResponses(
-                        scQuery, response, pollState);
-            }
-            // When parameter selection changes or there are SID CID parameters present
-            // load and read the RAM parameters separate from the SID CID parameters
-            if (!ramQuery.isEmpty()) {  // RAM queries
-                if ((queries.size() != queryCount
-                        || pollState.isNewQuery())
-                        || !scQuery.isEmpty()) {
-                    request = protocol.constructLoadAddressRequest(ramQuery);
-                    LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
-                            pollState.getCurrentState(), module, asHex(request)));
-                    response = manager.send(request);
-                    LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
-                            pollState.getCurrentState(), module, asHex(response)));
-                    protocol.validateLoadAddressResponse(response);
-                }
-                request = protocol.constructReadAddressRequest(
-                        module, ramQuery, pollState);
-                if (pollState.getCurrentState() == PollingState.State.STATE_0) {
-                    LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
-                            pollState.getCurrentState(), module, asHex(request)));
-                    pollState.setLastState(PollingState.State.STATE_0);
-                }
-                response = protocol.constructReadAddressResponse(
-                        ramQuery, pollState);
-                manager.send(request, response, pollState);
-                LOGGER.debug(String.format("Mode:%s %s Read response <--- %s",
-                        pollState.getCurrentState(), module, asHex(response)));
-                protocol.processReadAddressResponses(
-                        ramQuery, response, pollState);
-            }
+            doFastCanQueries(queries, module, pollState);
         }
+        // if not CAN do k-line queries
         else {
-            // k-line max data bytes is 63 when length encoded into format byte
-            if (queries.size() != queryCount
-                    || pollState.isNewQuery()) {
-                int dataLength = 0;
-                for (EcuQuery query : queries) {
-                    for (final String address : query.getAddresses()) {
-                        dataLength += calcLength(address);
-                    }
-                }
-                // if length is too big then notify user to un-select some parameters
-                if (dataLength > 61) {
-                    throw new SerialCommunicationException(
-                            rb.getString("TOOLARGE"));
-                }
-            }
-
-            if (queries.size() != queryCount
-                    || pollState.isNewQuery()) {
-                final byte[] request = protocol.constructLoadAddressRequest(queries);
-                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
-                        pollState.getCurrentState(), module, asHex(request)));
-    
-                byte[] response = new byte[4];  // short header response
-                if ((request[0] & (byte)0x80) == (byte)0x80) {
-                    response = new byte[6];     // long header response
-                }
-                protocol.validateLoadAddressResponse(
-                        sendRcv(module, request, response, pollState));
-                queryCount = queries.size();
-            }
-            final byte[] request = protocol.constructReadAddressRequest(
-                    module, queries, pollState);
-            if (pollState.getCurrentState() == PollingState.State.STATE_0) {
-                LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
-                        pollState.getCurrentState(), module, asHex(request)));
-                pollState.setLastState(PollingState.State.STATE_0);
-            }
-            final byte[] response = protocol.constructReadAddressResponse(
-                    queries, pollState);
-            protocol.processReadAddressResponses(
-                    queries,
-                    sendRcv(module, request, response, pollState),
-                    pollState);
+            doKlineQueries(queries, module, pollState);
         }
     }
 
@@ -398,6 +285,56 @@ public final class NCSLoggerConnection implements LoggerConnection {
         else {
             return 5;
         }
+    }
+
+    private void doKlineQueries(
+            Collection<EcuQuery> queries,
+            Module module, 
+            PollingState pollState) {
+
+        // k-line max data bytes is 63 when length encoded into format byte
+        if (queries.size() != queryCount
+                || pollState.isNewQuery()) {
+            int dataLength = 0;
+            for (EcuQuery query : queries) {
+                for (final String address : query.getAddresses()) {
+                    dataLength += calcLength(address);
+                }
+            }
+            // if length is too big then notify user to un-select some parameters
+            if (dataLength > 61) {
+                throw new SerialCommunicationException(
+                        rb.getString("TOOLARGE"));
+            }
+        }
+
+        if (queries.size() != queryCount
+                || pollState.isNewQuery()) {
+            final byte[] request = protocol.constructLoadAddressRequest(queries);
+            LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+                    pollState.getCurrentState(), module, asHex(request)));
+
+            byte[] response = new byte[4];  // short header response
+            if ((request[0] & (byte)0x80) == (byte)0x80) {
+                response = new byte[6];     // long header response
+            }
+            protocol.validateLoadAddressResponse(
+                    sendRcv(module, request, response, pollState));
+            queryCount = queries.size();
+        }
+        final byte[] request = protocol.constructReadAddressRequest(
+                module, queries, pollState);
+        if (pollState.getCurrentState() == PollingState.State.STATE_0) {
+            LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
+                    pollState.getCurrentState(), module, asHex(request)));
+            pollState.setLastState(PollingState.State.STATE_0);
+        }
+        final byte[] response = protocol.constructReadAddressResponse(
+                queries, pollState);
+        protocol.processReadAddressResponses(
+                queries,
+                sendRcv(module, request, response, pollState),
+                pollState);
     }
 
     /**
@@ -495,7 +432,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
                             module, newQuery, EcuQueryData.getDataLength(query));
                     LOGGER.debug(String.format("Mode:%s %s Memory request  ---> %s",
                             pollState.getCurrentState(), module, asHex(request)));
-                    response = protocol.constructReadMemoryResponse(1,
+                    response = protocol.constructReadMemoryResponse(1, 
                             EcuQueryData.getDataLength(query));
                     protocol.processReadMemoryResponses(
                             newQuery,
@@ -505,7 +442,80 @@ public final class NCSLoggerConnection implements LoggerConnection {
         }
     }
 
-    private byte[] sendRcv(Module module, byte[] request, byte[] response, PollingState pollState) {
+    private void doFastCanQueries (
+            Collection<EcuQuery> queries,
+            Module module, 
+            PollingState pollState) {
+
+        // When parameter selection changes or there are RAM parameters present
+        // load and read the SID/CID parameters separate from the RAM parameters
+        if (queries.size() != queryCount
+                || pollState.isNewQuery()) {
+
+            splitSidFromRamQueries(queries);
+            queryCount = queries.size();
+            pollState.setNewQuery(true);
+        }
+
+        byte[] request;
+        byte[] response;
+        if (!scQuery.isEmpty()) {   // SID/CID queries
+            if (pollState.isNewQuery() || !ramQuery.isEmpty()) {
+                request = protocol.constructLoadAddressRequest(scQuery);
+                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+                        pollState.getCurrentState(), module, asHex(request)));
+                // CAN max is 99 bytes
+                if (request.length > 99) {
+                    throw new SerialCommunicationException(
+                            rb.getString("TOOLARGE"));
+                }
+                response = manager.send(request);
+                LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
+                        pollState.getCurrentState(), module, asHex(response)));
+                protocol.validateLoadAddressResponse(response);
+            }
+            request = protocol.constructReadAddressRequest(
+                    module, scQuery, pollState);
+            response = protocol.constructReadAddressResponse(
+                    scQuery, pollState);
+            protocol.processReadAddressResponses(
+                    scQuery,
+                    sendRcv(module, request, response, pollState),
+                    pollState);
+        }
+        // When parameter selection changes or there are SID CID parameters present
+        // load and read the RAM parameters separate from the SID CID parameters
+        if (!ramQuery.isEmpty()) {  // RAM queries
+            if (pollState.isNewQuery() || !scQuery.isEmpty()) {
+                request = protocol.constructLoadAddressRequest(ramQuery);
+                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+                        pollState.getCurrentState(), module, asHex(request)));
+                // CAN max is 99 bytes
+                if (request.length > 99) {
+                    throw new SerialCommunicationException(
+                            rb.getString("TOOLARGE"));
+                }
+                response = manager.send(request);
+                LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
+                        pollState.getCurrentState(), module, asHex(response)));
+                protocol.validateLoadAddressResponse(response);
+                pollState.setFastPoll(true);
+            }
+            request = protocol.constructReadAddressRequest(
+                    module, ramQuery, pollState);
+            response = protocol.constructReadAddressResponse(
+                    ramQuery, pollState);
+            protocol.processReadAddressResponses(
+                    ramQuery,
+                    sendRcv(module, request, response, pollState),
+                    pollState);
+        }
+    }
+
+    private byte[] sendRcv(
+            Module module, byte[] request,
+            byte[] response, PollingState pollState) {
+
         manager.send(request, response, pollState);
         LOGGER.trace(module + " Read Raw Response <--- " + asHex(response));
         final byte[] processedResponse = protocol.preprocessResponse(

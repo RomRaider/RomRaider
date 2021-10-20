@@ -94,6 +94,12 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
 
     @Override
     public void close() {
+        LOGGER.debug(String.format("Stop Diagnostics Request  ---> %s",
+                asHex(stopRequest)));
+        api.writeMsg(channelId, stopRequest, timeout, TxFlags.ISO15765_FRAME_PAD);
+        final byte[] response = api.readMsg(channelId, 1, timeout);
+        LOGGER.debug(String.format("Stop Diagnostics Response <--- %s",
+                asHex(response)));
         stopFcFilter();
         disconnectChannel();
         closeDevice();

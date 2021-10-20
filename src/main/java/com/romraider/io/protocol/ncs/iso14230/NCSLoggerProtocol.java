@@ -28,6 +28,7 @@ import static java.lang.System.arraycopy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.romraider.io.protocol.Protocol;
@@ -230,13 +231,8 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
         return filteredQueries;
     }
 
-    private byte[][] convertToByteAddresses(Collection<EcuQuery> queries) {
-        int byteCount = 0;
-        for (EcuQuery query : queries) {
-            byteCount += query.getAddresses().length;
-        }
-        byte[][] addresses = new byte[byteCount][];
-        int i = 0;
+    private Map<byte[], Integer> convertToByteAddresses(Collection<EcuQuery> queries) {
+        final Map<byte[], Integer> queryMap = new LinkedHashMap<byte[], Integer>();
         for (EcuQuery query : queries) {
             byte[] bytes = query.getBytes();
             int addrCount = query.getAddresses().length;
@@ -244,9 +240,9 @@ public final class NCSLoggerProtocol implements LoggerProtocolNCS {
             for (int j = 0; j < addrCount; j++) {
                 final byte[] addr = new byte[addrLen];
                 arraycopy(bytes, j * addrLen, addr, 0, addr.length);
-                addresses[i++] = addr;
+                queryMap.put(addr, 1);
             }
         }
-        return addresses;
+        return queryMap;
     }
 }
