@@ -200,9 +200,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			0004 - FSW_PSW - WW - FSWINDEX,PSWINDEX
 			0005 - FSW - W - FSWINDEX
 		 */
-		String currentOption = "";
 		
-
+		String currentOption = "";
         for(int i=0xEA; i < fswInput.length;) {
         	int oldIndex = i;
         	
@@ -490,14 +489,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			//Whats operation?
         			int operationLen =  0xFFFF & dataBuffer.getShort(i);
         			i+=operationLen;
-        			
-        			try {
-        				byte unit = dataBuffer.get(i+2);
-        			}
-        			catch(Exception e) {
-        				e.printStackTrace();
-        			}
-        			
+        			//byte unit = dataBuffer.get(i+2);
+		
         			//Create actual node in rom
         	        for(BMWRomManager man: romManagers){
         	        	Element table = man.createTable(nameFSWD,
