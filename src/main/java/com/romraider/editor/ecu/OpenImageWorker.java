@@ -79,18 +79,26 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                 //Check if definition is standard or
                 //if it has to be converted first                
                 boolean found = false;
-                
-                for(ConversionLayer l: convLayers) {
-                	if(l.isFileSupported(f)) {
-	        			doc = l.convertToDocumentTree(f);
-	        			found = true;
-	        			break;
-                	}
+                try {
+	                for(ConversionLayer l: convLayers) {
+	                	if(l.isFileSupported(f)) {
+		        			doc = l.convertToDocumentTree(f);
+		        			
+		        			if(doc!=null) {
+		        				found = true;
+		        				break;
+		        			}		        			
+	                	}
+	                }
                 }
+	             catch(Exception e) {
+	                    e.printStackTrace();
+	                    continue;
+	             }
             	
             	//Default case
-            	if(!found) doc = docBuilder.parse(fileStream, f.getAbsolutePath());
-                
+                if(!found) doc = docBuilder.parse(fileStream, f.getAbsolutePath());
+              
                 try {	
                     rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
                 } catch (RomNotFoundException rex) {
@@ -102,11 +110,13 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                             ECUEditor.rb.getString("LOADEXCEPTION"),
                             errorLoading,
                             ERROR_MESSAGE);
-                    return null;
+                    continue;
                 } finally {
                     // Release mem after unmarshall.
                 	docBuilder.reset();
-                    doc.removeChild(doc.getDocumentElement());
+                	
+                	if(doc != null)
+                		doc.removeChild(doc.getDocumentElement());
                     doc = null;
                     fileStream.close();
                     System.gc();
