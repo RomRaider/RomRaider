@@ -452,6 +452,61 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			}
         			
         			break;
+        		case PARZUWEISUNG_DIR:
+           			//Skip blocknumber
+        			short blockD = dataBuffer.getShort(i);
+        			i+=2;
+        			        			
+        			if(blockD!=0) {
+        				//int blockNumber = dataBuffer.getInt(i); //Whats it for?
+        				i+=4;
+        			}        			
+        			
+        			int storageAddressD = dataBuffer.getInt(i);
+        			int byteCountD = dataBuffer.getShort(i+4);
+        			        			
+        			int functionKeywordD = dataBuffer.getShort(i+6);
+        			currentFSW = functionKeywordD;
+        			
+        			String nameFSWD = fswMap.get(functionKeywordD);
+        					
+        			//Add optional translation
+        			if(transMap != null && transMap.containsKey(nameFSWD)) {
+        				nameFSWD = nameFSWD + " | " + transMap.get(nameFSWD);
+        			}        			
+        			
+        			byte indexD = dataBuffer.get(i+8);
+        			i +=indexD;
+        			
+        			int maskLengthD =  0xFFFF & dataBuffer.getShort(i+9);
+        			byte[] maskD = new byte[maskLengthD];
+        			
+        			for(int j=0;j<maskLengthD;j++) {
+        				maskD[j] = dataBuffer.get(i+11+j);   			
+        			}
+            		
+        			i = i + 11 + maskLengthD;
+        			
+        			//Whats operation?
+        			int operationLen =  0xFFFF & dataBuffer.getShort(i);
+        			i+=operationLen;
+        			
+        			try {
+        				byte unit = dataBuffer.get(i+2);
+        			}
+        			catch(Exception e) {
+        				e.printStackTrace();
+        			}
+        			
+        			//Create actual node in rom
+        	        for(BMWRomManager man: romManagers){
+        	        	Element table = man.createTable(nameFSWD,
+        	        			currentCategory, memoryLayout, endian,storageAddressD, byteCountD, maskD);
+        	        	
+        	        	if(table != null) currentTable = table;
+        	        }
+        	        
+        			break;
         		case PARZUWEISUNG_FSW:
            			//Skip blocknumber
         			short block = dataBuffer.getShort(i);
@@ -492,7 +547,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			
         			//Create actual node in rom
         	        for(BMWRomManager man: romManagers){
-        	        	Element table = man.createTable(fswMap.get(functionKeyword),
+        	        	Element table = man.createTable(nameFSW,
         	        			currentCategory, memoryLayout, endian,storageAddress, byteCount, mask);
         	        	
         	        	if(table != null) currentTable = table;
