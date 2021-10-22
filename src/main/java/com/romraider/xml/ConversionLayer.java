@@ -31,6 +31,7 @@ public interface ConversionLayer {
 	/*
 	 * This method receives a file and checks if this converter supports this file
 	 * extension.
+	 * TODO: This should be static, but not supported in Java 6
 	 */
 	public abstract boolean isFileSupported(File f);
 }

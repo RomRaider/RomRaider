@@ -18,7 +18,7 @@ import org.xml.sax.SAXParseException;
 import com.romraider.Settings;
 import com.romraider.maps.Rom;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.BMWCodingConversionLayer;
+import com.romraider.xml.BMWCodingConversion.BMWCodingConversionLayer;
 import com.romraider.xml.ConversionLayer;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
@@ -79,23 +79,27 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                 //Check if definition is standard or
                 //if it has to be converted first                
                 boolean found = false;
-                try {
-	                for(ConversionLayer l: convLayers) {
-	                	if(l.isFileSupported(f)) {
-		        			doc = l.convertToDocumentTree(f);
-		        			
-		        			if(doc!=null) {
-		        				found = true;
-		        				break;
-		        			}		        			
-	                	}
+                
+                //Check if xml file
+                if(!f.getName().matches("^.*\\.(xml|XML)$")) {
+	                try {
+		                for(ConversionLayer l: convLayers) {
+		                	if(l.isFileSupported(f)) {
+			        			doc = l.convertToDocumentTree(f);
+			        			
+			        			if(doc!=null) {
+			        				found = true;
+			        				break;
+			        			}		        			
+		                	}
+		                }
 	                }
+		             catch(Exception e) {
+		                    e.printStackTrace();
+		                    continue;
+		             }
                 }
-	             catch(Exception e) {
-	                    e.printStackTrace();
-	                    continue;
-	             }
-            	
+                
             	//Default case
                 if(!found) doc = docBuilder.parse(fileStream, f.getAbsolutePath());
               

@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml;
+package com.romraider.xml.BMWCodingConversion;
 
 import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
@@ -38,12 +38,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -53,8 +47,8 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.OpenImageWorker;
-import com.romraider.maps.Rom;
 import com.romraider.util.SettingsManager;
+import com.romraider.xml.ConversionLayer;
 
 public class BMWCodingConversionLayer implements ConversionLayer {
     private static final Logger LOGGER = Logger.getLogger(BMWCodingConversionLayer.class);
@@ -112,14 +106,9 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		this.splitAddress = splitAddress;
 		this.guessChecksums = guessChecksums;
 	}	
-	
-	//TODO: DELETE
-	public static boolean isFileSupportedS(File f) {
-		return f.getName().matches("^[\\w,\\s-]+\\.C\\d\\d");
-	}
 		
 	public boolean isFileSupported(File f) {
-		return f.getName().matches("^[\\w,\\s-]+\\.C\\d\\d");
+		return f.getName().matches("^.*\\.C\\d\\d$");
 	}
 	
 	//Reads a string in an array until zero byte
@@ -431,21 +420,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		for(BMWRomManager man: romManagers){
         	man.calculateRomID(f);
         }
-           
-        /*
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer trans = tf.newTransformer();
-        StringWriter sw = new StringWriter();
-        trans.transform(new DOMSource(doc), new StreamResult(sw));
-        System.out.println(sw.toString());*/
-        
-        return doc;
-	
+		
+        return doc;	
 	}
 	
 	private void parseMemoryOrg() {
 		String layout = readString(dataBuffer.array(), dataIndex+1);
 		
+		/*
 		if(layout.equalsIgnoreCase("byte")) memoryLayout = "uint8";        			
 		else if(layout.equalsIgnoreCase("wordmsb")) {
 			memoryLayout = "uint16";
@@ -455,7 +437,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			memoryLayout = "uint16";
 			endian = "little";
 		}
-		
+		*/
 		dataIndex+= layout.length() + 2;
 		//String blockType = readString(input, i); //? What does it do?
 		//isBlock = blockType.equals("BLOCK"); 
@@ -609,148 +591,6 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         }
 	}
 
-	
-	class BMWRomManager{
-		int offsetAddress = 0;
-		
-		Document doc;
-		Element romNode;
-		
-		Element lastTable;
-		int lastStorageAddress;
-		int maxStorageAddress;
-		
-		//Variables to find the best ID settings
-		int bestIDFitAddress;
-		String bestIDFitData = "";
-		int bestIDFitAddressTemp;
-		String bestIDFitDataTemp = "";
-		int lastPresetCount = 0;
-		
-		BMWRomManager(int offsetAddress, Document doc, Node root){
-			this.doc = doc;
-			this.offsetAddress = offsetAddress;
-			this.romNode = doc.createElement("rom");			
-			root.appendChild(romNode);
-		}
-		
-		public Element getRomNode() {
-			return romNode;
-		}
-		
-		
-		public Element createTable(String name, String category, String storageType, String endian,
-				int storageAddress, int byteCount, byte[] mask) {
-			
-			//This handles the correct rom splitting
-			if(offsetAddress == 0 || storageAddress >= offsetAddress) {	
-				
-				if(!bestIDFitDataTemp.equals("") && lastPresetCount == 1) {
-					bestIDFitData = bestIDFitDataTemp;
-					bestIDFitAddress = bestIDFitAddressTemp;
-				}				
-				
-				lastPresetCount = 0;
-				
-				if(byteCount == 1) storageType="uint8";
-				int sizey = storageType.equalsIgnoreCase("uint8") ? byteCount : byteCount/2;
-				
-				Element table = doc.createElement("table");
-				table.setAttribute("name", name);
-				table.setAttribute("category", category);
-				table.setAttribute("storagetype", storageType);
-				table.setAttribute("storageaddress", "0x" + 
-						Integer.toHexString(storageAddress - offsetAddress));
-				table.setAttribute("endian", endian);
-				table.setAttribute("sizey", Integer.toString(sizey));
-				table.setAttribute("type", "1D");
-				table.setAttribute("mask", Integer.toHexString(Byte.toUnsignedInt(mask[0])));
-				
-				romNode.appendChild(table);
-				lastTable = table;
-				
-				lastStorageAddress = storageAddress - offsetAddress;							
-				if(lastStorageAddress > maxStorageAddress) maxStorageAddress = lastStorageAddress;
-											
-				return table;
-			}
-			else {
-				return null;
-			}
-		}
-		
-		public Element addPreset(String data, String name, Node table) {
-			if(offsetAddress == 0 || this.lastTable == table) {	
-				Element statePSW1 = doc.createElement("state");      		      			
-				statePSW1.setAttribute("data", data);
-				statePSW1.setAttribute("name", name);
-				lastTable.appendChild(statePSW1);
-				
-				data = data.replace(" ", "");
-				
-				if(lastPresetCount >= 1) {
-					bestIDFitDataTemp = "";
-				}									
-				else if(data.length() >= 2 && bestIDFitData.length() <= data.length() &&
-						!data.replace("0", "").equals("") && !data.replace("F", "").equals("")){					
-					bestIDFitDataTemp = data;
-					bestIDFitAddressTemp = lastStorageAddress;
-				}
-				
-				lastPresetCount++;
-				
-				return statePSW1;
-			}
-			else {
-				return null;
-			}	
-		}
-		
-		public void calculateRomID(File f) {
-        	Element romIDNode = doc.createElement("romid");
-			
-        	//romNode.setTextContent("Test");
-        	Node idAddress = doc.createElement("internalidaddress");
-        	idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
-        	Node idString = doc.createElement("internalidstring");
-        	idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
-        	Node ramoffset = doc.createElement("noramoffset");
-        	
-        	//Set filesize based on largest address and round up to a power of 2
-        	Node fileSize = doc.createElement("filesize");
-        	String fileS = ((int)Math.pow(2, 32 - Integer.numberOfLeadingZeros(lastStorageAddress - 1)) + "b");
-        	fileSize.setTextContent(fileS);
-        	
-        	Node make = doc.createElement("make");
-        	make.setTextContent("BMW");
-        	
-        	Node model = doc.createElement("model");
-        	model.setTextContent(f.getParentFile().getName());
-        	
-        	Node ecuID = doc.createElement("ecuid");
-        	String[] nameSplit = f.getName().split("\\.");
-        	ecuID.setTextContent(nameSplit[1]);
-        	
-        	Node subModel = doc.createElement("submodel");
-        	subModel.setTextContent(f.getName());
-        	
-        	romIDNode.appendChild(make);
-        	romIDNode.appendChild(ecuID);
-        	romIDNode.appendChild(model);
-        	romIDNode.appendChild(subModel);
-        	romIDNode.appendChild(ramoffset);
-        	romIDNode.appendChild(fileSize);
-        	romIDNode.appendChild(idAddress);
-        	romIDNode.appendChild(idString);
-        	romIDNode.appendChild(doc.createElement("year"));
-        	romIDNode.appendChild(doc.createElement("market"));
-        	romIDNode.appendChild(doc.createElement("transmission"));
-        	romIDNode.appendChild(doc.createElement("xmlid"));
-        	romNode.appendChild(romIDNode); 	         	
-        	
-		}
-	}
-	
 	public static Collection<File> listFileTree(File dir) {
 	    Set<File> fileTree = new HashSet<File>();
 	    if(dir==null||dir.listFiles()==null){
@@ -775,15 +615,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		Settings settings = SettingsManager.getSettings();	
 		
 		settings.getEcuDefinitionFiles().clear();
+		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\KMB_E46.C08"));
+		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\IHK_E46.C17"));
+		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\GM5.C04"));
+		
+		/*
 		File folder = new File("C:\\NCSEXPER\\DATEN\\");
 		Collection<File> listOfFiles =  listFileTree(folder);
 
-		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\KMB_E46.C08"));
-		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\IHK_E46.C17"));
-		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\GM5.C04"));
-		
-		
-		/*
 		for(File f: listOfFiles) {
 			if (isFileSupportedS(f)) {
 				settings.getEcuDefinitionFiles().add(f);

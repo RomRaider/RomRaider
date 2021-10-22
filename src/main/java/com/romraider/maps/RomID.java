@@ -55,6 +55,9 @@ public class RomID implements Serializable {
         try {
         	if(internalIdString == null || internalIdString.length() == 0) return false;
         	
+        	//If both fields are set to force, use this definition no matter what
+        	if(internalIdAddress == -1 && internalIdString.equalsIgnoreCase("force")) return true;
+        	
             // romid is hex string
             if (internalIdString.length() > 2
                     && internalIdString.substring(0, 2).equalsIgnoreCase("0x")) {
