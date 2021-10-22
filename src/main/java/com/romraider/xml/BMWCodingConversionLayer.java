@@ -62,6 +62,25 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 	private int splitAddress = 0;
 	boolean guessChecksums = false;
 	
+	HashMap <Integer, String> fswMap;
+	HashMap <Integer, String> pswMap;
+	HashMap <Integer, String> aswMap;
+	HashMap <Integer, String> csvMap;
+	HashMap <String, String> transMap;
+	
+    BMWRomManager[] romManagers;	
+	ByteBuffer dataBuffer;
+	int dataIndex;
+	
+    String currentCategory = "";
+    int currentFSW = 0;       
+    Node currentTable = null;
+    
+    String memoryLayout = "uint8";
+    String endian = "little";
+    
+    int unusedCounter = 0;
+	
 	//Naming stays german, because the file is also german
 	static final int TYPE_DATEINAME = 0x0000;			//Filename
 	static final int SGID_CODIERINDEX = 0x0001;			//Codingindex
@@ -103,6 +122,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		return f.getName().matches("^[\\w,\\s-]+\\.C\\d\\d");
 	}
 	
+	//Reads a string in an array until zero byte
 	private static String readString(byte[] input, int offset) {
 		StringBuilder s = new StringBuilder();
 		
@@ -114,6 +134,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		return s.toString();
 	}
 	
+	//Reads the optional translation file from NCS Dummy
     private HashMap<String, String> readTranslationFile(File transF) {
     	HashMap<String, String> map = new HashMap<String, String>();
     	
@@ -147,12 +168,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		
 		ByteBuffer fswBuffer = ByteBuffer.wrap(fswInput);
 		fswBuffer = fswBuffer.order(ByteOrder.LITTLE_ENDIAN);
-				
-		/*
-		 * 	0000 - DATEINAME - S - NAME
-			0001 - SWT_EINTRAG - WS - KEYID,KEYWORD
-		 */
-		
+						
         for(int i=0x5E; i < fswInput.length;) {
         	int oldIndex = i;
         	
@@ -234,6 +250,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         			
     				currentOption = optionCode;      			
         			break;
+        			
         		//Link FSW/PSW combination to option
         		case 0x0004:      			
         			int fsw = cvtBuffer.getShort(i);
@@ -276,18 +293,31 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			  else if(fList.getName().matches("(?i)SWTASW\\d\\d\\.dat")) aswF = fList;
 		  }
 		}
-        		
-		if(!fswF.exists() || !pswF.exists() || !aswF.exists() || !csvF.exists()) return null;
 		
-		HashMap <Integer, String> fswMap= createMapFromNCSDict(fswF);
-		HashMap <Integer, String> pswMap= createMapFromNCSDict(pswF);
-		HashMap <Integer, String> aswMap= createMapFromNCSDict(aswF);
-		HashMap <Integer, String> csvMap= createMapFromCVT(csvF, aswMap);
+		if(!fswF.exists()) {
+	    	LOGGER.error("Failed to find " +  fswF);
+	    	return null;
+		}
+		if(!pswF.exists()) {
+	    	LOGGER.error("Failed to find " +  pswF);
+	    	return null;
+		}
+		if(!aswF.exists()) {
+	    	LOGGER.error("Failed to find " +  aswF);
+	    	return null;
+		}
+		if(!csvF.exists()) {
+	    	LOGGER.error("Failed to find " +  csvF);
+	    	return null;
+		}
+			
+		fswMap= createMapFromNCSDict(fswF);
+		pswMap= createMapFromNCSDict(pswF);
+		aswMap= createMapFromNCSDict(aswF);
+		csvMap= createMapFromCVT(csvF, aswMap);
 		
 		//Optional translation file that has to be in the DATEN folder
-		//Created from NCSDummy developers
-		HashMap <String, String> transMap = null;
-		
+		//Created from NCSDummy developers		
 		File transF = new File(f, "../../Translations.csv");		
 		if(transF.exists()) transMap = readTranslationFile(transF);
 		    			        			        
@@ -299,28 +329,20 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			return null;
 		}
 		
-		ByteBuffer dataBuffer = ByteBuffer.wrap(input);
+		dataBuffer = ByteBuffer.wrap(input);
 		dataBuffer = dataBuffer.order(ByteOrder.LITTLE_ENDIAN);
        		
         Node roms = doc.createElement("roms");
         doc.appendChild(roms);
-        
-        BMWRomManager[] romManagers = null;
-        
+               
+        //Create one manager if no splitting
+        //Create two otherwise
         if(splitAddress == 0) romManagers= new BMWRomManager[] {new BMWRomManager(0, doc, roms)};
         else
         	romManagers= new BMWRomManager[] {
         			new BMWRomManager(0, doc, roms),
         			new BMWRomManager(splitAddress, doc, roms)};
-
-        
-        String currentCategory = "";
-        int currentFSW = 0;       
-        Node currentTable = null;
-        String memoryLayout = "uint8";
-        String endian = "little";
-        int unusedCounter = 0;
-            
+       
         /*
          *  0000 - DATEINAME - S - NAME
 			0001 - SGID_CODIERINDEX - B(B) - WERT,WERT2
@@ -342,262 +364,68 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			0011 - PARZUWEISUNG_DIR - {L}LWW{B}(B)(A)B - BLOCKNR,WORTADR,BYTEADR,FSW,INDEX,MASKE,OPERATION,EINHEIT
 			0012 - PARZUWEISUNG_FSW - {L}LWW{B}(B){B}{B} - BLOCKNR,WORTADR,BYTEADR,FSW,INDEX,MASKE,EINHEIT,INDIVID
          */
-        
-        int startAddress = 0;
+              
+        //Look for 0xFFFF in the file to skip the header
         for(int i=0; i < input.length;i++) {
         	int value = dataBuffer.getShort(i);
         	if(value == -1) {
-        		startAddress = i+2;
+        		dataIndex = i+2;
         		break;
         	}        	
         }   
         
-        if(startAddress == 0) {
+        if(dataIndex == 0) {
         	LOGGER.error("Failed to find start of file for " +  f.toString());
         	return null;
         }
 
         
-        for(int i=startAddress; i < input.length;) {
-        	int oldIndex = i;
+        while(dataIndex < input.length) {
+        	int oldIndex = dataIndex;
         	
-        	int length = 0xFFFF & dataBuffer.get(i);
-        	int frameType = 0xFFFF & dataBuffer.getShort(i+1);
-        	i+=2;
+        	int length = 0xFFFF & dataBuffer.get(dataIndex);
+        	int frameType = 0xFFFF & dataBuffer.getShort(dataIndex+1);
+        	dataIndex+=2;
        	       	
         	switch(frameType) {
         		case SPEICHERORG:
-        			String layout = readString(input, i+1);
-        			
-        			/*
-        			if(layout.equalsIgnoreCase("byte")) memoryLayout = "uint8";        			
-        			else if(layout.equalsIgnoreCase("wordmsb")) {
-        				memoryLayout = "uint16";
-        				endian = "big";
-        			}
-        			else if(layout.equalsIgnoreCase("wordlsb")) {
-        				memoryLayout = "uint16";
-        				endian = "little";
-        			}
-   					*/
- 
-        			i+= layout.length() + 2;
-        			//String blockType = readString(input, i); //? What does it do?
-        			//isBlock = blockType.equals("BLOCK");             			
+        			parseMemoryOrg();
         			break;
         		case TYPE_DATEINAME:
 	        		//String fileNameInFile = readString(input, i+1);
 	        		break;
+	        	//"Unused" Data, which often contains hidden data
         		case UNBELEGT1:
-        			short blockU = dataBuffer.getShort(i);
-        			i+=2;
-        			
-        			if(blockU!=0) {
-        				//int blockNumber = dataBuffer.getInt(i); //Whats it for?
-        				i+=4;
-        			}
-        			
-        			int storageAddressU = dataBuffer.getInt(i);
-        			int byteCountU = dataBuffer.getShort(i+4);
-        			
-        			byte indexU = dataBuffer.get(i+6);
-        			i +=indexU;
-        			
-        			int maskLengthU =  0xFFFF & dataBuffer.getShort(i+7);
-        			byte[] maskU = new byte[maskLengthU];
-        			
-        			for(int j=0;j<maskLengthU;j++) {
-        				maskU[j] = dataBuffer.get(i+9+j);   			
-        			}
-            		
-        			i = i + 9 + maskLengthU;
-
-        			
-        			//Create actual node in rom
-        	        for(BMWRomManager man: romManagers){
-        	        	Element table = man.createTable("UNUSED_" + unusedCounter,
-        	        			currentCategory, memoryLayout, endian,storageAddressU, byteCountU, maskU);
-        	        	
-        	        	if(table != null) currentTable = table;
-        	        }
-        	        
-        	        unusedCounter++;
-        			break;
-        		
+        			parseUnused();
+        			break;       		
         		//Not sure what to do with this
         		case UNBELEGT2:      			
-        			break;
-        		
+        			break;       		
         		//Coding Block (=category)
+        		//Fall-Through!
         		case CODIERDATENBLOCK:
         		case HERSTELLERDATENBLOCK:
         		case RESERVIERTDATENBLOCK:
-        			short blockR = dataBuffer.getShort(i);
-        			i+=2;
-        			
-        			if(blockR!=0) {
-        				//int blockNumber = dataBuffer.getInt(i); //Whats it for?
-        				i+=4;
-        			}
-        			//Not used in our case, since only used as category
-        			//int storageAddressBlock = dataBuffer.getInt(i);
-        			//int byteCountBlock = dataBuffer.getShort(i+4);        			
-        		     			
-        			currentCategory = readString(input, i+6);
-        			
-        			//Add optional translation
-        			if(transMap != null && transMap.containsKey(currentCategory)) {
-        				currentCategory = currentCategory + " | " + transMap.get(currentCategory);
-        			}
-        			
+        			parseGroup();  			
         			break;
         		case PARZUWEISUNG_DIR:
-           			//Skip blocknumber
-        			short blockD = dataBuffer.getShort(i);
-        			i+=2;
-        			        			
-        			if(blockD!=0) {
-        				//int blockNumber = dataBuffer.getInt(i); //Whats it for?
-        				i+=4;
-        			}        			
-        			
-        			int storageAddressD = dataBuffer.getInt(i);
-        			int byteCountD = dataBuffer.getShort(i+4);
-        			        			
-        			int functionKeywordD = dataBuffer.getShort(i+6);
-        			currentFSW = functionKeywordD;
-        			
-        			String nameFSWD = fswMap.get(functionKeywordD);
-        					
-        			//Add optional translation
-        			if(transMap != null && transMap.containsKey(nameFSWD)) {
-        				nameFSWD = nameFSWD + " | " + transMap.get(nameFSWD);
-        			}        			
-        			
-        			byte indexD = dataBuffer.get(i+8);
-        			i +=indexD;
-        			
-        			int maskLengthD =  0xFFFF & dataBuffer.getShort(i+9);
-        			byte[] maskD = new byte[maskLengthD];
-        			
-        			for(int j=0;j<maskLengthD;j++) {
-        				maskD[j] = dataBuffer.get(i+11+j);   			
-        			}
-            		
-        			i = i + 11 + maskLengthD;
-        			
-        			//Whats operation?
-        			int operationLen =  0xFFFF & dataBuffer.getShort(i);
-        			i+=operationLen;
-        			//byte unit = dataBuffer.get(i+2);
-		
-        			//Create actual node in rom
-        	        for(BMWRomManager man: romManagers){
-        	        	Element table = man.createTable(nameFSWD,
-        	        			currentCategory, memoryLayout, endian,storageAddressD, byteCountD, maskD);
-        	        	
-        	        	if(table != null) currentTable = table;
-        	        }
-        	        
+        			parseFSWValues(false);  	        
         			break;
         		case PARZUWEISUNG_FSW:
-           			//Skip blocknumber
-        			short block = dataBuffer.getShort(i);
-        			i+=2;
-        			        			
-        			if(block!=0) {
-        				//int blockNumber = dataBuffer.getInt(i); //Whats it for?
-        				i+=4;
-        			}        			
-        			
-        			int storageAddress = dataBuffer.getInt(i);
-        			int byteCount = dataBuffer.getShort(i+4);
-        			        			
-        			int functionKeyword = dataBuffer.getShort(i+6);
-        			currentFSW = functionKeyword;
-        			
-        			String nameFSW = fswMap.get(functionKeyword);
-        					
-        			//Add optional translation
-        			if(transMap != null && transMap.containsKey(nameFSW)) {
-        				nameFSW = nameFSW + " | " + transMap.get(nameFSW);
-        			}        			
-        			
-        			byte index = dataBuffer.get(i+8);
-        			i +=index;
-        			
-        			int maskLength =  0xFFFF & dataBuffer.getShort(i+9);
-        			byte[] mask = new byte[maskLength];
-        			
-        			for(int j=0;j<maskLength;j++) {
-        				mask[j] = dataBuffer.get(i+11+j);   			
-        			}
-            		
-        			i = i + 11 + maskLength;
-        			//byte optData = dataBuffer.get(i);
-        			//byte unit = dataBuffer.get(i+1);
-        			//byte individual = dataBuffer.get(i+2);
-        			
-        			//Create actual node in rom
-        	        for(BMWRomManager man: romManagers){
-        	        	Element table = man.createTable(nameFSW,
-        	        			currentCategory, memoryLayout, endian,storageAddress, byteCount, mask);
-        	        	
-        	        	if(table != null) currentTable = table;
-        	        }
-        	        
+        			parseFSWValues(false);        	        
         			break;
 
         		case PARZUWEISUNG_PSW1:
-        			i+=1;
-        			int functionKeywordPSW = dataBuffer.getShort(i);
-        			int numValuesPSW1 = dataBuffer.getShort(i+2);
-        			String PSW1_s = "";
-        			
-        			byte[] presetValuesPSW1 = new byte[numValuesPSW1];
-        			
-        			for(int j=0;j<numValuesPSW1;j++) {
-        				presetValuesPSW1[j] = dataBuffer.get(i+4+j);  	
-        				PSW1_s+=" " + String.format("%02X", (Byte.toUnsignedInt(presetValuesPSW1[j])));
-        			}
-        			
-        			String namePSW = pswMap.get(functionKeywordPSW);
-					
-        			//Add optional translation
-        			if(transMap != null && transMap.containsKey(namePSW)) {
-        				namePSW += " | " + transMap.get(namePSW);
-        			}
-        			
-        			//Add option combinations
-        			int key = currentFSW << 16 | functionKeywordPSW;
-        			if(csvMap.containsKey(key))namePSW += " | " + csvMap.get(key);
-        	        
-        			for(BMWRomManager man: romManagers){
-        	        	man.addPreset(PSW1_s.trim(), namePSW.trim(), currentTable);
-        	        }
-        			
+        			parsePresetValues(true);        			
         			break;
         		case PARZUWEISUNG_PSW2:
-        			i+=1;
-        			int numValuesPSW = dataBuffer.getShort(i);     
-        			byte[] presetValuesPSW2 = new byte[numValuesPSW];
-        			
-        			String PSW2_s = "";
-        			for(int j = 0 ; j < numValuesPSW; j++) {
-        				presetValuesPSW2[j] = dataBuffer.get(i+2+j);  
-        				PSW2_s+= " " + Integer.toHexString(Byte.toUnsignedInt(presetValuesPSW2[j]));
-        			}
-        			
-        			for(BMWRomManager man: romManagers){
-        	        	man.addPreset(PSW2_s, "Unnamed", currentTable);
-        	        }
-        			
+        			parsePresetValues(false);        			
         			break;
         	}        	  	        	
         	
         	//No matter what the index points to, always go by length
         	//Skip frameType, checksum and go to next
-        	i = oldIndex+length + 4;
+        	dataIndex = oldIndex+length + 4;
         }
         
 		for(BMWRomManager man: romManagers){
@@ -612,8 +440,175 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         System.out.println(sw.toString());*/
         
         return doc;
+	
 	}
+	
+	private void parseMemoryOrg() {
+		String layout = readString(dataBuffer.array(), dataIndex+1);
 		
+		if(layout.equalsIgnoreCase("byte")) memoryLayout = "uint8";        			
+		else if(layout.equalsIgnoreCase("wordmsb")) {
+			memoryLayout = "uint16";
+			endian = "big";
+		}
+		else if(layout.equalsIgnoreCase("wordlsb")) {
+			memoryLayout = "uint16";
+			endian = "little";
+		}
+		
+		dataIndex+= layout.length() + 2;
+		//String blockType = readString(input, i); //? What does it do?
+		//isBlock = blockType.equals("BLOCK"); 
+	}
+	
+	private void parseUnused() {
+		short blockU = dataBuffer.getShort(dataIndex);
+		dataIndex+=2;
+		
+		if(blockU!=0) {
+			//int blockNumber = dataBuffer.getInt(i); //Whats it for?
+			dataIndex+=4;
+		}
+		
+		int storageAddressU = dataBuffer.getInt(dataIndex);
+		int byteCountU = dataBuffer.getShort(dataIndex+4);
+		
+		byte indexU = dataBuffer.get(dataIndex+6);
+		dataIndex +=indexU;
+		
+		int maskLengthU =  0xFFFF & dataBuffer.getShort(dataIndex+7);
+		byte[] maskU = new byte[maskLengthU];
+		
+		for(int j=0;j<maskLengthU;j++) {
+			maskU[j] = dataBuffer.get(dataIndex+9+j);   			
+		}
+		
+		dataIndex = dataIndex + 9 + maskLengthU;
+
+		
+		//Create actual node in rom
+        for(BMWRomManager man: romManagers){
+        	Element table = man.createTable("UNUSED_" + unusedCounter,
+        			currentCategory, memoryLayout, endian,storageAddressU, byteCountU, maskU);
+        	
+        	if(table != null) currentTable = table;
+        }
+        
+        unusedCounter++;
+	}
+	
+	private void parseGroup() {
+		short blockR = dataBuffer.getShort(dataIndex);
+		dataIndex+=2;
+		
+		if(blockR!=0) {
+			//int blockNumber = dataBuffer.getInt(i); //Whats it for?
+			dataIndex+=4;
+		}
+		
+		//Not used in our case, since only used as category
+		//int storageAddressBlock = dataBuffer.getInt(i);
+		//int byteCountBlock = dataBuffer.getShort(i+4);        			
+	     			
+		currentCategory = readString(dataBuffer.array(), dataIndex+6);
+		
+		//Add optional translation
+		if(transMap != null && transMap.containsKey(currentCategory)) {
+			currentCategory = currentCategory + " | " + transMap.get(currentCategory);
+		}
+	}
+	
+	private void parseFSWValues(boolean isDIR) {
+		short blockD = dataBuffer.getShort(dataIndex);
+		dataIndex+=2;
+		        			
+		if(blockD!=0) {
+			//int blockNumber = dataBuffer.getInt(i); //Whats it for?
+			dataIndex+=4;
+		}        			
+		
+		int storageAddressD = dataBuffer.getInt(dataIndex);
+		int byteCountD = dataBuffer.getShort(dataIndex+4);
+		        			
+		int functionKeywordD = dataBuffer.getShort(dataIndex+6);
+		currentFSW = functionKeywordD;
+		
+		String nameFSWD = fswMap.get(functionKeywordD);
+				
+		//Add optional translation
+		if(transMap != null && transMap.containsKey(nameFSWD)) {
+			nameFSWD = nameFSWD + " | " + transMap.get(nameFSWD);
+		}        			
+		
+		byte indexD = dataBuffer.get(dataIndex+8);
+		dataIndex +=indexD;
+		
+		int maskLengthD =  0xFFFF & dataBuffer.getShort(dataIndex+9);
+		byte[] maskD = new byte[maskLengthD];
+		
+		for(int j=0;j<maskLengthD;j++) {
+			maskD[j] = dataBuffer.get(dataIndex+11+j);   			
+		}
+		
+		dataIndex = dataIndex + 11 + maskLengthD;
+		
+		if(isDIR) {
+			//Whats operation?
+			int operationLen =  0xFFFF & dataBuffer.getShort(dataIndex);
+			dataIndex+=operationLen;
+			//byte unit = dataBuffer.get(i+2);
+		}
+
+		//Create actual node in rom
+        for(BMWRomManager man: romManagers){
+        	Element table = man.createTable(nameFSWD,
+        			currentCategory, memoryLayout, endian,storageAddressD, byteCountD, maskD);
+        	
+        	if(table != null) currentTable = table;
+        }
+	}
+	
+	private void parsePresetValues(boolean parsePSW) {
+		dataIndex+=1;
+		
+		int functionKeywordPSW = 0;
+		
+		if(parsePSW) {
+			functionKeywordPSW = dataBuffer.getShort(dataIndex);
+			dataIndex+=2;
+		}
+		
+		int numValuesPSW1 = dataBuffer.getShort(dataIndex);
+		dataIndex+=2;
+		
+		String namePSW = "Unamed";
+		String PSW1_s = "";
+		
+		byte[] presetValuesPSW1 = new byte[numValuesPSW1];
+		
+		for(int j=0;j<numValuesPSW1;j++) {
+			presetValuesPSW1[j] = dataBuffer.get(dataIndex+j);  	
+			PSW1_s+=" " + String.format("%02X", (Byte.toUnsignedInt(presetValuesPSW1[j])));
+		}
+		
+		if(parsePSW) {
+			namePSW = pswMap.get(functionKeywordPSW);
+			
+			//Add optional translation
+			if(transMap != null && transMap.containsKey(namePSW)) {
+				namePSW += " | " + transMap.get(namePSW);
+			}
+			
+			//Add option combinations
+			int key = currentFSW << 16 | functionKeywordPSW;
+			if(csvMap.containsKey(key))namePSW += " | " + csvMap.get(key);
+		}
+		
+		for(BMWRomManager man: romManagers){
+        	man.addPreset(PSW1_s.trim(), namePSW.trim(), currentTable);
+        }
+	}
+
 	
 	class BMWRomManager{
 		int offsetAddress = 0;
@@ -657,6 +652,9 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 				
 				lastPresetCount = 0;
 				
+				if(byteCount == 1) storageType="uint8";
+				int sizey = storageType.equalsIgnoreCase("uint8") ? byteCount : byteCount/2;
+				
 				Element table = doc.createElement("table");
 				table.setAttribute("name", name);
 				table.setAttribute("category", category);
@@ -664,7 +662,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 				table.setAttribute("storageaddress", "0x" + 
 						Integer.toHexString(storageAddress - offsetAddress));
 				table.setAttribute("endian", endian);
-				table.setAttribute("sizey", Integer.toString(byteCount));
+				table.setAttribute("sizey", Integer.toString(sizey));
 				table.setAttribute("type", "1D");
 				table.setAttribute("mask", Integer.toHexString(Byte.toUnsignedInt(mask[0])));
 				
@@ -780,11 +778,18 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		File folder = new File("C:\\NCSEXPER\\DATEN\\");
 		Collection<File> listOfFiles =  listFileTree(folder);
 
+		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\KMB_E46.C08"));
+		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\IHK_E46.C17"));
+		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\GM5.C04"));
+		
+		
+		/*
 		for(File f: listOfFiles) {
 			if (isFileSupportedS(f)) {
 				settings.getEcuDefinitionFiles().add(f);
 			}
-		}
+		}*/
+		
 		
 		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E36\\KMB_E36.C25"));
 		//OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Tacho Grau\\C25_352k_248_oil_6Cyl.hex"));
