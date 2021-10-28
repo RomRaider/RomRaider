@@ -231,7 +231,7 @@ public final class NCSProtocol implements ProtocolNCS {
 
     @Override
     //TODO: not yet implemented
-    // maybe use: Service $11 with 0x80 — module reset
+    // maybe use: Service $11 with 0x80 - module reset
     public byte[] constructEcuResetRequest(Module module, int resetCode) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
