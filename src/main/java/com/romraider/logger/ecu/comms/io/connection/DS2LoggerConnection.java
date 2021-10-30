@@ -166,7 +166,9 @@ public final class DS2LoggerConnection implements LoggerConnection {
                 || groupTest.startsWith("0x0b0x04")
                 || groupTest.startsWith("0x0b0x91")
                 || groupTest.startsWith("0x0b0x92")
-                || groupTest.startsWith("0x0b0x93")) {
+                || groupTest.startsWith("0x0b0x93")
+                || groupTest.startsWith("0x0b0x94")
+                || groupTest.startsWith("0x0b0x95")) {
 
                 request = protocol.constructReadGroupRequest(
                         module, group);

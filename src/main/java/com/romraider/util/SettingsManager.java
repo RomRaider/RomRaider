@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -38,6 +39,8 @@ import com.romraider.xml.DOMSettingsUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class SettingsManager {
+    private static final Logger LOGGER =
+            Logger.getLogger(SettingsManager.class);
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             SettingsManager.class.getName());
     private static final String SETTINGS_FILE = "/settings.xml";
@@ -68,6 +71,7 @@ public class SettingsManager {
                 sf = new File(USER_HOME + SETTINGS_FILE);
                 settingsFileIn = new FileInputStream(sf);
             }
+            LOGGER.info("Loaded settings from file: " + settingsDir.replace("\\", "/") + SETTINGS_FILE);
 
             final InputSource src = new InputSource(settingsFileIn);
             final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
