@@ -36,7 +36,7 @@ public class Table2D extends Table {
     public Table1D getAxis() {
         return axis;
     }
-       
+
     public void setAxis(Table1D axis) {
         this.axis = axis;
         axis.setAxisParent(this);
@@ -45,15 +45,15 @@ public class Table2D extends Table {
     @Override
     public String toString() {
         return super.toString() + " (2D)";// + axis;
-    }    
-    
+    }
+
     @Override
     public void clearData() {
-    	super.clearData();
-    	axis.clearData();
-    	axis=null;
+        super.clearData();
+        axis.clearData();
+        axis=null;
     }
-    
+
     @Override
     public void populateCompareValues(Table otherTable) {
         if(null == otherTable || !(otherTable instanceof Table2D)) {
@@ -77,7 +77,7 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {   	
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
             axis.populateTable(rom);
             super.populateTable(rom);
     }
@@ -94,10 +94,10 @@ public class Table2D extends Table {
         super.undoAll();
         axis.undoAll();
     }
-    
+
 
     @Override
-    public byte[] saveFile(byte[] binData) {  	
+    public byte[] saveFile(byte[] binData) {
         return binData;
     }
 
@@ -108,7 +108,7 @@ public class Table2D extends Table {
         sb.append(getName()+ ":" + getLogParam());
         return sb.toString();
     }
-    
+
     @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(axis.getLogParam());
@@ -118,7 +118,7 @@ public class Table2D extends Table {
     public boolean isButtonSelected() {
         return true;
     }
-  
+
     @Override
     public void setCompareValueType(Settings.DataType compareValueType) {
         super.setCompareValueType(compareValueType);
@@ -129,50 +129,50 @@ public class Table2D extends Table {
     public void setCurrentScale(Scale curScale) {
         if(SettingsManager.getSettings().isScaleHeadersAndData() && !axis.isStaticDataTable()) {
             try {
-                this.axis.setScaleByName(curScale.getName());
+                this.axis.setScaleByCategory(curScale.getCategory());
             } catch (NameNotFoundException e) {
                 try {
-                    this.axis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                    this.axis.setScaleByCategory(SettingsManager.getSettings().getDefaultScale());
                 } catch (NameNotFoundException e1) {
-                	try {
-                        this.axis.setScaleByName("Default");
+                    try {
+                        this.axis.setScaleByCategory("Default");
                     } catch (NameNotFoundException e2) {
-                    	e2.printStackTrace();
+                        e2.printStackTrace();
                     }
                 }
             }
         }
         this.curScale = curScale;
-        
+
         if(tableView != null) tableView.drawTable();
     }
-    
+
     @Override
     public void clearSelection() {
-    	if(axis!=null)
-    		axis.clearSelection();
-    	
+        if(axis!=null)
+            axis.clearSelection();
+
         super.clearSelection();
     }
-    
+
     @Override
     public void setRealValue(String realValue) throws UserLevelException {
         super.setRealValue(realValue);
         axis.setRealValue(realValue);
     }
-    
+
     @Override
     public void increment(double increment) throws UserLevelException {
-	    super.increment(increment);
-	    axis.increment(increment);
+        super.increment(increment);
+        axis.increment(increment);
     }
-    
+
     @Override
-    public void multiply(double factor) throws UserLevelException{  	
-    	super.multiply(factor);
-    	axis.multiply(factor);
+    public void multiply(double factor) throws UserLevelException{
+        super.multiply(factor);
+        axis.multiply(factor);
     }
-    
+
     @Override
     public void interpolate() throws UserLevelException {
         super.interpolate();
@@ -213,7 +213,7 @@ public class Table2D extends Table {
         // Interpolate x axis in case the x axis in selected.
         this.getAxis().horizontalInterpolate();
     }
-    
+
     @Override
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
@@ -273,5 +273,5 @@ public class Table2D extends Table {
             // TODO: Log Exception.
             return false;
         }
-    }  
+    }
 }
