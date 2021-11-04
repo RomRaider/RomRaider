@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,12 +149,17 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
             try {
                 Collection<EcuQuery> queries = buildLearningQueries();
 
-                LOGGER.info("Retrieving vehicle info & A/F values ...");
-                connection.sendAddressReads(
-                        queries,
-                        settings.getDestinationTarget(),
-                        new PollingStateImpl());
-                LOGGER.info("Current vehicle info & A/F values retrieved.");
+                try {
+                    LOGGER.info("Retrieving vehicle info & A/F values ...");
+                    connection.sendAddressReads(
+                            queries,
+                            settings.getDestinationTarget(),
+                            new PollingStateImpl());
+                    LOGGER.info("Current vehicle info & A/F values retrieved.");
+                }
+                catch (Exception e) {
+                    LOGGER.error(message + " Error retrieving values", e);
+                }
 
                 Collections.sort(
                         (List<EcuQuery>)queries, new ParameterIdComparator());

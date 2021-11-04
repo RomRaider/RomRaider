@@ -36,24 +36,24 @@ import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public class DataCell implements Serializable  {
-	private static final long serialVersionUID = 1111479947434817639L;
-	private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-     
+    private static final long serialVersionUID = 1111479947434817639L;
+    private static final Logger LOGGER = Logger.getLogger(DataCell.class);
+
     //View we need to keep up to date
     private DataCellView view = null;
     private Table table;
-    
+
     //This sounds like a View property, but the manipulations
     //functions depend on this, so its better to put it here
     private boolean isSelected = false;
-    
+
     private double binValue = 0.0;
     private double originalValue = 0.0;
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
     private String staticText = null;
     private Rom rom;
-    
+
     //Index within table
     private int index;
 
@@ -73,24 +73,24 @@ public class DataCell implements Serializable  {
     public DataCell(Table table, int index, Rom rom) {
         this(table, rom);
         this.index = index;
-        
-        updateBinValueFromMemory();   
+
+        updateBinValueFromMemory();
         this.originalValue = this.binValue;
         registerDataCell(this);
     }
-    
+
     public void setTable(Table t) {
-    	this.table = t;
+        this.table = t;
     }
-    
+
     public void setRom(Rom rom) {
-    	this.rom = rom;
+        this.rom = rom;
     }
-    
+
     public byte[] getBinary() {
-    	return rom.getBinary();
+        return rom.getBinary();
     }
-       
+
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
         byte[] input = getBinary();
@@ -99,8 +99,8 @@ public class DataCell implements Serializable  {
         int ramOffset = table.getRamOffset();
         int storageAddress = table.getStorageAddress();
         boolean signed = table.isSignedData();
-        
-        
+
+
         // populate data cells
         if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
             byte[] byteValue = new byte[4];
@@ -111,7 +111,7 @@ public class DataCell implements Serializable  {
             dataValue = RomAttributeParser.byteToFloat(byteValue, table.getEndian(), table.getMemModelEndian());
 
         } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-        		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
             dataValue = RomAttributeParser.parseByteValue(input,
                     endian,
                     storageAddress + index * 3 - ramOffset,
@@ -119,78 +119,78 @@ public class DataCell implements Serializable  {
                     signed);
 
         } else { // integer storage type
-        	if(table.getBitMask() == 0) {        		
-	            dataValue = RomAttributeParser.parseByteValue(input,
-	                    endian, storageAddress + index * storageType - ramOffset,
-	                    storageType, signed);
-	        	}
-	        	else {
-	        		dataValue = RomAttributeParser.parseByteValueMasked(input, endian, 
-	        				storageAddress + index * storageType - ramOffset,
-	        				storageType, signed, table.getBitMask());				
-	        	}      	
+            if(table.getBitMask() == 0) {
+                dataValue = RomAttributeParser.parseByteValue(input,
+                        endian, storageAddress + index * storageType - ramOffset,
+                        storageType, signed);
+                }
+                else {
+                    dataValue = RomAttributeParser.parseByteValueMasked(input, endian,
+                            storageAddress + index * storageType - ramOffset,
+                            storageType, signed, table.getBitMask());
+                }
         }
-        
+
         return dataValue;
     }
-    
-    private double getValueFromMemory() {  	
-    	if (table.getDataLayout() == Table.DataLayout.BOSCH_SUBTRACT) {
-    		
-        	//Bosch Motronic subtract method
-        	 double dataValue = Math.pow(2, 8 * table.getStorageType());
-    		
-    		for (int j = table.data.length - 1; j >= index; j--) {
-    			dataValue -= getValueFromMemory(j);
-    		}     
-    		
-    		return dataValue;
-    	}
-    	else {
+
+    private double getValueFromMemory() {
+        if (table.getDataLayout() == Table.DataLayout.BOSCH_SUBTRACT) {
+
+            //Bosch Motronic subtract method
+             double dataValue = Math.pow(2, 8 * table.getStorageType());
+
+            for (int j = table.data.length - 1; j >= index; j--) {
+                dataValue -= getValueFromMemory(j);
+            }
+
+            return dataValue;
+        }
+        else {
             return getValueFromMemory(index);
-    	}
+        }
     }
-    
-    public void saveBinValueInFile() {    	
-    	if (table.getName().contains("Checksum Fix")) return;
-    	
+
+    public void saveBinValueInFile() {
+        if (table.getName().contains("Checksum Fix")) return;
+
         byte[] binData = getBinary();
-    	int userLevel = table.getUserLevel();
-    	int storageType = table.getStorageType();
+        int userLevel = table.getUserLevel();
+        int storageType = table.getStorageType();
         Endian endian = table.getEndian();
         int ramOffset = table.getRamOffset();
         int storageAddress = table.getStorageAddress();
         boolean isBoschSubtract = table.getDataLayout() == Table.DataLayout.BOSCH_SUBTRACT;
-        
-    	double crossedValue = 0;
-       
+
+        double crossedValue = 0;
+
         //Do reverse cross referencing in for Bosch Subtract Axis array
-    	if(isBoschSubtract) {  		
-    	    for (int i = table.data.length - 1; i >=index ; i--) {
-	        	if(i == index)
-	        		crossedValue -= table.data[i].getBinValue();
-	        	else if(i == table.data.length - 1) 
-	        		crossedValue = Math.pow(2, 8 * storageType) - getValueFromMemory(i);
-	        	else {
-	        		crossedValue -= getValueFromMemory(i);
-	        	}
-	        }  	     
-    	}
- 	
-        if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {       	                  	
+        if(isBoschSubtract) {
+            for (int i = table.data.length - 1; i >=index ; i--) {
+                if(i == index)
+                    crossedValue -= table.data[i].getBinValue();
+                else if(i == table.data.length - 1)
+                    crossedValue = Math.pow(2, 8 * storageType) - getValueFromMemory(i);
+                else {
+                    crossedValue -= getValueFromMemory(i);
+                }
+            }
+        }
+
+        if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
                 // determine output byte values
                 byte[] output;
-            	int mask = table.getBitMask();
-            	
+                int mask = table.getBitMask();
+
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
-                	int finalValue = 0;
-                	
+                    int finalValue = 0;
+
                     // convert byte values
                     if(table.isStaticDataTable() && storageType > 0) {
-                    	LOGGER.warn("Static data table: " + table.toString() + ", storageType: "+storageType);
-                        
-                    	try {
-                        	finalValue = Integer.parseInt(getStaticText());                            
+                        LOGGER.warn("Static data table: " + table.toString() + ", storageType: "+storageType);
+
+                        try {
+                            finalValue = Integer.parseInt(getStaticText());
                         } catch (NumberFormatException ex) {
                             LOGGER.error("Error parsing static data table value: " + getStaticText(), ex);
                             LOGGER.error("Validate the table definition storageType and data value.");
@@ -200,143 +200,143 @@ public class DataCell implements Serializable  {
                         // Do not save the value.
                         //LOGGER.debug("The static data table value will not be saved.");
                         return;
-                    }  else {  
-                    	finalValue = (int) (isBoschSubtract ? crossedValue : getBinValue());     
+                    }  else {
+                        finalValue = (int) (isBoschSubtract ? crossedValue : getBinValue());
                     }
-                    
-                	if(mask != 0) {
-						// Shift left again
-                		finalValue = finalValue << ByteUtil.firstOneOfMask(mask); 										
-                	}
-                	
+
+                    if(mask != 0) {
+                        // Shift left again
+                        finalValue = finalValue << ByteUtil.firstOneOfMask(mask);
+                    }
+
                     output = RomAttributeParser.parseIntegerValue(finalValue, endian, storageType);
-                    
+
                     int byteLength = storageType;
                     if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
-                    		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
-                    	byteLength = 3;
+                            storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                        byteLength = 3;
                     }
-                    
+
                     //If mask enabled, only change bits within the mask
                     if(mask != 0) {
-						int tempBitMask = 0; 
-						
-						for (int z = 0; z < byteLength; z++) { // insert into file							
-	
-							tempBitMask = mask;
-							
-							//Trim mask depending on byte, from left to right
-							tempBitMask = (tempBitMask & (0xFF << 8 * (byteLength - 1 - z))) >> 8*(byteLength - 1 - z);
-							
-							// Delete old bits
-							binData[index * byteLength + z + storageAddress - ramOffset] &= ~tempBitMask;
-	
-							// Overwrite
-							binData[index * byteLength + z + storageAddress - ramOffset] |= output[z];
-						}
+                        int tempBitMask = 0;
+
+                        for (int z = 0; z < byteLength; z++) { // insert into file
+
+                            tempBitMask = mask;
+
+                            //Trim mask depending on byte, from left to right
+                            tempBitMask = (tempBitMask & (0xFF << 8 * (byteLength - 1 - z))) >> 8*(byteLength - 1 - z);
+
+                            // Delete old bits
+                            binData[index * byteLength + z + storageAddress - ramOffset] &= ~tempBitMask;
+
+                            // Overwrite
+                            binData[index * byteLength + z + storageAddress - ramOffset] |= output[z];
+                        }
                     }
                     //No Masking
                     else {
-	                    for (int z = 0; z < byteLength; z++) { // insert into file
-	                        binData[index * byteLength + z + storageAddress - ramOffset] = output[z];
-	                    }
+                        for (int z = 0; z < byteLength; z++) { // insert into file
+                            binData[index * byteLength + z + storageAddress - ramOffset] = output[z];
+                        }
                     }
 
                 } else { // float
                     // convert byte values
                     output = RomAttributeParser.floatToByte((float) getBinValue(), endian, table.getMemModelEndian());
-                    
+
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[index * 4 + z + storageAddress - ramOffset] = output[z];
                     }
                 }
         }
-        
+
         //On the Bosch substract model, we need to update all previous cells, because they depend on our value
         if(isBoschSubtract && index > 0) table.data[index-1].saveBinValueInFile();
-        
-        checkForDataUpdates();          
+
+        checkForDataUpdates();
     }
-    
+
     public void registerDataCell(DataCell cell) {
-    	
-    	int memoryIndex = getMemoryStartAddress(cell);
-    	   	
-    	if (rom.byteCellMapping.containsKey(memoryIndex))
-    		{
-    		rom.byteCellMapping.get(memoryIndex).add(cell);
-    		}
-    	else {
-    		LinkedList<DataCell> l = new LinkedList<DataCell>();
-    		l.add(cell);
-    		rom.byteCellMapping.put(memoryIndex, l);
-    	}
+
+        int memoryIndex = getMemoryStartAddress(cell);
+
+        if (rom.byteCellMapping.containsKey(memoryIndex))
+            {
+            rom.byteCellMapping.get(memoryIndex).add(cell);
+            }
+        else {
+            LinkedList<DataCell> l = new LinkedList<DataCell>();
+            l.add(cell);
+            rom.byteCellMapping.put(memoryIndex, l);
+        }
     }
-    
-    public void checkForDataUpdates() {   	
-    	int memoryIndex = getMemoryStartAddress(this);
-    	 	
-    	if (rom.byteCellMapping.containsKey(memoryIndex)){
-    		for(DataCell c : rom.byteCellMapping.get(memoryIndex)) {
-    			c.updateBinValueFromMemory();
-    		}
-    	}
+
+    public void checkForDataUpdates() {
+        int memoryIndex = getMemoryStartAddress(this);
+
+        if (rom.byteCellMapping.containsKey(memoryIndex)){
+            for(DataCell c : rom.byteCellMapping.get(memoryIndex)) {
+                c.updateBinValueFromMemory();
+            }
+        }
     }
-    
+
     public static int getMemoryStartAddress(DataCell cell) {
-    	Table t = cell.getTable();   	
-    	return t.getStorageAddress() + cell.getIndexInTable() * t.getStorageType() - t.getRamOffset();
+        Table t = cell.getTable();
+        return t.getStorageAddress() + cell.getIndexInTable() * t.getStorageType() - t.getRamOffset();
     }
-    
+
     public Settings getSettings()
     {
         return SettingsManager.getSettings();
     }
-    
+
     public void setSelected(boolean selected) {
         if(!table.isStaticDataTable() && this.isSelected != selected) {
             this.isSelected = selected;
-            
+
             if(view!=null) {
-            	ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
-            	view.drawCell();
+                ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
+                view.drawCell();
             }
         }
     }
-    
+
     public boolean isSelected() {
-    	return isSelected;
+        return isSelected;
     }
     public void updateBinValueFromMemory() {
-    	this.binValue = getValueFromMemory();
-    	updateView();
+        this.binValue = getValueFromMemory();
+        updateView();
     }
-          
+
     public void setDataView(DataCellView v) {
-    	view = v;
+        view = v;
     }
-    
+
     public int getIndexInTable() {
-    	return index;
+        return index;
     }
-    
+
     private void updateView() {
-    	if(view != null)
-    		view.drawCell();
+        if(view != null)
+            view.drawCell();
     }
-    
+
     public Table getTable() {
-    	return this.table;
+        return this.table;
     }
-    
+
     public String getStaticText() {
-    	return staticText;
+        return staticText;
     }
-    
+
     public String getLiveValue() {
         return this.liveValue;
     }
-    
+
     public void setLiveDataTraceValue(String liveValue) {
         if(this.liveValue != liveValue) {
             this.liveValue = liveValue;
@@ -347,18 +347,18 @@ public class DataCell implements Serializable  {
     public double getBinValue() {
         return binValue;
     }
-    
+
     public double getOriginalValue() {
-    	return originalValue;
+        return originalValue;
     }
-    
+
     public double getCompareToValue() {
-    	return compareToValue;
+        return compareToValue;
     }
-    
+
     public double getRealValue() {
-    	if(table.getCurrentScale() == null) return binValue;
-    	
+        if(table.getCurrentScale() == null) return binValue;
+
         return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
     }
 
@@ -408,9 +408,9 @@ public class DataCell implements Serializable  {
         if(binValue == newBinValue || table.locked || table.getName().contains("Checksum Fix")) {
             return;
         }
-        
-        if (table.userLevel > getSettings().getUserLevel()) 
-        	throw new UserLevelException(table.userLevel);
+
+        if (table.userLevel > getSettings().getUserLevel())
+            throw new UserLevelException(table.userLevel);
 
         double checkedValue = newBinValue;
 
@@ -493,20 +493,21 @@ public class DataCell implements Serializable  {
             this.compareToValue = compareCell.originalValue;
         }
     }
-    
-    public void multiply(double factor) throws UserLevelException {     
-        if(table.getCurrentScale().getName().equals("Raw Value"))
-        	setBinValue(binValue * factor);
+
+    public void multiply(double factor) throws UserLevelException {
+        if(table.getCurrentScale().getCategory().equals("Raw Value"))
+            setBinValue(binValue * factor);
         else {
             String newValue = (getRealValue() * factor) + "";
-            
-            //We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
+
+            //We need to convert from dot to comma, in the case of EU Format.
+            // This is because getRealValue to String has dot notation.
             if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
-            
-        	setRealValue(newValue);
+
+            setRealValue(newValue);
         }
-    }   
-    
+    }
+
     @Override
     public boolean equals(Object other) {
         if(other == null) {

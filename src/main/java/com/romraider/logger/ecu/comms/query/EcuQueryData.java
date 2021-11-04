@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,16 +27,40 @@ import com.romraider.logger.ecu.definition.LoggerData;
  */
 public final class EcuQueryData {
 
+    /**
+     * Return the length for an ECU Query item. The larger of either the
+     * number of addresses or the length defined by the data storagetype.
+     * @param ecuQuery - the ECU query to evaluate
+     * @return the length of the data type
+     */
     public final static int getDataLength(EcuQuery ecuQuery) {
-        return getDataLength(ecuQuery.getLoggerData());
+        // A query has its data length encoded in the definition using either
+        // the length="#" attribute of an address element or, by the
+        // storagetype="?" attribute in a conversion element.
+        final int addressLength = ecuQuery.getAddresses().length;
+        int dataTypeLength = getDataLength(ecuQuery.getLoggerData());
+        if (addressLength > dataTypeLength) {
+            dataTypeLength = addressLength;
+        }
+        return dataTypeLength;
     }
 
+    /**
+     * Return the length for an Logger Data item.
+     * @param loggerData - the Logger Data to evaluate
+     * @return the length of the data type
+     */
     public final static int getDataLength(LoggerData loggerData) {
         final String dataType =
                 loggerData.getSelectedConvertor().getDataType().toLowerCase();
         return getDataLength(dataType);
     }
 
+    /**
+     * Return the length for a Data type, int8, uint8, int16, etc.
+     * @param dataType - the Data type string to evaluate
+     * @return the length of the data type
+     */
     public final static int getDataLength(String dataType) {
         int dataLength = 1;
         if (dataType.contains("int16")) {
@@ -48,6 +72,4 @@ public final class EcuQueryData {
         }
         return dataLength;
     }
-
-    private EcuQueryData() {}
 }

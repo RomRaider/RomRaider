@@ -330,7 +330,9 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             messageListener.reportError(e);
+            sleep(500L);
         } finally {
+            messageListener.reportMessage(rb.getString("STOPPING"));
             txManager.stop();
             pollState.setCurrentState(PollingState.State.STATE_0);
             pollState.setNewQuery(true);

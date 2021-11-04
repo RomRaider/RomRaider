@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.io.j2534.api;
 
+import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static org.apache.log4j.Logger.getLogger;
 
@@ -39,6 +40,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private int deviceId;
     private int msgId;
     private final long timeout;
+    private byte[] stopRequest;
 
     public J2534ConnectionISO15765(
             ConnectionProperties connectionProperties,
@@ -48,6 +50,19 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         timeout = 2000;
         initJ2534(500000, library);
         LOGGER.info("J2534/ISO15765 connection initialized");
+    }
+
+    @Override
+    public void open(byte[] start, byte[] stop) {
+        checkNotNull(start, "start");
+        checkNotNull(start, "stop");
+        this.stopRequest = stop;
+        LOGGER.debug(String.format("Start Diagnostics Request  ---> %s",
+                asHex(start)));
+        api.writeMsg(channelId, start, timeout, TxFlags.ISO15765_FRAME_PAD);
+        final byte[] response = api.readMsg(channelId, 1, timeout);
+        LOGGER.debug(String.format("Start Diagnostics Response <--- %s",
+                asHex(response)));
     }
 
     // Send request and wait for response with known length
@@ -79,6 +94,12 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
 
     @Override
     public void close() {
+        LOGGER.debug(String.format("Stop Diagnostics Request  ---> %s",
+                asHex(stopRequest)));
+        api.writeMsg(channelId, stopRequest, timeout, TxFlags.ISO15765_FRAME_PAD);
+        final byte[] response = api.readMsg(channelId, 1, timeout);
+        LOGGER.debug(String.format("Stop Diagnostics Response <--- %s",
+                asHex(response)));
         stopFcFilter();
         disconnectChannel();
         closeDevice();

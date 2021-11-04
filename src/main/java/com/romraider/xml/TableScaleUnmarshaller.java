@@ -51,16 +51,16 @@ import com.romraider.util.SettingsManager;
 
 public class TableScaleUnmarshaller {
     private static final Logger LOGGER = Logger.getLogger(TableScaleUnmarshaller.class);
-	private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
+    private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
     private final List<Scale> scales = new ArrayList<Scale>();
     private String memModelEndian = null;
-    
+
     public void setMemModelEndian(String endian) {
-    	memModelEndian = endian;
+        memModelEndian = endian;
     }
-    
+
     public void unmarshallBaseScales(Node rootNode) {
-    	NodeList nodes = rootNode.getChildNodes();
+        NodeList nodes = rootNode.getChildNodes();
         Node n;
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -68,336 +68,346 @@ public class TableScaleUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE
                     && n.getNodeName().equalsIgnoreCase("scalingbase")) {
-                scales.add(unmarshallScale(n, new Scale()));
+                unmarshallScale(n, new Scale());
             }
         }
     }
-    
-	 public Table unmarshallTable(Node tableNode, Table table, Rom rom)
-	            throws XMLParseException, TableIsOmittedException, Exception {
-	    			 
-	        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase(
-	                "true")) { // remove table if omitted
-	            throw new TableIsOmittedException();
-	        }
 
-	        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase(
-	                "none")) { // copy base table for inheritance
-	            try {
-	                table = (Table) ObjectCloner
-	                        .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
-	                                "base", "none")));
+    public Table unmarshallTable(Node tableNode, Table table, Rom rom)
+                throws XMLParseException, TableIsOmittedException, Exception {
 
-	            } catch (TableNotFoundException ex) { /* table not found, do nothing */
+        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase(
+                "true")) { // remove table if omitted
+            throw new TableIsOmittedException();
+        }
 
-	            } catch (InvalidTableNameException ex) { // Table name is invalid, do nothing.
+        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase(
+                "none")) { // copy base table for inheritance
+            try {
+                table = (Table) ObjectCloner
+                        .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
+                                "base", "none")));
 
-	            } catch (NullPointerException ex) {
-	                JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),
-	                        new DebugPanel(ex, SettingsManager.getSettings().getSupportURL()), "Exception",
-	                        JOptionPane.ERROR_MESSAGE);
-	            }
-	        }
+            } catch (TableNotFoundException ex) { /* table not found, do nothing */
 
-	        if (table == null) {
-	            // create new instance (otherwise it
-	            // is inherited)
-	            final String tn = unmarshallAttribute(tableNode, "name", "unknown");
-	            final String type = unmarshallAttribute(tableNode, "type", "none");
+            } catch (InvalidTableNameException ex) { // Table name is invalid, do nothing.
 
-	            if (tableNames.containsKey(tn) || type.contains("xis")) {
-	                if (type.equalsIgnoreCase("3D")) {
-	                    table = new Table3D();
+            } catch (NullPointerException ex) {
+                JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),
+                        new DebugPanel(ex, SettingsManager.getSettings().getSupportURL()), "Exception",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
 
-	                } else if (type.equalsIgnoreCase("2D")) {
-	                    table = new Table2D();
+        if (table == null) {
+            // create new instance (otherwise it is inherited)
+            final String tn = unmarshallAttribute(tableNode, "name", "unknown");
+            final String type = unmarshallAttribute(tableNode, "type", "none");
 
-	                } else if (type.equalsIgnoreCase("1D")) {
-	                    table = new Table1D(Table.TableType.TABLE_1D);
+            if (tableNames.containsKey(tn) || type.contains("xis")) {
+                if (type.equalsIgnoreCase("3D")) {
+                    table = new Table3D();
 
-	                } else if (type.equalsIgnoreCase("X Axis")
-	                        || type.equalsIgnoreCase("Static X Axis"))  {
-	                    table = new Table1D(Table.TableType.X_AXIS);
+                } else if (type.equalsIgnoreCase("2D")) {
+                    table = new Table2D();
 
-	                } else if (type.equalsIgnoreCase("Y Axis")
-	                        || type.equalsIgnoreCase("Static Y Axis")) {
-	                    table = new Table1D(Table.TableType.Y_AXIS);
-	                } else if (type.equalsIgnoreCase("Switch")) {
-	                    table = new TableSwitch();
+                } else if (type.equalsIgnoreCase("1D")) {
+                    table = new Table1D(Table.TableType.TABLE_1D);
 
-	                } else if (type.equalsIgnoreCase("BitwiseSwitch")) {
-	                    table = new TableBitwiseSwitch();
-	                }
-	                else if(type.equalsIgnoreCase("none")){
-	                    throw new XMLParseException("Table type unspecified for "
-	                            + tableNode.getAttributes().getNamedItem("name"));
-	                }
-	                else {
-	                    throw new XMLParseException("Table type " + type + " unknown for "
-	                            + tableNode.getAttributes().getNamedItem("name"));
-	                }	                
-	            }
-	            else {
-	                return table;
-	            }
-	        }
+                } else if (type.equalsIgnoreCase("X Axis")
+                        || type.equalsIgnoreCase("Static X Axis"))  {
+                    table = new Table1D(Table.TableType.X_AXIS);
 
-	        // unmarshall table attributes
-	        final String tn = unmarshallAttribute(tableNode, "name", table.getName());
-	        table.setName(tn);
-	        if (unmarshallAttribute(tableNode, "beforeram", "false")
-	                .equalsIgnoreCase("true")) {
-	            table.setBeforeRam(true);
-	        }        
-	        
-	        
-	        table.setDataLayout(unmarshallAttribute(tableNode, "dataLayout", ""));        
-	        table.setCategory(unmarshallAttribute(tableNode, "category",
-	                table.getCategory()));
-	        if (table.getStorageType() < 1) {
-	            table.setSignedData(RomAttributeParser
-	                    .parseStorageDataSign(unmarshallAttribute(tableNode,
-	                            "storagetype",
-	                            String.valueOf(table.getStorageType()))));
-	        }
-	        table.setStorageType(RomAttributeParser
-	                .parseStorageType(unmarshallAttribute(tableNode, "storagetype",
-	                        String.valueOf(table.getStorageType()))));
-	        if (memModelEndian == null) {
-	            table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
-	                    tableNode, "endian", table.getEndian().getMarshallingString())));
-	        }
-	        else {
-	            final Settings.Endian endian = memModelEndian.equalsIgnoreCase("little") ? Settings.Endian.LITTLE : Settings.Endian.BIG;
-	            table.setMemModelEndian(endian);
-	            table.setEndian(endian);
-	        }
-	        if (tableNames.containsKey(tn)) {
-	            table.setStorageAddress(tableNames.get(tn));
-	        }
-	        else {
-	            table.setStorageAddress(RomAttributeParser
-	                .parseHexString(unmarshallAttribute(tableNode,
-	                        "storageaddress",
-	                        String.valueOf(table.getStorageAddress()))));
-	        }
-	        
-	        table.setDescription(unmarshallAttribute(tableNode, "description",
-	                table.getDescription()));
-	        table.setDataSize(unmarshallAttribute(tableNode, "sizey",
-	                unmarshallAttribute(tableNode, "sizex", table.getDataSize())));
-	        table.setFlip(unmarshallAttribute(tableNode, "flipy",
-	                unmarshallAttribute(tableNode, "flipx", table.getFlip())));
-	        table.setUserLevel(unmarshallAttribute(tableNode, "userlevel",
-	                table.getUserLevel()));
-	        table.setLocked(unmarshallAttribute(tableNode, "locked",
-	                table.isLocked()));
-	        table.setLogParam(unmarshallAttribute(tableNode, "logparam",
-	                table.getLogParam()));
-	        table.setStringMask(
-	                unmarshallAttribute(tableNode, "mask", "0"));
+                } else if (type.equalsIgnoreCase("Y Axis")
+                        || type.equalsIgnoreCase("Static Y Axis")) {
+                    table = new Table1D(Table.TableType.Y_AXIS);
+                } else if (type.equalsIgnoreCase("Switch")) {
+                    table = new TableSwitch();
 
-	        if (table.getType() == Table.TableType.TABLE_3D) {
-	            ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
-	                    "swapxy", ((Table3D) table).getSwapXY()));
-	            ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx",
-	                    ((Table3D) table).getFlipX()));
-	            ((Table3D) table).setFlipY(unmarshallAttribute(tableNode, "flipy",
-	                    ((Table3D) table).getFlipY()));
-	            ((Table3D) table).setSizeX(unmarshallAttribute(tableNode, "sizex",
-	                    ((Table3D) table).getSizeX()));
-	            ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
-	                    ((Table3D) table).getSizeY()));
-	        }
-	              
-	        Node n;
-	        NodeList nodes = tableNode.getChildNodes();
+                } else if (type.equalsIgnoreCase("BitwiseSwitch")) {
+                    table = new TableBitwiseSwitch();
+                }
+                else if(type.equalsIgnoreCase("none")){
+                    throw new XMLParseException("Table type unspecified for "
+                            + tableNode.getAttributes().getNamedItem("name"));
+                }
+                else {
+                    throw new XMLParseException("Table type " + type + " unknown for "
+                            + tableNode.getAttributes().getNamedItem("name"));
+                }
+            }
+            else {
+                return table;
+            }
+        }
 
-	        for (int i = 0; i < nodes.getLength(); i++) {
-	            n = nodes.item(i);
+        // unmarshall table attributes
+        final String tn = unmarshallAttribute(tableNode, "name", table.getName());
+        table.setName(tn);
+        if (unmarshallAttribute(tableNode, "beforeram", "false")
+                .equalsIgnoreCase("true")) {
+            table.setBeforeRam(true);
+        }
 
-	            if (n.getNodeType() == ELEMENT_NODE) {
-	                if (n.getNodeName().equalsIgnoreCase("table")) {
+        table.setDataLayout(unmarshallAttribute(tableNode, "dataLayout", ""));
+        table.setCategory(unmarshallAttribute(tableNode, "category",
+                table.getCategory()));
+        if (table.getStorageType() < 1) {
+            table.setSignedData(RomAttributeParser
+                    .parseStorageDataSign(unmarshallAttribute(tableNode,
+                            "storagetype",
+                            String.valueOf(table.getStorageType()))));
+        }
+        table.setStorageType(RomAttributeParser
+                .parseStorageType(unmarshallAttribute(tableNode, "storagetype",
+                        String.valueOf(table.getStorageType()))));
+        if (memModelEndian == null) {
+            table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
+                    tableNode, "endian", table.getEndian().getMarshallingString())));
+        }
+        else {
+            final Settings.Endian endian = memModelEndian.equalsIgnoreCase("little") ? Settings.Endian.LITTLE : Settings.Endian.BIG;
+            table.setMemModelEndian(endian);
+            table.setEndian(endian);
+        }
+        if (tableNames.containsKey(tn)) {
+            table.setStorageAddress(tableNames.get(tn));
+        }
+        else {
+            table.setStorageAddress(RomAttributeParser
+                .parseHexString(unmarshallAttribute(tableNode,
+                        "storageaddress",
+                        String.valueOf(table.getStorageAddress()))));
+        }
 
-	                    if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
-	                        // parse axis
+        table.setDescription(unmarshallAttribute(tableNode, "description",
+                table.getDescription()));
+        table.setDataSize(unmarshallAttribute(tableNode, "sizey",
+                unmarshallAttribute(tableNode, "sizex", table.getDataSize())));
+        table.setFlip(unmarshallAttribute(tableNode, "flipy",
+                unmarshallAttribute(tableNode, "flipx", table.getFlip())));
+        table.setUserLevel(unmarshallAttribute(tableNode, "userlevel",
+                table.getUserLevel()));
+        table.setLocked(unmarshallAttribute(tableNode, "locked",
+                table.isLocked()));
+        table.setLogParam(unmarshallAttribute(tableNode, "logparam",
+                table.getLogParam()));
+        table.setStringMask(
+                unmarshallAttribute(tableNode, "mask", "0"));
 
-	                        if (RomAttributeParser
-	                                .parseTableType(unmarshallAttribute(n, "type",
-	                                        "unknown")) == Table.TableType.Y_AXIS
-	                                        || RomAttributeParser
-	                                        .parseTableType(unmarshallAttribute(n,
-	                                                "type", "unknown")) == Table.TableType.X_AXIS) {
+        if (table.getType() == Table.TableType.TABLE_3D) {
+            ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
+                    "swapxy", ((Table3D) table).getSwapXY()));
+            ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx",
+                    ((Table3D) table).getFlipX()));
+            ((Table3D) table).setFlipY(unmarshallAttribute(tableNode, "flipy",
+                    ((Table3D) table).getFlipY()));
+            ((Table3D) table).setSizeX(unmarshallAttribute(tableNode, "sizex",
+                    ((Table3D) table).getSizeX()));
+            ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
+                    ((Table3D) table).getSizeY()));
+        }
 
-	                            Table1D tempTable = (Table1D) unmarshallTable(n,
-	                                    ((Table2D) table).getAxis(), rom);
-	                            if (tempTable.getDataSize() != table.getDataSize()) {
-	                                tempTable.setDataSize(table.getDataSize());
-	                            }
-	                            tempTable.setData(((Table2D) table).getAxis().getData());
-	                            ((Table2D) table).setAxis(tempTable);
-	                            
+        Node n;
+        NodeList nodes = tableNode.getChildNodes();
 
-	                        }
-	                    } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
-	                        // is 3D,
-	                        // populate
-	                        // xAxis
-	                        if (RomAttributeParser
-	                                .parseTableType(unmarshallAttribute(n, "type",
-	                                        "unknown")) == Table.TableType.X_AXIS) {
+        for (int i = 0; i < nodes.getLength(); i++) {
+            n = nodes.item(i);
 
-	                            Table1D tempTable = (Table1D) unmarshallTable(n,
-	                                    ((Table3D) table).getXAxis(), rom);
-	                            if (tempTable.getDataSize() != ((Table3D) table)
-	                                    .getSizeX()) {
-	                                tempTable.setDataSize(((Table3D) table)
-	                                        .getSizeX());
-	                            }
-	                            tempTable.setData(((Table3D) table).getXAxis().getData());
-	                            ((Table3D) table).setXAxis(tempTable);
-	                            
+            if (n.getNodeType() == ELEMENT_NODE) {
+                if (n.getNodeName().equalsIgnoreCase("table")) {
 
-	                        } else if (RomAttributeParser
-	                                .parseTableType(unmarshallAttribute(n, "type",
-	                                        "unknown")) == Table.TableType.Y_AXIS) {
+                    if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
+                        // parse axis
+                        if (RomAttributeParser
+                                .parseTableType(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table.TableType.Y_AXIS
+                                        || RomAttributeParser
+                                        .parseTableType(unmarshallAttribute(n,
+                                                "type", "unknown")) == Table.TableType.X_AXIS) {
 
-	                            Table1D tempTable = (Table1D) unmarshallTable(n,
-	                                    ((Table3D) table).getYAxis(), rom);
-	                            if (tempTable.getDataSize() != ((Table3D) table)
-	                                    .getSizeY()) {
-	                                tempTable.setDataSize(((Table3D) table)
-	                                        .getSizeY());
-	                            }
-	                            tempTable.setData(((Table3D) table).getYAxis().getData());
-	                            ((Table3D) table).setYAxis(tempTable);
-	                        }
-	                    }
+                            Table1D tempTable = (Table1D) unmarshallTable(n,
+                                    ((Table2D) table).getAxis(), rom);
+                            if (tempTable.getDataSize() != table.getDataSize()) {
+                                tempTable.setDataSize(table.getDataSize());
+                            }
+                            tempTable.setData(((Table2D) table).getAxis().getData());
+                            ((Table2D) table).setAxis(tempTable);
+                        }
 
-	                } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
-	                    // check whether scale already exists. if so, modify, else
-	                    // use new instance
-	                    Scale baseScale = table.getScale(unmarshallAttribute(n,"name", "Default"));
-	                    table.addScale(unmarshallScale(n, baseScale));
+                    } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
+                        // is 3D,
+                        // populate
+                        // xAxis
+                        if (RomAttributeParser
+                                .parseTableType(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table.TableType.X_AXIS) {
 
-	                } else if (n.getNodeName().equalsIgnoreCase("data")) {
-	                    // parse and add data to table
-	                    if(table instanceof Table1D) {		                    
-	                        ((Table1D)table).addStaticDataCell(unmarshallText(n));
-	                    } else {
-	                        // Why would this happen.  Static should only be for axis.
-	                        LOGGER.error("Error adding static data cell.");
-	                    }
+                            Table1D tempTable = (Table1D) unmarshallTable(n,
+                                    ((Table3D) table).getXAxis(), rom);
+                            if (tempTable.getDataSize() != ((Table3D) table)
+                                    .getSizeX()) {
+                                tempTable.setDataSize(((Table3D) table)
+                                        .getSizeX());
+                            }
+                            tempTable.setData(((Table3D) table).getXAxis().getData());
+                            ((Table3D) table).setXAxis(tempTable);
 
-	                } else if (n.getNodeName().equalsIgnoreCase("description")) {
-	                    table.setDescription(unmarshallText(n));
+                        } else if (RomAttributeParser
+                                .parseTableType(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table.TableType.Y_AXIS) {
 
-	                } else if (n.getNodeName().equalsIgnoreCase("state")) {
-	                	 table.setValues(
-		                            unmarshallAttribute(n, "name", ""),
-		                            unmarshallAttribute(n, "data", "0"));                                  
-	                } else if (n.getNodeName().equalsIgnoreCase("bit")) {
-	                    table.setValues(
-	                            unmarshallAttribute(n, "name", ""),
-	                            unmarshallAttribute(n, "position", "0"));
-	 
-	                } else { /* unexpected element in Table (skip) */
-	                }
-	            } else { /* unexpected node-type in Table (skip) */
-	            }
-	        }
-	        return table;
-	    }
-	 
-	    /**
-	     * Create a list of table names to be used as a filter on the inherited
-	     * tables to reduce unnecessary table object creation.
-	     * @param nodes -  the NodeList to filter
-	     * @throws XMLParseException
-	     * @throws TableIsOmittedException
-	     * @throws Exception
-	     */
-	    public void filterFoundRomTables (NodeList nodes) {
-	        Node n;
+                            Table1D tempTable = (Table1D) unmarshallTable(n,
+                                    ((Table3D) table).getYAxis(), rom);
+                            if (tempTable.getDataSize() != ((Table3D) table)
+                                    .getSizeY()) {
+                                tempTable.setDataSize(((Table3D) table)
+                                        .getSizeY());
+                            }
+                            tempTable.setData(((Table3D) table).getYAxis().getData());
+                            ((Table3D) table).setYAxis(tempTable);
+                        }
+                    }
 
-	        for (int i = 0; i < nodes.getLength(); i++) {
-	            n = nodes.item(i);
-	            if (n.getNodeType() == ELEMENT_NODE
-	                    && n.getNodeName().equalsIgnoreCase("table")) {
+                } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
+                    // check whether scale already exists. if so, modify, else
+                    // use new instance
+                    Scale baseScale = table.getScale(unmarshallAttribute(n, "category", "Default"));
+                    table.addScale(unmarshallScale(n, baseScale));
 
-	                final String name = unmarshallAttribute(n, "name", "unknown");
-	                final int address = RomAttributeParser
-	                        .parseHexString(unmarshallAttribute(n,
-	                            "storageaddress", "-1"));
+                } else if (n.getNodeName().equalsIgnoreCase("data")) {
+                    // parse and add data to table
+                    if(table instanceof Table1D) {
+                        ((Table1D)table).addStaticDataCell(unmarshallText(n));
+                    } else {
+                        // Why would this happen.  Static should only be for axis.
+                        LOGGER.error("Error adding static data cell.");
+                    }
 
-	                if (unmarshallAttribute(n, "omit", "false").equalsIgnoreCase(
-	                        "true")) {
-	                    return;
-	                }
+                } else if (n.getNodeName().equalsIgnoreCase("description")) {
+                    table.setDescription(unmarshallText(n));
 
-	                if (!tableNames.containsKey(name) && address >= 0) {
-	                    tableNames.put(name, address);
-	                }
-	                else if (tableNames.containsKey(name)) {
-	                    if (tableNames.get(name) < 1 && address >= 0) {
-	                        tableNames.put(name, address);
-	                        }
-	                }
-	            }
-	        }
-	    }
-	 
-	    public Scale unmarshallScale(Node scaleNode, Scale scale) {
+                } else if (n.getNodeName().equalsIgnoreCase("state")) {
+                    table.setValues(
+                                unmarshallAttribute(n, "name", ""),
+                                unmarshallAttribute(n, "data", "0"));
+                } else if (n.getNodeName().equalsIgnoreCase("bit")) {
+                    table.setValues(
+                            unmarshallAttribute(n, "name", ""),
+                            unmarshallAttribute(n, "position", "0"));
 
-	        // look for base scale first
-	        String base = unmarshallAttribute(scaleNode, "base", "none");
-	        if (!base.equalsIgnoreCase("none")) {
-	            for (Scale scaleItem : scales) {
+                } else { /* unexpected element in Table (skip) */
+                }
+            } else { /* unexpected node-type in Table (skip) */
+            }
+        }
+        return table;
+    }
 
-	                // check whether name matches base and set scale if so
-	                if (scaleItem.getName().equalsIgnoreCase(base)) {
-	                    try {
-	                        scale = (Scale) ObjectCloner.deepCopy(scaleItem);
+    /**
+     * Create a list of table names to be used as a filter on the inherited
+     * tables to reduce unnecessary table object creation.
+     * @param nodes -  the NodeList to filter
+     * @throws XMLParseException
+     * @throws TableIsOmittedException
+     * @throws Exception
+     */
+    public void filterFoundRomTables (NodeList nodes) {
+        Node n;
 
-	                    } catch (Exception ex) {
-	                        JOptionPane.showMessageDialog(
-	                                ECUEditorManager.getECUEditor(),
-	                                new DebugPanel(ex, SettingsManager.getSettings()
-	                                        .getSupportURL()), "Exception",
-	                                        JOptionPane.ERROR_MESSAGE);
-	                    }
-	                }
-	            }
-	        }
-	        
-	        //Name should always be set to Default even if missing
-	        scale.setName(unmarshallAttribute(scaleNode, "name", "Default"));
-	        
-	        
-	        //Iterate over available attributes
-	        for(int i=0; i < scaleNode.getAttributes().getLength(); i++) {
-	        	Node attr = scaleNode.getAttributes().item(i);
-	        	String name = attr.getNodeName();
-	        	String value = attr.getNodeValue();
-	        	
-	        	if(name.equalsIgnoreCase("units"))scale.setUnit(value);
-	        	else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
-	        	else if(name.equalsIgnoreCase("to_byte")) scale.setByteExpression(value);
-	        	else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
-	        	else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
-	        	else if(name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));
-	        	else if(name.equalsIgnoreCase("coarseincrement") || name.equalsIgnoreCase("increment"))
-	        		scale.setCoarseIncrement(Double.parseDouble(value));
-	        	else if(name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
-	        }
-	        
-	        for (Scale s : scales) {
-	            if (s.equals(scale)) {
-	                return s;
-	            }
-	        }
-	        
-	        scales.add(scale);
-	        return scale;
-	    }
+        for (int i = 0; i < nodes.getLength(); i++) {
+            n = nodes.item(i);
+            if (n.getNodeType() == ELEMENT_NODE
+                    && n.getNodeName().equalsIgnoreCase("table")) {
+
+                final String name = unmarshallAttribute(n, "name", "unknown");
+                final int address = RomAttributeParser
+                        .parseHexString(unmarshallAttribute(n,
+                            "storageaddress", "-1"));
+
+                if (unmarshallAttribute(n, "omit", "false").equalsIgnoreCase(
+                        "true")) {
+                    return;
+                }
+
+                if (!tableNames.containsKey(name) && address >= 0) {
+                    tableNames.put(name, address);
+                }
+                else if (tableNames.containsKey(name)) {
+                    if (tableNames.get(name) < 1 && address >= 0) {
+                        tableNames.put(name, address);
+                        }
+                }
+            }
+        }
+    }
+
+    public Scale unmarshallScale(Node scaleNode, Scale scale) {
+
+        // look for base scaling attribute first
+        String base = unmarshallAttribute(scaleNode, "base", "none");
+        if (!base.equalsIgnoreCase("none")) {
+            // check whether base value matches the name of a an existing
+            // scalingbase, if so, inherit from scalingbase
+            for (Scale scaleItem : scales) {
+                if (scaleItem.getName().equalsIgnoreCase(base)) {
+                    try {
+                        scale = (Scale) ObjectCloner.deepCopy(scaleItem);
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(
+                                ECUEditorManager.getECUEditor(),
+                                new DebugPanel(ex, SettingsManager.getSettings()
+                                        .getSupportURL()), "Exception",
+                                        JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        }
+
+        // Set Category to Default if missing or not inherited from scalingbase
+        if (base.equalsIgnoreCase("none")) {
+            scale.setCategory(unmarshallAttribute(scaleNode, "category", "Default"));
+        }
+
+        // Set scaling name, if a scaling has no name attribute (scaling is
+        // defined in a table element), try and use the units value as its
+        // name, otherwise use none
+        if (!scale.getCategory().equalsIgnoreCase("Raw Value") &&
+                scale.getName().equalsIgnoreCase("Raw Value")) {
+            scale.setName(unmarshallAttribute(scaleNode, "name",
+                    unmarshallAttribute(scaleNode, "units", "none")));
+        }
+
+        // Iterate over other available attributes
+        for(int i=0; i < scaleNode.getAttributes().getLength(); i++) {
+            Node attr = scaleNode.getAttributes().item(i);
+            String name = attr.getNodeName();
+            String value = attr.getNodeValue();
+
+            if(name.equalsIgnoreCase("units"))scale.setUnit(value);
+            else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
+            else if(name.equalsIgnoreCase("to_byte")) scale.setByteExpression(value);
+            else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
+            else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
+            else if(name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));
+            else if(name.equalsIgnoreCase("coarseincrement") || name.equalsIgnoreCase("increment"))
+                scale.setCoarseIncrement(Double.parseDouble(value));
+            else if(name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
+        }
+
+        for (Scale s : scales) {
+            if (s.equals(scale)) {
+                return s;
+            }
+        }
+
+        scales.add(scale);
+        return scale;
+    }
+
+    // for unit testing
+    public List<Scale> getScales() {
+        return scales;
+    }
 }

@@ -42,11 +42,11 @@ public class Table3D extends Table {
     public TableType getType() {
         return Table.TableType.TABLE_3D;
     }
-    
+
     public Table3DView getTableView() {
-    	return (Table3DView) tableView;
+        return (Table3DView) tableView;
     }
-    
+
     public Table1D getXAxis() {
         return xAxis;
     }
@@ -104,24 +104,24 @@ public class Table3D extends Table {
     public int getSizeY() {
         return data[0].length;
     }
-    
+
     @Override
     public void clearData() {
         for(DataCell[] column : data) {
             for(DataCell cell : column) {
-	    		cell.setTable(null);
-	    		cell.setRom(null);
+                cell.setTable(null);
+                cell.setRom(null);
             }
         }
-    	
-    	xAxis.clearData();
-    	yAxis.clearData();
-    	
-    	data = null;
-    	xAxis=null;
-    	yAxis=null;
+
+        xAxis.clearData();
+        yAxis.clearData();
+
+        data = null;
+        xAxis=null;
+        yAxis=null;
     }
-    
+
     @Override
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
@@ -135,8 +135,8 @@ public class Table3D extends Table {
 
             for (int x = 0; x < getSizeX(); x++) {
 
-            	output.append(NumberUtil.stringValue(data[x][y].getRealValue()));
-                
+                output.append(NumberUtil.stringValue(data[x][y].getRealValue()));
+
                 if (x < getSizeX() - 1) {
                     output.append(Settings.TAB);
                 }
@@ -152,9 +152,9 @@ public class Table3D extends Table {
 
     @Override
     public void populateTable(Rom rom) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-    	validateScaling();
-    	
-    	// fill first empty cell
+        validateScaling();
+
+        // fill first empty cell
         if (!beforeRam) {
             this.ramOffset = rom.getRomID().getRamOffset();
         }
@@ -192,11 +192,11 @@ public class Table3D extends Table {
         }
 
         // reset locked status
-        locked = tempLock;      
+        locked = tempLock;
         calcCellRanges();
-        
-    	//Add Raw Scale
-        addScale(new Scale()); 
+
+        //Add Raw Scale
+        addScale(new Scale());
     }
 
     @Override
@@ -301,7 +301,7 @@ public class Table3D extends Table {
 
     @Override
     public byte[] saveFile(byte[] binData) {
-    	return binData;
+        return binData;
     }
 
     @Override
@@ -330,81 +330,81 @@ public class Table3D extends Table {
         if(SettingsManager.getSettings().isScaleHeadersAndData()) {
             if(!xAxis.isStaticDataTable()) {
                 try {
-                    this.xAxis.setScaleByName(curScale.getName());
+                    this.xAxis.setScaleByCategory(curScale.getCategory());
                 } catch (NameNotFoundException e) {
                     try {
-                        this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                        this.xAxis.setScaleByCategory(SettingsManager.getSettings().getDefaultScale());
                     } catch (NameNotFoundException e1) {
-                    	try {
-                            this.xAxis.setScaleByName("Default");
+                        try {
+                            this.xAxis.setScaleByCategory("Default");
                         } catch (NameNotFoundException e2) {
-                        	e2.printStackTrace();
+                            e2.printStackTrace();
                         }
                     }
                 }
             }
             if(!yAxis.isStaticDataTable()) {
                 try {
-                    this.yAxis.setScaleByName(curScale.getName());
+                    this.yAxis.setScaleByCategory(curScale.getCategory());
                 } catch (NameNotFoundException e) {
                     try {
-                        this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                        this.yAxis.setScaleByCategory(SettingsManager.getSettings().getDefaultScale());
                     } catch (NameNotFoundException e1) {
-                    	try {
-                            this.yAxis.setScaleByName("Default");
+                        try {
+                            this.yAxis.setScaleByCategory("Default");
                         } catch (NameNotFoundException e2) {
-                        	e2.printStackTrace();
+                            e2.printStackTrace();
                         }
                     }
                 }
             }
         }
-        
-        this.curScale = curScale;     
+
+        this.curScale = curScale;
         if(tableView!=null) tableView.drawTable();
     }
-    
+
     private void setHighlightXY(int x, int y) {
         if(tableView!=null) {
-        	tableView.highlightBeginX = x;
-        	tableView.highlightBeginY = y;
+            tableView.highlightBeginX = x;
+            tableView.highlightBeginY = y;
         }
     }
-    
+
     public void deSelectCellAt(int x, int y) {
         clearSelection();
         data[x][y].setSelected(false);
         setHighlightXY(x,y);
     }
-    
+
     public void selectCellAt(int x, int y) {
         clearSelection();
         data[x][y].setSelected(true);
         setHighlightXY(x,y);
     }
-    
+
     public void selectCellAtWithoutClear(int x, int y) {
         data[x][y].setSelected(true);
         setHighlightXY(x,y);
     }
-    
+
     @Override
     public void clearSelection() {
-    	if(xAxis!=null)
-    		xAxis.clearSelection();
-    	
-    	if(yAxis!=null)
-    		yAxis.clearSelection();
-        
-    	if(data!=null) {
-	        for (int x = 0; x < getSizeX(); x++) {
-	            for (int y = 0; y < getSizeY(); y++) {
-	                data[x][y].setSelected(false);
-	            }
-	        }
-    	}
+        if(xAxis!=null)
+            xAxis.clearSelection();
+
+        if(yAxis!=null)
+            yAxis.clearSelection();
+
+        if(data!=null) {
+            for (int x = 0; x < getSizeX(); x++) {
+                for (int y = 0; y < getSizeY(); y++) {
+                    data[x][y].setSelected(false);
+                }
+            }
+        }
     }
-    
+
     @Override
     public void increment(double increment) throws UserLevelException {
             for (int x = 0; x < getSizeX(); x++) {
@@ -420,13 +420,13 @@ public class Table3D extends Table {
     public void multiply(double factor) throws UserLevelException {
             for (int x = 0; x < getSizeX(); x++) {
                 for (int y = 0; y < getSizeY(); y++) {
-                    if (data[x][y].isSelected()) {                    
-                    		data[x][y].multiply(factor);                            
+                    if (data[x][y].isSelected()) {
+                            data[x][y].multiply(factor);
                     }
                 }
-            }        
+            }
     }
-    
+
     @Override
     public void setRealValue(String realValue) throws UserLevelException {
         for(DataCell[] column : data) {
@@ -439,7 +439,7 @@ public class Table3D extends Table {
         xAxis.setRealValue(realValue);
         yAxis.setRealValue(realValue);
     }
-    
+
     @Override
     public void verticalInterpolate() throws UserLevelException {
         int[] coords = { getSizeX(), getSizeY(), 0, 0};
@@ -519,7 +519,7 @@ public class Table3D extends Table {
         verticalInterpolate();
         horizontalInterpolate();
     }
-    
+
     @Override
     public String getLogParamString() {
         StringBuilder sb = new StringBuilder();
@@ -587,5 +587,3 @@ public class Table3D extends Table {
         }
     }
 }
-
-

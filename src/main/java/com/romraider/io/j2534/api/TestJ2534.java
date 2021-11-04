@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,9 @@ package com.romraider.io.j2534.api;
 
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.LogManager.initDebugLogging;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.romraider.io.j2534.api.J2534Impl.Config;
 import com.romraider.io.j2534.api.J2534Impl.Flag;
@@ -55,23 +58,76 @@ public class TestJ2534 {
 
                 int msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
                 try {
+                    List<byte[]> msgs = new ArrayList<byte[]>();
                     byte[] ecuInit = null;
                     if (protocol.equalsIgnoreCase("ssm")) {
                         ecuInit = new byte[]{
                                 (byte) 0x80, (byte) 0x10, (byte) 0xF0,
                                 (byte) 0x01, (byte) 0xBF, (byte) 0x40};
+                        msgs.add(ecuInit);
                     }
                     else if (protocol.equalsIgnoreCase("ds2")) {
                         ecuInit = new byte[]{
                                 (byte) 0x12, (byte) 0x04, (byte) 0x00,
                                 (byte) 0x16};
+                        byte[] engine = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x03, (byte) 0x1F};
+                        byte[] swtch = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x04, (byte) 0x18};
+                        byte[] lambda = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x91, (byte) 0x8D};
+                        byte[] adapt = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x92, (byte) 0x8E};
+                        byte[] corr = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x93, (byte) 0x8F};
+                        byte[] cat = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x94, (byte) 0x88};
+                        byte[] status = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0x95, (byte) 0x89};
+                        byte[] close = new byte[]{
+                                (byte) 0x12, (byte) 0x05, (byte) 0x0B,
+                                (byte) 0xFF, (byte) 0xE3};
+                        byte[] _0C = new byte[]{
+                                (byte) 0x12, (byte) 0x04, (byte) 0x0C,
+                                (byte) 0x1A};
+                        byte[] _0D = new byte[]{
+                                (byte) 0x12, (byte) 0x04, (byte) 0x0D,
+                                (byte) 0x1B};
+                        byte[] _25 = new byte[]{
+                                (byte) 0x12, (byte) 0x04, (byte) 0x25,
+                                (byte) 0x33};
+                        byte[] _53 = new byte[]{
+                                (byte) 0x12, (byte) 0x04, (byte) 0x53,
+                                (byte) 0x45};
+                        msgs.add(ecuInit);
+                        msgs.add(engine);
+                        msgs.add(swtch);
+                        msgs.add(lambda);
+                        msgs.add(adapt);
+                        msgs.add(corr);
+                        msgs.add(cat);
+                        msgs.add(status);
+                        msgs.add(close);
+                        msgs.add(_0C);
+                        msgs.add(_0D);
+                        msgs.add(_25);
+                        msgs.add(_53);
                     }
 
-                    api.writeMsg(channelId, ecuInit, 55L, TxFlags.NO_FLAGS);
-                    System.out.println("Request  = " + asHex(ecuInit));
+                    for (byte[] msg : msgs) {
+                        api.writeMsg(channelId, msg, 55L, TxFlags.NO_FLAGS);
+                        System.out.println("Request  = " + asHex(msg));
 
-                    byte[] response = api.readMsg(channelId, 1, 2000L);
-                    System.out.println("Response = " + asHex(response));
+                        byte[] response = api.readMsg(channelId, 500L);
+                        System.out.println("Response = " + asHex(response));
+                    }
 
                 } finally {
                     api.stopMsgFilter(channelId, msgId);

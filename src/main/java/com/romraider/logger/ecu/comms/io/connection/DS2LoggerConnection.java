@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,10 @@ public final class DS2LoggerConnection implements LoggerConnection {
     }
 
     @Override
+    public void open(Module module) {
+    }
+
+    @Override
     public void ecuReset(Module module, int resetCode) {
         byte[] request = protocol.constructEcuResetRequest(module, resetCode);
         LOGGER.debug(module + " Reset Request  ---> " + asHex(request));
@@ -121,7 +125,7 @@ public final class DS2LoggerConnection implements LoggerConnection {
             }
             // read data starting at address [00 SG HI LO NN] NN - number of bytes<249
             else if (groupTest.startsWith("0x060x00")) {
-                final EcuQueryRangeTest range = new EcuQueryRangeTest(querySet);
+                final EcuQueryRangeTest range = new EcuQueryRangeTest(querySet, 128);
                 final Collection<EcuQuery> newQuery = range.validate();
                 int length = range.getLength();
                 if (newQuery != null && length > 0) {
@@ -162,7 +166,9 @@ public final class DS2LoggerConnection implements LoggerConnection {
                 || groupTest.startsWith("0x0b0x04")
                 || groupTest.startsWith("0x0b0x91")
                 || groupTest.startsWith("0x0b0x92")
-                || groupTest.startsWith("0x0b0x93")) {
+                || groupTest.startsWith("0x0b0x93")
+                || groupTest.startsWith("0x0b0x94")
+                || groupTest.startsWith("0x0b0x95")) {
 
                 request = protocol.constructReadGroupRequest(
                         module, group);

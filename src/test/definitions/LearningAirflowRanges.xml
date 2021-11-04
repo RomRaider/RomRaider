@@ -1,0 +1,68 @@
+<roms>
+ <rom>
+  <romid>
+   <xmlid>32BITBASE</xmlid>
+   <market>USDM</market>
+   <make>Subaru</make>
+   <model>Impreza</model>
+   <submodel>STi</submodel>
+   <transmission>MT</transmission>
+   <filesize>512kb</filesize>
+   <memmodel>SH7055</memmodel>
+   <flashmethod>sti04</flashmethod>
+  </romid>
+  <table type="2D" name="A/F Learning #1 Airflow Ranges" category="Fueling - AF Correction / Learning" storagetype="float" endian="little" sizey="3" userlevel="4">
+   <scaling units="Mass Airflow (g/s)" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
+   <table type="Static Y Axis" name="A/F Learning Store/Apply Ranges" sizey="3">
+    <data> Max Range A / Min Range B </data>
+    <data> Max Range B / Min Range C </data>
+    <data> Max Range C / Min Range D </data>
+   </table>
+   <description>These are the airflow ranges in which the different long-term fuel trims are calculated in closed loop and applied to the same airflow ranges for both closed loop and open loop.</description>
+  </table>
+  <table type="2D" name="A/F Learning Airflow Ranges" category="Fueling - AF Correction / Learning" storagetype="float" endian="little" sizey="3" userlevel="4">
+   <scaling units="Mass Airflow (g/s)" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
+   <table type="Static Y Axis" name="A/F Learning #1 and #2 Store/Apply Ranges" sizey="3">
+    <data> Max Range A / Min Range B </data>
+    <data> Max Range B / Min Range C </data>
+    <data> Max Range C / Min Range D </data>
+   </table>
+   <description>These are the airflow ranges in which the different long-term fuel trims are calculated in closed loop and applied to the same airflow ranges for both closed loop and open loop.</description>
+  </table>
+ </rom>
+ <rom base="32BITBASE">
+  <romid>
+   <xmlid>A2WC510N</xmlid>
+   <internalidaddress>2000</internalidaddress>
+   <internalidstring>A2WC510N</internalidstring>
+   <ecuid>2F12785206</ecuid>
+   <year>05</year>
+   <market>USDM</market>
+   <make>Subaru</make>
+   <model>Legacy</model>
+   <submodel>GT</submodel>
+   <transmission>MT</transmission>
+   <memmodel>SH7058</memmodel>
+   <flashmethod>sti05</flashmethod>
+   <filesize>1024kb</filesize>
+  </romid>
+  <table name="A/F Learning #1 Airflow Ranges" storageaddress="0xC7078" />
+ </rom>
+ <rom base="A2WC510N">
+  <romid>
+   <xmlid>A2WC510S</xmlid>
+   <internalidaddress>2000</internalidaddress>
+   <internalidstring>A2WC510S</internalidstring>
+   <ecuid>2F12795206</ecuid>
+   <year>05</year>
+   <market>USDM</market>
+   <make>Subaru</make>
+   <model>Outback</model>
+   <submodel>XT</submodel>
+   <transmission>MT</transmission>
+   <memmodel>SH7058</memmodel>
+   <flashmethod>sti05</flashmethod>
+   <filesize>1024kb</filesize>
+  </romid>
+ </rom>
+</roms>

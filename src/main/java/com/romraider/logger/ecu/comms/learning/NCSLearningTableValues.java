@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,6 @@ import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDefinition;
-import com.romraider.logger.ecu.definition.Module;
-import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.definition.xml.EcuDefinitionDocumentLoader;
 import com.romraider.logger.ecu.definition.xml.EcuDefinitionInheritanceList;
 import com.romraider.logger.ecu.definition.xml.EcuTableDefinitionHandler;
@@ -140,13 +138,6 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
             document = EcuDefinitionDocumentLoader.getDocument(ecuDef);
         }
 
-        final String transport = settings.getTransportProtocol();
-        final Module module = settings.getDestinationTarget();
-        if (settings.isCanBus()) {
-            settings.setTransportProtocol("ISO14230");
-            final Module ecuModule = getModule("ECU");
-            settings.setDestinationTarget(ecuModule);
-        }
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
 
@@ -361,8 +352,8 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
             }
             finally {
                 connection.close();
-                settings.setTransportProtocol(transport);
-                settings.setDestinationTarget(module);
+//                settings.setTransportProtocol(transport);
+//                settings.setDestinationTarget(module);
                 if (logging) logger.startLogging();
             }
         }
@@ -547,37 +538,6 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
             ranges.add(range);
         }
         return ranges.toArray(new String[0]);
-    }
-
-    /**
-     * Return a Transport based on its String ID.
-     */
-    private Transport getTransportById(String id) {
-        for (Transport transport : getTransportMap().keySet()) {
-            if (transport.getId().equalsIgnoreCase(id))
-                return transport;
-        }
-        return null;
-    }
-
-    /**
-     * Return a Map of Transport and associated Modules for the current protocol.
-     */
-    private Map<Transport, Collection<Module>> getTransportMap() {
-        return logger.getProtocolList().get(settings.getLoggerProtocol());
-    }
-
-    /**
-     * Return a Module based on its String name.
-     */
-    private Module getModule(String name) {
-        final Collection<Module> modules = getTransportMap().get(
-                getTransportById(settings.getTransportProtocol()));
-        for (Module module: modules) {
-            if (module.getName().equalsIgnoreCase(name))
-                return module;
-        }
-        return null;
     }
 
     /**

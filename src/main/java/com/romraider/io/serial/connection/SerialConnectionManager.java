@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,10 @@ public final class SerialConnectionManager implements ConnectionManager {
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
         //connection = new TestSerialConnection2(portName, connectionProperties);
+    }
+
+    @Override
+    public void open(byte[] start, byte[] stop) {
     }
 
     // Send request and wait for response with known length

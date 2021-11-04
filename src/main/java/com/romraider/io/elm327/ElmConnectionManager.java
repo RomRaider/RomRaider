@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,10 @@ public final class ElmConnectionManager implements ConnectionManager {
        // readTimeout = timeout;
     }
     
+    @Override
+    public void open(byte[] start, byte[] stop) {
+    }
+
     public int getCurrentProtocolMode() {
     	return elmMode;
     }

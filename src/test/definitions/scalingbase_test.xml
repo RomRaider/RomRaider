@@ -1,0 +1,87 @@
+<!-- demonstrate scalingbase use and <table base= inheritance -->
+
+<roms>
+   <scalingbase category="Standard" name="BoostTarget_psirelativesealevel" units="Boost Target (psi relative sea level)" expression="(x-760)*.01933677" to_byte="(x/.01933677)+760" format="0.00" fineincrement=".01" coarseincrement=".5" />
+   <scalingbase name="rpm" units="RPM" expression="x" to_byte="x" format="#" fineincrement="50" coarseincrement="100" />
+   <scalingbase name="targetboostcomppercent" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
+   <scalingbase name="WastegateDutyCycle_%" units="Wastegate Duty Cycle (%)" expression="x*.00390625" to_byte="x/.00390625" format="0.0" fineincrement=".2" coarseincrement="1" min="0.1" max="99.9"/>
+   <scalingbase category="Metric" name="BoostTarget_barabsolute" units="Boost Target (bar absolute)" expression="x*.001333224" to_byte="x/.001333224" format="#0.000" fineincrement=".01" coarseincrement=".1" />
+
+ <rom>
+  <romid>
+   <xmlid>32BITBASE</xmlid>
+   <market>USDM</market>
+   <make>Subaru</make>
+   <model>Impreza</model>
+   <submodel>STi</submodel>
+   <transmission>MT</transmission>
+   <filesize>512kb</filesize>
+   <memmodel>SH7055</memmodel>
+   <flashmethod>sti04</flashmethod>
+  </romid>
+  <table type="3D" name="Target Boost A" category="Boost Control - Target" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="E52">
+   <scaling base="BoostTarget_barabsolute"/>
+   <scaling base="BoostTarget_psirelativesealevel"/>
+   <table type="X Axis" name="Throttle Plate Opening Angle" storagetype="float" endian="little" logparam="E38">
+    <scaling units="%" expression="x/.84" to_byte="x*.84" format="0.0" fineincrement=".3" coarseincrement="1" />
+   </table>
+   <table type="Y Axis" name="Engine Speed" storagetype="float" endian="little" logparam="P8">
+    <scaling base="rpm"/>
+   </table>
+   <description>This map contains the desired boost targets. Boost compensation tables can impact the final boost target.</description>
+  </table>
+  <table base="Target Boost A" name="Target Boost B">
+   <description>Inherited Target Boost A</description>
+  </table>
+  <table type="3D" name="Initial Wastegate Duty A" category="Boost Control - Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
+   <scaling base="WastegateDutyCycle_%" />
+   <table type="X Axis" name="Throttle Plate Opening Angle" storagetype="float" endian="little" logparam="E38">
+    <scaling units="%" expression="x/.84" to_byte="x*.84" format="0.0" fineincrement=".3" coarseincrement="1" />
+   </table>
+   <table type="Y Axis" name="Engine Speed" storagetype="float" endian="little" logparam="P8">
+    <scaling base="rpm"/>
+   </table>
+   <description>These are the starting values for wastegate duty. Wastegate compensation tables are applied to initial and max wastegate duty values.</description>
+  </table>
+  <table type="3D" name="CL Fueling Target Compensation A (ECT)" category="Fueling - Closed Loop" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="4">
+   <scaling units="Estimated Air/Fuel Ratio Points (Additive)" expression="(-x*.000224304213)+7.350001" to_byte="(x-7.350001)/-.000224304213" format="0.000" fineincrement=".01" coarseincrement=".1" />
+   <table type="X Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
+    <scaling category="Metric" units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling category="Standard" units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
+   </table>
+   <table type="Y Axis" name="Engine Load" storagetype="float" endian="little" logparam="E32">
+    <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
+   </table>
+   <description>This is the compensation to the closed loop base fueling target based on coolant temp. Other compensations (some undefined), are also applied.</description>
+  </table>
+</rom>
+ <rom base="32BITBASE">
+  <romid>
+   <xmlid>A2WC522S</xmlid>
+   <internalidaddress>2000</internalidaddress>
+   <internalidstring>A2WC522S</internalidstring>
+   <ecuid>2F12795606</ecuid>
+   <year>05</year>
+   <market>USDM</market>
+   <make>Subaru</make>
+   <model>Outback</model>
+   <submodel>XT</submodel>
+   <transmission>MT</transmission>
+   <memmodel>SH7058</memmodel>
+   <flashmethod>sti05</flashmethod>
+   <filesize>1024kb</filesize>
+  </romid>
+  <table name="Target Boost A" storageaddress="0xC11D4">
+   <table type="X Axis" storageaddress="0xC1184" />
+   <table type="Y Axis" storageaddress="0xC11A4" />
+  </table>
+  <table name="Target Boost B" storageaddress="0xC12E4">
+   <table type="X Axis" storageaddress="0xC1294" />
+   <table type="Y Axis" storageaddress="0xC12B4" />
+  </table>
+  <table name="Initial Wastegate Duty A" storageaddress="0xC0BC0" sizey="11">
+   <table type="X Axis" storageaddress="0xC0B74" />
+   <table type="Y Axis" storageaddress="0xC0B94" />
+  </table>
+ </rom>
+</roms>
