@@ -17,11 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml;
+package com.romraider.xml.ConversionLayer;
 import java.io.File;
+import java.io.StringWriter;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 
-public interface ConversionLayer {		
+public abstract class ConversionLayer {		
 	/*
 	 * The actual conversion method. It receives the file and creates a DOM structure
 	 * compatible to the default RR structure. 
@@ -31,7 +38,23 @@ public interface ConversionLayer {
 	/*
 	 * This method receives a file and checks if this converter supports this file
 	 * extension.
-	 * TODO: This should be static, but not supported in Java 6
 	 */
 	public abstract boolean isFileSupported(File f);
+		
+	//Can be used in the future to export a .xml file from a Document
+    private static String convertDocumentToString(Document doc) {
+        StringWriter sw = new StringWriter();
+        
+    	try {
+	        TransformerFactory tf = TransformerFactory.newInstance();
+	        Transformer trans = tf.newTransformer();
+	        trans.transform(new DOMSource(doc), new StreamResult(sw));
+    	}
+        catch(Exception e) {
+        	e.printStackTrace();
+        	return null;
+        }
+        
+        return sw.toString();
+    }
 }

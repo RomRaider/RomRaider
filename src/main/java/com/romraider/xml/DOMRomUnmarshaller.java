@@ -23,18 +23,12 @@ import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static com.romraider.xml.DOMHelper.unmarshallText;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -286,20 +280,5 @@ public final class DOMRomUnmarshaller {
         }
            return ChecksumFactory.getManager(attrs);
     }
-    
-    private static String convertDocumentToString(Document doc) {
-        StringWriter sw = new StringWriter();
-        
-    	try {
-	        TransformerFactory tf = TransformerFactory.newInstance();
-	        Transformer trans = tf.newTransformer();
-	        trans.transform(new DOMSource(doc), new StreamResult(sw));
-    	}
-        catch(Exception e) {
-        	e.printStackTrace();
-        	return null;
-        }
-        
-        return sw.toString();
-    }
+   
 }

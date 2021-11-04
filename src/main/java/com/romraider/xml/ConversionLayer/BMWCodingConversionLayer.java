@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml.BMWCodingConversion;
+package com.romraider.xml.ConversionLayer;
 
 import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
@@ -48,9 +48,9 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.ConversionLayer;
+import com.romraider.xml.ConversionLayer.ConversionLayer;;
 
-public class BMWCodingConversionLayer implements ConversionLayer {
+public class BMWCodingConversionLayer extends ConversionLayer {
     private static final Logger LOGGER = Logger.getLogger(BMWCodingConversionLayer.class);
     
 	private int splitAddress = 0;
@@ -62,7 +62,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 	HashMap <Integer, String> csvMap;
 	HashMap <String, String> transMap;
 	
-    BMWRomManager[] romManagers;	
+    ConversionRomNodeManager[] romManagers;	
 	ByteBuffer dataBuffer;
 	int dataIndex;
 	
@@ -158,7 +158,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		ByteBuffer fswBuffer = ByteBuffer.wrap(fswInput);
 		fswBuffer = fswBuffer.order(ByteOrder.LITTLE_ENDIAN);
 						
-        for(int i=0x5E; i < fswInput.length;) {
+        for(int i = getStartOfFile(fswBuffer); i < fswInput.length;) {
         	int oldIndex = i;
         	
         	int length = fswBuffer.get(i);
@@ -207,7 +207,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		 */
 		
 		String currentOption = "";
-        for(int i=0xEA; i < fswInput.length;) {
+        for(int i = getStartOfFile(cvtBuffer); i < fswInput.length;) {
         	int oldIndex = i;
         	
         	int length = cvtBuffer.get(i);
@@ -253,7 +253,19 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         
         return map;
 	}
-		
+	
+    //Look for 0xFFFF in the file to skip the header
+	private static int getStartOfFile(ByteBuffer b) {
+        for(int i=0; i < b.capacity();i++) {
+        	int value = b.getShort(i);
+        	if(value == -1) {
+        		return i+2;
+        	}        	
+        }         
+        
+        return -1;
+	}
+	
 	public Document convertToDocumentTree(File f) {		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
@@ -326,11 +338,11 @@ public class BMWCodingConversionLayer implements ConversionLayer {
                
         //Create one manager if no splitting
         //Create two otherwise
-        if(splitAddress == 0) romManagers= new BMWRomManager[] {new BMWRomManager(0, doc, roms)};
+        if(splitAddress == 0) romManagers= new ConversionRomNodeManager[] {new ConversionRomNodeManager(0, doc, roms)};
         else
-        	romManagers= new BMWRomManager[] {
-        			new BMWRomManager(0, doc, roms),
-        			new BMWRomManager(splitAddress, doc, roms)};
+        	romManagers= new ConversionRomNodeManager[] {
+        			new ConversionRomNodeManager(0, doc, roms),
+        			new ConversionRomNodeManager(splitAddress, doc, roms)};
        
         /*
          *  0000 - DATEINAME - S - NAME
@@ -355,13 +367,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
          */
               
         //Look for 0xFFFF in the file to skip the header
-        for(int i=0; i < input.length;i++) {
-        	int value = dataBuffer.getShort(i);
-        	if(value == -1) {
-        		dataIndex = i+2;
-        		break;
-        	}        	
-        }   
+        dataIndex = getStartOfFile(dataBuffer);  
         
         if(dataIndex == 0) {
         	LOGGER.error("Failed to find start of file for " +  f.toString());
@@ -417,8 +423,8 @@ public class BMWCodingConversionLayer implements ConversionLayer {
         	dataIndex = oldIndex+length + 4;
         }
         
-		for(BMWRomManager man: romManagers){
-        	man.calculateRomID(f);
+		for(ConversionRomNodeManager man: romManagers){
+        	man.calculateRomID(f, "BMW");
         }
 		
         return doc;	
@@ -469,7 +475,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 
 		
 		//Create actual node in rom
-        for(BMWRomManager man: romManagers){
+        for(ConversionRomNodeManager man: romManagers){
         	Element table = man.createTable("UNUSED_" + unusedCounter,
         			currentCategory, memoryLayout, endian,storageAddressU, byteCountU, maskU);
         	
@@ -542,7 +548,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		}
 
 		//Create actual node in rom
-        for(BMWRomManager man: romManagers){
+        for(ConversionRomNodeManager man: romManagers){
         	Element table = man.createTable(nameFSWD,
         			currentCategory, memoryLayout, endian,storageAddressD, byteCountD, maskD);
         	
@@ -586,12 +592,14 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 			if(csvMap.containsKey(key))namePSW += " | " + csvMap.get(key);
 		}
 		
-		for(BMWRomManager man: romManagers){
+		for(ConversionRomNodeManager man: romManagers){
         	man.addPreset(PSW1_s.trim(), namePSW.trim(), currentTable);
         }
 	}
 
-	public static Collection<File> listFileTree(File dir) {
+	//Used for test code only
+	//Gets all files within folder
+	private static Collection<File> listFileTree(File dir) {
 	    Set<File> fileTree = new HashSet<File>();
 	    if(dir==null||dir.listFiles()==null){
 	        return fileTree;
@@ -603,6 +611,7 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 	    return fileTree;
 	}
 	
+	//Test Code
 	public static void main(String args[]) {
         initDebugLogging();
         initLookAndFeel();
@@ -615,27 +624,28 @@ public class BMWCodingConversionLayer implements ConversionLayer {
 		Settings settings = SettingsManager.getSettings();	
 		
 		settings.getEcuDefinitionFiles().clear();
-		settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\KMB_E46.C08"));
+		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\KMB_E46.C08"));
 		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\IHK_E46.C17"));
 		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E46\\GM5.C04"));
 		
-		/*
+
 		File folder = new File("C:\\NCSEXPER\\DATEN\\");
 		Collection<File> listOfFiles =  listFileTree(folder);
 
+		ConversionLayer l = new BMWCodingConversionLayer();
+		
 		for(File f: listOfFiles) {
-			if (isFileSupportedS(f)) {
+			if (l.isFileSupported(f)) {
 				settings.getEcuDefinitionFiles().add(f);
 			}
-		}*/
-		
-		
+		}
+				
 		//settings.getEcuDefinitionFiles().add(new File("C:\\NCSEXPER\\DATEN\\E36\\KMB_E36.C25"));
-		//OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Tacho Grau\\C25_352k_248_oil_6Cyl.hex"));
+		OpenImageWorker w = new OpenImageWorker(new File("E:\\google_drive\\ECU_Tuning\\maps\\Tacho\\Tacho Grau\\C25_352k_248_oil_6Cyl.hex"));
 		//OpenImageWorker w = new OpenImageWorker(new File("E:\\Downloads\\ZKE_eep.bin"));
 		//OpenImageWorker w = new OpenImageWorker(new File("E:\\Downloads\\A-C_eep.bin"));
 		//OpenImageWorker w = new OpenImageWorker(new File("E:\\Downloads\\MFL_0000-1000.bin"));
-		OpenImageWorker w = new OpenImageWorker(new File("E:\\Downloads\\IKE_eep.bin"));
+		//OpenImageWorker w = new OpenImageWorker(new File("E:\\Downloads\\IKE_eep.bin"));
 
 		w.execute();
 	}

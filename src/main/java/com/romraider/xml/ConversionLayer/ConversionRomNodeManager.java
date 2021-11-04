@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml.BMWCodingConversion;
+package com.romraider.xml.ConversionLayer;
 
 import java.io.File;
 
@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-class BMWRomManager{
+class ConversionRomNodeManager{
 	int offsetAddress = 0;
 	
 	Document doc;
@@ -42,7 +42,7 @@ class BMWRomManager{
 	String bestIDFitDataTemp = "";
 	int lastPresetCount = 0;
 	
-	BMWRomManager(int offsetAddress, Document doc, Node root){
+	ConversionRomNodeManager(int offsetAddress, Document doc, Node root){
 		this.doc = doc;
 		this.offsetAddress = offsetAddress;
 		this.romNode = doc.createElement("rom");			
@@ -52,8 +52,7 @@ class BMWRomManager{
 	public Element getRomNode() {
 		return romNode;
 	}
-	
-	
+		
 	public Element createTable(String name, String category, String storageType, String endian,
 			int storageAddress, int byteCount, byte[] mask) {
 		
@@ -66,9 +65,12 @@ class BMWRomManager{
 			}				
 			
 			lastPresetCount = 0;
+						
+			int divisor = 1;
+			if(storageType.contains("int16")) divisor = 2;
+			else if (storageType.contains("int32")) divisor = 4;
 			
-			if(byteCount == 1) storageType="uint8";
-			int sizey = storageType.equalsIgnoreCase("uint8") ? byteCount : byteCount/2;
+			int sizey = byteCount / divisor;
 			
 			Element table = doc.createElement("table");
 			table.setAttribute("name", name);
@@ -103,6 +105,9 @@ class BMWRomManager{
 			
 			data = data.replace(" ", "");
 			
+			
+			//Try to find the best fitting preset that only appears once
+			//and has the longest memory footprint for best identification
 			if(lastPresetCount >= 1) {
 				bestIDFitDataTemp = "";
 			}									
@@ -121,16 +126,19 @@ class BMWRomManager{
 		}	
 	}
 	
-	public void calculateRomID(File f) {
+	public void calculateRomID(File f, String make) {
     	Element romIDNode = doc.createElement("romid");
 		
-    	//romNode.setTextContent("Test");
     	Node idAddress = doc.createElement("internalidaddress");
-    	//idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
-    	idAddress.setTextContent("-1");
+    	idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
+
     	Node idString = doc.createElement("internalidstring");
-    	//idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
-    	idString.setTextContent("force");
+    	idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
+    	
+    	//This can be used to force a definition file for a bin
+    	//idString.setTextContent("force");
+    	//idAddress.setTextContent("-1");
+    	
     	Node ramoffset = doc.createElement("noramoffset");
     	
     	//Set filesize based on largest address and round up to a power of 2
@@ -138,8 +146,8 @@ class BMWRomManager{
     	String fileS = ((int)Math.pow(2, 32 - Integer.numberOfLeadingZeros(lastStorageAddress - 1)) + "b");
     	fileSize.setTextContent(fileS);
     	
-    	Node make = doc.createElement("make");
-    	make.setTextContent("BMW");
+    	Node makeN = doc.createElement("make");
+    	makeN.setTextContent(make);
     	
     	Node model = doc.createElement("model");
     	model.setTextContent(f.getParentFile().getName());
@@ -151,7 +159,7 @@ class BMWRomManager{
     	Node subModel = doc.createElement("submodel");
     	subModel.setTextContent(f.getName());
     	
-    	romIDNode.appendChild(make);
+    	romIDNode.appendChild(makeN);
     	romIDNode.appendChild(ecuID);
     	romIDNode.appendChild(model);
     	romIDNode.appendChild(subModel);
@@ -163,7 +171,6 @@ class BMWRomManager{
     	romIDNode.appendChild(doc.createElement("market"));
     	romIDNode.appendChild(doc.createElement("transmission"));
     	romIDNode.appendChild(doc.createElement("xmlid"));
-    	romNode.appendChild(romIDNode); 	         	
-    	
+    	romNode.appendChild(romIDNode); 	         	   	
 	}
 }
