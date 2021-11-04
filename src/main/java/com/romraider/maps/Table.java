@@ -41,31 +41,31 @@ public abstract class Table implements Serializable {
 
     protected TableView tableView;
     protected TableFrame tableFrame;
-    
+
     protected String name;
     protected String category = "Other";
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
     protected Scale curScale;
     protected PresetManager presetManager;
-       
+
     protected int storageAddress;
     protected int storageType;
     protected boolean signed;
     protected Settings.Endian endian = Settings.Endian.BIG;
     protected boolean flip;
-    
-    protected DataLayout dataLayout = DataLayout.DEFAULT;	//DataCell Ordering
+
+    protected DataLayout dataLayout = DataLayout.DEFAULT;   //DataCell Ordering
     protected DataCell[] data = new DataCell[1];
-    
+
     protected boolean beforeRam = false;
     protected int ramOffset = 0;
-    
+
     protected int userLevel = 0;
     protected boolean locked = false;
     protected String logParam = Settings.BLANK;
-	private int bitMask = 0;
-	
+    private int bitMask = 0;
+
     protected double minAllowedBin = 0.0;
     protected double maxAllowedBin = 0.0;
 
@@ -75,39 +75,39 @@ public abstract class Table implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
-    protected boolean staticDataTable = false; 
+    protected boolean staticDataTable = false;
     private Table compareTable = null;
     protected Settings.DataType compareValueType = Settings.DataType.BIN;
-    
+
     public enum DataLayout {
-    	DEFAULT,
-    	BOSCH_SUBTRACT
+        DEFAULT,
+        BOSCH_SUBTRACT
     }
-    
+
     public void setTableView(TableView v) {
-    	this.tableView = v;
+        this.tableView = v;
     }
-    
+
     public TableView getTableView() {
-    	return this.tableView;
+        return this.tableView;
     }
-    
+
     public void setTableFrame(TableFrame v) {
-    	this.tableFrame = v;
+        this.tableFrame = v;
     }
-    
+
     public TableFrame getTableFrame() {
-    	return this.tableFrame;
+        return this.tableFrame;
     }
-    
+
     public DataCell[] getData() {
         return data;
     }
-    
+
     public void addStaticDataCell(String s) {
-    	setStaticDataTable(true);
-    	DataCell c = new DataCell(this, s, null);
-    	
+        setStaticDataTable(true);
+        DataCell c = new DataCell(this, s, null);
+
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
                 data[i] = c;
@@ -115,36 +115,36 @@ public abstract class Table implements Serializable {
             }
         }
     }
-    
+
     //Cleans up all references to avoid data leaks
     public void clearData() {
-    	if(data != null) {
-	    	for(int i=0;i<getDataSize();i++) {
-	    		if(data[i]!=null) {
-		    		data[i].setTable(null);
-		    		data[i].setRom(null);
-		    		data[i] = null;
-	    		}
-	    	}
-	
-	    	data = null;
-    	}
+        if(data != null) {
+            for(int i=0;i<getDataSize();i++) {
+                if(data[i]!=null) {
+                    data[i].setTable(null);
+                    data[i].setRom(null);
+                    data[i] = null;
+                }
+            }
+
+            data = null;
+        }
     }
-    
+
     public void setData(DataCell[] data) {
         this.data = data;
     }
-     
+
     public int getRamOffset() {
-    	return this.ramOffset;
+        return this.ramOffset;
     }
-    
+
     public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-    	if(isStaticDataTable()) return;
-    	
-    	validateScaling();
-    	
-    	// temporarily remove lock;
+        if(isStaticDataTable()) return;
+
+        validateScaling();
+
+        // temporarily remove lock;
         boolean tempLock = locked;
         locked = false;
 
@@ -152,16 +152,16 @@ public abstract class Table implements Serializable {
             this.ramOffset = rom.getRomID().getRamOffset();
         }
 
-        for (int i = 0; i < data.length; i++) {          	
-        	data[i] = new DataCell(this, i, rom);    
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new DataCell(this, i, rom);
         }
 
         // reset locked status
         locked = tempLock;
         calcCellRanges();
-        
-    	//Add Raw Scale
-        addScale(new Scale()); 
+
+        //Add Raw Scale
+        addScale(new Scale());
     }
 
     public abstract TableType getType();
@@ -175,7 +175,7 @@ public abstract class Table implements Serializable {
     }
 
     public void setCategory(String category) {
-    	category = category.trim().replace(" //", "//").replace("// ", "//");
+        category = category.trim().replace(" //", "//").replace("// ", "//");
         this.category = category;
     }
 
@@ -186,21 +186,21 @@ public abstract class Table implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+
     //Gets called by toolbar
-    public void updateIncrementDecrementValues(double fineInc, double courseInc) { 	
-    	this.curScale.setCoarseIncrement(courseInc);
-    	this.curScale.setFineIncrement(fineInc);
+    public void updateIncrementDecrementValues(double fineInc, double courseInc) {
+        this.curScale.setCoarseIncrement(courseInc);
+        this.curScale.setFineIncrement(fineInc);
     }
-    
+
     public Scale getCurrentScale() {
         return this.curScale;
     }
 
     public Scale getScale(String scaleName) throws NameNotFoundException {
         for (Scale scale : scales) {
-            if (scale.getName().equalsIgnoreCase(scaleName)) {
+            if (scale.getCategory().equalsIgnoreCase(scaleName)) {
                 return scale;
             }
         }
@@ -214,7 +214,7 @@ public abstract class Table implements Serializable {
     public void addScale(Scale scale) {
         // look for scale, replace or add new
         for (int i = 0; i < scales.size(); i++) {
-            if (scales.get(i).getName().equalsIgnoreCase(scale.getName())) {
+            if (scales.get(i).getCategory().equalsIgnoreCase(scale.getCategory())) {
                 scales.remove(i);
                 break;
             }
@@ -224,12 +224,12 @@ public abstract class Table implements Serializable {
         if(null == curScale) {
             this.curScale = scale;
         }
-       
-        if(SettingsManager.getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
+
+        if(SettingsManager.getSettings().getDefaultScale().equalsIgnoreCase(scale.getCategory())) {
             this.curScale = scale;
         }
-        else if("Default".equalsIgnoreCase(scale.getName())) {
-        	this.curScale = scale;
+        else if("Default".equalsIgnoreCase(scale.getCategory())) {
+            this.curScale = scale;
         }
     }
 
@@ -289,7 +289,7 @@ public abstract class Table implements Serializable {
     public String getLogParam() {
         return logParam;
     }
-    
+
     public String getLogParamString() {
         return getName()+ ":" + getLogParam();
     }
@@ -312,21 +312,21 @@ public abstract class Table implements Serializable {
         }
         return name;
     }
-    
+
     public void setName(String n) {
-    	this.name = n;
+        this.name = n;
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
 
             if(data[i]!= null)
-            	output.append(NumberUtil.stringValue(data[i].getRealValue()));
+                output.append(NumberUtil.stringValue(data[i].getRealValue()));
 
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
@@ -334,7 +334,7 @@ public abstract class Table implements Serializable {
         }
         return output;
     }
-    
+
     //Faster version of equals where data doesnt matter (yet)
     public boolean equalsWithoutData(Object other) {
         try {
@@ -351,46 +351,46 @@ public abstract class Table implements Serializable {
             }
 
             Table otherTable = (Table)other;
-            
+
             if(storageAddress != otherTable.storageAddress) {
-            	return false;
+                return false;
             }
-            
+
             if(!this.name.equals(otherTable.name)) {
-            	return false;
+                return false;
             }
-            
+
             if(this.data.length != otherTable.data.length)
             {
                 return false;
             }
 
-			if (this.bitMask != otherTable.bitMask) {
-				return false;
-			}
-			         
+            if (this.bitMask != otherTable.bitMask) {
+                return false;
+            }
+
             return true;
         } catch(Exception ex) {
             // TODO: Log Exception.
             return false;
         }
     }
-    
+
     @Override
     public boolean equals(Object other) {
         try {
             boolean withoutData = equalsWithoutData(other);
             if(!withoutData) return false;
-            
+
             Table otherTable = (Table)other;
-            
+
             // Compare Bin Values
             for(int i=0 ; i < this.data.length ; i++) {
                 if(! this.data[i].equals(otherTable.data[i])) {
                     return false;
                 }
             }
-            
+
             return true;
         } catch(Exception ex) {
             // TODO: Log Exception.
@@ -414,7 +414,7 @@ public abstract class Table implements Serializable {
         return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
     }
 
-    protected void calcValueRange() {   	
+    protected void calcValueRange() {
         if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (isSignedData()) {
                 switch (getStorageType()) {
@@ -441,15 +441,15 @@ public abstract class Table implements Serializable {
                 }
             }
             else {
-            	
-            	if(bitMask == 0) {          	
-	                maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
-            	}
-            	else {
-            		maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
-            	}
-            	
-        		minAllowedBin = 0.0;
+
+                if(bitMask == 0) {
+                    maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
+                }
+                else {
+                    maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
+                }
+
+                minAllowedBin = 0.0;
             }
         } else {
             maxAllowedBin = Float.MAX_VALUE;
@@ -463,37 +463,37 @@ public abstract class Table implements Serializable {
     }
 
     public void calcCellRanges() {
-    	if(data.length > 0) {
-	        double binMax = data[0].getBinValue();
-	        double binMin = data[0].getBinValue();
-	
-	        double compareMax = data[0].getCompareValue();
-	        double compareMin = data[0].getCompareValue();
-	
-	        for(DataCell cell : data) {
-	        	
-	            // Calc bin
-	            if(binMax < cell.getBinValue()) {
-	                binMax = cell.getBinValue();
-	            }
-	            if(binMin > cell.getBinValue()) {
-	                binMin = cell.getBinValue();
-	            }
-	
-	            // Calc compare
-	            double compareValue = cell.getCompareValue();
-	            if(compareMax < compareValue) {
-	                compareMax = compareValue;
-	            }
-	            if(compareMin > compareValue) {
-	                compareMin = compareValue;
-	            }
-	        }
-	        setMaxBin(binMax);
-	        setMinBin(binMin);
-	        setMaxCompare(compareMax);
-	        setMinCompare(compareMin);
-    	}
+        if(data.length > 0) {
+            double binMax = data[0].getBinValue();
+            double binMin = data[0].getBinValue();
+
+            double compareMax = data[0].getCompareValue();
+            double compareMin = data[0].getCompareValue();
+
+            for(DataCell cell : data) {
+
+                // Calc bin
+                if(binMax < cell.getBinValue()) {
+                    binMax = cell.getBinValue();
+                }
+                if(binMin > cell.getBinValue()) {
+                    binMin = cell.getBinValue();
+                }
+
+                // Calc compare
+                double compareValue = cell.getCompareValue();
+                if(compareMax < compareValue) {
+                    compareMax = compareValue;
+                }
+                if(compareMin > compareValue) {
+                    compareMin = compareValue;
+                }
+            }
+            setMaxBin(binMax);
+            setMinBin(binMin);
+            setMaxCompare(compareMax);
+            setMinCompare(compareMin);
+        }
     }
 
     public double getMaxBin() {
@@ -559,14 +559,14 @@ public abstract class Table implements Serializable {
             cell.undo();
         }
     }
-     
+
     abstract public byte[] saveFile(byte[] binData);
-    
+
     public void setValues(String name, String value) {
-    	if(presetManager == null) presetManager = new PresetManager(this);   	
-    	presetManager.setValues(name, value);
+        if(presetManager == null) presetManager = new PresetManager(this);
+        presetManager.setValues(name, value);
     }
-    
+
     public boolean isBeforeRam() {
         return beforeRam;
     }
@@ -574,46 +574,46 @@ public abstract class Table implements Serializable {
     public void setBeforeRam(boolean beforeRam) {
         this.beforeRam = beforeRam;
     }
-    
+
     public void setDataLayout(String s) {
-    	if(s.trim().equalsIgnoreCase("bosch_subtract")) {
-    		setDataLayout(DataLayout.BOSCH_SUBTRACT);
-    	}
-    	else {
-    		setDataLayout(DataLayout.DEFAULT);
-    	}
+        if(s.trim().equalsIgnoreCase("bosch_subtract")) {
+            setDataLayout(DataLayout.BOSCH_SUBTRACT);
+        }
+        else {
+            setDataLayout(DataLayout.DEFAULT);
+        }
     }
-    
+
     public void setDataLayout(DataLayout m) {
         this.dataLayout = m;
     }
-    
+
     public DataLayout getDataLayout() {
         return this.dataLayout;
     }
-    
-	public void setStringMask(String stringMask) {	
-		int mask = ByteUtil.parseUnsignedInt(stringMask, 16); 		
-		setBitMask(mask);
-	}
-	
-	public void setBitMask(int mask) {
-		if(mask == 0) return;
-		
-		//Clamp mask to max size
-		bitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
-		calcValueRange();
-	}
 
-	public int getBitMask() {
-		return bitMask;
-	}
-    
+    public void setStringMask(String stringMask) {
+        int mask = ByteUtil.parseUnsignedInt(stringMask, 16);
+        setBitMask(mask);
+    }
+
+    public void setBitMask(int mask) {
+        if(mask == 0) return;
+
+        //Clamp mask to max size
+        bitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
+        calcValueRange();
+    }
+
+    public int getBitMask() {
+        return bitMask;
+    }
+
     public void validateScaling() {
-        if (getType() != TableType.SWITCH) {            
+        if (getType() != TableType.SWITCH) {
             for(Scale scale : scales) {
                 if (!scale.validate()) {
-                	TableView.showBadScalePopup(this, scale);
+                    TableView.showBadScalePopup(this, scale);
                 }
             }
         }
@@ -639,32 +639,32 @@ public abstract class Table implements Serializable {
         calcCellRanges();
         if(tableView != null) tableView.drawTable();
     }
-    
+
     public void clearSelection() {
-    	if(data!=null) {
-    		for (DataCell cell : data) {
+        if(data!=null) {
+            for (DataCell cell : data) {
                 cell.setSelected(false);
             }
-    	}
+        }
     }
-    
+
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
             clearSelection();
             data[y].setSelected(true);
-            if(tableView!=null) tableView.highlightBeginY = y;          
+            if(tableView!=null) tableView.highlightBeginY = y;
         }
     }
 
     public void selectCellAtWithoutClear(int y) {
         if(y >= 0 && y < data.length) {
             data[y].setSelected(true);
-            if(tableView!=null)tableView.highlightBeginY = y;            
+            if(tableView!=null)tableView.highlightBeginY = y;
         }
     }
-    
+
     public void verticalInterpolate() throws UserLevelException{
-    	horizontalInterpolate();
+        horizontalInterpolate();
     }
 
     public void horizontalInterpolate() throws UserLevelException {
@@ -679,38 +679,38 @@ public abstract class Table implements Serializable {
                     coords[1] = i;
             }
         }
-        
+
         if (coords[1] - coords[0] > 1) {
             double y1, y2;
             y1 = tableData[coords[0]].getBinValue();
             y2 = tableData[coords[1]].getBinValue();
             for (int i = coords[0] + 1; i < coords[1]; ++i) {
-            	float p = (float)((i - coords[0]))/(coords[1] - coords[0]);
+                float p = (float)((i - coords[0]))/(coords[1] - coords[0]);
                 data[i].setBinValue((y2*p)+(y1 *(1-p)));
             }
-        }       
+        }
     }
 
     public void interpolate() throws UserLevelException {
         horizontalInterpolate();
     }
-    
+
     public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
         return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
-    
+
     public void increment(double increment) throws UserLevelException {
-	    for (DataCell cell : data) {
-	        if (cell.isSelected()) {
-	            cell.increment(increment);
-	        }
-	    }
+        for (DataCell cell : data) {
+            if (cell.isSelected()) {
+                cell.increment(increment);
+            }
+        }
     }
 
-    public void multiply(double factor) throws UserLevelException{  	
-    	for (DataCell cell : data) {
-	        if (cell.isSelected()) {
-	        	cell.multiply(factor);               	
+    public void multiply(double factor) throws UserLevelException{
+        for (DataCell cell : data) {
+            if (cell.isSelected()) {
+                cell.multiply(factor);
             }
          }
     }
@@ -724,7 +724,7 @@ public abstract class Table implements Serializable {
     }
 
     public abstract boolean isLiveDataSupported();
-    
+
     public int getUserLevel() {
         return userLevel;
     }
@@ -737,10 +737,10 @@ public abstract class Table implements Serializable {
             userLevel = 1;
         }
     }
-        
-    public void setScaleByName(String scaleName) throws NameNotFoundException {
+
+    public void setScaleByCategory(String scaleName) throws NameNotFoundException {
         for(Scale scale : scales) {
-            if(scale.getName().equalsIgnoreCase(scaleName)) {
+            if(scale.getCategory().equalsIgnoreCase(scaleName)) {
                 Scale currentScale = getCurrentScale();
                 if(currentScale == null || !currentScale.equals(scale)) {
                     this.setCurrentScale(scale);
@@ -754,10 +754,10 @@ public abstract class Table implements Serializable {
 
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
-        
+
         if(tableView!=null) {
-    		tableView.drawTable();
-    	}
+            tableView.drawTable();
+        }
     }
 
     public Settings getSettings()
@@ -781,13 +781,13 @@ public abstract class Table implements Serializable {
 
     public void setCompareTable(Table compareTable) {
         this.compareTable = compareTable;
-        
+
         if(tableView!= null)tableView.drawTable();
     }
 
     public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
-        
+
         if(tableView!= null)tableView.drawTable();
     }
 
@@ -797,7 +797,7 @@ public abstract class Table implements Serializable {
 
     public void colorCells() {
         calcCellRanges();
-        
+
         if(tableView!=null)tableView.drawTable();
     }
 

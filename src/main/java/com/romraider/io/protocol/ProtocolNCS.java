@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 
 package com.romraider.io.protocol;
 
+import java.util.Map;
+
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.definition.Module;
 
@@ -29,7 +31,7 @@ public interface ProtocolNCS extends Protocol {
 
     byte[] constructReadSidPidRequest(Module module, byte sid, byte[][] pid);
 
-    byte[] constructLoadAddressRequest(byte[][] addresses);
+    byte[] constructLoadAddressRequest(Map<byte[], Integer> queryMap);
 
     void validateLoadAddressResponse(byte[] response);
 
@@ -39,4 +41,12 @@ public interface ProtocolNCS extends Protocol {
             PollingState pollState);
 
     byte[] constructEcuIdRequest(Module module);
+
+    byte[] constructEcuStopRequest(Module module);
+
+    byte[] constructStartDiagRequest(Module module);
+
+    byte[] constructElevatedDiagRequest(Module module);
+
+    byte[] constructReadMemoryRequest(Module module, byte[][] address, int numBytes);
 }

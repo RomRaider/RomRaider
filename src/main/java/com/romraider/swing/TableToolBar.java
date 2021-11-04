@@ -233,12 +233,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                 } catch (PropertyVetoException ex) {
                 }
                 frame.requestFocusInWindow();
-                
+
                 try {
-					setValue(frame.getTable());
-				} catch (UserLevelException e1) {
-					e1.printStackTrace();
-				}
+                    setValue(frame.getTable());
+                } catch (UserLevelException e1) {
+                    e1.printStackTrace();
+                }
             }
         };
 
@@ -312,47 +312,47 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar() {
-    	Table t = getTable();
-    	
-    	if(t != null)
-    		this.updateTableToolBar(t);
+        Table t = getTable();
+
+        if(t != null)
+            this.updateTableToolBar(t);
     }
 
-    
+
     private void saveFineCourseValuesInTable(Table t) {
-    	if(t == null || t.getCurrentScale() == null) return;
-    	
-    	double incCoarse = 0;
-    	double incFine = 0;
-    	
-    	try {
-    		//Commit the value which was typed (if field still has focus)
-    		incrementByCoarse.commitEdit();
-    		incrementByFine.commitEdit();
-    		
-	        incCoarse = Double.parseDouble(String.valueOf(incrementByCoarse.getValue()));
-	        incFine = Double.parseDouble(String.valueOf(incrementByFine.getValue()));
-    	}
-    	//Current value in the inc/dec field are not valid
-    	catch(ParseException e) {
-    		return; 
-    	}
-    	//Should not happen since ParseException would happen before that
-    	catch(NumberFormatException e) {
-    		return; 
-    	}
-    	  	
-	    //Save current inc/dec values in table before we switch
-    	if(incCoarse!=0 && incFine != 0) {
-    		t.updateIncrementDecrementValues(incFine,incCoarse);		    
-    	}
-    	
+        if(t == null || t.getCurrentScale() == null) return;
+
+        double incCoarse = 0;
+        double incFine = 0;
+
+        try {
+            //Commit the value which was typed (if field still has focus)
+            incrementByCoarse.commitEdit();
+            incrementByFine.commitEdit();
+
+            incCoarse = Double.parseDouble(String.valueOf(incrementByCoarse.getValue()));
+            incFine = Double.parseDouble(String.valueOf(incrementByFine.getValue()));
+        }
+        //Current value in the inc/dec field are not valid
+        catch(ParseException e) {
+            return;
+        }
+        //Should not happen since ParseException would happen before that
+        catch(NumberFormatException e) {
+            return;
+        }
+
+        //Save current inc/dec values in table before we switch
+        if(incCoarse!=0 && incFine != 0) {
+            t.updateIncrementDecrementValues(incFine,incCoarse);
+        }
+
     }
-    	
+
     public void updateTableToolBar(Table selectedTable) {
-    	//Select the parent Table always instead?
-    	//if(selectedTable instanceof Table1D)selectedTable = ((Table1D)selectedTable).getAxisParent();
-    	
+        //Select the parent Table always instead?
+        //if(selectedTable instanceof Table1D)selectedTable = ((Table1D)selectedTable).getAxisParent();
+
         if(selectedTable == null  && this.selectedTable == null) {
             // Skip if the table is the same to avoid multiple updates
             return;
@@ -365,7 +365,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
 
         //Save the current inc/dec values in the table
-        saveFineCourseValuesInTable(this.selectedTable);    
+        saveFineCourseValuesInTable(this.selectedTable);
         this.selectedTable = selectedTable;
 
         setBorder(toolbarBorder);
@@ -388,7 +388,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         {
             this.scaleSelection.setSelectedItem("Default");
         } else {
-            this.scaleSelection.setSelectedItem(selectedTable.getCurrentScale().getName());
+            this.scaleSelection.setSelectedItem(selectedTable.getCurrentScale().getCategory());
         }
 
         toggleTableToolBar(selectedTable);
@@ -513,7 +513,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         scaleSelection.removeAllItems();
 
         for (Scale scale : scales) {
-            scaleSelection.addItem(scale.getName());
+            scaleSelection.addItem(scale.getCategory());
         }
 
         // and put it back
@@ -528,28 +528,28 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             return;
         }
         try {
-	        if (e.getSource() == incrementCoarse) {
-	            incrementCoarse(curTable);
-	        } else if (e.getSource() == decrementCoarse) {
-	            decrementCoarse(curTable);
-	        } else if (e.getSource() == enable3d) {
-	            enable3d(curTable);
-	        } else if (e.getSource() == incrementFine) {
-	            incrementFine(curTable);
-	        } else if (e.getSource() == decrementFine) {
-	            decrementFine(curTable);
-	        } else if (e.getSource() == multiply) {
-	            multiply(curTable);
-	        } else if (e.getSource() == setValue) {
-	            setValue(curTable);
-	        } else if (e.getSource() == colorCells) {
-	            colorCells(curTable);
-	        } else if (e.getSource() == refreshCompare) {
-	            refreshCompare(curTable);
-	        }
+            if (e.getSource() == incrementCoarse) {
+                incrementCoarse(curTable);
+            } else if (e.getSource() == decrementCoarse) {
+                decrementCoarse(curTable);
+            } else if (e.getSource() == enable3d) {
+                enable3d(curTable);
+            } else if (e.getSource() == incrementFine) {
+                incrementFine(curTable);
+            } else if (e.getSource() == decrementFine) {
+                decrementFine(curTable);
+            } else if (e.getSource() == multiply) {
+                multiply(curTable);
+            } else if (e.getSource() == setValue) {
+                setValue(curTable);
+            } else if (e.getSource() == colorCells) {
+                colorCells(curTable);
+            } else if (e.getSource() == refreshCompare) {
+                refreshCompare(curTable);
+            }
         }
         catch(UserLevelException ex) {
-        	TableView.showInvalidUserLevelPopup(ex);
+            TableView.showInvalidUserLevelPopup(ex);
         }
     }
 
@@ -771,7 +771,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         if (e.getSource() == scaleSelection) {
             // scale changed
             try {
-                curTable.setScaleByName((String)scaleSelection.getSelectedItem());
+                curTable.setScaleByCategory((String)scaleSelection.getSelectedItem());
                 updateToolbarIncrementDecrementValues();
             } catch (NameNotFoundException e1) {
                 e1.printStackTrace();
@@ -818,10 +818,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
             //Set the value
             try {
-				table3d.setRealValue(String.valueOf(value));
-			} catch (UserLevelException e) {
-				e.printStackTrace();
-			}
+                table3d.setRealValue(String.valueOf(value));
+            } catch (UserLevelException e) {
+                e.printStackTrace();
+            }
         }
     }
 

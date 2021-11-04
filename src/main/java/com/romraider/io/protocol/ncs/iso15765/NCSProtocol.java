@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.io.protocol.ncs.iso14230;
+package com.romraider.io.protocol.ncs.iso15765;
 
-import static com.romraider.io.protocol.ncs.iso14230.NCSChecksumCalculator.calculateChecksum;
 import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ParamChecker.checkGreaterThanZero;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -31,6 +31,8 @@ import java.util.Map;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.connection.KwpConnectionProperties;
 import com.romraider.io.protocol.ProtocolNCS;
+import com.romraider.io.protocol.ncs.iso15765.NCSResponseProcessor;
+import com.romraider.io.protocol.ncs.iso15765.NCSProtocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.NCSEcuInit;
@@ -40,82 +42,86 @@ import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class NCSProtocol implements ProtocolNCS {
     private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
-    public static final byte PHY_ADDR = (byte) 0x80;
     public static final byte READ_MEMORY_PADDING = (byte) 0x00;
-    public static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
-    public static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
-    public static final byte LOAD_ADDRESS_COMMAND = (byte) 0xAC;
-    public static final byte LOAD_ADDRESS_RESPONSE = (byte) 0xEC;
+    public static final byte READ_MEMORY_COMMAND = (byte) 0x23;
+    public static final byte READ_MEMORY_RESPONSE = (byte) 0x63;
+    public static final byte LOAD_ADDRESS_COMMAND = (byte) 0x2C;
+    public static final byte DDLOCID = (byte) 0xE0;
+    public static final byte LOAD_ADDRESS_RESPONSE = (byte) 0x6C;
     public static final byte READ_LOAD_COMMAND = (byte) 0x21;
     public static final byte READ_LOAD_RESPONSE = (byte) 0x61;
-    public static final byte WRITE_MEMORY_COMMAND = (byte) 0xB0;
-    public static final byte WRITE_MEMORY_RESPONSE = (byte) 0xF0;
-    public static final byte WRITE_ADDRESS_COMMAND = (byte) 0xB8;
-    public static final byte WRITE_ADDRESS_RESPONSE = (byte) 0xF8;
-    public static final byte FASTINIT_COMMAND = (byte) 0x81;
-    public static final byte FASTINIT_RESPONSE = (byte) 0xC1;
-    public static final byte STOP_COMMAND = (byte) 0x82;
-    public static final byte STOP_RESPONSE = (byte) 0xC2;
-    public static final byte ECU_ID_SID = (byte) 0x1A;
-    public static final byte OPTION_81 = (byte) 0x81;
+    public static final byte ECU_INIT_COMMAND = (byte) 0x10;
+    public static final byte ECU_INIT_RESPONSE = (byte) 0x50;
+    public static final byte ECU_ID_SID = (byte) 0x21;
+    public static final byte ECU_ID_CMD = (byte) 0x10;
     public static final byte FIELD_TYPE_01 = (byte) 0x01;
     public static final byte FIELD_TYPE_02 = (byte) 0x02;
-    public static final byte FIELD_TYPE_83 = (byte) 0x83;
+    public static final byte FIELD_TYPE_03 = (byte) 0x03;
     public static final byte SID_21 = (byte) 0x21;
     public static final byte SID_22 = (byte) 0x22;
-    public static final byte ECU_ID_SID_RESPONSE = (byte) 0x5A;
+    public static final byte ECU_ID_SID_RESPONSE = (byte) 0x50;
+    public static final byte READ_SID_21_RESPONSE = (byte) 0x61;
     public static final byte READ_SID_GRP_RESPONSE = (byte) 0x62;
     public static final byte ECU_RESET_COMMAND = (byte) 0x04;
     public static final byte ECU_RESET_RESPONSE = (byte) 0x44;
     public static final byte NCS_NRC = (byte) 0x7F;
-    public static final int RESPONSE_NON_DATA_BYTES = 3;
-    public static final int ADDRESS_SIZE = 3;
+    public static final int RESPONSE_NON_DATA_BYTES = 4;
+    public static final int ADDRESS_SIZE = 4;
     public static Module module;
     
+    // not implemented
     @Override
     public byte[] constructEcuFastInitRequest(Module module) {
-        checkNotNull(module, "module");
-        NCSProtocol.module = module;
-        final byte[] request = buildRequest(
-                FASTINIT_COMMAND, false, new byte[]{});
-        return request;
+        return null;
     }
 
     @Override
     public byte[] constructEcuStopRequest(Module module) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
+        // 000007E01081
         final byte[] request = buildRequest(
-                STOP_COMMAND, false, new byte[]{});
+                ECU_INIT_COMMAND, false, new byte[]{(byte) 0x81});
         return request;
     }
 
-    // not implemented
-    @Override
-    public byte[] constructStartDiagRequest(Module module) {
-        return null;
-    }
-
-    // not implemented
-    @Override
-    public byte[] constructElevatedDiagRequest(Module module) {
-        return null;
-    }
-
-    // not implemented
     @Override
     public byte[] constructEcuInitRequest(Module module) {
-        return null;
+        checkNotNull(module, "module");
+        NCSProtocol.module = module;
+        // 000007E010C0
+        final byte[] request = buildRequest(
+                ECU_INIT_COMMAND, false, new byte[]{(byte) 0xC0});
+        return request;
+    }
+
+    @Override
+    public byte[] constructStartDiagRequest(Module module) {
+        checkNotNull(module, "module");
+        NCSProtocol.module = module;
+        // 000007E010C0
+        final byte[] request = buildRequest(
+                ECU_INIT_COMMAND, false, new byte[]{(byte) 0xC0});
+        return request;
+    }
+
+    @Override
+    public byte[] constructElevatedDiagRequest(Module module) {
+        checkNotNull(module, "module");
+        NCSProtocol.module = module;
+        // 000007E010FB
+        final byte[] request = buildRequest(
+                ECU_INIT_COMMAND, false, new byte[]{(byte) 0xFB});
+        return request;
     }
 
     @Override
     public byte[] constructEcuIdRequest(Module module) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
-        // len  SID  opt  chk
-        // 0x02 0x1A 0x81 0x9D
+        // 000007E02110
         final byte[] request = buildRequest(
-                ECU_ID_SID, true, new byte[]{OPTION_81});
+                ECU_ID_SID, false, new byte[]{ECU_ID_CMD});
         return request;
     }
 
@@ -123,7 +129,7 @@ public final class NCSProtocol implements ProtocolNCS {
     public byte[] constructReadSidPidRequest(Module module, byte sid, byte[][] pid) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
-        final byte[] request = buildSidPidRequest(sid, true, pid);
+        final byte[] request = buildRequest(sid, false, pid);
         return request;
     }
 
@@ -138,7 +144,6 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     @Override
-    //TODO: not yet implemented
     public byte[] constructWriteAddressRequest(
             Module module, byte[] address, byte value) {
 
@@ -148,64 +153,48 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     @Override
-    //TODO: not yet implemented
-    public byte[] constructReadMemoryRequest(
-            Module module, byte[] address, int numBytes) {
-
-        throw new UnsupportedProtocolException(
-                "Read memory command is not supported on for address: " + 
-                asHex(address));
-    }
-
-    @Override
-    //TODO: not yet implemented
-    public byte[] constructReadMemoryRequest(Module module, byte[][] address,
+    public byte[] constructReadMemoryRequest(Module module, byte[] address,
             int numBytes) {
-
-        throw new UnsupportedProtocolException(
-                "Read memory command is not supported on for address: " + 
-                asHex(address[0]));
+        NCSProtocol.module = module;
+        // 000007E023 4-byte_address 2-byte_numBytes
+        final byte[] frame = new byte[6];
+        if (address[0] == -1) {
+            frame[0] = (byte) 0xFF;
+        }
+        System.arraycopy(address, 0, frame, 4-address.length, address.length);
+        frame[5] = (byte) numBytes;
+        return buildRequest(READ_MEMORY_COMMAND, false, frame, new byte[]{});
     }
 
     @Override
-    public byte[] constructLoadAddressRequest(Map<byte[], Integer> queries) {
-        checkNotNullOrEmpty(queries, "queries");
-        // short header - false, length encoded into lower 5 bits of first byte
-        // 0x8Len 0x10 0xFC 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
-        // short header - true
-        // Len 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
-        byte [][] addresses = new byte[queries.size()][];
-        int i = 0;
-        for (byte [] query : queries.keySet()) {
-                addresses[i++] = query;
-        }
-        return buildLoadAddrRequest(true, addresses);
+    public byte[] constructReadMemoryRequest(
+            Module module, byte[][] address, int numBytes) {
+        checkNotNull(module, "module");
+        checkNotNullOrEmpty(address, "address");
+        checkGreaterThanZero(numBytes, "numBytes");
+        return constructReadMemoryRequest(module, address[0],
+                numBytes);
+    }
+
+    @Override
+    public byte[] constructLoadAddressRequest(Map<byte[], Integer> queryMap) {
+        checkNotNullOrEmpty(queryMap, "queryMap");
+        // ID 0x2C 0xE0 DEFMODE ... DEFMODE ... DEFMODE ...
+        return buildLoadAddrRequest(queryMap);
     }
 
     @Override
     public byte[] constructReadAddressRequest(Module module, byte[][] addresses) {
-        // read previously loaded addresses
-        // len 0x21 0x81 0x04 0x01 checksum
-        return buildRequest(
-                READ_LOAD_COMMAND, true, new byte[]{(byte) 0x81, (byte) 0x04, (byte) 0x01});
+        // read addresses
+        // addr sid pid
+        return buildSidPidRequest(addresses);
     }
 
     @Override
     public byte[] constructReadAddressRequest(Module module, byte[][] bs,
             PollingState pollState) {
-        byte opt_byte3;
-        if (pollState.isFastPoll()) {
-            // continuously read response of previously loaded addresses 
-            // len 0x21 0x81 0x06 0x01 checksum
-            opt_byte3 = (byte) 0x06;
-        }
-        else {
-            // read one response of previously loaded addresses
-            // len 0x21 0x81 0x04 0x01 checksum
-            opt_byte3 = (byte) 0x04;
-        }
         return buildRequest(
-                READ_LOAD_COMMAND, true, new byte[]{(byte) 0x81, opt_byte3, (byte) 0x01});
+                READ_LOAD_COMMAND, false, new byte[]{(byte) 0xE0});
     }
 
     @Override
@@ -230,6 +219,7 @@ public final class NCSProtocol implements ProtocolNCS {
     @Override
     public EcuInit parseEcuInitResponse(byte[] processedResponse) {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
+        //final byte[] ecuInitBytes = parseResponseData(processedResponse);
         return new NCSEcuInit(processedResponse);
     }
 
@@ -241,7 +231,7 @@ public final class NCSProtocol implements ProtocolNCS {
 
     @Override
     //TODO: not yet implemented
-    // maybe use: Service $11 - Module reset
+    // maybe use: Service $11 with 0x80 - module reset
     public byte[] constructEcuResetRequest(Module module, int resetCode) {
         checkNotNull(module, "module");
         NCSProtocol.module = module;
@@ -275,7 +265,7 @@ public final class NCSProtocol implements ProtocolNCS {
         return new KwpConnectionProperties() {
 
             public int getBaudRate() {
-                return 10400;
+                return 500000;
             }
 
             public void setBaudRate(int b) {
@@ -302,7 +292,6 @@ public final class NCSProtocol implements ProtocolNCS {
                 return 255;
             }
 
-
             public int getP1Max() {
                 return 0;
             }
@@ -317,134 +306,68 @@ public final class NCSProtocol implements ProtocolNCS {
         };
     }
 
-    private final byte[] buildRequest(byte command, boolean shortHeader,
+    private byte[] buildRequest(
+            byte command, 
+            boolean padContent, 
             byte[]... content) {
-    
-        int length = 1;
-        for (byte[] tmp : content) {
-            length += tmp.length;
-        }
-        byte[] request = new byte[0];
-        try {
-            bb.reset();
-            if (shortHeader) {
-                bb.write(length);
-            }
-            else {
-                bb.write(PHY_ADDR + length);
-                bb.write(module.getAddress());
-                bb.write(module.getTester());
-            }
-            bb.write(command);
-            for (byte[] tmp : content) {
-                bb.write(tmp);
-            }
-            bb.write((byte) 0x00);
-            request = bb.toByteArray();
-            final byte cs = calculateChecksum(request);
-            request[request.length - 1] = cs;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return request;
-    }
 
-    private final byte[] buildSidPidRequest(byte command, boolean shortHeader,
-            byte[]... content) {
-    
-        int length = 3;
-        for (byte[] tmp : content) {
-            length += tmp.length;
-        }
-        byte[] request = new byte[0];
+        bb.reset();
         try {
-            bb.reset();
-            if (shortHeader) {
-                bb.write(length);
-            }
-            else {
-                bb.write(PHY_ADDR + length);
-                bb.write(module.getAddress());
-                bb.write(module.getTester());
-            }
+            bb.write(module.getTester());
             bb.write(command);
+            if (padContent) {
+                bb.write(READ_MEMORY_PADDING);
+            }
             for (byte[] tmp : content) {
-                bb.write(tmp);
-            }
-            bb.write((byte) 0x04);
-            bb.write((byte) 0x01);
-            bb.write((byte) 0x00);
-            request = bb.toByteArray();
-            final byte cs = calculateChecksum(request);
-            request[request.length - 1] = cs;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return request;
-    }
-
-    private final byte[] buildLoadAddrRequest(boolean shortHeader,
-            byte[]... content) {
-    
-        int length = 2;
-        byte[] request = new byte[0];
-        try {
-            bb.reset();
-            if (shortHeader) {
-                bb.write(length);
-            }
-            else {
-                bb.write(PHY_ADDR);
-                bb.write(module.getAddress());
-                bb.write(module.getTester());
-            }
-            bb.write(LOAD_ADDRESS_COMMAND);
-            bb.write(OPTION_81);
-            for (byte[] tmp : content) {
-                if (tmp[0] == SID_21) {
-                    bb.write(FIELD_TYPE_01);
-                    bb.write(tmp, 1, tmp.length - 1);
-                    continue;
-                }
-                if (tmp[0] == SID_22) {
-                    bb.write(FIELD_TYPE_02);
-                    bb.write(tmp, 1, tmp.length - 1);
-                    continue;
-                }
-                if (tmp[0] == (byte) 0xFF) {
-                    bb.write(FIELD_TYPE_83);
-                    bb.write((byte) 0xFF);
-                    bb.write(tmp, 0, 3);
-                }
-                else {  //assume a short length ROM address
-                    bb.write(FIELD_TYPE_83);
-                    bb.write((byte) 0x00);
-                    switch (tmp.length) {
-                        case 1:
-                            bb.write((byte) 0x00);
-                            bb.write((byte) 0x00);
-                            break;
-                        case 2:
-                            bb.write((byte) 0x00);
-                            break;
-                        case 3:
-                            break;
-                    }
                     bb.write(tmp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bb.toByteArray();
+    }
+
+    private final byte[] buildSidPidRequest(byte[]... content) {
+    
+        bb.reset();
+        try {
+            bb.write(module.getTester());
+            for (byte[] tmp : content) {
+                    bb.write(tmp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bb.toByteArray();
+    }
+
+    private final byte[] buildLoadAddrRequest(Map<byte[], Integer> queryMap) {
+    
+        int PIDYDLID = 1;
+        byte[] request = new byte[0];
+        try {
+            bb.reset();
+            bb.write(module.getTester());
+            bb.write(LOAD_ADDRESS_COMMAND);
+            bb.write(DDLOCID);
+            for (byte[] tmp : queryMap.keySet()) {
+                if (tmp[0] == SID_22) {
+                    bb.write(FIELD_TYPE_02);    //definitionMode
+                    bb.write(PIDYDLID++);       //positionIn
+                    bb.write(queryMap.get(tmp)); //size
+                    bb.write(tmp, 1, tmp.length - 1);//CID
+                    bb.write(1);                //positionInRecord
+                    continue;
+                }
+                else if (tmp[0] == (byte) 0xFF) {
+                    bb.write(FIELD_TYPE_03);    //definitionMode
+                    bb.write(PIDYDLID++);       //positionIn
+                    bb.write(queryMap.get(tmp));//size (could be 1, 2 or 4)
+                    bb.write((byte) 0xFF);      //RAM addr high byte
+                    bb.write(tmp, 0, 3);        //RAM addr
                 }
             }
-            bb.write(0);    // reserve last byte for checksum
             request = bb.toByteArray();
-            if (shortHeader) {
-                request[0] = (byte)(request.length - 2);
-            }
-            else {
-                request[0] = (byte)(PHY_ADDR + request.length - 4);
-            }
-            final byte cs = calculateChecksum(request);
-            request[request.length - 1] = cs;
         }
         catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,42 +28,44 @@ import com.romraider.maps.Scale;
 public final class ScalesTableModel extends DefaultTableModel {
     private static final long serialVersionUID = -5967359776053559125L;
     private static final String[] colNames = {
-            "Name", "Expression", "Byte Expression",
+            "Category", "Name", "Expression", "Byte Expression",
             "Unit", "Format", "Coarse", "Fine", "Min", "Max"};
     private Vector<Scale> scales;
-    
+
     @Override
     public final int getColumnCount() {
         return colNames.length;
     }
-    
+
     @Override
     public final String getColumnName(int column) {
         return colNames[column].toString();
     }
-    
+
     @Override
     public final Object getValueAt(int row, int column) {
         if (null != scales) {
             final Scale scale = scales.get(row);
             switch (column) {
                 case 0:
+                        return scale.getCategory();
+                case 1:
                         return scale.getName();
-                case 1: 
+                case 2:
                         return scale.getExpression();
-                case 2: 
-                        return scale.getByteExpression();
                 case 3:
+                        return scale.getByteExpression();
+                case 4:
                         return scale.getUnit();
-                case 4: 
+                case 5:
                         return scale.getFormat();
-                case 5: 
-                        return scale.getCoarseIncrement();
                 case 6:
+                        return scale.getCoarseIncrement();
+                case 7:
                         return scale.getFineIncrement();
-                case 7: 
+                case 8:
                         return scale.getMin();
-                case 8: 
+                case 9:
                         return scale.getMax();
                 default:
                         return null;
@@ -73,12 +75,12 @@ public final class ScalesTableModel extends DefaultTableModel {
             return null;
         }
     }
-    
+
     @Override
     public final int getRowCount() {
         return (null != scales) ? scales.size() : 0;
     }
-    
+
     @Override
     public final Class<? extends Object> getColumnClass(int column) {
         return getValueAt(0, column).getClass();
@@ -88,7 +90,7 @@ public final class ScalesTableModel extends DefaultTableModel {
     public final boolean isCellEditable(int row, int column) {
         return false;
     }
-    
+
     public final void setScalesList(Vector<Scale> scales) {
         this.scales = scales;
     }

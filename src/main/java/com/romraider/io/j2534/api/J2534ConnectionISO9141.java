@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,10 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         timeout = (long)connectionProperties.getConnectTimeout();
         initJ2534(connectionProperties, library);
         LOGGER.info("J2534/ISO9141 connection initialised");
+    }
+
+    @Override
+    public void open(byte[] start, byte[] stop) {
     }
 
     // Send request and wait for response with known length
