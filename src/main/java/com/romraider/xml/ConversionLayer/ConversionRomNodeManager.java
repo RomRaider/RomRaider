@@ -25,6 +25,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.romraider.util.ByteUtil;
+
 class ConversionRomNodeManager{
 	int offsetAddress = 0;
 	
@@ -81,7 +83,7 @@ class ConversionRomNodeManager{
 			table.setAttribute("endian", endian);
 			table.setAttribute("sizey", Integer.toString(sizey));
 			table.setAttribute("type", "1D");
-			table.setAttribute("mask", Integer.toHexString(Byte.toUnsignedInt(mask[0])));
+			table.setAttribute("mask", Integer.toHexString(ByteUtil.asUnsignedInt(mask[0])));
 			
 			romNode.appendChild(table);
 			lastTable = table;

@@ -47,6 +47,7 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.OpenImageWorker;
+import com.romraider.util.ByteUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.ConversionLayer.ConversionLayer;;
 
@@ -127,19 +128,32 @@ public class BMWCodingConversionLayer extends ConversionLayer {
     private HashMap<String, String> readTranslationFile(File transF) {
     	HashMap<String, String> map = new HashMap<String, String>();
     	
-    	try (BufferedReader br = new BufferedReader(new FileReader(transF))) {
-    	    String line;
-   	        	    
-    	    while ((line = br.readLine()) != null) {
-    	        String[] values = line.split(",");
-    	        if(values.length == 2) map.put(values[0], values[1]);
-    	    }
-    	    
-    	} catch (FileNotFoundException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(transF));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                final String[] values = line.split(",");
+                if(values.length == 2) {
+                    map.put(values[0], values[1]);
+                }
+            }
+
+        } catch (final FileNotFoundException e) {
+            return null;
+        } catch (final IOException e) {
+            return null;
+        }
+        finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
     	
 		return map;
 	}
@@ -576,7 +590,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		
 		for(int j=0;j<numValuesPSW1;j++) {
 			presetValuesPSW1[j] = dataBuffer.get(dataIndex+j);  	
-			PSW1_s+=" " + String.format("%02X", (Byte.toUnsignedInt(presetValuesPSW1[j])));
+			PSW1_s+=" " + String.format("%02X", (ByteUtil.asUnsignedInt(presetValuesPSW1[j])));
 		}
 		
 		if(parsePSW) {
