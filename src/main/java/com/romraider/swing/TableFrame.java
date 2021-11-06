@@ -56,7 +56,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         this.tableView = tableView;
         Table t = tableView.getTable();
         t.setTableFrame(this);
-        
         add(tableView);
         tableView.repaint();
         
@@ -68,50 +67,43 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         tableMenuBar = new TableMenuBar(this);
         setJMenuBar(tableMenuBar);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        addInternalFrameListener(this);
+        addInternalFrameListener(this); 
+    }
+    
+    public void RegisterTable() {
+        TableUpdateHandler.getInstance().registerTable(this.getTable());
+    }
+    
+    private void updateToolbar(Table t) {
+        ECUEditor parent = getEditor();
+        parent.getTableToolBar().updateTableToolBar(t);
+        parent.getToolBar().updateButtons();
+        parent.getEditorMenuBar().updateMenu();
     }
     
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
-        ECUEditor parent = getEditor();
-        parent.getTableToolBar().updateTableToolBar();
-        parent.getToolBar().updateButtons();
-        parent.getEditorMenuBar().updateMenu();
-    }
-
-    @Override
-    public void internalFrameOpened(InternalFrameEvent e) {
-        RegisterTable();
-    }
-
-    @Override
-    public void internalFrameClosing(InternalFrameEvent e) {
-        TableUpdateHandler.getInstance().deregisterTable(this.getTable());
-    }
-
-    @Override
-    public void internalFrameClosed(InternalFrameEvent e) {
-        getEditor().getTableToolBar().updateTableToolBar();
-    }
-
-    @Override
-    public void internalFrameIconified(InternalFrameEvent e) {
-        ;
-    }
-
-    @Override
-    public void internalFrameDeiconified(InternalFrameEvent e) {
-        ;
+    	updateToolbar(getTable());
     }
 
     @Override
     public void internalFrameDeactivated(InternalFrameEvent e) {
-        getEditor().getTableToolBar().updateTableToolBar();
+    	updateToolbar(null);
     }
-
-    public void RegisterTable() {
-        TableUpdateHandler.getInstance().registerTable(this.getTable());
+    
+    @Override
+    public void internalFrameClosing(InternalFrameEvent e) {
+        TableUpdateHandler.getInstance().deregisterTable(this.getTable());
     }
+    
+    @Override
+    public void internalFrameOpened(InternalFrameEvent e) {}
+    @Override
+    public void internalFrameClosed(InternalFrameEvent e) {}
+    @Override
+    public void internalFrameIconified(InternalFrameEvent e) {}
+    @Override
+    public void internalFrameDeiconified(InternalFrameEvent e) {}
 
     public Table getTable() {
     	if(tableView == null) return null;
@@ -264,4 +256,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         }
         return null;
     }
+    
+
 }
