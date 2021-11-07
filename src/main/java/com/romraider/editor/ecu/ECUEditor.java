@@ -46,16 +46,19 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,6 +66,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreePath;
 
 import com.romraider.Settings;
@@ -95,6 +99,7 @@ import com.romraider.swing.TableToolBar;
 import com.romraider.swing.TableTreeNode;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+import com.romraider.xml.ConversionLayer.ConversionLayer;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
@@ -255,6 +260,34 @@ public class ECUEditor extends AbstractFrame {
         statusPanel.update(rb.getString("STATUSREADY"), 0);
         repaint();
     }
+    
+	public void handleExportDefinition() {
+		Rom r = getLastSelectedRom();
+		Settings settings = SettingsManager.getSettings();
+		
+        if(null != r) {    	 
+        	JFileChooser fileChooser = new JFileChooser(settings.getLastDefinitionDir());   
+        	fileChooser.setFileFilter(new FileNameExtensionFilter("Editor Definition (.xml)","xml"));
+        	int userSelection = fileChooser.showSaveDialog(this);
+        	 
+        	if (userSelection == JFileChooser.APPROVE_OPTION) {
+        	    File fileToSave = fileChooser.getSelectedFile();
+        	    
+        	    if(!fileToSave.getName().endsWith(".xml") ||!fileToSave.getName().endsWith(".XML"))
+        	    		fileToSave = new File(fileToSave.getAbsoluteFile() + ".xml");
+        	    
+            	String s = ConversionLayer.convertDocumentToString(r.getDocument());
+            	             
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave));
+					writer.write(s);
+	                writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        }
+	}
 
     @Override
     public void windowClosing(WindowEvent e) {
@@ -597,6 +630,8 @@ public class ECUEditor extends AbstractFrame {
     public JScrollPane getRightScrollPane() {
         return this.rightScrollPane;
     }
+
+
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {

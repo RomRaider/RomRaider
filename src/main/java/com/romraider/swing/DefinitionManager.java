@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
@@ -58,7 +59,6 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
         btnMoveDown.addActionListener(this);
         btnApply.addActionListener(this);
         btnUndo.addActionListener(this);
-
     }
 
     private void initSettings() {
@@ -211,11 +211,13 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
     }
 
     public void addFile() {
-        JFileChooser fc = new JFileChooser("./");
-        fc.setFileFilter(new XMLFilter());
+        Settings settings = SettingsManager.getSettings();      
+        JFileChooser fc = new JFileChooser(settings.getLastDefinitionDir());
+        fc.setFileFilter(new DefinitionFilter());
 
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             fileNames.add(fc.getSelectedFile().getAbsolutePath());
+            settings.setLastDefinitionDir(fc.getSelectedFile().getParentFile());
             updateListModel();
         }
     }

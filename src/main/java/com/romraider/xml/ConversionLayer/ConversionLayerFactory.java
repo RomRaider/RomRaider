@@ -25,7 +25,7 @@ public class ConversionLayerFactory {
     
 	//Check if its an .xml file
 	public static boolean requiresConversionLayer(File f) {
-		return !f.getName().matches("^.*\\.(xml|XML)$");
+		return !f.getName().matches(ConversionLayer.xmlRegexFileNameFilter);
 	}
 	
 	public static ConversionLayer getConversionLayerForFile(File f) {

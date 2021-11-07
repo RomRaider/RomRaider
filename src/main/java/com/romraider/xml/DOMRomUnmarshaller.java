@@ -46,36 +46,48 @@ public final class DOMRomUnmarshaller {
     private ChecksumManager checksumManager = null;
     private TableScaleUnmarshaller tableScaleHandler = new TableScaleUnmarshaller();
 
-    public Rom unmarshallXMLDefinition(Node rootNode, byte[] input,
-            JProgressPane progress) throws RomNotFoundException,
+    public Node checkDefinitionMatch(Node rootNode, byte[] input){    	  
+        Node n = findRomNodeMatch(rootNode, null, input);      
+        return n;
+    }
+    
+    public Rom unmarshallXMLDefinition(Node rootNode, Node romNode, byte[] input,
+            JProgressPane progress) throws 
             XMLParseException, StackOverflowError, Exception {
 
         this.progress = progress;
        
         // Unmarshall scales first
-        tableScaleHandler.unmarshallBaseScales(rootNode);
+        tableScaleHandler.unmarshallBaseScales(rootNode);            
+      
+    	Rom rom = new Rom(new RomID());
+        Rom output = unmarshallRom(romNode, rom);
         
-        RomID romId = new RomID();     
-        Node n = findRomNodeMatch(rootNode, null, input, romId);
-       
-        if(n != null) {
-        	Rom rom = new Rom(romId);
-	        Rom output = unmarshallRom(n, rom);
-	        
-	        //Set ram offset
-	        output.getRomID().setRamOffset(
-	                output.getRomID().getFileSize()
-	                - input.length);
-	
-	        return output;
+        //Set ram offset
+        output.getRomID().setRamOffset(
+                output.getRomID().getFileSize()
+                - input.length);
+
+        return output;
+    }
+    
+    public static Node findFirstRomNode(Node rootNode) {
+    	Node n;
+        NodeList nodes = rootNode.getChildNodes();
+        
+        for (int i = 0; i < nodes.getLength(); i++) {
+            n = nodes.item(i);
+
+            if (n.getNodeType() == ELEMENT_NODE
+                    && n.getNodeName().equalsIgnoreCase("rom")) return n;
         }
         
-        throw new RomNotFoundException();
+        return null;
     }
     
     //Find the correct Rom Node either by xmlID or by input bytes
     //Supplying both will return null
-    private Node findRomNodeMatch(Node rootNode, String xmlID, byte[] input, RomID romId) {
+    private Node findRomNodeMatch(Node rootNode, String xmlID, byte[] input) {
         if(xmlID == null && input == null) return null;
         if(xmlID != null && input != null) return null;
         
@@ -95,7 +107,8 @@ public final class DOMRomUnmarshaller {
                     
                     if (n2.getNodeType() == ELEMENT_NODE
                             && n2.getNodeName().equalsIgnoreCase("romid")) {
-
+                    	
+                    	RomID romId = new RomID();
                     	romId = unmarshallRomID(n2, romId);
 
                         //Check if bytes match in file
@@ -183,7 +196,7 @@ public final class DOMRomUnmarshaller {
             throws XMLParseException, RomNotFoundException, StackOverflowError,
             Exception {
     		
-    		Node n = findRomNodeMatch(rootNode, xmlID, null, new RomID());
+    		Node n = findRomNodeMatch(rootNode, xmlID, null);
     		
     		if(n != null) {
 	            Rom returnrom = unmarshallRom(n, rom);

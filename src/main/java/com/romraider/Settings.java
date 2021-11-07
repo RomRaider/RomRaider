@@ -176,6 +176,7 @@ public class Settings implements Serializable {
     private String recentVersion = "x";
 
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
+    private File lastDefDir = new File("definitions");
     private File lastImageDir = new File("images");
     private File lastRepositoryDir = new File("repositories");
     private boolean obsoleteWarning = true;
@@ -320,6 +321,14 @@ public class Settings implements Serializable {
 
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
+    }
+    
+    public File getLastDefinitionDir() {
+        return lastDefDir;
+    }
+
+    public void setLastDefinitionDir(File lastDefDir) {
+        this.lastDefDir = lastDefDir;
     }
 
     public File getLastRepositoryDir() {

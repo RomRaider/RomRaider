@@ -21,6 +21,7 @@ package com.romraider.xml.ConversionLayer;
 import java.io.File;
 import java.io.StringWriter;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -28,7 +29,12 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
-public abstract class ConversionLayer {		
+public abstract class ConversionLayer {	
+	
+	public final static String xmlRegexFileNameFilter = "^.*\\.(xml|XML)$";
+	
+	public abstract String getRegexFileNameFilter();
+	
 	/*
 	 * The actual conversion method. It receives the file and creates a DOM structure
 	 * compatible to the default RR structure. 
@@ -39,15 +45,22 @@ public abstract class ConversionLayer {
 	 * This method receives a file and checks if this converter supports this file
 	 * extension.
 	 */
-	public abstract boolean isFileSupported(File f);
+	public boolean isFileSupported(File f) {
+		return f.getName().matches(getRegexFileNameFilter());
+	}
 		
 	//Can be used in the future to export a .xml file from a Document
-    private static String convertDocumentToString(Document doc) {
+    public static String convertDocumentToString(Document doc) {
         StringWriter sw = new StringWriter();
         
     	try {
-	        TransformerFactory tf = TransformerFactory.newInstance();
+    		TransformerFactory tf = TransformerFactory.newInstance();
+            tf.setAttribute("indent-number", 4);
+            
 	        Transformer trans = tf.newTransformer();
+	        trans.setOutputProperty(OutputKeys.ENCODING, "ASCII");
+	        trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+	        trans.setOutputProperty(OutputKeys.INDENT, "yes");
 	        trans.transform(new DOMSource(doc), new StreamResult(sw));
     	}
         catch(Exception e) {

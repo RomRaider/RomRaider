@@ -53,7 +53,7 @@ import com.romraider.xml.ConversionLayer.ConversionLayer;;
 
 public class BMWCodingConversionLayer extends ConversionLayer {
     private static final Logger LOGGER = Logger.getLogger(BMWCodingConversionLayer.class);
-    
+   
 	private int splitAddress = 0;
 	boolean guessChecksums = false;
 	
@@ -106,10 +106,11 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 	public BMWCodingConversionLayer(int splitAddress, boolean guessChecksums) {
 		this.splitAddress = splitAddress;
 		this.guessChecksums = guessChecksums;
-	}	
-		
-	public boolean isFileSupported(File f) {
-		return f.getName().matches("^.*\\.C\\d\\d$");
+	}
+	
+	@Override
+	public String getRegexFileNameFilter() {
+		 return "^.*\\.C\\d\\d$";
 	}
 	
 	//Reads a string in an array until zero byte
@@ -663,5 +664,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 
 		w.execute();
 	}
+
+
 }
 

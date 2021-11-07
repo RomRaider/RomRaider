@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
@@ -68,6 +69,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
+    private Document doc;
     
     //This keeps track of DataCells on a byte level
     //This might also be possible to achieve by using the same Data Tables
@@ -81,7 +83,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public Rom(RomID romID) {
     	this.romID = romID;
     }
-
+      
     public void refreshDisplayedTables() {
         // Remove all nodes from the ROM tree node.
         super.removeAllChildren();
@@ -288,6 +290,13 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     
     public byte[] getBinary() {
     	return binData;
+    }
+    
+    public void setDocument(Document d) {
+    	this.doc = d;
+    }
+    public Document getDocument() {
+    	return this.doc;
     }
     
     @Override
