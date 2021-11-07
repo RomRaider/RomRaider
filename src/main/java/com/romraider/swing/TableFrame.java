@@ -27,9 +27,7 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
@@ -45,23 +43,6 @@ import com.romraider.maps.Table;
 import com.romraider.maps.TableView;
 import com.romraider.maps.UserLevelException;
 import com.romraider.util.ResourceUtil;
-
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
-
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener, ActionListener {
 

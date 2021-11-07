@@ -185,7 +185,7 @@ public class MDIDesktopPane extends JDesktopPane {
         setAllSize(new Dimension(width, height));
     }
 
-    public void checkDesktopSize() {
+    private void checkDesktopSize() {
         if (getParent() != null && isVisible()) {
             manager.resizeDesktop();
         }
