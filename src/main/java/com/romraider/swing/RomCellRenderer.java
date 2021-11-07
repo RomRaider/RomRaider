@@ -53,7 +53,24 @@ public class RomCellRenderer implements TreeCellRenderer {
         carInfo.setHorizontalAlignment(JLabel.CENTER);
 
     }
-
+    
+    public static ImageIcon getIconForTable(Table t) {
+    	ImageIcon icon = null;
+    	
+        // display icon
+        if (t.getType() == Table.TableType.TABLE_1D) {
+        	icon =  new ImageIcon(RomCellRenderer.class.getResource("/graphics/1d.gif"));
+        } else if (t.getType() == Table.TableType.TABLE_2D) {
+        	icon =  new ImageIcon(RomCellRenderer.class.getResource("/graphics/2d.gif"));      
+        }else if (t.getType() == Table.TableType.TABLE_3D) {
+        	icon =  new ImageIcon(RomCellRenderer.class.getResource("/graphics/3d.gif"));
+        } else if (t.getType() == Table.TableType.SWITCH) {
+        	icon =  new ImageIcon(RomCellRenderer.class.getResource("/graphics/switch.gif"));
+        }
+        
+        return icon;
+    }
+    
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
             boolean selected, boolean expanded, boolean leaf, int row,
@@ -104,19 +121,8 @@ public class RomCellRenderer implements TreeCellRenderer {
             renderer.setBorder(createLineBorder(Color.WHITE));
             JLabel tableName = new JLabel("");
             renderer.setBackground(Color.WHITE);
-
-            // display icon
-            if (table.getType() == Table.TableType.TABLE_1D) {
-                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/1d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TableType.TABLE_2D) {
-                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d.gif")), JLabel.LEFT);
-             //}else if (table.getType() == Table.TableType.TABLE_2D_SWITCHABLE) {
-             //   tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d_masked.gif")), JLabel.LEFT);
-            }else if (table.getType() == Table.TableType.TABLE_3D) {
-                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/3d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TableType.SWITCH) {
-                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/switch.gif")), JLabel.LEFT);
-            }
+            
+            tableName = new JLabel (table.getName() + " ", getIconForTable(table), JLabel.LEFT);
 
             // set color
             renderer.add(tableName);

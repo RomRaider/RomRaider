@@ -88,8 +88,6 @@ public class MDIDesktopPane extends JDesktopPane {
         Component retval = super.add(frame);
         frame.setLocation(p.x, p.y);
 
-        checkDesktopSize();
-
         if (frame.isResizable()) {
             w = getWidth() - (getWidth() / 3);
             h = getHeight() - (getHeight() / 3);
@@ -104,9 +102,9 @@ public class MDIDesktopPane extends JDesktopPane {
 
         moveToFront(frame);
         frame.setVisible(true);
-
+        frame.pack();
+        
         if(frame instanceof TableFrame) {
-            getEditor().getTableToolBar().updateTableToolBar();
             ((TableFrame) frame).RegisterTable();
         }
 
@@ -115,14 +113,19 @@ public class MDIDesktopPane extends JDesktopPane {
         } catch (PropertyVetoException e) {
             frame.toBack();
         }
-
+        
+        checkDesktopSize();
         return retval;
     }
 
     @Override
     public void remove(Component c) {
         super.remove(c);
-        getEditor().getTableToolBar().updateTableToolBar();
+        
+        if(c instanceof TableFrame) {
+            ((TableFrame) c).DeregisterTable();
+        }
+        
         checkDesktopSize();
     }
 
@@ -182,7 +185,7 @@ public class MDIDesktopPane extends JDesktopPane {
         setAllSize(new Dimension(width, height));
     }
 
-    private void checkDesktopSize() {
+    public void checkDesktopSize() {
         if (getParent() != null && isVisible()) {
             manager.resizeDesktop();
         }

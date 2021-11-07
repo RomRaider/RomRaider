@@ -26,7 +26,10 @@ import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
@@ -43,6 +46,23 @@ import com.romraider.maps.TableView;
 import com.romraider.maps.UserLevelException;
 import com.romraider.util.ResourceUtil;
 
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
+
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
+
 public class TableFrame extends JInternalFrame implements InternalFrameListener, ActionListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
@@ -55,11 +75,14 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         super(title, true, true);
         this.tableView = tableView;
         Table t = tableView.getTable();
+        
+        Icon icon = RomCellRenderer.getIconForTable(t);  
+        setFrameIcon(icon);   
+        
         t.setTableFrame(this);
         add(tableView);
         tableView.repaint();
         
-        setFrameIcon(null);
         setBorder(createBevelBorder(0));
         if (System.getProperty("os.name").startsWith("Mac OS"))
             putClientProperty("JInternalFrame.isPalette", true);
@@ -67,11 +90,15 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         tableMenuBar = new TableMenuBar(this);
         setJMenuBar(tableMenuBar);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        addInternalFrameListener(this); 
+        addInternalFrameListener(this);       
     }
     
     public void RegisterTable() {
         TableUpdateHandler.getInstance().registerTable(this.getTable());
+    }
+    
+    public void DeregisterTable() {
+        TableUpdateHandler.getInstance().deregisterTable(this.getTable());
     }
     
     private void updateToolbar(Table t) {
@@ -92,12 +119,11 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
     
     @Override
-    public void internalFrameClosing(InternalFrameEvent e) {
-        TableUpdateHandler.getInstance().deregisterTable(this.getTable());
-    }
+    public void internalFrameClosing(InternalFrameEvent e) {}
     
     @Override
     public void internalFrameOpened(InternalFrameEvent e) {}
+    
     @Override
     public void internalFrameClosed(InternalFrameEvent e) {}
     @Override

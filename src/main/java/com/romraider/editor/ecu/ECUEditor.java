@@ -172,7 +172,6 @@ public class ECUEditor extends AbstractFrame {
         toolBar = new ECUEditorToolBar(rb.getString("EDTOOLS"));
 
         tableToolBar = new TableToolBar();
-        tableToolBar.updateTableToolBar();
 
         CustomToolbarLayout toolBarLayout = new CustomToolbarLayout(
                 FlowLayout.LEFT, 0, 0);
@@ -404,16 +403,14 @@ public class ECUEditor extends AbstractFrame {
         
         // frame not added.  Draw table and add the frame.
         TableView v = frame.getTableView();
-        if(v!=null)v.drawTable();
+        if(v!=null) v.drawTable();
         
-        rightPanel.add(frame);
-        frame.pack();
+        rightPanel.add(frame);       
         rightPanel.repaint();
     }
 
     public void removeDisplayTable(TableFrame frame) {
         frame.setVisible(false);
-        this.getTableToolBar().updateTableToolBar();
         rightPanel.remove(frame);
         rightPanel.validate();
         refreshUI();
@@ -518,7 +515,6 @@ public class ECUEditor extends AbstractFrame {
     {
         getToolBar().updateButtons();
         getEditorMenuBar().updateMenu();
-        getTableToolBar().updateTableToolBar();
         imageList.updateUI();
         imageList.repaint();
         rightPanel.updateUI();

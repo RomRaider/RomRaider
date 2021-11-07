@@ -267,6 +267,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValue.getInputMap().put(enter, "enterAction");
 
         this.setEnabled(true);
+        toggleTableToolBar(null);
     }
 
     public void updateIcons() {
@@ -288,20 +289,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         return imageIcon;
     }
 
-    public Table getTable() {
-        JInternalFrame frame = ECUEditorManager.getECUEditor().getRightPanel().getSelectedFrame();
-        if(null == frame) {
-            return null;
-        }
-
-        if( !(frame instanceof TableFrame) ) {
-            return null;
-        }
-
-
-        return ((TableFrame)frame).getTable();
-    }
-
     @Override
     public void setBorder(Border border) {
         if(SettingsManager.getSettings().isShowTableToolbarBorder()) {
@@ -310,15 +297,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             super.setBorder(BorderFactory.createEmptyBorder());
         }
     }
-
-    public void updateTableToolBar() {
-        Table t = getTable();
-
-        if(t != null)
-            this.updateTableToolBar(t);
-    }
-
-
+    
     private void saveFineCourseValuesInTable(Table t) {
         if(t == null || t.getCurrentScale() == null) return;
 
@@ -346,7 +325,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         if(incCoarse!=0 && incFine != 0) {
             t.updateIncrementDecrementValues(incFine,incCoarse);
         }
-
     }
 
     public void updateTableToolBar(Table selectedTable) {
