@@ -23,7 +23,6 @@ import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -170,6 +169,8 @@ public class ECUEditor extends AbstractFrame {
 
     public void initializeEditorUI() {
         //create menubar
+    	if(menuBar != null && toolBar != null) return;
+    	
         menuBar = new ECUEditorMenuBar();
         this.setJMenuBar(menuBar);
 

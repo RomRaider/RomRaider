@@ -49,7 +49,7 @@ public class DefinitionFilter extends FileFilter {
     public boolean accept(File f) {
         if (f != null) {
             if (f.isDirectory()) {
-                return true;
+                return false;
             }
             for (String s : regexFilters) {
             	if(f.getName().matches(s)) return true;

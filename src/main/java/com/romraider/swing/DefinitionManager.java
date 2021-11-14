@@ -213,11 +213,25 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
     public void addFile() {
         Settings settings = SettingsManager.getSettings();      
         JFileChooser fc = new JFileChooser(settings.getLastDefinitionDir());
+        fc.setMultiSelectionEnabled(true);
         fc.setFileFilter(new DefinitionFilter());
 
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            fileNames.add(fc.getSelectedFile().getAbsolutePath());
-            settings.setLastDefinitionDir(fc.getSelectedFile().getParentFile());
+        	for(File f: fc.getSelectedFiles()) {
+        		boolean alreadyAdded = false;
+        		
+        		//Check if it already exists in the list
+        		for(String path: fileNames) {
+        			if(path.equalsIgnoreCase(f.getAbsolutePath())) {
+        				alreadyAdded = true;
+        				break;
+        			}
+        		}
+        		
+        		if(!alreadyAdded) fileNames.add(f.getAbsolutePath());	        	
+	            settings.setLastDefinitionDir(f.getParentFile());
+        	}
+
             updateListModel();
         }
     }
