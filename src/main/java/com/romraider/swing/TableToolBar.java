@@ -454,7 +454,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
         else{
             overlayLog.setEnabled(false);
-            clearOverlay.setEnabled(false);
+            clearOverlay.setEnabled(false);           
         }
 
         if(null != currentTable && currentTable.isStaticDataTable()) {
@@ -757,6 +757,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         } else if (e.getSource() == overlayLog) {
             // enable/disable log overlay and live data display
             curTable.getTableView().setOverlayLog(overlayLog.isSelected());
+            
+            if(!overlayLog.isSelected())
+            	curTable.getTableView().clearLiveDataTrace();
         }
     }
 
