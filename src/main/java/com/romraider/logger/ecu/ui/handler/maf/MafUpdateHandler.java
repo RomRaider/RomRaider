@@ -43,7 +43,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        if (mafTab.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
+        if (mafTab!= null && mafTab.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
             boolean valid = true;
 
             // cl/ol check

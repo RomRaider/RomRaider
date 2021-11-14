@@ -105,7 +105,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
     private double atm;
 
     public synchronized void handleDataUpdate(Response response) {
-        if (dynoTab.isRecordData() && (containsData(response, RPM, TA)
+        if (dynoTab!=null && dynoTab.isRecordData() && (containsData(response, RPM, TA)
                 || containsData(response, RPM, TV)
                 || containsData(response, VS, TA)
                 || containsData(response, VS))) {
@@ -209,7 +209,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
             startNow = -999999999;
         }
 
-        if (dynoTab.getEnv() && containsData(response, IAT, ATM)) {
+        if (dynoTab!=null && dynoTab.getEnv() && containsData(response, IAT, ATM)) {
             if (TEST) {
                 iat = 27;
                 atm = 14.54;

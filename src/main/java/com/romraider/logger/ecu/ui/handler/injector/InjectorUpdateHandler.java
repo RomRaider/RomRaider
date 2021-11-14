@@ -43,7 +43,7 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        if (injectorTab.isRecordData()
+        if (injectorTab!= null && injectorTab.isRecordData()
                 && (containsData(response, PULSE_WIDTH_16, ENGINE_LOAD_16)
                 || containsData(response, PULSE_WIDTH_32, ENGINE_LOAD_32))) {
             boolean valid = true;

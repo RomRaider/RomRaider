@@ -324,6 +324,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
         injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
         dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
+        
+        injectorUpdateHandler.setInjectorTab(injectorTab);
+        mafUpdateHandler.setMafTab(mafTab);
+        dynoUpdateHandler.setDynoTab(dynoTab);
     }
     
     private void construct() {
@@ -441,18 +445,22 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         controller = new LoggerControllerImpl(ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, injectorUpdateHandler,
                 dynoUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
+        
         mafHandlerManager = new DataUpdateHandlerManagerImpl();
-        mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
-
+        mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);        
+        mafTab = new MafTabImpl(mafTabBroker, ecuEditor);        
         mafUpdateHandler.setMafTab(mafTab);
-        injectorHandlerManager = new DataUpdateHandlerManagerImpl();
+        
+        injectorHandlerManager = new DataUpdateHandlerManagerImpl();       
         injectorTabBroker = new DataRegistrationBrokerImpl(controller, injectorHandlerManager);
-
+        injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);        
         injectorUpdateHandler.setInjectorTab(injectorTab);
+        
         dynoHandlerManager = new DataUpdateHandlerManagerImpl();
         dynoTabBroker = new DataRegistrationBrokerImpl(controller, dynoHandlerManager);
-
+        dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
         dynoUpdateHandler.setDynoTab(dynoTab);
+        
         resetManager = new ResetManagerImpl(this);
         messageLabel = new JLabel(ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -476,9 +484,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
         dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
         
-        mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
-        injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
-        dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
+
+
     }
 
     public void loadLoggerParams() {
