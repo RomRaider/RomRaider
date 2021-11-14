@@ -24,28 +24,28 @@ import static com.romraider.Version.BUILDNUMBER;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
 import static com.romraider.Version.VERSION;
-import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
+import static com.romraider.editor.ecu.ECUEditorManager.*;
 import static com.romraider.logger.ecu.EcuLogger.startLogger;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
 import static com.romraider.util.LogManager.initDebugLogging;
-import static com.romraider.util.RomServer.isRunning;
-import static com.romraider.util.RomServer.sendRomToOpenInstance;
-import static com.romraider.util.RomServer.waitForRom;
+import static com.romraider.EditorLoggerCommunication.*;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
-import static javax.swing.SwingUtilities.invokeLater;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import static org.apache.log4j.Logger.getLogger;
 
-import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.util.JREChecker;
 import com.romraider.util.ResourceUtil;
 
@@ -91,24 +91,29 @@ public class ECUExec {
 
         // set look and feel
         initLookAndFeel();
-
+        setExecType(args);
+        
         // check if already running
-        if (isRunning()) {
-            if (args.length == 0 || containsLoggerArg(args)) {
-                showAlreadyRunningMessage();
-            } else {
-                sendRomToOpenInstance(args[0]);
-            }
+        if (isRunning()) {        	
+        	//The other exectuable will open us, close this app
+        	EditorLoggerCommunication.sendTypeToOtherExec(args);
         } else {
             // open editor or logger
             if (containsLoggerArg(args)) {
-                openLogger(args);
+                openLogger(DISPOSE_ON_CLOSE, args);
             } else {
-                openEditor(args);
+                openEditor(DISPOSE_ON_CLOSE, args);
             }
+            
+            startExecCommunication();
         }
     }
 
+    private static void setExecType(String[] args) {
+    	Exec_type execType = containsLoggerArg(args) ? Exec_type.LOGGER : Exec_type.EDITOR;
+    	EditorLoggerCommunication.setExectable(execType, args);
+    }
+    
     private static void showAlreadyRunningMessage() {
         showMessageDialog(null,
                 MessageFormat.format(rb.getString("ISRUNNING"), PRODUCT_NAME),
@@ -117,50 +122,62 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (arg.equalsIgnoreCase(START_LOGGER_ARG) || arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG) || arg.equalsIgnoreCase(LOGGER_TOUCH_ARG)) {
+            if (	arg.equalsIgnoreCase(START_LOGGER_ARG) || 
+            		arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG) ||
+            		arg.equalsIgnoreCase(LOGGER_TOUCH_ARG)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static void openLogger(String[] args) {
-        startLogger(EXIT_ON_CLOSE, args);
+    private static void openLogger(int defaultCloseOperation, String[] args) {
+        startLogger(defaultCloseOperation, getECUEditorWithoutCreation(), args);
     }
 
-    private static void openRom(final ECUEditor editor, final String rom) {
-        invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    File file = new File(rom);
-                    editor.openImage(file);
-                } catch (Exception ex) {
-                    LOGGER.error(rb.getString("ERRROM"), ex);
-                }
-            }
-        });
-    }
-
-    private static void openEditor(String[] args) {
+    private static void openEditor(int defaultCloseOperation, String[] args) {
         ECUEditor editor = getECUEditor();
+        editor.setDefaultCloseOperation(defaultCloseOperation);
         editor.initializeEditorUI();
         editor.checkDefinitions();
 
         if (args.length > 0) {
-            openRom(editor, args[0]);
+            editor.openImage(args[0]);
         }
-        startRomListener(editor);
     }
 
-    private static void startRomListener(ECUEditor editor) {
-        try {
-            while (true) {
-                String rom = waitForRom();
-                openRom(editor, rom);
-            }
-        } catch (Throwable e) {
-            LOGGER.error(rb.getString("ERROR"), e);
-        }
+    private static void startExecCommunication() {
+	    while (true) {
+	    	try {
+	    		ExecutableInstance instance = EditorLoggerCommunication.waitForOtherExec();
+	    		
+	    		if(instance.execType == Exec_type.LOGGER) {
+	    			if(EditorLoggerCommunication.getExecutableType() == Exec_type.LOGGER ||
+	    					EcuLogger.getEcuLoggerWithoutCreation() != null) {
+	    				showAlreadyRunningMessage();
+	    				continue;
+	    			}
+	    					    		
+	    			openLogger(DISPOSE_ON_CLOSE, instance.currentArgs);	    					    		
+	    			LOGGER.info("Opening Logger with args: " +  Arrays.toString(instance.currentArgs));
+	    		}
+	    		else if(instance.execType == Exec_type.EDITOR) {
+	    			openEditor(DISPOSE_ON_CLOSE, instance.currentArgs);	
+	    			
+		    		if(EditorLoggerCommunication.getExecutableType() == Exec_type.LOGGER) { 
+		    			EcuLogger.getEcuLoggerWithoutCreation().setEcuEditor(
+		    					ECUEditorManager.getECUEditorWithoutCreation());
+		    		}
+		    		
+	    			LOGGER.info("Opening Editor with args: " +  Arrays.toString(instance.currentArgs));
+	    		}
+	    		else {
+	    			LOGGER.error("Unknown type in Editor/Logger communication with args: " +  Arrays.toString(instance.currentArgs));
+	    		}
+	    		
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
     }
 }

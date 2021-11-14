@@ -28,7 +28,15 @@ public class ECUEditorManager {
     private ECUEditorManager() {
         throw new UnsupportedOperationException();
     }
-
+    
+    public static ECUEditor getECUEditorWithoutCreation() {
+    	return editor;
+    }
+       
+    public static void clearECUEditor() {
+    	editor = null;
+    }
+    
     public static ECUEditor getECUEditor() {
         if (editor == null) {
             try {

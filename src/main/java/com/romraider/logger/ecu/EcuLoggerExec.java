@@ -41,7 +41,7 @@ public final class EcuLoggerExec {
         LookAndFeelManager.initLookAndFeel();
 
         // start logger
-        EcuLogger.startLogger(EXIT_ON_CLOSE, args);
+        EcuLogger.startLogger(EXIT_ON_CLOSE, null, args);
     }
 
 }

@@ -66,7 +66,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             ECUEditorMenuBar.class.getName());
     private final JMenu fileMenu = new JMenu(rb.getString("FILE"));
     private final JMenuItem openImage = new JMenuItem(rb.getString("OPENIMG"));
-    private final JMenuItem openImages = new JMenuItem(rb.getString("OPENIMGS"));
     private final JMenuItem quickSaveImage = new JMenuItem(rb.getString("SAVE"));
     private final JMenuItem saveImage = new JMenuItem(rb.getString("SAVEAS"));
     private final JMenuItem saveAsRepository = new JMenuItem(rb.getString("SAVEREPO"));
@@ -118,10 +117,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(openImage);
         openImage.addActionListener(this);
         openImage.setMnemonic('O');
-
-        //fileMenu.add(openImages);
-        //openImages.addActionListener(this);
-        //openImages.setMnemonic('I');
                
         fileMenu.add(saveImage);
         saveImage.addActionListener(this);
@@ -253,12 +248,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
 
         // logger menu items
+        /*
         add(loggerMenu);
         loggerMenu.setMnemonic('L');
 
         loggerMenu.add(openLogger);
         openLogger.addActionListener(this);
-        openLogger.setMnemonic('O');
+        openLogger.setMnemonic('O');*/
 
         // ramtune menu items
         add(ramTuneMenu);
@@ -338,7 +334,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             convertDecrease.setEnabled(false);
         }
 
-        openImages.setEnabled(false);
         editDefinition.setEnabled(false);
         revalidate();
     }
@@ -354,16 +349,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                         new DebugPanel(ex, getSettings().getSupportURL()),
                         rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
-
-        } else if (e.getSource() == openImages) {
-            try {
-                openImagesDialog();
-            } catch (Exception ex) {
-                showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()),
-                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
-            }
-
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(false);
@@ -501,22 +486,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         ECUEditor parent = ECUEditorManager.getECUEditor();
         JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
+        fc.setMultiSelectionEnabled(true);
         fc.setDialogTitle(rb.getString("OPENIMG"));
 
         if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-            parent.openImage(fc.getSelectedFile());
-            SettingsManager.getSettings().setLastImageDir(fc.getCurrentDirectory());
-        }
-    }
-
-    public void openImagesDialog() throws Exception {
-        ECUEditor parent = ECUEditorManager.getECUEditor();
-        JFileChooser fc = new JFileChooser(getSettings().getLastImageDir());
-        fc.setFileFilter(new ECUImageFilter());
-        fc.setMultiSelectionEnabled(true);
-        fc.setDialogTitle(rb.getString("OPENIMGS"));
-
-        if(fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImages(fc.getSelectedFiles());
             SettingsManager.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }

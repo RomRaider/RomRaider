@@ -259,6 +259,14 @@ public class ECUEditor extends AbstractFrame {
         SettingsManager.save(settings, statusPanel);
         statusPanel.update(rb.getString("STATUSREADY"), 0);
         repaint();
+        
+        if(EcuLogger.getEcuLoggerWithoutCreation()== null) {
+        	System.exit(0);
+        }       
+        else{
+        	ECUEditorManager.clearECUEditor();
+        	EcuLogger.getEcuLoggerWithoutCreation().setEcuEditor(null);
+        }
     }
     
 	public void handleExportDefinition() {
@@ -564,22 +572,20 @@ public class ECUEditor extends AbstractFrame {
             }
         }
     }
-
-    public void openImage(File inputFile) throws Exception {
+    
+    public void openImage(String filePath){
+        File file = new File(filePath);
+        openImage(file);
+    }
+    
+    public void openImage(File inputFile){
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         openImageWorker = new OpenImageWorker(inputFile);
         openImageWorker.addPropertyChangeListener(getStatusPanel());
         openImageWorker.execute();
     }
 
-    public void openImages(File[] inputFiles) throws Exception {
-        if(inputFiles.length < 1) {
-            showMessageDialog(this,
-                    rb.getString("IMAGENOTFOUND"),
-                    rb.getString("ERRORLOADING"),
-                    ERROR_MESSAGE);
-            return;
-        }
+    public void openImages(File[] inputFiles){   
         for(int j = 0; j < inputFiles.length; j++) {
             openImage(inputFiles[j]);
         }
@@ -630,8 +636,6 @@ public class ECUEditor extends AbstractFrame {
     public JScrollPane getRightScrollPane() {
         return this.rightScrollPane;
     }
-
-
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {
@@ -643,7 +647,7 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
         ECUEditor editor = ECUEditorManager.getECUEditor();
         editor.getStatusPanel().setStatus(ECUEditor.rb.getString("LAUNCHLOGGER"));
         setProgress(10);
-        EcuLogger.startLogger(javax.swing.WindowConstants.DISPOSE_ON_CLOSE, editor);
+        EcuLogger.startLogger(javax.swing.WindowConstants.DISPOSE_ON_CLOSE, editor, null);
         return null;
     }
 
