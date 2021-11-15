@@ -1,4 +1,4 @@
-                - RomRaider 0.7.2 NOV11 2020 -
+                - RomRaider 0.8.0 NOV14 2021 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,27 +33,49 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.7.2 NOV11 2020 Notes (11/11/2020) -
+- 0.8.0 NOV14 2021 Notes (11/14/2021) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.7.2 NOV11 2020 Known Issues -
+- 0.8.0 NOV14 2021 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
-  - Switching between SSM, OBD and DS2 protocol mode may not update the parameter
-    list completely.  A Logger restart will update the list correctly.
+  - Switching between SSM, OBD, DS2 and NCS protocol mode may not update the
+    parameter list completely.  A Logger restart will update the list correctly.
 Status of these items and more can be viewed at:
     https://github.com/RomRaider/RomRaider/issues?labels=bug&state=open
 
 --------------
 - Change Log -
 --------------
+
+0.8.0 NOV14 2021 (11/14/2020)
+----------------------------------
+
+- Logger
+  - Nissan CAN Logger implementation
+  - Fixed dyno locale problem
+  - Fixed timestamps, dyno def warning, NaN loading, null pointer exceptions
+  - Refined NCS protocol processing in prep for NCS CAN logging, NCS ECU ID is now 6-bytes
+
+- Editor
+  - Fixed copy paste issue and reversed copying
+  - Performance improvement
+  - Changed Bosch axis layout to dataLayout='bosch_subtract'
+  - Implemented subcategories with //
+  - Editor redesign
+  - Added Bosch axis layout
+  - Enabled xml parser to use xinclude
+  - Corrections to ALT2 16-bit checksum after code tests
+  - Expand NCS ECU ID to 6 bytes
+  - Adjust RomServer socket number, fix for issue #88
+
 
 0.7.2 NOV11 2020 (11/11/2020)
 ----------------------------------
@@ -94,7 +116,7 @@ Status of these items and more can be viewed at:
 
 RomRaider GUI is now ready for translation.
 Visit https://github.com/RomRaider/RomRaider/wiki/GUI-Translation to see the
-guide. 
+guide.
   - All GUI text moved to resource bundle property files under i18n
 
 - Editor
@@ -105,7 +127,7 @@ guide.
   - Expand MS42 address range, fix for issue RomRaider#90
   - Implement overlay enhancement to highlight current cell, issue #71
   - Added support for values encoded in SH-2A MOVI20 instruction
-  
+
 - Logger
   - Added Nissan logging support via J2534 cable using K-line
   - Update Dyno tab to support different Throttle parameters
@@ -115,7 +137,7 @@ guide.
   - Split SSM LTV queries into two sets to fix issue #72
   - Change LM2 MTS plugin to poll mode by default
   - Fix Learning Tables View showing incorrect table axis values: issue#67
-  
+
 
 0.5.9 RC3 (09/28/2016)
 ----------------------------------
@@ -206,7 +228,7 @@ guide.
   - Added support for additional Checksum validation/corrections found in BRZ ROMs
   - Removed BareBonesBrowser library, now uses existing class
   - Updated Java 3D libraries to version 1.5.2
-     
+
 - Logger
   - Fixed Learning Table Values international character support
   - Added support for PLX SM-AFR Gen 3
@@ -263,7 +285,7 @@ Operational Notes
     - The use of ISO15765 requires a J2534 compliant cable.  Since the J2534
       specification only defines Windows 32bit systems as a valid platform,
       Linux systems are not officially supported.  When/if a Linux J2534 driver
-      becomes available then support can be enabled for non-Windows platforms. 
+      becomes available then support can be enabled for non-Windows platforms.
 
 
 0.5.6 RC6 (03/24/2013)
@@ -283,7 +305,7 @@ Operational Notes
   - fix for issue #4 (multiple Query Managers could be started)
   - update 'Log to file' button to switch between 'Start/Stop' in the label
   - add a rudimentary test app to read some OBD-II parameters [*4]
-  - reformat (shorten) display of Profile and log file names in Logger title bar 
+  - reformat (shorten) display of Profile and log file names in Logger title bar
 
 - Application Installer
   - added a Java 64bit VM check and warning during installation: by lizzardo [*1]
@@ -303,7 +325,7 @@ Notes
 [3] - The use of ISO15765 requires a J2534 compliant cable.  Since the J2534
       specification only defines Windows 32bit systems as a valid platform,
       Linux systems are not officially supported.  When/if a Linux J2534 driver
-      becomes available then support can be enabled for non-Windows platforms. 
+      becomes available then support can be enabled for non-Windows platforms.
 [4] - This rudimentary test app ONLY works with J2534 compliant cables and ONLY
       supports the ISO15765 protocol.  It can currently read out the vehicle
       information and any active DTCs.  The app can only be started from a
@@ -476,13 +498,13 @@ Application Installer
 - Moved settings.xml & profile_backup.xml to the /.RomRaider/ directory under the
   users home directory.
 - Added support to reset the TCU.  The reset target is selected via the action bar
-  Checkbox items ECU or TCU just like logging. 
+  Checkbox items ECU or TCU just like logging.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
 - Added a Checksum recalculation option when saving ROM images that have a bad Checksum
   (re: Diesel ROMs seem to have an invalid fifth Checksum)
-  
+
 
 0.5.3b RC10 (09/12/2011)
 ------------------------
