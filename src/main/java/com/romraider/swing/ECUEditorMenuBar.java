@@ -117,7 +117,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(openImage);
         openImage.addActionListener(this);
         openImage.setMnemonic('O');
-               
+
         fileMenu.add(saveImage);
         saveImage.addActionListener(this);
         saveImage.setMnemonic('S');
@@ -125,26 +125,26 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(saveAsRepository);
         saveAsRepository.setMnemonic('D');
         saveAsRepository.addActionListener(this);
-        
+
         fileMenu.add(quickSaveImage);
         quickSaveImage.addActionListener(this);
         quickSaveImage.setMnemonic('q');
-        
+
         fileMenu.add(refreshImage);
         refreshImage.addActionListener(this);
         refreshImage.setMnemonic('R');
-        
+
         fileMenu.add(new JSeparator());
-        
+
         fileMenu.add(exportDef);
-        exportDef.addActionListener(this);          
+        exportDef.addActionListener(this);
        // exportDef.setMnemonic('C');
         fileMenu.add(new JSeparator());
 
         fileMenu.add(closeImage);
         closeImage.addActionListener(this);
         closeImage.setMnemonic('C');
-             
+
         //fileMenu.add(closeAll);
         //closeAll.addActionListener(this);
         //closeAll.setMnemonic('A');
@@ -248,13 +248,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
 
         // logger menu items
-        /*
         add(loggerMenu);
         loggerMenu.setMnemonic('L');
 
         loggerMenu.add(openLogger);
         openLogger.addActionListener(this);
-        openLogger.setMnemonic('O');*/
+        openLogger.setMnemonic('O');
 
         // ramtune menu items
         add(ramTuneMenu);
@@ -315,7 +314,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeImage.setText(MessageFormat.format(
                 rb.getString("CLOSEF"), file));
         romProperties.setText(MessageFormat.format(
-                rb.getString("PROPERTIESF"), file));        
+                rb.getString("PROPERTIESF"), file));
 
         int lastSelectedRomSize = 0;
         Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
@@ -380,7 +379,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == closeAll) {
             parent.closeAllImages();
         } else if (e.getSource() == exportDef) {
-            parent.handleExportDefinition();  
+            parent.handleExportDefinition();
         } else if (e.getSource() == exit) {
             parent.handleExit();
             System.exit(0);
@@ -498,9 +497,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void saveImage(boolean quickSave) throws Exception {
     	Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
         if (lastSelectedRom != null) {
-        	
+
         	File selectedFile = lastSelectedRom.getFullFileName();
-        	if(!quickSave) selectedFile = getImageOutputFile(); 
+        	if(!quickSave) selectedFile = getImageOutputFile();
 
             if(null != selectedFile){
                 byte[] output = lastSelectedRom.saveFile();
@@ -511,12 +510,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private File getImageOutputFile() throws Exception {
         ECUEditor parent = ECUEditorManager.getECUEditor();
-       
+
         JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
         if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
-            
+
             //Append suffix if user didn't set anything
             if(!selectedFile.getName().contains(".")) {
             	Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
@@ -525,7 +524,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             	if(lastFile.endsWith(".hex")) format=".hex";
             	selectedFile = new File(selectedFile + format);
             }
-                      
+
             if (selectedFile.exists()) {
                 int option = showConfirmDialog(parent,
                         MessageFormat.format(
@@ -537,7 +536,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     return null;
                 }
             }
-                     
+
             return selectedFile;
         }
         return null;
@@ -614,7 +613,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     try {
                         out.close();
                     } catch(Exception ex) {
-                        ;// Do Nothing.
+                        // Do Nothing.
                     }
                 }
             }
