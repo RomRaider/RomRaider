@@ -94,7 +94,7 @@ public final class QueryManagerImpl implements QueryManager {
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
         this.updateHandlers = dataUpdateHandlers;
-        stop = true;       
+        stop = true;
     }
 
     @Override
@@ -113,11 +113,11 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void addQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
-        
+
         //Reset stats
         queryCounter = 0;
         queryStart = System.currentTimeMillis();
-        
+
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
         if (loggerData.getDataType() == EXTERNAL) {
@@ -132,16 +132,16 @@ public final class QueryManagerImpl implements QueryManager {
     @Override
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
-        
+
         //Reset stats
         queryCounter = 0;
         queryStart = System.currentTimeMillis();
-        
+
         removeList.add(buildQueryId(callerId, loggerData));
         if (loggerData.getDataType() != EXTERNAL) {
             pollState.setNewQuery(true);
         }
-        
+
     }
 
     @Override
@@ -163,18 +163,12 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             stop = false;
-            
+
             while (!stop) {
+                notifyConnecting();
                 Module target = settings.getDestinationTarget();
-                
-                if(target == null || settings.getLoggerPort() == null ) {
-                	notifyStopped();
-                }
-                else {
-                	notifyConnecting();
-                }
-                
-                if (!settings.isLogExternalsOnly() &&  (target != null && settings.getLoggerPort() != null && doEcuInit(target))) {
+
+                if (!settings.isLogExternalsOnly() &&  doEcuInit(target)) {
                     notifyReading();
                     runLogger(target);
                 } else if (settings.isLogExternalsOnly()) {
@@ -190,14 +184,14 @@ public final class QueryManagerImpl implements QueryManager {
             notifyStopped();
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
             LOGGER.debug("QueryManager stopped.");
-            
+
             if (dataUpdater != null) {
 	            dataUpdater.stopUpdater();
             }
         }
     }
 
-    private boolean doEcuInit(Module module) {    	
+    private boolean doEcuInit(Module module) {
         try {
             LoggerConnection connection =
                     getConnection(settings.getLoggerProtocol(),
@@ -213,7 +207,7 @@ public final class QueryManagerImpl implements QueryManager {
             } finally {
                 connection.close();
             }
-        } catch (Exception e) {       	
+        } catch (Exception e) {
             messageListener.reportMessage(MessageFormat.format(rb.getString("INITFAIL"), module.getName()));
             logError(e);
             return false;
@@ -242,14 +236,14 @@ public final class QueryManagerImpl implements QueryManager {
 
         try {
             txManager.start();
-            
+
             if(dataUpdater != null && dataUpdater.isRunning()) {
             	dataUpdater.stopUpdater();
             }
-            
+
 			dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
 	    	dataUpdater.start();
-            
+
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
                 pollState.setFastPoll(settings.isFastPoll());
@@ -260,7 +254,7 @@ public final class QueryManagerImpl implements QueryManager {
                         endEcuQueries(txManager);
                         pollState.setLastState(PollingState.State.STATE_0);
                     }
-                    
+
                     queryStart = System.currentTimeMillis();
                     queryCounter = 0;
                     messageListener.reportMessage(rb.getString("SELECTPARAMS"));
@@ -320,7 +314,7 @@ public final class QueryManagerImpl implements QueryManager {
                     while (currentTimeMillis() < end) {
                         sleep(1L);
                     }
-                    
+
                     handleQueryResponse();
                     queryCounter++;
                     messageListener.reportMessage(MessageFormat.format(
@@ -366,8 +360,8 @@ public final class QueryManagerImpl implements QueryManager {
         if (settings.isFileLoggingControllerSwitchActive())
             monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
         final Response response = buildResponse(queryMap.values());
-        
-        
+
+
         dataUpdater.addResponse(response);
     }
 
