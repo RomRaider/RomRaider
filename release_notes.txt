@@ -1,4 +1,4 @@
-                - RomRaider 0.8.0 NOV14 2021 -
+                - RomRaider 0.8.1 NOV27 2021 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.8.0 NOV14 2021 Notes (11/14/2021) -
+- 0.8.1 NOV27 2021 Notes (11/27/2021) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.8.0 NOV14 2021 Known Issues -
+- 0.8.1 NOV27 2021 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,16 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.8.1 NOV27 2021 (11/27/2020)
+----------------------------------
+
+- Logger
+  - Logger fails to connect when the computer has no COM ports defined
+
+- Editor
+  - Restored Logger launch menu item
+
 
 0.8.0 NOV14 2021 (11/14/2020)
 ----------------------------------
