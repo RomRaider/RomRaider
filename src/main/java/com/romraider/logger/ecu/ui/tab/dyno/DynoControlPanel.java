@@ -52,7 +52,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -211,7 +210,7 @@ public final class DynoControlPanel extends JPanel {
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
     private String vsLogUnits = LOG_VS_I;
-    private String throttle_param = THROTTLE_ANGLE;;
+    private String throttle_param = THROTTLE_ANGLE;
     private final double[] results = new double[5];
     private final String[] resultStrings = new String[6];
     //    private String hpUnits = "hp(I)";
@@ -1042,14 +1041,14 @@ public final class DynoControlPanel extends JPanel {
                         "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
                         "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
-                	
+
                 	//Convert everything to . notation
                     String[] values = line.split(delimiter);
-                    
+
                     for(int i=0; i < values.length;i++) {
                     	values[i] = values[i].replace(',', '.');
                     }
-                                                       
+
                     if (Double.parseDouble(values[taCol]) > tpsMin) {
                         double logTime = 0;
                         if (atrTime) {
@@ -1370,7 +1369,7 @@ public final class DynoControlPanel extends JPanel {
             }
         });
         minTpsField.setInputVerifier(new NumberVerifier("Threshold"));
-        String thres = getSettings().getDynoThreshold();    
+        String thres = getSettings().getDynoThreshold();
         minTpsField.setText(thres);
 
         tpsMin = parseDouble(minTpsField);
@@ -1501,7 +1500,7 @@ public final class DynoControlPanel extends JPanel {
             gearList[g - 1] = Integer.toString(g);
         }
     }
-    
+
     public void checkDynoDefs() {
     	if (carTypeArr[0].trim().equals(MISSING_CAR_DEF)){
 	        Object[] options = {"Yes", "No"};
@@ -1521,7 +1520,7 @@ public final class DynoControlPanel extends JPanel {
 	        }
     	}
     }
-    
+
     private void changeCars(int index) {
         if (!carTypeArr[0].trim().equals(MISSING_CAR_DEF)) {
             iButton.doClick();
@@ -1555,24 +1554,24 @@ public final class DynoControlPanel extends JPanel {
     private void loadCars() {
         try {
             File carDef = null;
-         
+
             //Look through some folders to find the car definition file
             //Do NOT delete the "", this also searches through the local folder!
             final String searchPaths[] = {getSettings().getLoggerDefinitionFilePath(), getSettings().getLoggerProfileFilePath(), ""};
-            
+
             for (String s : searchPaths) {
             	File f = new File(s);
             	File path_test = new File(f.getParent(), CARS_FILE);
-            	
+
             	if(path_test.exists()) {
                     LOGGER.info("Loaded dyno definition file from " + path_test.getAbsolutePath());
             		carDef = path_test;
             		break;
             	}
             }
-            
+
             if(carDef == null) throw new FileNotFoundException(MISSING_CAR_DEF);
-            
+
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document carsDef = docBuilder.parse(carDef);
@@ -1677,7 +1676,7 @@ public final class DynoControlPanel extends JPanel {
         }
         catch (Throwable t) {    // file not found
             carTypeArr = new String[]{MISSING_CAR_DEF};
-            LOGGER.warn("No car_definition.xml file found!");
+            LOGGER.warn("No " + CARS_FILE + " file found, possible missing DTD issue?");
             //t.printStackTrace();
         }
     }
