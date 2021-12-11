@@ -60,7 +60,6 @@ import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import com.romraider.maps.DataCell;
-import com.romraider.maps.DataCellView;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
