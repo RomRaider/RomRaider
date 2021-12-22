@@ -71,7 +71,7 @@ public final class NCSProtocol implements ProtocolNCS {
     public static final int RESPONSE_NON_DATA_BYTES = 3;
     public static final int ADDRESS_SIZE = 3;
     public static Module module;
-    
+
     @Override
     public byte[] constructEcuFastInitRequest(Module module) {
         checkNotNull(module, "module");
@@ -133,7 +133,7 @@ public final class NCSProtocol implements ProtocolNCS {
             Module module, byte[] address, byte[] values) {
 
         throw new UnsupportedProtocolException(
-                "Write memory command is not supported on for address: " + 
+                "Write memory command is not supported on for address: " +
                 asHex(address));
     }
 
@@ -143,7 +143,7 @@ public final class NCSProtocol implements ProtocolNCS {
             Module module, byte[] address, byte value) {
 
         throw new UnsupportedProtocolException(
-                "Write Address command is not supported on for address: " + 
+                "Write Address command is not supported on for address: " +
                 asHex(address));
     }
 
@@ -153,7 +153,7 @@ public final class NCSProtocol implements ProtocolNCS {
             Module module, byte[] address, int numBytes) {
 
         throw new UnsupportedProtocolException(
-                "Read memory command is not supported on for address: " + 
+                "Read memory command is not supported on for address: " +
                 asHex(address));
     }
 
@@ -163,7 +163,7 @@ public final class NCSProtocol implements ProtocolNCS {
             int numBytes) {
 
         throw new UnsupportedProtocolException(
-                "Read memory command is not supported on for address: " + 
+                "Read memory command is not supported on for address: " +
                 asHex(address[0]));
     }
 
@@ -195,7 +195,7 @@ public final class NCSProtocol implements ProtocolNCS {
             PollingState pollState) {
         byte opt_byte3;
         if (pollState.isFastPoll()) {
-            // continuously read response of previously loaded addresses 
+            // continuously read response of previously loaded addresses
             // len 0x21 0x81 0x06 0x01 checksum
             opt_byte3 = (byte) 0x06;
         }
@@ -261,7 +261,7 @@ public final class NCSProtocol implements ProtocolNCS {
         byte responseType = processedResponse[4];
         if (responseType != ECU_RESET_RESPONSE) {
             throw new InvalidResponseException(
-                    "Unexpected OBD Reset response: " + 
+                    "Unexpected OBD Reset response: " +
                     asHex(processedResponse));
         }
     }
@@ -274,43 +274,53 @@ public final class NCSProtocol implements ProtocolNCS {
     public ConnectionProperties getDefaultConnectionProperties() {
         return new KwpConnectionProperties() {
 
+            @Override
             public int getBaudRate() {
                 return 10400;
             }
 
+            @Override
             public void setBaudRate(int b) {
 
             }
 
+            @Override
             public int getDataBits() {
                 return 8;
             }
 
+            @Override
             public int getStopBits() {
                 return 1;
             }
 
+            @Override
             public int getParity() {
                 return 0;
             }
 
+            @Override
             public int getConnectTimeout() {
                 return 2000;
             }
 
+            @Override
             public int getSendTimeout() {
                 return 255;
             }
 
 
+            @Override
             public int getP1Max() {
                 return 0;
             }
 
+            @Override
             public int getP3Min() {
                 return 5;
             }
 
+            @Override
             public int getP4Min() {
                 return 0;
             }
@@ -319,7 +329,7 @@ public final class NCSProtocol implements ProtocolNCS {
 
     private final byte[] buildRequest(byte command, boolean shortHeader,
             byte[]... content) {
-    
+
         int length = 1;
         for (byte[] tmp : content) {
             length += tmp.length;
@@ -352,7 +362,7 @@ public final class NCSProtocol implements ProtocolNCS {
 
     private final byte[] buildSidPidRequest(byte command, boolean shortHeader,
             byte[]... content) {
-    
+
         int length = 3;
         for (byte[] tmp : content) {
             length += tmp.length;
@@ -387,7 +397,7 @@ public final class NCSProtocol implements ProtocolNCS {
 
     private final byte[] buildLoadAddrRequest(boolean shortHeader,
             byte[]... content) {
-    
+
         int length = 2;
         byte[] request = new byte[0];
         try {
@@ -413,7 +423,7 @@ public final class NCSProtocol implements ProtocolNCS {
                     bb.write(tmp, 1, tmp.length - 1);
                     continue;
                 }
-                if (tmp[0] == (byte) 0xFF) {
+                if (tmp.length == 3 && (tmp[0] & 0x80) == 0x80) {
                     bb.write(FIELD_TYPE_83);
                     bb.write((byte) 0xFF);
                     bb.write(tmp, 0, 3);

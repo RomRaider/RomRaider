@@ -68,7 +68,7 @@ public final class NCSProtocol implements ProtocolNCS {
     public static final int RESPONSE_NON_DATA_BYTES = 4;
     public static final int ADDRESS_SIZE = 4;
     public static Module module;
-    
+
     // not implemented
     @Override
     public byte[] constructEcuFastInitRequest(Module module) {
@@ -139,7 +139,7 @@ public final class NCSProtocol implements ProtocolNCS {
             Module module, byte[] address, byte[] values) {
 
         throw new UnsupportedProtocolException(
-                "Write memory command is not supported on for address: " + 
+                "Write memory command is not supported on for address: " +
                 asHex(address));
     }
 
@@ -148,7 +148,7 @@ public final class NCSProtocol implements ProtocolNCS {
             Module module, byte[] address, byte value) {
 
         throw new UnsupportedProtocolException(
-                "Write Address command is not supported on for address: " + 
+                "Write Address command is not supported on for address: " +
                 asHex(address));
     }
 
@@ -158,7 +158,8 @@ public final class NCSProtocol implements ProtocolNCS {
         NCSProtocol.module = module;
         // 000007E023 4-byte_address 2-byte_numBytes
         final byte[] frame = new byte[6];
-        if (address[0] == -1) {
+        if (address.length == 3 && (address[0] & 0x80) == 0x80) {
+            // expand a 6-byte RAM address to 8-bytes
             frame[0] = (byte) 0xFF;
         }
         System.arraycopy(address, 0, frame, 4-address.length, address.length);
@@ -251,7 +252,7 @@ public final class NCSProtocol implements ProtocolNCS {
         byte responseType = processedResponse[4];
         if (responseType != ECU_RESET_RESPONSE) {
             throw new InvalidResponseException(
-                    "Unexpected OBD Reset response: " + 
+                    "Unexpected OBD Reset response: " +
                     asHex(processedResponse));
         }
     }
@@ -264,42 +265,52 @@ public final class NCSProtocol implements ProtocolNCS {
     public ConnectionProperties getDefaultConnectionProperties() {
         return new KwpConnectionProperties() {
 
+            @Override
             public int getBaudRate() {
                 return 500000;
             }
 
+            @Override
             public void setBaudRate(int b) {
 
             }
 
+            @Override
             public int getDataBits() {
                 return 8;
             }
 
+            @Override
             public int getStopBits() {
                 return 1;
             }
 
+            @Override
             public int getParity() {
                 return 0;
             }
 
+            @Override
             public int getConnectTimeout() {
                 return 2000;
             }
 
+            @Override
             public int getSendTimeout() {
                 return 255;
             }
 
+            @Override
             public int getP1Max() {
                 return 0;
             }
 
+            @Override
             public int getP3Min() {
                 return 5;
             }
 
+            @Override
             public int getP4Min() {
                 return 0;
             }
@@ -307,8 +318,8 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     private byte[] buildRequest(
-            byte command, 
-            boolean padContent, 
+            byte command,
+            boolean padContent,
             byte[]... content) {
 
         bb.reset();
@@ -328,7 +339,7 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     private final byte[] buildSidPidRequest(byte[]... content) {
-    
+
         bb.reset();
         try {
             bb.write(module.getTester());
@@ -342,7 +353,7 @@ public final class NCSProtocol implements ProtocolNCS {
     }
 
     private final byte[] buildLoadAddrRequest(Map<byte[], Integer> queryMap) {
-    
+
         int PIDYDLID = 1;
         byte[] request = new byte[0];
         try {
@@ -359,12 +370,12 @@ public final class NCSProtocol implements ProtocolNCS {
                     bb.write(1);                //positionInRecord
                     continue;
                 }
-                else if (tmp[0] == (byte) 0xFF) {
+                else if (tmp.length == 3 && (tmp[0] & 0x80) == 0x80) {
                     bb.write(FIELD_TYPE_03);    //definitionMode
                     bb.write(PIDYDLID++);       //positionIn
                     bb.write(queryMap.get(tmp));//size (could be 1, 2 or 4)
                     bb.write((byte) 0xFF);      //RAM addr high byte
-                    bb.write(tmp, 0, 3);        //RAM addr
+                    bb.write(tmp, 0, 3);        //3-byte RAM addr
                 }
             }
             request = bb.toByteArray();
