@@ -209,6 +209,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     
     @Override
     protected Void doInBackground() throws Exception {
+    	Thread.currentThread().setName("Open Image Thread");
+    	
         ECUEditor editor = ECUEditorManager.getECUEditor();
         Settings settings = SettingsManager.getSettings();
         
