@@ -129,7 +129,8 @@ public abstract class Table implements Serializable {
             }
 
             data = null;
-        }
+        }      
+        rom = null;
     }
 
     public void setData(DataCell[] data) {

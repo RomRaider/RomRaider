@@ -70,7 +70,11 @@ public class JProgressPane extends JPanel implements PropertyChangeListener{
     public JProgressBar getProgressBar() {
         return this.progressBar;
     }
-
+    
+    public void updateLabel() {
+        label.setText(" " + status);     
+    }
+    
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if("progress" == evt.getPropertyName()) {

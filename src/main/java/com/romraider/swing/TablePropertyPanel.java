@@ -34,7 +34,6 @@ import javax.swing.table.TableColumn;
 import com.romraider.Settings;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
-import com.romraider.maps.TableSwitch;
 import com.romraider.util.ResourceUtil;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
@@ -322,12 +321,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     private JTable populateScalesTable(Vector<Scale> scales) {
         final ScalesTableModel scalesModel = new ScalesTableModel();
         scalesModel.setScalesList(scales);
-        return createScalesTable(scalesModel);
-    }
-
-    private JTable populateScalesTable(Map<String, byte[]> switchStates) {
-        final SwitchStateTableModel scalesModel = new SwitchStateTableModel();
-        scalesModel.setScalesList(switchStates);
         return createScalesTable(scalesModel);
     }
 

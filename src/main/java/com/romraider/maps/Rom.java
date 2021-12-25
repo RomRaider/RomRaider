@@ -66,6 +66,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             Rom.class.getName());
     private RomID romID;
+    private File definitionPath;
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
@@ -300,6 +301,14 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     	return this.doc;
     }
     
+    public void setDefinitionPath(File s) {
+    	definitionPath = s;
+    }
+    
+    public File getDefinitionPath() {
+    	return definitionPath;
+    }
+    
     @Override
     public String toString() {
         String output = "";
@@ -494,28 +503,39 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public ChecksumManager getChecksumType(int index) {
         return checksumManagers.get(index);
     }
-
-    public void validateChecksum() {
-        if (!checksumManagers.isEmpty()) {
-            final String message = rb.getString("INVLAIDCHKSUM");
-            
-            boolean valid = true;
-            
+    
+    public int getNumChecksumsManagers() {
+    	return checksumManagers.size();
+    }
+    
+    public int validateChecksum() {
+        int correctChecksums = 0;
+        boolean valid = true; 
+        
+        if (!checksumManagers.isEmpty()) {            
             for(ChecksumManager cm: checksumManagers) {
-            	if (!cm.validate(binData)) valid = false;
-            }
-            
-            if(!valid)
-            	showMessageDialog(null,
-                        message,
-                        rb.getString("CHKSUMFAIL"),
-                        WARNING_MESSAGE);
+            	if (cm == null || !cm.validate(binData)) {
+            		valid = false;
+            	}
+            	else {
+            		correctChecksums++;
+            	}
+            }                                
         }
+        
+        if(!valid) {
+        	showMessageDialog(null,
+        			rb.getString("INVLAIDCHKSUM"),
+                    rb.getString("CHKSUMFAIL"),
+                    WARNING_MESSAGE);
+        }
+        
+        return correctChecksums;
     }
 
     public void updateChecksum() {
-        for(ChecksumManager cm: checksumManagers) {
-        	cm.update(binData);
-        }
+	    for(ChecksumManager cm: checksumManagers) {
+	    	cm.update(binData);
+	    }
     }
 }

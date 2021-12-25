@@ -78,7 +78,16 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 
            editor.getStatusPanel().setStatus(
                   ECUEditor.rb.getString("CHECKSUM"));
-            rom.validateChecksum();
+           
+           int validChecksums =  rom.validateChecksum();
+           
+           if(rom.getNumChecksumsManagers() == 0) {
+        	   editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
+           }
+           else {
+        	   editor.getStatusPanel().setStatus(String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
+        			   validChecksums, rom.getNumChecksumsManagers()));        
+           }
           
           setProgress(100);              
     }
@@ -167,13 +176,13 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	                ECUEditor.rb.getString("ERRORFILE"),
 	                inputFile.getName());
 	        try {  
-			    Rom rom = null;
 			    Document doc = createDocument(f);
-	            rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), romNode,
+	            Rom rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(f, doc.getDocumentElement(), romNode,
 	            		input, editor.getStatusPanel());
 	            
 	    	    rom.setDocument(doc);    	    
-	    	    loadRom(rom, input);	    	    
+	    	    loadRom(rom, input);	
+
         } catch (StackOverflowError ex) {
             // handles looped inheritance, which will use up all available memory
             showMessageDialog(editor,
@@ -309,7 +318,6 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     public void done() {
         ECUEditor editor = ECUEditorManager.getECUEditor();
         editor.refreshTableCompareMenus();
-        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         setProgress(0);
         editor.setCursor(null);
         editor.refreshUI();

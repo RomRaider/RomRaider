@@ -23,6 +23,7 @@ import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static com.romraider.xml.DOMHelper.unmarshallText;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public final class DOMRomUnmarshaller {
         return n;
     }
     
-    public Rom unmarshallXMLDefinition(Node rootNode, Node romNode, byte[] input,
+    public Rom unmarshallXMLDefinition(File definition, Node rootNode, Node romNode, byte[] input,
             JProgressPane progress) throws 
             XMLParseException, StackOverflowError, Exception {
 
@@ -61,6 +62,7 @@ public final class DOMRomUnmarshaller {
         tableScaleHandler.unmarshallBaseScales(rootNode);            
       
     	Rom rom = new Rom(new RomID());
+    	rom.setDefinitionPath(definition);
         Rom output = unmarshallRom(romNode, rom);
         
         //Set ram offset
@@ -181,7 +183,7 @@ public final class DOMRomUnmarshaller {
                     }
                 } else if (n.getNodeName().equalsIgnoreCase("checksum")) {
                     rom.getRomID().setChecksum(unmarshallAttribute(n, "type", ""));
-                    checksumManager = unmarshallChecksum(n);
+                    checksumManager = unmarshallChecksum(rom, n);
                     rom.addChecksumManager(checksumManager);
 
                 } else { /* unexpected element in Rom (skip) */
@@ -284,14 +286,14 @@ public final class DOMRomUnmarshaller {
      * @param node -  the checksum element node to process
      * @return CheckSumManager object
      */
-    private ChecksumManager unmarshallChecksum(Node node) {
+    private ChecksumManager unmarshallChecksum(Rom rom, Node node) {
         final Map<String, String> attrs = new HashMap<String, String>();
 
         for (int i = 0; i < node.getAttributes().getLength(); i++) {
             attrs.put(node.getAttributes().item(i).getNodeName().toLowerCase(),
                     node.getAttributes().item(i).getNodeValue());
         }
-           return ChecksumFactory.getManager(attrs);
+           return ChecksumFactory.getManager(rom, attrs);
     }
    
 }
