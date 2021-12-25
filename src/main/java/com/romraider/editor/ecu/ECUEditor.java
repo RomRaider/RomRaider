@@ -68,6 +68,7 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreePath;
 
+import com.romraider.ECUExec;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
@@ -123,7 +124,6 @@ public class ECUEditor extends AbstractFrame {
     private final JPanel toolBarPanel = new JPanel();
     private OpenImageWorker openImageWorker;
     private SetUserLevelWorker setUserLevelWorker;
-    private LaunchLoggerWorker launchLoggerWorker;
     private final ImageIcon editorIcon = new ImageIcon(getClass().getResource(
             "/graphics/romraider-ico.gif"), rb.getString("RRECUED"));
 
@@ -607,10 +607,15 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void launchLogger() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        launchLoggerWorker = new LaunchLoggerWorker();
-        launchLoggerWorker.addPropertyChangeListener(getStatusPanel());
-        launchLoggerWorker.execute();
+        if(EcuLogger.getEcuLoggerWithoutCreation() != null) {
+        	ECUExec.showAlreadyRunningMessage();
+        	return;
+        }
+        else {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			ECUExec.openLogger(DISPOSE_ON_CLOSE, new String[] {"-logger"});	   
+			setCursor(null);
+        }
     }
 
     public RomTreeRootNode getImageRoot() {
@@ -638,40 +643,6 @@ public class ECUEditor extends AbstractFrame {
     }
 }
 
-class LaunchLoggerWorker extends SwingWorker<Void, Void> {
-    public LaunchLoggerWorker() {
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("LAUNCHLOGGER"));
-        setProgress(10);
-        EcuLogger.startLogger(javax.swing.WindowConstants.DISPOSE_ON_CLOSE, editor, null);
-        return null;
-    }
-
-    public void propertyChange(PropertyChangeEvent evnt)
-    {
-        SwingWorker<?, ?> source = (SwingWorker<?, ?>) evnt.getSource();
-        if (null != source && "state".equals( evnt.getPropertyName() )
-                && (source.isDone() || source.isCancelled() ) )
-        {
-            source.removePropertyChangeListener(ECUEditorManager.getECUEditor().getStatusPanel());
-        }
-    }
-
-    @Override
-    public void done() {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
-        setProgress(0);
-        editor.setCursor(null);
-        editor.refreshUI();
-    }
-}
-
-//Do we really need this? Cant be compute intensive
 class SetUserLevelWorker extends SwingWorker<Void, Void> {
 
     @Override

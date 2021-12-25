@@ -114,7 +114,7 @@ public class ECUExec {
     	EditorLoggerCommunication.setExectable(execType, args);
     }
     
-    private static void showAlreadyRunningMessage() {
+    public static void showAlreadyRunningMessage() {
         showMessageDialog(null,
                 MessageFormat.format(rb.getString("ISRUNNING"), PRODUCT_NAME),
                 PRODUCT_NAME, INFORMATION_MESSAGE);
@@ -131,7 +131,7 @@ public class ECUExec {
         return false;
     }
 
-    private static void openLogger(int defaultCloseOperation, String[] args) {
+    public static void openLogger(int defaultCloseOperation, String[] args) {
         startLogger(defaultCloseOperation, getECUEditorWithoutCreation(), args);
     }
 
