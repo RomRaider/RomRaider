@@ -35,17 +35,24 @@ public interface ChecksumManager {
      * 					checksums being performed
      */
 	void configure(Map<String, String> vars);
-
+	
+    /**
+     * Returns the amount of checksums
+     * @return	Number of total checksums
+     */
+	int getNumberOfChecksums();
+	
     /**
      * Perform the checksum validation upon ROM file loading.
      * @param	binData	- the ROM file to validate
-     * @return	true or false, the result of validation
+     * @return	Number of correct checksums
      */
-	boolean validate(byte[] data);
+	int validate(byte[] data);
 
     /**
      * Update the checksum upon saving the ROM file.
-     * @param	data	- the ROM file to update
+     * @param	data - the ROM file to update
+     * @return Number of checksums which needed to be updated
      */
-	void update(byte[] data);
+	int update(byte[] data);
 }

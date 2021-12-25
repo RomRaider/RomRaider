@@ -37,42 +37,41 @@ import com.romraider.util.HexUtil;
     private int start;
     private int end;
     private int xorloc;
-    private byte xort;
-    
-    private boolean configured = false;
-
-    public ChecksumBYTEXOR() {}
+    private byte xort;  
 
     @Override
     public void configure(Map<String, String> vars) {
         this.start = HexUtil.hexToInt(vars.get(START));
         this.end = HexUtil.hexToInt(vars.get(END));
         this.xorloc = HexUtil.hexToInt(vars.get(XORLOC));
+    }
+    
+	@Override
+	public int getNumberOfChecksums() {
+		return 1;
+	}
+
+    @Override
+    public int validate(byte[] binData) {
+        calculate(binData);
+        int valid = 0;
         
-        this.configured = true;
+        if(xort == (byte)parseByteValue(binData, Settings.Endian.BIG, xorloc, 1, false))
+        	valid++;
+        	
+        return valid;  	
     }
 
     @Override
-    public boolean validate(byte[] binData) {
-    	if(!configured) {
-    		System.err.println("Checksum Manager was not configured before it was used for validating!");
-    		return false;
-    	}
-    	else {
-	        calculate(binData);
-	        final boolean valid = (xort == (byte)parseByteValue(binData, Settings.Endian.BIG, xorloc, 1, false));
-	        return valid;
-    	}
-    }
-
-    @Override
-    public void update(byte[] binData) {
-    	if(!configured)
-    		System.err.println("Checksum Manager was not configured before it was used for updating!");
-    	else {
-    		calculate(binData);
-        	binData[xorloc] = xort;
-    	}
+    public int update(byte[] binData) {
+    	int updateNeeded = 0;
+		calculate(binData);
+		
+		if(binData[xorloc] != xort) updateNeeded++;
+		
+    	binData[xorloc] = xort;	
+    	
+    	return updateNeeded;
     }
 
     private void calculate(byte[] binData) {

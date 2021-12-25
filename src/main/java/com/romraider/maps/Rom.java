@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.checksum.ChecksumManager;
 import com.romraider.swing.CategoryTreeNode;
@@ -412,7 +413,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             }
         }
     	
-        updateChecksum();
+        updateChecksum();           
         return binData;
     }
 
@@ -515,11 +516,13 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         
         if (!checksumManagers.isEmpty()) {            
             for(ChecksumManager cm: checksumManagers) {
-            	if (cm == null || !cm.validate(binData)) {
+            	int localCorrectCs = cm.validate(binData);
+            	
+            	if (cm == null || cm.getNumberOfChecksums() != localCorrectCs) {
             		valid = false;
             	}
             	else {
-            		correctChecksums++;
+            		correctChecksums+=localCorrectCs;
             	}
             }                                
         }
@@ -534,9 +537,26 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         return correctChecksums;
     }
 
-    public void updateChecksum() {
+    public int updateChecksum() {
+    	int updatedCs = 0;
+    	
 	    for(ChecksumManager cm: checksumManagers) {
-	    	cm.update(binData);
+	    	updatedCs+=cm.update(binData);
 	    }
+	    
+	    ECUEditorManager.getECUEditor().getStatusPanel().setStatus(
+	    		String.format(rb.getString("CHECKSUMFIXED"), updatedCs, getTotalAmountOfChecksums()));
+	    
+	    return updatedCs;
+    }
+    
+    public int getTotalAmountOfChecksums() {
+    	int cs = 0;
+    	
+	    for(ChecksumManager cm: checksumManagers) {
+	    	cs+=cm.getNumberOfChecksums();
+	    }
+	    
+	    return cs;
     }
 }

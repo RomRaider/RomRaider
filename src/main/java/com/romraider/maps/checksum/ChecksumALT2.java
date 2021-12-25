@@ -48,19 +48,36 @@ public final class ChecksumALT2 extends NissanChecksum {
         }
     }
 
-    public boolean validate(byte[] binData) {
+    public int validate(byte[] binData) {
         calculator.calculate(range, binData, results);
-        final boolean valid =
-                (results.get(SUMT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(SUMLOC), 4, true)) &&
-                (results.get(XORT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(XORLOC), 4, true)) &&
-                (results.get(START) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(START), 2, false)) &&
-                (results.get(SKIPLOC) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(SKIPLOC), 2, false));
-            return valid;
+        int valid = 0;
+        
+        if(results.get(SUMT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(SUMLOC), 4, true)) {
+        	valid++;
+        }
+        
+        if(results.get(XORT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(XORLOC), 4, true)) {
+        	valid++;
+        }
+        
+        if(results.get(START) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(START), 2, false)) {
+        	valid++;
+        }
+        
+        if(results.get(SKIPLOC) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(SKIPLOC), 2, false)) {
+        	valid++;
+        }
+        
+        return valid;
     }
 
-    public void update(byte[] binData) {
+    public int update(byte[] binData) {
         super.update(binData);
+        int updateNeeded = getNumberOfChecksums();
+        
         System.arraycopy(parseIntegerValue(results.get(START), Settings.Endian.BIG, 2), 0, binData, range.get(START), 2);
         System.arraycopy(parseIntegerValue(results.get(SKIPLOC), Settings.Endian.BIG, 2), 0, binData, range.get(SKIPLOC), 2);
+        
+        return updateNeeded;
     }
 }

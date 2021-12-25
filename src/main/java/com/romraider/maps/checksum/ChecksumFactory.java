@@ -25,7 +25,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -74,7 +73,7 @@ public final class ChecksumFactory {
         	//Custom checksum which comes with the definition
         	//Path is relative to the current definition directory
         	if(pathCustomChecksum != null && rom.getDefinitionPath() != null) {
-        		path = Paths.get(rom.getDefinitionPath().getParent(), pathCustomChecksum).toString();
+        		path = rom.getDefinitionPath().getParent() + pathCustomChecksum;
         	    cl = new URLClassLoader(new URL[]{new File(path).toURI().toURL()});
         	    cls = cl.loadClass(ChecksumFactory.class.getPackage().getName() + "." + type);
         	    
