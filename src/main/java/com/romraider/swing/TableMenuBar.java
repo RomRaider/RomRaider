@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import javax.swing.JSeparator;
 
 import com.romraider.maps.Table;
 import com.romraider.maps.Table3D;
-import com.romraider.maps.Table3DView;
 import com.romraider.util.ResourceUtil;
 
 public class TableMenuBar extends JMenuBar {
@@ -159,7 +158,8 @@ public class TableMenuBar extends JMenuBar {
         getCompareOriginal().setToolTipText(rb.getString("COMPARETT"));
         getCompareMap().setToolTipText(rb.getString("COMPARETBLTT"));
         getSimilarOpenTables().setToolTipText(rb.getString("COMPARESIMTT"));
-
+        getSimilarOpenTables().setEnabled(false);
+        
         compareDisplayGroup = new ButtonGroup();
         compareDisplayGroup.add(getComparePercent());
         compareDisplayGroup.add(getCompareAbsolute());
@@ -199,8 +199,6 @@ public class TableMenuBar extends JMenuBar {
         getCompareAbsolute().setSelected(true);
         getCompareToOriginal().setSelected(true);
 
-        initCompareGroup();
-
         getCompareOriginal().addActionListener(frame);
         getCompareMap().addActionListener(frame);
         getCompareOff().addActionListener(frame);
@@ -210,13 +208,13 @@ public class TableMenuBar extends JMenuBar {
         getCompareToBin().addActionListener(frame);
     }
 
-    public void initCompareGroup() {
+    public void initCompareGroup(TableFrame frame) {
         compareGroup = new ButtonGroup();
 
         compareGroup.add(getCompareOriginal());
         compareGroup.add(getCompareMap());
         compareGroup.add(getCompareOff());
-
+            
         for(int i = 0; i< getSimilarOpenTables().getItemCount(); i++) {
             compareGroup.add(getSimilarOpenTables().getItem(i));
         }

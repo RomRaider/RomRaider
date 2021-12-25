@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.swing.Icon;
 import javax.swing.JInternalFrame;
@@ -56,7 +57,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         super(title, true, true);
         this.tableView = tableView;
         Table t = tableView.getTable();
-        
+
         Icon icon = RomCellRenderer.getIconForTable(t);  
         setFrameIcon(icon);   
         
@@ -191,7 +192,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             }
 
         } else if (e.getSource() instanceof TableMenuItem) {
-            Table selectedTable = findSimilarTable((TableMenuItem)e.getSource());
+            Table selectedTable = ((TableMenuItem) e.getSource()).getTable();
             if(null != e.getSource()) {
                 compareByTable(selectedTable);
             }
@@ -234,35 +235,33 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     public void refreshSimilarOpenTables() {
         JMenu similarTables =  getTableMenuBar().getSimilarOpenTables();
         similarTables.removeAll();
-
-        for(Rom rom : ECUEditorManager.getECUEditor().getImages()) {
-            for(TableTreeNode tableNode : rom.getTableNodes()) {
-                if(tableNode.getTable().getName().equalsIgnoreCase(getTable().getName())) {
-                    JRadioButtonMenuItem similarTable = new TableMenuItem(rom.getFileName());
-                    similarTable.setToolTipText(tableNode.getTable().getName());
-                    similarTable.addActionListener(this);
-                    similarTables.add(similarTable);
-                    break;
-                }
-            }
+        
+        Vector<Rom> images = ECUEditorManager.getECUEditor().getImages();  
+        boolean addedTable = false;
+        
+        if(images.size() > 1) {      
+	        for(Rom rom : images) {
+	            for(TableTreeNode tableNode : rom.getTableNodes()) {
+	            	if(tableNode.getTable().getRom() == getTable().getRom()) break;
+	            	
+	                if(tableNode.getTable().getName().equalsIgnoreCase(getTable().getName())) {
+	                    JRadioButtonMenuItem similarTable = new TableMenuItem(tableNode.getTable());
+	                    similarTable.setToolTipText(tableNode.getTable().getName());
+	                    similarTable.addActionListener(this);
+	                    similarTables.add(similarTable);
+	                    addedTable = true;
+	                    break;
+	                }
+	            }
+	        }
         }
-
-        getTableMenuBar().initCompareGroup();
+        
+        if(addedTable)
+        	similarTables.setEnabled(true);
+        else
+        	similarTables.setEnabled(false);
+        
+        getTableMenuBar().initCompareGroup(this);
         getTableMenuBar().repaint();
     }
-
-    private Table findSimilarTable(TableMenuItem menuItem) {
-        for(Rom rom : ECUEditorManager.getECUEditor().getImages()) {
-            if(menuItem.getText().equalsIgnoreCase(rom.getFileName())) {
-                for(TableTreeNode treeNode : rom.getTableNodes()) {
-                    if(menuItem.getToolTipText().equalsIgnoreCase(treeNode.getFrame().getTable().getName())) {
-                        return treeNode.getFrame().getTable();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    
-
 }

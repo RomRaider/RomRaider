@@ -75,6 +75,7 @@ public abstract class Table implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
+    protected Rom rom;
     protected boolean staticDataTable = false;
     private Table compareTable = null;
     protected Settings.DataType compareValueType = Settings.DataType.BIN;
@@ -138,10 +139,17 @@ public abstract class Table implements Serializable {
     public int getRamOffset() {
         return this.ramOffset;
     }
+    
+    public Rom getRom() {
+    	return rom;
+    }
+    
+    public void setRom(Rom rom) {
+    	this.rom = rom;
+    }
 
-    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        if(isStaticDataTable()) return;
-
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {      
+    	if(isStaticDataTable()) return;       
         validateScaling();
 
         // temporarily remove lock;

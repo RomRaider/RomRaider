@@ -340,7 +340,6 @@ public class ECUEditor extends AbstractFrame {
 
         getImageList().setVisible(true);
         getImageList().expandPath(new TreePath(getImageRoot()));
-
         getImageList().expandPath(new TreePath(input.getPath()));
 
         if(!settings.isOpenExpanded()) {
@@ -445,10 +444,14 @@ public class ECUEditor extends AbstractFrame {
         
         // frame not added.  Draw table and add the frame.
         TableView v = frame.getTableView();
-        if(v!=null) v.drawTable();
         
-        rightPanel.add(frame);       
+        if(v!=null) {
+        	v.drawTable();
+        }
+        
+        rightPanel.add(frame);
         rightPanel.repaint();
+        refreshTableCompareMenus();
     }
 
     public void removeDisplayTable(TableFrame frame) {
@@ -564,13 +567,9 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void refreshTableCompareMenus() {
-        for (int i = 0; i < imageRoot.getChildCount(); i++) {
-            if(imageRoot.getChildAt(i) instanceof Rom) {
-                Rom rom = (Rom) imageRoot.getChildAt(i);
-                if(null != rom) {
-                    rom.refreshTableCompareMenus();
-                }
-            }
+        for(JInternalFrame curFrame : getRightPanel().getAllFrames()) {
+        	TableFrame frame = (TableFrame) curFrame;
+        	frame.refreshSimilarOpenTables();
         }
     }
     

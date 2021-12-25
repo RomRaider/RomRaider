@@ -20,11 +20,14 @@
 package com.romraider.swing;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -44,9 +47,11 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     private static final long serialVersionUID = 5611729002131147882L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             JTableChooser.class.getName());
+    
     JPanel displayPanel = new JPanel();
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree displayTree = new JTree(rootNode);
+    JButton compareButton = new JButton(rb.getString("COMPARE"));
     JScrollPane displayScrollPane;
 
     public JTableChooser() {
@@ -88,24 +93,34 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             }
         }
 
-        displayTree.setPreferredSize(new Dimension(nameLength*7, 400));
-        displayTree.setMinimumSize(new Dimension(nameLength*7, 400));
-
+        displayTree.setPreferredSize(new Dimension(nameLength*9, 400));
+        displayTree.setMinimumSize(new Dimension(nameLength*9, 400));
+        
         displayTree.expandPath(new TreePath(rootNode.getPath()));
-        displayTree.setRootVisible(false);
 
         displayTree.addMouseListener(this);
         displayScrollPane = new JScrollPane(displayTree);
         displayScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         displayPanel.add(displayScrollPane);
-
-        Object[] values = {rb.getString("COMPARE"), rb.getString("CANCEL")};
-
-        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable.getTableView()),
+     
+        Object[] values = {compareButton, rb.getString("CANCEL")};
+        compareButton.setEnabled(false);
+        compareButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                JOptionPane pane = (JOptionPane)((JButton) (e.getSource())).getParent().getParent();
+                pane.setValue(compareButton);
+            }
+        });
+        
+        int result = showOptionDialog(SwingUtilities.windowForComponent(targetTable.getTableView()),
                 displayPanel,
                 rb.getString("SELECT"), JOptionPane.DEFAULT_OPTION,
-                JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0
-                && (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
+                JOptionPane.PLAIN_MESSAGE, null, values, values[0]);
+        
+        if (result == 0 && displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode) {
             return ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable();
         } else {
             return null;
@@ -117,6 +132,13 @@ public class JTableChooser extends JOptionPane implements MouseListener {
         displayTree.setPreferredSize(new Dimension(displayTree.getWidth(),
                 (displayTree.getRowCount()*displayTree.getRowHeight())));
         displayTree.revalidate();
+        
+        if(displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode) {
+        	compareButton.setEnabled(true);
+        }
+        else {
+        	compareButton.setEnabled(false);
+        }
     }
     @Override
     public void mouseClicked(MouseEvent e){}

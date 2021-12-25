@@ -53,8 +53,7 @@ public class PresetPanel extends JPanel {
 		setLayout(new GridBagLayout());
 	}
 	
-	public void populatePanel() {
-		
+	public void populatePanel() {		
 		//If this is an axis within another table dont show the panel
 		if(table.getTable() instanceof Table1D) {
 			if(((Table1D) (table.getTable())).getAxisParent() != null) {

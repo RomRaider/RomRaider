@@ -71,7 +71,6 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
           setProgress(90);
 
           editor.addRom(rom);
-          editor.refreshTableCompareMenus();
 
           editor.getStatusPanel().setStatus(
                   ECUEditor.rb.getString("DONELOAD"));
@@ -309,6 +308,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     @Override
     public void done() {
         ECUEditor editor = ECUEditorManager.getECUEditor();
+        editor.refreshTableCompareMenus();
         editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         setProgress(0);
         editor.setCursor(null);
