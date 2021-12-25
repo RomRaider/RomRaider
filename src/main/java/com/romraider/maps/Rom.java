@@ -449,6 +449,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         checksumManagers.clear();
         tableNodes.clear();
         binData = null;
+        doc = null;
     }
     
     public void clearByteMapping() {

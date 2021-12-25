@@ -200,7 +200,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
                     }
                     else {
                         different++;
-                        listModelChanges.addElement(new ListItem(2, leftTable.getName()));
+                        listModelChanges.add(0, new ListItem(2, leftTable.getName()));
                     }
                     found = true;
                     break;
@@ -209,7 +209,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
 
             if(!found) {
                 missing++;
-                listModelChanges.addElement(new ListItem(3, leftTable.getName()));
+                listModelChanges.add(0, new ListItem(3, leftTable.getName()));
             }
         }
 
@@ -226,7 +226,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
 
             if(!found) {
                 missing++;
-                listModelChanges.addElement(new ListItem(3, rightFrame.getTable().getName()));
+                listModelChanges.add(0, new ListItem(3, rightFrame.getTable().getName()));
             }
         }
 
@@ -266,7 +266,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
 
         if(missing == 0)
         {
-            listModelChanges.addElement(new ListItem(3, rb.getString("NOMISSING")));
+            listModelChanges.add(0, new ListItem(3, rb.getString("NOMISSING")));
         }
 
     }

@@ -475,7 +475,7 @@ public class ECUEditor extends AbstractFrame {
         }
 
         editor.refreshTableCompareMenus();
-        editor.getStatusPanel().update(ECUEditor.rb.getString("STATUSREADY"), 0);
+        editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         editor.setCursor(null);
         editor.refreshUI();
         
