@@ -30,28 +30,17 @@ import com.romraider.util.HexUtil;
  * This class implements the Double Checksum for some older Motronic Ecus
  */
     public final class ChecksumMOTRONICDOUBLE extends ChecksumMOTRONICSINGLE {
-    private static final String START = "start";
-    private static final String END = "end";
-    private static final String START2 = "startSecond";
-    private static final String END2 = "endSecond";
-    private static final String LOC = "loc";
-    private static final String INITIAL = "initial";
+    private static final String START2 = "startsecond";
+    private static final String END2 = "endsecond";
     
-    private int start;
-    private int end;
     private int start2;
     private int end2;
-    private int loc;
-    private short initial; 
 
     @Override
     public void configure(Map<String, String> vars) {
-        this.start = HexUtil.hexToInt(vars.get(START));
-        this.end = HexUtil.hexToInt(vars.get(END));
+    	super.configure(vars);
         this.start2 = HexUtil.hexToInt(vars.get(START2));
         this.end2 = HexUtil.hexToInt(vars.get(END2));
-        this.loc = HexUtil.hexToInt(vars.get(LOC));
-        this.initial = (short) HexUtil.hexToInt(vars.get(INITIAL));
     }
     
 	@Override
@@ -63,9 +52,10 @@ import com.romraider.util.HexUtil;
     public int validate(byte[] binData) {
 		short checksum = calculate(initial, binData, start, end);
 		checksum = calculate(checksum, binData, start2, end2);
+		short checksumInBin = (short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false);
         int valid = 0;
         
-        if(checksum == (short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false))
+        if(checksum == checksumInBin)
         	valid++;
         	
         return valid;  	
@@ -74,13 +64,18 @@ import com.romraider.util.HexUtil;
     @Override
     public int update(byte[] binData) {
     	int updateNeeded = 0;
+		short checksumInBin = (short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false);
+		
 		short checksum = calculate(initial, binData, start, end);
 		checksum = calculate(checksum, binData, start2, end2);
 		
-		if((short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false) != checksum) updateNeeded++;
+		if(checksumInBin != checksum)
+		{
+			updateNeeded++;
 		
-    	binData[loc] = (byte)((checksum >> 8) & 0xFF);
-    	binData[loc+1] = (byte)((checksum) & 0xFF);
+	    	binData[loc] = (byte)((checksum >> 8) & 0xFF);
+	    	binData[loc+1] = (byte)((checksum) & 0xFF);
+		}
     	
     	return updateNeeded;
     }

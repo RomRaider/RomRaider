@@ -30,22 +30,24 @@ import com.romraider.util.HexUtil;
  * This class implements the Single Checksum for some older Motronic Ecus
  */
     public class ChecksumMOTRONICSINGLE implements ChecksumManager {
-    private static final String START = "start";
-    private static final String END = "end";
-    private static final String LOC = "loc";
-    private static final String INITIAL = "initial";
+    protected static final String START = "start";
+    protected static final String END = "end";
+    protected static final String LOC = "loc";
+    protected static final String INITIAL = "initial";
     
-    private int start;
-    private int end;
-    private int loc;
-    private short initial;
+    protected int start;
+    protected int end;
+    protected int loc;
+    protected short initial = 0;
 
     @Override
     public void configure(Map<String, String> vars) {
         this.start = HexUtil.hexToInt(vars.get(START));
         this.end = HexUtil.hexToInt(vars.get(END));
         this.loc = HexUtil.hexToInt(vars.get(LOC));
-        this.initial = (short) HexUtil.hexToInt(vars.get(INITIAL));
+        
+        if(vars.get(INITIAL) != null)
+        	this.initial = (short) HexUtil.hexToInt(vars.get(INITIAL));
     }
     
 	@Override
@@ -56,9 +58,10 @@ import com.romraider.util.HexUtil;
     @Override
     public int validate(byte[] binData) {
         short checksum = calculate(initial, binData, start, end);
+        short checksumInBin = (short) parseByteValue(binData, Settings.Endian.BIG, loc, 2, false);
         int valid = 0;
         
-        if(checksum == (short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false))
+        if(checksum == checksumInBin)
         	valid++;
         	
         return valid;  	
@@ -68,19 +71,22 @@ import com.romraider.util.HexUtil;
     public int update(byte[] binData) {
     	int updateNeeded = 0;
 		short checksum = calculate(initial, binData, start, end);
+		short checksumInBin = (short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false);
 		
-		if((short)parseByteValue(binData, Settings.Endian.BIG, loc, 2, false) != checksum) updateNeeded++;
-		
-    	binData[loc] = (byte)((checksum >> 8) & 0xFF);
-    	binData[loc+1] = (byte)((checksum) & 0xFF);
-    	
+		if(checksumInBin != checksum) {
+			updateNeeded++;
+			
+	    	binData[loc] = (byte)((checksum >> 8) & 0xFF);
+	    	binData[loc+1] = (byte)((checksum) & 0xFF);
+		}
+		 	
     	return updateNeeded;
     }
     
-    protected short calculate(short initalValue, byte[] binData, int startAddress, int endAddress) {
+    public static short calculate(short initalValue, byte[] binData, int startAddress, int endAddress) {
         short value = initalValue;
-        for (int i = startAddress; i < endAddress; i++) {
-        	value += (short)parseByteValue(binData, Settings.Endian.BIG, i, 2, false);
+        for (int i = startAddress; i <= endAddress; i++) {
+        	value += parseByteValue(binData, Settings.Endian.BIG, i, 1, false);
         }
         
         return value;
