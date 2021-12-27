@@ -128,7 +128,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	    catch (SAXException spe) {
             // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
             showMessageDialog(editor,
-                    ECUEditor.rb.getString("UNREADABLEDEF"),
+                   // ECUEditor.rb.getString("UNREADABLEDEF"),
+            		spe.getMessage(),
                     errorLoading,
                     ERROR_MESSAGE);
 	    } catch (ParserConfigurationException e) {
@@ -154,11 +155,13 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 
         try {  
 		    Document doc = createDocument(f);
-            Node romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
-            
-	        if(romNode != null) return romNode;
-	        else 
-	        	return null;    
+		    Node romNode = null;
+		    
+		    if(doc != null) {
+		    	romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
+		    }
+		    
+	        return romNode;
 	    } catch (Exception ex) {
 	        ex.printStackTrace();
 	        showMessageDialog(editor,
