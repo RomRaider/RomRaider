@@ -3,7 +3,7 @@
 <!-- Master build file for RomRaider
 
  RomRaider Open-Source Tuning, Logging and Reflashing
- Copyright (C) 2006-2019 RomRaider.com
+ Copyright (C) 2006-2021 RomRaider.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -377,7 +377,8 @@
                 verbose="${javac.verbose}"
                 deprecation="${deprecation}"
                 compiler="javac${javac.target}"
-                bootclasspath="${toString:bootpath.ref}" >
+                bootclasspath="${toString:bootpath.ref}"
+                encoding="UTF-8" >
                 <!-- 
                 <compilerarg value="-Xlint" />
                 -->
