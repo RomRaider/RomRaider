@@ -21,7 +21,9 @@ package com.romraider.xml.ConversionLayer;
 import java.io.File;
 
 public class ConversionLayerFactory {
-    private final static ConversionLayer[] convLayers = {new BMWCodingConversionLayer()};
+    private final static ConversionLayer[] convLayers = {
+    		new BMWCodingConversionLayer(),
+    		new XDFConversionLayer()};
     
 	//Check if its an .xml file
 	public static boolean requiresConversionLayer(File f) {
