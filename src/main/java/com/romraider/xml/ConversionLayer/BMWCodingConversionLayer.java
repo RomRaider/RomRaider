@@ -63,7 +63,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 	HashMap <Integer, String> csvMap;
 	HashMap <String, String> transMap;
 	
-    ConversionRomNodeManager[] romManagers;	
+    BMWConversionRomNodeManager[] romManagers;	
 	ByteBuffer dataBuffer;
 	int dataIndex;
 	
@@ -353,11 +353,11 @@ public class BMWCodingConversionLayer extends ConversionLayer {
                
         //Create one manager if no splitting
         //Create two otherwise
-        if(splitAddress == 0) romManagers= new ConversionRomNodeManager[] {new ConversionRomNodeManager(0, doc, roms)};
+        if(splitAddress == 0) romManagers= new BMWConversionRomNodeManager[] {new BMWConversionRomNodeManager(0, doc, roms)};
         else
-        	romManagers= new ConversionRomNodeManager[] {
-        			new ConversionRomNodeManager(0, doc, roms),
-        			new ConversionRomNodeManager(splitAddress, doc, roms)};
+        	romManagers= new BMWConversionRomNodeManager[] {
+        			new BMWConversionRomNodeManager(0, doc, roms),
+        			new BMWConversionRomNodeManager(splitAddress, doc, roms)};
        
         /*
          *  0000 - DATEINAME - S - NAME
@@ -438,7 +438,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
         	dataIndex = oldIndex+length + 4;
         }
         
-		for(ConversionRomNodeManager man: romManagers){
+		for(BMWConversionRomNodeManager man: romManagers){
         	man.calculateRomID(f, "BMW");
         }
 		
@@ -490,7 +490,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 
 		
 		//Create actual node in rom
-        for(ConversionRomNodeManager man: romManagers){
+        for(BMWConversionRomNodeManager man: romManagers){
         	Element table = man.createTable("UNUSED_" + unusedCounter,
         			currentCategory, memoryLayout, endian,storageAddressU, byteCountU, maskU);
         	
@@ -563,7 +563,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		}
 
 		//Create actual node in rom
-        for(ConversionRomNodeManager man: romManagers){
+        for(BMWConversionRomNodeManager man: romManagers){
         	Element table = man.createTable(nameFSWD,
         			currentCategory, memoryLayout, endian,storageAddressD, byteCountD, maskD);
         	
@@ -607,7 +607,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 			if(csvMap.containsKey(key))namePSW += " | " + csvMap.get(key);
 		}
 		
-		for(ConversionRomNodeManager man: romManagers){
+		for(BMWConversionRomNodeManager man: romManagers){
         	man.addPreset(PSW1_s.trim(), namePSW.trim(), currentTable);
         }
 	}

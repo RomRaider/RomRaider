@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 
 import com.romraider.util.ByteUtil;
 
-class ConversionRomNodeManager{
+class BMWConversionRomNodeManager{
 	int offsetAddress = 0;
 	
 	Document doc;
@@ -44,7 +44,7 @@ class ConversionRomNodeManager{
 	String bestIDFitDataTemp = "";
 	int lastPresetCount = 0;
 	
-	ConversionRomNodeManager(int offsetAddress, Document doc, Node root){
+	BMWConversionRomNodeManager(int offsetAddress, Document doc, Node root){
 		this.doc = doc;
 		this.offsetAddress = offsetAddress;
 		this.romNode = doc.createElement("rom");			
