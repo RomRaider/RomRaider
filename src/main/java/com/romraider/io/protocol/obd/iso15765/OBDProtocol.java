@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,18 +19,14 @@
 
 package com.romraider.io.protocol.obd.iso15765;
 
-import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static java.lang.System.arraycopy;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
@@ -53,7 +49,7 @@ public final class OBDProtocol implements Protocol {
     public static final byte OBD_NRC = (byte) 0x7F;
     public static final int RESPONSE_NON_DATA_BYTES = 5;
     public static Module module;
-    
+
     @Override
     public byte[] constructEcuInitRequest(Module module) {
         checkNotNull(module, "module");
@@ -68,7 +64,7 @@ public final class OBDProtocol implements Protocol {
             Module module, byte[] address, byte[] values) {
 
         throw new UnsupportedProtocolException(
-                "Write memory command is not supported on OBD for address: " + 
+                "Write memory command is not supported on OBD for address: " +
                 asHex(address));
     }
 
@@ -77,7 +73,7 @@ public final class OBDProtocol implements Protocol {
             Module module, byte[] address, byte value) {
 
         throw new UnsupportedProtocolException(
-                "Write Address command is not supported on OBD for address: " + 
+                "Write Address command is not supported on OBD for address: " +
                 asHex(address));
     }
 
@@ -86,7 +82,7 @@ public final class OBDProtocol implements Protocol {
             Module module, byte[] address, int numBytes) {
 
         throw new UnsupportedProtocolException(
-                "Read memory command is not supported on OBD for address: " + 
+                "Read memory command is not supported on OBD for address: " +
                 asHex(address));
     }
 
@@ -115,40 +111,36 @@ public final class OBDProtocol implements Protocol {
     public void checkValidEcuInitResponse(byte[] processedResponse) {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
         OBDResponseProcessor.validateResponse(processedResponse);
-        // four byte - CAN ID
-        // one byte  - Response mode
-        // one byte  - Response pid
-        // null terminated CAL ID string
-        // 000007E8 49 .....
-        byte responseType = processedResponse[4];
-        if (responseType != OBD_INFO_RESPONSE) {
-            throw new InvalidResponseException(
-                    "Unexpected " + module.getName() + " Info response type: " + 
-                    asHex(new byte[]{responseType}));
-        }
     }
 
     @Override
     public EcuInit parseEcuInitResponse(byte[] processedResponse) {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
         final byte[] ecuInitBytes = parseResponseData(processedResponse);
-        final byte[] calIdBytes = Arrays.copyOf(ecuInitBytes, 8);
+        // get CAL ID as reported by OBD
+        byte[] calIdBytes = Arrays.copyOf(ecuInitBytes, 8);
+        int j = 0;
+        // try to find the string termination character 0x00 in the calIdBytes
+        while (j < calIdBytes.length && calIdBytes[j] != 0) { j++; }
+        // if the CAL ID string is less than 8 bytes shorten the byte array
+        calIdBytes = Arrays.copyOf(calIdBytes, j);
+        // CAL ID as a string
         final String calIdStr = new String(calIdBytes);
-        final Settings settings = SettingsManager.getSettings();
+        // make a default EcuInit using the CAL ID
+        EcuInit ssmEcuInit = new SSMEcuInit(ecuInitBytes, calIdStr);
 
         final Map<String, EcuDefinition> defMap =
-                settings.getLoggerEcuDefinitionMap();
-        byte[] ecuIdBytes = new byte[] {0,0,0,0,0};
-        // convert CALID to ECUID based on defined ECU defs
+                SettingsManager.getSettings().getLoggerEcuDefinitionMap();
+        // try to x-ref the CAL ID to ECU ID based on the loaded ECU defs
         for (EcuDefinition ecuDef : defMap.values()) {
             if (ecuDef.getCalId().equals(calIdStr)) {
-                ecuIdBytes = asBytes(ecuDef.getEcuId());
+                // found a match so make a new EcuInit with the proper ECU ID
+                ssmEcuInit = new SSMEcuInit(ecuInitBytes, ecuDef.getEcuId());
                 break;
             }
         }
 
-        arraycopy(ecuIdBytes, 0, ecuInitBytes, 3, 5);
-        return new SSMEcuInit(ecuInitBytes);
+        return ssmEcuInit;
     }
 
     @Override
@@ -166,7 +158,7 @@ public final class OBDProtocol implements Protocol {
         byte responseType = processedResponse[4];
         if (responseType != OBD_RESET_RESPONSE) {
             throw new InvalidResponseException(
-                    "Unexpected OBD Reset response: " + 
+                    "Unexpected OBD Reset response: " +
                     asHex(processedResponse));
         }
     }
@@ -179,30 +171,37 @@ public final class OBDProtocol implements Protocol {
     public ConnectionProperties getDefaultConnectionProperties() {
         return new ConnectionProperties() {
 
+            @Override
             public int getBaudRate() {
                 return 500000;
             }
 
+            @Override
             public void setBaudRate(int b) {
 
             }
 
+            @Override
             public int getDataBits() {
                 return 8;
             }
 
+            @Override
             public int getStopBits() {
                 return 1;
             }
 
+            @Override
             public int getParity() {
                 return 0;
             }
 
+            @Override
             public int getConnectTimeout() {
                 return 2000;
             }
 
+            @Override
             public int getSendTimeout() {
                 return 55;
             }
@@ -210,8 +209,8 @@ public final class OBDProtocol implements Protocol {
     }
 
     private byte[] buildRequest(
-            byte command, 
-            boolean addCommand, 
+            byte command,
+            boolean addCommand,
             byte[]... content) {
 
         bb.reset();

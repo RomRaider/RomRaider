@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,16 @@ package com.romraider.logger.ecu.comms.query;
 
 public interface EcuInit {
 
+    /**
+     * Get the module ID string.
+     * @return ID string
+     */
     String getEcuId();
 
+    /**
+     * Get the module initialization sequence.
+     * @return byte array of the module initialization sequence
+     */
     byte[] getEcuInitBytes();
 
 }
