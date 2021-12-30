@@ -49,7 +49,6 @@ public abstract class ConversionLayer {
 		return f.getName().matches(getRegexFileNameFilter());
 	}
 		
-	//Can be used in the future to export a .xml file from a Document
     public static String convertDocumentToString(Document doc) {
         StringWriter sw = new StringWriter();
         

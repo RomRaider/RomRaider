@@ -28,6 +28,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -37,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -51,8 +53,8 @@ public class XDFConversionLayer extends ConversionLayer {
    private static final Logger LOGGER = Logger.getLogger(XDFConversionLayer.class);    
    private HashMap<Integer, String> categoryMap = new HashMap<Integer,String>();
    
-   private String title;
-   private int fileSize;
+   int bitCount;
+   private boolean signed;
    private int offset;
    private int numDigits;
    private String dataType;
@@ -104,34 +106,124 @@ public class XDFConversionLayer extends ConversionLayer {
 		return doc;
 	}
 	
-	private void parseTable(Document doc, Node baseNode) {
-    	int nodeCountTable = baseNode.getChildNodes().getLength();
+	private Element parseAxis(Document doc, Element tableNode, Node axisNode) {
+    	int nodeCountAxis = axisNode.getChildNodes().getLength();
     	Node n;
+    	Element axisNodeRR = doc.createElement("table");
     	
-		String title;
-		LinkedList<String> categories = new LinkedList<String>();
+    	String id = axisNode.getAttributes().getNamedItem("id").getNodeValue();
+		Element targetTable = id.equalsIgnoreCase("z") ? tableNode : axisNodeRR;
 		
+    	for(int i=0; i < nodeCountAxis ; i++) {
+    		n = axisNode.getChildNodes().item(i);
+    		
+    		if(n.getNodeName().equalsIgnoreCase("embeddeddata")){
+
+    			Node addressNode = n.getAttributes().getNamedItem("mmedaddress");
+    			
+    			if(addressNode != null) {  					
+	    			String address = addressNode.getNodeValue();
+	    			Node flagsNode = axisNode.getAttributes().getNamedItem("mmedtypeflags");
+	    			Node sizeBitsNode = axisNode.getAttributes().getNamedItem("mmedelementsizebits");
+	    			Node majorStrideBitsNode = axisNode.getAttributes().getNamedItem("mmedmajorstridebits");
+	    			Node minorStrideBitsNode = axisNode.getAttributes().getNamedItem("mmedminorstridebits");
+	    				    			
+	    			int flags = 0;
+	    			int sizeBits = 0; 
+	    			//int majorStrideBits = 0; HexUtil.hexToInt(majorStrideBitsNode.getNodeValue());
+	    			//int minorStrideBits = 0; HexUtil.hexToInt(minorStrideBitsNode.getNodeValue());
+	    			
+	    			if(flagsNode != null) {
+	    				flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
+	    			}
+	    			
+	    			if(sizeBitsNode != null) {
+	    				sizeBits = Integer.parseInt(sizeBitsNode.getNodeValue());
+	    			}
+	    			else {
+	    				sizeBits = bitCount;
+	    			}
+	    			
+	    			targetTable.setAttribute("storagetype", (signed ? "" : "u") + "int" + sizeBits);
+	    			targetTable.setAttribute("endian", lsbFirst ? "little" : "big");
+	    			targetTable.setAttribute("storageaddress", address);
+	    			
+	    			if(!id.equalsIgnoreCase("z")) {
+	    				targetTable.setAttribute("type", id.toUpperCase() + " Axis");
+	    			}
+    			}
+    			else {
+    				return null;
+    			}
+    		}
+    		else if(n.getNodeName().equalsIgnoreCase("indexcount")) {
+    			String indexCount = n.getTextContent();
+    			tableNode.setAttribute("size"  + (id.equalsIgnoreCase("x") ? "x" : "y"), indexCount);
+    		}
+    		
+    	}
+    	
+    	if(id.equalsIgnoreCase("z")) return null;
+    	else
+    		return axisNodeRR;   	
+	}
+	
+	private Element parseTable(Document doc, Node romNode, Node tableNode) {
+    	int nodeCountTable = tableNode.getChildNodes().getLength();
+    	Node n;
+    	Element tableNodeRR = doc.createElement("table");
+    	
+		LinkedList<String> categories = new LinkedList<String>();
+		int numAxis = 0;
+				
     	for(int i=0; i < nodeCountTable ; i++) {
-    		n = baseNode.getChildNodes().item(i);
+    		n = tableNode.getChildNodes().item(i);
     		
     		if(n.getNodeName().equalsIgnoreCase("title")){
-    			title = n.getTextContent();
+    			tableNodeRR.setAttribute("name", n.getTextContent());
     		}
     		else if(n.getNodeName().equalsIgnoreCase("categorymem")) {
     			int index = HexUtil.hexToInt(n.getAttributes().getNamedItem("index").getNodeValue());
     			int category = HexUtil.hexToInt(n.getAttributes().getNamedItem("category").getNodeValue());
-    			categories.add(index, categoryMap.get(category));
+    			
+    			if(categoryMap.containsKey(category)) {
+    				categories.add(index, categoryMap.get(category));
+    			}
+    		}
+    		else if(n.getNodeName().equalsIgnoreCase("xdfaxis")) {
+    			Element axis = parseAxis(doc, tableNodeRR, n);
+    			
+    			if(axis != null) {
+    				numAxis++;
+    				tableNodeRR.appendChild(axis);
+    			}
     		}
     		
     		//TODO
     		
     	}
-
+    	 	
+    	String category = "";
+    	Collections.sort(categories);
+    	
+    	for(int i = 0; i < categories.size(); i++) {
+    		category+=categories.get(i);
+    		
+    		if(i < categories.size() - 1)
+    			category+="//";
+    	}
+    	
+    	tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
+    	tableNodeRR.setAttribute("category", category);
+    	tableNodeRR.setAttribute("userlevel", "1");
+    	
+    	return tableNodeRR;
 	}
 	
-	private void parseXDFHeader(Document doc, Node header) {
+	private Node parseXDFHeader(Document doc, Node romNode, Node header) {
     	int nodeCountHeader = header.getChildNodes().getLength();
     	Node n;
+    	Node romIDNode = doc.createElement("romid");
     	
     	for(int i=0; i < nodeCountHeader ; i++) {
     		n = header.getChildNodes().item(i);
@@ -144,7 +236,9 @@ public class XDFConversionLayer extends ConversionLayer {
     			//TODO
     		}  
     		else if(n.getNodeName().equalsIgnoreCase("deftitle")){
-    			title = n.getTextContent();
+    			String title = n.getTextContent();
+    	    	Node ecuID = doc.createElement("ecuid");
+    	    	ecuID.setTextContent(title);
     		}
     		else if(n.getNodeName().equalsIgnoreCase("description")){
     			//TODO
@@ -161,8 +255,8 @@ public class XDFConversionLayer extends ConversionLayer {
     				dataType = "float";
     			}
     			else {   				
-    				String bitCount = n.getAttributes().getNamedItem("datasizeinbits").getNodeValue();
-    				boolean signed = !n.getAttributes().getNamedItem("signed").getNodeValue().equalsIgnoreCase("0");
+    				bitCount = Integer.parseInt(n.getAttributes().getNamedItem("datasizeinbits").getNodeValue());
+    				signed = !n.getAttributes().getNamedItem("signed").getNodeValue().equalsIgnoreCase("0");
     				
     				dataType = (signed ? "" : "u") + "int" + bitCount;
     				lsbFirst = !n.getAttributes().getNamedItem("lsbfirst").getNodeValue().equalsIgnoreCase("0");   				
@@ -175,9 +269,33 @@ public class XDFConversionLayer extends ConversionLayer {
     			//regionFlags
     			//name
     			//desc
-    			fileSize = HexUtil.hexToInt(n.getAttributes().getNamedItem("size").getNodeValue());   			
+    			int fileSize = HexUtil.hexToInt(n.getAttributes().getNamedItem("size").getNodeValue());  
+    	    	Node fileSizeN = doc.createElement("filesize");
+    	    	fileSizeN.setTextContent(fileSize + "b");
     		}		
     	}
+    		
+    	Node idAddress = doc.createElement("internalidaddress");
+    	//idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
+
+    	Node idString = doc.createElement("internalidstring");
+    	//idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
+    	
+    	//This can be used to force a definition file for a bin
+    	idString.setTextContent("force");
+    	idAddress.setTextContent("-1");
+    	
+    	Node ramoffset = doc.createElement("noramoffset"); 	
+	  	
+    	romIDNode.appendChild(ramoffset);
+    	romIDNode.appendChild(idAddress);
+    	romIDNode.appendChild(idString);
+    	romIDNode.appendChild(doc.createElement("year"));
+    	romIDNode.appendChild(doc.createElement("market"));
+    	romIDNode.appendChild(doc.createElement("transmission"));
+    	romIDNode.appendChild(doc.createElement("xmlid"));
+    	   	
+    	return romIDNode;
 	}
 	
 	private Document convertXDFDocument(Document xdfDoc) {
@@ -194,6 +312,7 @@ public class XDFConversionLayer extends ConversionLayer {
         Document doc = builder.newDocument();     
         
         Node baseNode = xdfDoc;
+        Node romNode = null;
         int nodeCount = 0;
         
         if(baseNode.getFirstChild() != null && baseNode.getFirstChild().getNodeName().equalsIgnoreCase("XDFFORMAT")){
@@ -206,8 +325,17 @@ public class XDFConversionLayer extends ConversionLayer {
         	for(int i=0; i < nodeCount; i++) {
         		Node n = baseNode.getChildNodes().item(i);
                	if(n.getNodeName().equalsIgnoreCase("XDFHEADER")){
+               		
+                	//Create the initial document
+                    Node roms = doc.createElement("roms");                   
+            		romNode = doc.createElement("rom");	
+            		
+            		doc.appendChild(roms);
+            		roms.appendChild(romNode);
+               		           		
                		header = n;
-               		parseXDFHeader(doc, header);
+               		Node headerNode = parseXDFHeader(doc, romNode, header);
+               		romNode.appendChild(headerNode);
                		break;
             	}
             }
@@ -221,7 +349,8 @@ public class XDFConversionLayer extends ConversionLayer {
         	for(int i=0; i < nodeCount; i++) {
         		Node n = baseNode.getChildNodes().item(i);
                	if(n.getNodeName().equalsIgnoreCase("XDFTABLE")){
-               		parseTable(doc, header);
+               		Element table = parseTable(doc, romNode, n);
+                	romNode.appendChild(table);
             	}
             } 	
         }
@@ -230,6 +359,7 @@ public class XDFConversionLayer extends ConversionLayer {
         	return null;
         }	
         
+        System.out.println(convertDocumentToString(doc));
         return doc;
 	}
 	
