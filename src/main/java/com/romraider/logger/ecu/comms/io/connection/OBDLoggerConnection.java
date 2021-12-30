@@ -85,14 +85,11 @@ public final class OBDLoggerConnection implements LoggerConnection {
         System.arraycopy(response, 0, processedResponse, 0, response.length);
         int j = 7;
         // try to find the string termination character 0x00 in the response
-        while (response[j] != 0 && j < response.length) { j++; }
-        // make sure j is not pointing to a position past the end of the string
-        // if the termination character 0x00 was not found
-        if (j == response.length) { j--; }
+        while (j < response.length && response[j] != 0) { j++; }
         byte[] calIdStr = new byte[j - 7];
-        System.arraycopy(response, 7, calIdStr, 0, j - 7);
+        System.arraycopy(response, 7, calIdStr, 0, calIdStr.length);
         LOGGER.info(String.format("%s Calibration ID: %s", module, new String(calIdStr)));
-        calIdStr = Arrays.copyOf(calIdStr, 8);  // extend to 8 bytes
+        calIdStr = Arrays.copyOf(calIdStr, 8);  // extend to 8 bytes maximum
         System.arraycopy(calIdStr, 0, processedResponse, 5, calIdStr.length);
 
         final byte[] supportedPidsPid = {
@@ -132,8 +129,9 @@ public final class OBDLoggerConnection implements LoggerConnection {
                     module, asHex(aiPpResponse)));
             System.arraycopy(aiPpResponse, 6, processedResponse, 45, 1);
         }
+        // contains CAL ID not ECU ID
         LOGGER.debug(String.format("%s Init Response <--- %s",
-                module, asHex(processedResponse)));  // contains CALID not ECUID
+                module, asHex(processedResponse)));
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
