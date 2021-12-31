@@ -28,6 +28,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -123,11 +124,14 @@ public class XDFConversionLayer extends ConversionLayer {
     			
     			if(addressNode != null) {  					
 	    			String address = addressNode.getNodeValue();
-	    			Node flagsNode = axisNode.getAttributes().getNamedItem("mmedtypeflags");
-	    			Node sizeBitsNode = axisNode.getAttributes().getNamedItem("mmedelementsizebits");
-	    			Node majorStrideBitsNode = axisNode.getAttributes().getNamedItem("mmedmajorstridebits");
-	    			Node minorStrideBitsNode = axisNode.getAttributes().getNamedItem("mmedminorstridebits");
-	    				    			
+	    			Node flagsNode = n.getAttributes().getNamedItem("mmedtypeflags");
+	    			Node sizeBitsNode = n.getAttributes().getNamedItem("mmedelementsizebits");
+	    			Node majorStrideBitsNode = n.getAttributes().getNamedItem("mmedmajorstridebits");
+	    			Node minorStrideBitsNode = n.getAttributes().getNamedItem("mmedminorstridebits");
+	    			Node rowCountNode = n.getAttributes().getNamedItem("mmedrowcount");
+	    			Node colCountNode = n.getAttributes().getNamedItem("mmedcolcount");
+	    			
+	    			boolean signedLocal = signed;
 	    			int flags = 0;
 	    			int sizeBits = 0; 
 	    			//int majorStrideBits = 0; HexUtil.hexToInt(majorStrideBitsNode.getNodeValue());
@@ -135,6 +139,15 @@ public class XDFConversionLayer extends ConversionLayer {
 	    			
 	    			if(flagsNode != null) {
 	    				flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
+	    				
+	    				//First Bit: Signed
+
+	    				if((flags & 0x01) == 1) {
+	    					signedLocal = true;
+	    				}
+	    				else if((flags & 0x01) == 0) {
+	    					signedLocal = false;
+	    				}
 	    			}
 	    			
 	    			if(sizeBitsNode != null) {
@@ -144,8 +157,16 @@ public class XDFConversionLayer extends ConversionLayer {
 	    				sizeBits = bitCount;
 	    			}
 	    			
-	    			targetTable.setAttribute("storagetype", (signed ? "" : "u") + "int" + sizeBits);
-	    			targetTable.setAttribute("endian", lsbFirst ? "little" : "big");
+	    			if(colCountNode!=null) {
+	    				targetTable.setAttribute("sizex", colCountNode.getNodeValue());
+	    			}
+	    			
+	    			if(rowCountNode!=null) {
+	    				targetTable.setAttribute("sizey", rowCountNode.getNodeValue());
+	    			}
+	    			
+	    			targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
+	    			targetTable.setAttribute("endian", lsbFirst ? "big" : "little");
 	    			targetTable.setAttribute("storageaddress", address);
 	    			
 	    			if(!id.equalsIgnoreCase("z")) {
@@ -157,8 +178,8 @@ public class XDFConversionLayer extends ConversionLayer {
     			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("indexcount")) {
-    			String indexCount = n.getTextContent();
-    			tableNode.setAttribute("size"  + (id.equalsIgnoreCase("x") ? "x" : "y"), indexCount);
+    			//String indexCount = n.getTextContent();
+    			//tableNode.setAttribute("size"  + id, indexCount);
     		}
     		
     	}
@@ -173,7 +194,7 @@ public class XDFConversionLayer extends ConversionLayer {
     	Node n;
     	Element tableNodeRR = doc.createElement("table");
     	
-		LinkedList<String> categories = new LinkedList<String>();
+    	LinkedList<String> categories = new LinkedList<String>();
 		int numAxis = 0;
 				
     	for(int i=0; i < nodeCountTable ; i++) {
@@ -182,12 +203,17 @@ public class XDFConversionLayer extends ConversionLayer {
     		if(n.getNodeName().equalsIgnoreCase("title")){
     			tableNodeRR.setAttribute("name", n.getTextContent());
     		}
+    		if(n.getNodeName().equalsIgnoreCase("description")){
+    			Element desc = doc.createElement("description");
+    			desc.setTextContent(n.getTextContent());
+    			tableNodeRR.appendChild(desc);
+    		}
     		else if(n.getNodeName().equalsIgnoreCase("categorymem")) {
-    			int index = HexUtil.hexToInt(n.getAttributes().getNamedItem("index").getNodeValue());
-    			int category = HexUtil.hexToInt(n.getAttributes().getNamedItem("category").getNodeValue());
+    			//int index = Integer.parseInt(n.getAttributes().getNamedItem("index").getNodeValue());
+    			int category = Integer.parseInt(n.getAttributes().getNamedItem("category").getNodeValue());
     			
-    			if(categoryMap.containsKey(category)) {
-    				categories.add(index, categoryMap.get(category));
+    			if(categoryMap.containsKey(category-1)) {
+    				categories.add(categoryMap.get(category-1));
     			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("xdfaxis")) {
@@ -204,18 +230,20 @@ public class XDFConversionLayer extends ConversionLayer {
     	}
     	 	
     	String category = "";
-    	Collections.sort(categories);
     	
     	for(int i = 0; i < categories.size(); i++) {
-    		category+=categories.get(i);
-    		
-    		if(i < categories.size() - 1)
-    			category+="//";
+    		String cat = categories.get(i);   
+    			category+=cat;
+    			
+				if(i < categories.size() - 1)
+					category+="//";
     	}
     	
-    	tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
+    	if(category.isEmpty())
+    		category = "Uncategorized";
+    	
     	tableNodeRR.setAttribute("category", category);
-    	tableNodeRR.setAttribute("userlevel", "1");
+    	tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
     	
     	return tableNodeRR;
 	}
@@ -376,9 +404,9 @@ public class XDFConversionLayer extends ConversionLayer {
 		Settings settings = SettingsManager.getSettings();	
 		
 		settings.getEcuDefinitionFiles().clear();
-		settings.getEcuDefinitionFiles().add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\9E60B.xdf"));
+		settings.getEcuDefinitionFiles().add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\INA0S.xdf"));
 	
-		OpenImageWorker w = new OpenImageWorker(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\9E60B_original.bin"));
+		OpenImageWorker w = new OpenImageWorker(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\INA0S_original.bin"));
 
 		w.execute();
 	}
