@@ -29,9 +29,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -107,13 +111,16 @@ public class XDFConversionLayer extends ConversionLayer {
 		return doc;
 	}
 	
-	private Element parseAxis(Document doc, Element tableNode, Node axisNode) {
+	private Element parseAxis(Document doc, Element tableNode, Node axisNode, Node flagsNodeTable) {
     	int nodeCountAxis = axisNode.getChildNodes().getLength();
     	Node n;
     	Element axisNodeRR = doc.createElement("table");
     	
     	String id = axisNode.getAttributes().getNamedItem("id").getNodeValue();
 		Element targetTable = id.equalsIgnoreCase("z") ? tableNode : axisNodeRR;
+		
+		Element scaling = doc.createElement("scaling");
+		targetTable.appendChild(scaling);
 		
     	for(int i=0; i < nodeCountAxis ; i++) {
     		n = axisNode.getChildNodes().item(i);
@@ -132,21 +139,34 @@ public class XDFConversionLayer extends ConversionLayer {
 	    			Node colCountNode = n.getAttributes().getNamedItem("mmedcolcount");
 	    			
 	    			boolean signedLocal = signed;
+	    			boolean lsbFirstLocal = lsbFirst;
 	    			int flags = 0;
 	    			int sizeBits = 0; 
 	    			//int majorStrideBits = 0; HexUtil.hexToInt(majorStrideBitsNode.getNodeValue());
 	    			//int minorStrideBits = 0; HexUtil.hexToInt(minorStrideBitsNode.getNodeValue());
 	    			
+	    			if(flagsNode == null)
+	    				flagsNode = flagsNodeTable;
+	    				    			
 	    			if(flagsNode != null) {
 	    				flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
 	    				
-	    				//First Bit: Signed
-
-	    				if((flags & 0x01) == 1) {
+	    				if((flags &(0x01)) > 0) {
 	    					signedLocal = true;
 	    				}
 	    				else if((flags & 0x01) == 0) {
 	    					signedLocal = false;
+	    				}
+	    				
+	    				if((flags & 0x02) > 0) {
+	    					lsbFirstLocal = false;
+	    				}
+	    				else {
+	    					lsbFirstLocal = true;
+	    				}
+	    				
+	    				if((flags & 0x04) > 0) {
+	    					targetTable.setAttribute("swapxy", "true");
 	    				}
 	    			}
 	    			
@@ -166,7 +186,7 @@ public class XDFConversionLayer extends ConversionLayer {
 	    			}
 	    			
 	    			targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
-	    			targetTable.setAttribute("endian", lsbFirst ? "big" : "little");
+	    			targetTable.setAttribute("endian", lsbFirstLocal ? "big" : "little");
 	    			targetTable.setAttribute("storageaddress", address);
 	    			
 	    			if(!id.equalsIgnoreCase("z")) {
@@ -177,11 +197,37 @@ public class XDFConversionLayer extends ConversionLayer {
     				return null;
     			}
     		}
-    		else if(n.getNodeName().equalsIgnoreCase("indexcount")) {
-    			//String indexCount = n.getTextContent();
-    			//tableNode.setAttribute("size"  + id, indexCount);
+    		else if(n.getNodeName().equalsIgnoreCase("units")) {
+    			scaling.setAttribute("units", n.getTextContent());
+    			
+    			if(!id.equalsIgnoreCase("z")) {
+    				targetTable.setAttribute("name", " ");
+    			}
     		}
-    		
+    		else if(n.getNodeName().equalsIgnoreCase("decimalpl")) {
+    			String format = "0";
+    			
+    			if(!n.getTextContent().equals("0")) {
+    				int count = Math.abs(Integer.parseInt(n.getTextContent()));
+    				format = "0." + new String(new char[count]).replace("\0", "0");
+
+    			}
+    			
+				scaling.setAttribute("format", format);
+    		}
+    		else if(n.getNodeName().equalsIgnoreCase("math")) {
+    			String formula = n.getAttributes().getNamedItem("equation").getNodeValue();	
+    			formula = formula.replace("X", "x");
+    			scaling.setAttribute("expression", formula);
+    			/*
+    			if(formula.contains("*"))
+    				scaling.setAttribute("to_byte", formula.replace("*", "/"));
+    			else if(formula.contains("/"))
+    				scaling.setAttribute("to_byte", formula.replace("/", "*"));
+    			else {
+    				scaling.setAttribute("to_byte", "x");
+    			}*/
+    		}
     	}
     	
     	if(id.equalsIgnoreCase("z")) return null;
@@ -195,6 +241,7 @@ public class XDFConversionLayer extends ConversionLayer {
     	Element tableNodeRR = doc.createElement("table");
     	
     	LinkedList<String> categories = new LinkedList<String>();
+    	Node flagsNode = tableNode.getAttributes().getNamedItem("flags");
 		int numAxis = 0;
 				
     	for(int i=0; i < nodeCountTable ; i++) {
@@ -202,6 +249,12 @@ public class XDFConversionLayer extends ConversionLayer {
     		
     		if(n.getNodeName().equalsIgnoreCase("title")){
     			tableNodeRR.setAttribute("name", n.getTextContent());
+    				
+    			//TunerPro can currently not edit axis directly, but we can
+    			//These tables contain the axis, which we can skip
+    			if(n.getTextContent().endsWith("(autogen)")){
+    				return null;
+    			}
     		}
     		if(n.getNodeName().equalsIgnoreCase("description")){
     			Element desc = doc.createElement("description");
@@ -217,16 +270,13 @@ public class XDFConversionLayer extends ConversionLayer {
     			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("xdfaxis")) {
-    			Element axis = parseAxis(doc, tableNodeRR, n);
+    			Element axis = parseAxis(doc, tableNodeRR, n, flagsNode);
     			
     			if(axis != null) {
     				numAxis++;
-    				tableNodeRR.appendChild(axis);
+    				tableNodeRR.appendChild(axis);				
     			}
     		}
-    		
-    		//TODO
-    		
     	}
     	 	
     	String category = "";
@@ -378,7 +428,9 @@ public class XDFConversionLayer extends ConversionLayer {
         		Node n = baseNode.getChildNodes().item(i);
                	if(n.getNodeName().equalsIgnoreCase("XDFTABLE")){
                		Element table = parseTable(doc, romNode, n);
-                	romNode.appendChild(table);
+               		
+               		if(table != null)
+               			romNode.appendChild(table);
             	}
             } 	
         }
@@ -389,6 +441,17 @@ public class XDFConversionLayer extends ConversionLayer {
         
         System.out.println(convertDocumentToString(doc));
         return doc;
+	}
+	
+	private static LinkedList<File> listFileTree(File dir) {
+	    LinkedList<File> fileTree = new LinkedList<File>();
+	    if(dir==null||dir.listFiles()==null){
+	        return fileTree;
+	    }
+	    for (File entry : dir.listFiles()) {
+	        if (entry.isFile()) fileTree.add(entry);
+	    }
+	    return fileTree;
 	}
 	
 	//Test Code
@@ -403,14 +466,27 @@ public class XDFConversionLayer extends ConversionLayer {
 		SettingsManager.setTesting(true);
 		Settings settings = SettingsManager.getSettings();	
 		
-		settings.getEcuDefinitionFiles().clear();
-		settings.getEcuDefinitionFiles().add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\INA0S.xdf"));
-	
-		OpenImageWorker w = new OpenImageWorker(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\INA0S_original.bin"));
+		File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G series B58");
+		//List<File> listOfFiles = new LinkedList<File>();
+		//listOfFiles.add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G series B58\\00003076501103.xdf"));
+		Collection<File> listOfFiles =  listFileTree(folder);
+		Collections.shuffle((List<?>) listOfFiles);
 
-		w.execute();
+		ConversionLayer l = new XDFConversionLayer();
+		
+		for(File f: listOfFiles) {
+			if (l.isFileSupported(f)) {
+				settings.getEcuDefinitionFiles().clear();
+				settings.getEcuDefinitionFiles().add(f);
+				File bin = new File(f.getAbsolutePath().replace(".xdf", "_original.bin"));
+				
+				if(bin.exists()) {
+					System.out.println(f);
+					OpenImageWorker w = new OpenImageWorker(bin);
+					w.execute();
+					break;
+				}
+			}
+		}
 	}
 }
-
-
-

@@ -100,7 +100,6 @@ public class DataCell implements Serializable  {
         int storageAddress = table.getStorageAddress();
         boolean signed = table.isSignedData();
 
-
         // populate data cells
         if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
             byte[] byteValue = new byte[4];
@@ -368,7 +367,13 @@ public class DataCell implements Serializable  {
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-                result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
+            	
+                if(table.getCurrentScale().getByteExpression() == null) {
+                	result = table.getCurrentScale().approximateToByteFunction(NumberUtil.doubleValue(input), table.getStorageType(), table.isSignedData());
+                }
+                else {
+                	result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
+                }
 
                 if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
@@ -440,7 +445,14 @@ public class DataCell implements Serializable  {
             increment = 0.0 - increment;
         }
 
-        double incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
+        double incResult = 0;
+        if(table.getCurrentScale().getByteExpression() == null) {
+        	incResult = table.getCurrentScale().approximateToByteFunction(oldValue + increment, table.getStorageType(), table.isSignedData());
+        }
+        else {
+        	incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
+        }
+        
         if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
             if(binValue != incResult) {
                 this.setBinValue(incResult);

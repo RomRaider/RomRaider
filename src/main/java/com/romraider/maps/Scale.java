@@ -57,6 +57,9 @@ public class Scale implements Serializable {
     }
 
     public boolean validate() {
+    	//We use the approximation method here
+    	if(getByteExpression() == null) return true;
+    	
         if(expression.equals("x") && byteExpression.equals("x")) return true;
 
         double startValue = 5;
@@ -68,7 +71,53 @@ public class Scale implements Serializable {
         if (Math.abs(endValue - startValue) > .001) return false;
         else return true;
     }
-
+    
+    public double approximateToByteFunction(double input, int storageType, boolean signed) {
+    	
+    	long maxValue = (int) Math.pow(2, 8 * storageType);
+    	long minValue = 0;
+    	
+    	if(signed) {
+    		minValue = -maxValue/2;
+    		maxValue = maxValue/2 - 1;   				
+    	}
+    	else {
+    		maxValue--;
+    	}
+    	
+    	double error = 1.0f;
+    	int currentStep = (int) ((maxValue - minValue) / 2);
+    	boolean up = true;
+    	
+    	while(currentStep > 1 && error > 0.00001f) {
+    		
+    		double minusValue = JEPUtil.evaluate(getByteExpression(), currentStep-1);
+    		double plusValue = JEPUtil.evaluate(getByteExpression(), currentStep+1);
+    		
+    		double plusError = plusValue - input;
+    		double minusError = minusValue - input;
+    		
+    		if(plusError < minusError) {
+    			up = true;
+    			error = plusError;
+    		}
+    		else {
+    			up = false;
+    			error = minusError;
+    		}
+    		
+    		if(up) {
+    			currentStep+= currentStep / 2;
+    		}
+    		else {
+    			currentStep-=currentStep/2;
+    		}
+    	}
+    	
+    	System.out.println("Input: " + input + "from approx: " + JEPUtil.evaluate(getByteExpression(), currentStep));
+    	return currentStep;
+    }
+    
     public void setCategory(String category) {
         this.category = category;
     }
