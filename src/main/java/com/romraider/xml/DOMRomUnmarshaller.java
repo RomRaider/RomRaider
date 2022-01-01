@@ -161,14 +161,8 @@ public final class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("table")) {
                     Table table = null;
-                    try {
-                        table = rom.getTableByName(unmarshallAttribute(n, "name", null));
-                    } catch (TableNotFoundException e) {
-                        //Table does not already exist (do nothing)
-                    } catch (InvalidTableNameException iex) {
-                        // Table name is null or empty.  Do nothing.
-                    }
-
+                    table = rom.getTableByName(unmarshallAttribute(n, "name", null));
+                    
                     try {
                         table = tableScaleHandler.unmarshallTable(n, table, rom);
                         if (table != null) {

@@ -179,9 +179,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         }
     }
 
-    public Table getTableByName(String tableName) throws TableNotFoundException, InvalidTableNameException {
+    public Table getTableByName(String tableName) {
         if(null == tableName || tableName.isEmpty()) {
-            throw new InvalidTableNameException();
+            return null;
         }
 
         for (TableTreeNode tableNode : tableNodes) {
@@ -189,7 +189,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 return tableNode.getTable();
             }
         }
-        throw new TableNotFoundException();
+        return null;
     }
 
     public List<Table> findTables(String regex) {

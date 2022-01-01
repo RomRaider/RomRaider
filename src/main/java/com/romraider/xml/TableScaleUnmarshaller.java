@@ -87,7 +87,6 @@ public class TableScaleUnmarshaller {
                 table = (Table) ObjectCloner
                         .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
                                 "base", "none")));
-
             } catch (TableNotFoundException ex) { /* table not found, do nothing */
 
             } catch (InvalidTableNameException ex) { // Table name is invalid, do nothing.
@@ -193,7 +192,7 @@ public class TableScaleUnmarshaller {
         table.setLogParam(unmarshallAttribute(tableNode, "logparam",
                 table.getLogParam()));
         table.setStringMask(
-                unmarshallAttribute(tableNode, "mask", "0"));
+                unmarshallAttribute(tableNode, "mask", ""));
 
         if (table.getType() == Table.TableType.TABLE_3D) {
             ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
@@ -236,13 +235,11 @@ public class TableScaleUnmarshaller {
                         }
 
                     } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
-                        // is 3D,
-                        // populate
-                        // xAxis
+                        // is 3D, populate xAxis
                         if (RomAttributeParser
                                 .parseTableType(unmarshallAttribute(n, "type",
                                         "unknown")) == Table.TableType.X_AXIS) {
-
+                        	
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table3D) table).getXAxis(), rom);
                             if (tempTable.getDataSize() != ((Table3D) table)
