@@ -39,7 +39,7 @@ public abstract class ConversionLayer {
 	 * The actual conversion method. It receives the file and creates a DOM structure
 	 * compatible to the default RR structure. 
 	 */
-	public abstract Document convertToDocumentTree(File f);
+	public abstract Document convertToDocumentTree(File f) throws Exception;
 	
 	/*
 	 * This method receives a file and checks if this converter supports this file
