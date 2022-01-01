@@ -378,7 +378,9 @@ public class TableScaleUnmarshaller {
             scale.setName(unmarshallAttribute(scaleNode, "name",
                     unmarshallAttribute(scaleNode, "units", "none")));
         }
-
+        
+        scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", ""));
+        
         // Iterate over other available attributes
         for(int i=0; i < scaleNode.getAttributes().getLength(); i++) {
             Node attr = scaleNode.getAttributes().item(i);
@@ -387,7 +389,6 @@ public class TableScaleUnmarshaller {
 
             if(name.equalsIgnoreCase("units"))scale.setUnit(value);
             else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
-            else if(name.equalsIgnoreCase("to_byte")) scale.setByteExpression(value);
             else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
             else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
             else if(name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));

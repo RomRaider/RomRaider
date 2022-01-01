@@ -230,9 +230,10 @@ public class RomID implements Serializable {
     public void setMemModel(String memModel) {
         this.memModel = memModel;
     }
-
-    public int getRamOffset() {
-        return ramOffset;
+    
+    public void setOffset(int offset) {
+    	this.ramOffset = -offset;
+    	noRamOffset = true;
     }
     
     public void disableRamOffset() {
@@ -240,6 +241,10 @@ public class RomID implements Serializable {
         ramOffset = 0;
     }
     
+    public int getRamOffset() {
+        return ramOffset;
+    }
+      
     public void setRamOffset(int ramOffset) {
     	if(noRamOffset) return;
     	

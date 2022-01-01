@@ -28,14 +28,11 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -88,7 +85,6 @@ public class XDFConversionLayer extends ConversionLayer {
 		    DocumentBuilder docBuilder = factory.newDocumentBuilder();
 	    	Document XMLdoc = docBuilder.parse(fileStream, f.getAbsolutePath());
 	    	doc = convertXDFDocument(XMLdoc);
-	    	System.out.println(doc);
 	   }
 	    catch (SAXException spe) {	    		
 	        showMessageDialog(editor,
@@ -133,8 +129,8 @@ public class XDFConversionLayer extends ConversionLayer {
 	    			String address = addressNode.getNodeValue();
 	    			Node flagsNode = n.getAttributes().getNamedItem("mmedtypeflags");
 	    			Node sizeBitsNode = n.getAttributes().getNamedItem("mmedelementsizebits");
-	    			Node majorStrideBitsNode = n.getAttributes().getNamedItem("mmedmajorstridebits");
-	    			Node minorStrideBitsNode = n.getAttributes().getNamedItem("mmedminorstridebits");
+	    			//Node majorStrideBitsNode = n.getAttributes().getNamedItem("mmedmajorstridebits");
+	    			//Node minorStrideBitsNode = n.getAttributes().getNamedItem("mmedminorstridebits");
 	    			Node rowCountNode = n.getAttributes().getNamedItem("mmedrowcount");
 	    			Node colCountNode = n.getAttributes().getNamedItem("mmedcolcount");
 	    			
@@ -149,25 +145,31 @@ public class XDFConversionLayer extends ConversionLayer {
 	    				flagsNode = flagsNodeTable;
 	    				    			
 	    			if(flagsNode != null) {
-	    				flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
-	    				
-	    				if((flags &(0x01)) > 0) {
-	    					signedLocal = true;
+	    				try {
+	    					flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
+	    					
+		    				if((flags &(0x01)) > 0) {
+		    					signedLocal = true;
+		    				}
+		    				else if((flags & 0x01) == 0) {
+		    					signedLocal = false;
+		    				}
+		    				
+		    				if((flags & 0x02) > 0) {
+		    					lsbFirstLocal = false;
+		    				}
+		    				else {
+		    					lsbFirstLocal = true;
+		    				}
+		    				
+		    				if((flags & 0x04) > 0) {
+		    					targetTable.setAttribute("swapxy", "true");
+		    				}
 	    				}
-	    				else if((flags & 0x01) == 0) {
-	    					signedLocal = false;
-	    				}
-	    				
-	    				if((flags & 0x02) > 0) {
-	    					lsbFirstLocal = false;
-	    				}
-	    				else {
-	    					lsbFirstLocal = true;
-	    				}
-	    				
-	    				if((flags & 0x04) > 0) {
-	    					targetTable.setAttribute("swapxy", "true");
-	    				}
+	    				catch(NumberFormatException e) {
+	    					//TODO: Not sure how to handle this yet...
+	    					LOGGER.error("Failed to parse flag " + flagsNode.getNodeValue());	    					
+	    				}	    		
 	    			}
 	    			
 	    			if(sizeBitsNode != null) {
@@ -219,14 +221,6 @@ public class XDFConversionLayer extends ConversionLayer {
     			String formula = n.getAttributes().getNamedItem("equation").getNodeValue();	
     			formula = formula.replace("X", "x");
     			scaling.setAttribute("expression", formula);
-    			/*
-    			if(formula.contains("*"))
-    				scaling.setAttribute("to_byte", formula.replace("*", "/"));
-    			else if(formula.contains("/"))
-    				scaling.setAttribute("to_byte", formula.replace("/", "*"));
-    			else {
-    				scaling.setAttribute("to_byte", "x");
-    			}*/
     		}
     	}
     	
@@ -317,6 +311,7 @@ public class XDFConversionLayer extends ConversionLayer {
     			String title = n.getTextContent();
     	    	Node ecuID = doc.createElement("ecuid");
     	    	ecuID.setTextContent(title);
+    	    	romIDNode.appendChild(ecuID);
     		}
     		else if(n.getNodeName().equalsIgnoreCase("description")){
     			//TODO
@@ -363,15 +358,12 @@ public class XDFConversionLayer extends ConversionLayer {
     	idString.setTextContent("force");
     	idAddress.setTextContent("-1");
     	
-    	Node ramoffset = doc.createElement("noramoffset"); 	
+    	Element offsetNode = doc.createElement("offset");
+    	offsetNode.setTextContent("" + offset);
 	  	
-    	romIDNode.appendChild(ramoffset);
+    	romIDNode.appendChild(offsetNode);
     	romIDNode.appendChild(idAddress);
     	romIDNode.appendChild(idString);
-    	romIDNode.appendChild(doc.createElement("year"));
-    	romIDNode.appendChild(doc.createElement("market"));
-    	romIDNode.appendChild(doc.createElement("transmission"));
-    	romIDNode.appendChild(doc.createElement("xmlid"));
     	   	
     	return romIDNode;
 	}
@@ -439,7 +431,7 @@ public class XDFConversionLayer extends ConversionLayer {
         	return null;
         }	
         
-        System.out.println(convertDocumentToString(doc));
+        //System.out.println(convertDocumentToString(doc));
         return doc;
 	}
 	
@@ -450,6 +442,7 @@ public class XDFConversionLayer extends ConversionLayer {
 	    }
 	    for (File entry : dir.listFiles()) {
 	        if (entry.isFile()) fileTree.add(entry);
+	        else if(entry.isDirectory()) fileTree.addAll(listFileTree(entry));
 	    }
 	    return fileTree;
 	}
@@ -466,15 +459,14 @@ public class XDFConversionLayer extends ConversionLayer {
 		SettingsManager.setTesting(true);
 		Settings settings = SettingsManager.getSettings();	
 		
-		File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G series B58");
+		File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\");
 		//List<File> listOfFiles = new LinkedList<File>();
 		//listOfFiles.add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G series B58\\00003076501103.xdf"));
 		Collection<File> listOfFiles =  listFileTree(folder);
 		Collections.shuffle((List<?>) listOfFiles);
-
-		ConversionLayer l = new XDFConversionLayer();
-		
+	
 		for(File f: listOfFiles) {
+			ConversionLayer l = new XDFConversionLayer();
 			if (l.isFileSupported(f)) {
 				settings.getEcuDefinitionFiles().clear();
 				settings.getEcuDefinitionFiles().add(f);

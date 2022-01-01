@@ -39,6 +39,7 @@ import com.romraider.maps.Table;
 import com.romraider.maps.checksum.ChecksumFactory;
 import com.romraider.maps.checksum.ChecksumManager;
 import com.romraider.swing.JProgressPane;
+import com.romraider.util.HexUtil;
 
 public final class DOMRomUnmarshaller {
     private static final Logger LOGGER = Logger
@@ -256,16 +257,22 @@ public final class DOMRomUnmarshaller {
 
                 } else if (nodeName.equalsIgnoreCase("year")) {
                     romID.setYear(unmarshallText(n));
+                    
                 } else if (nodeName.equalsIgnoreCase("noramoffset")) {
                     romID.disableRamOffset();
+                    
+                } else if (nodeName.equalsIgnoreCase("offset")) {
+                    romID.setOffset(HexUtil.hexToInt(unmarshallText(n)));
+                    
                 } else if (nodeName.equalsIgnoreCase("flashmethod")) {
                     romID.setFlashMethod(unmarshallText(n));
-
-                } else if (nodeName.equalsIgnoreCase("memmodel")) {
-                    romID.setMemModel(unmarshallText(n));                   
-                    tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));
                     
+                } else if (nodeName.equalsIgnoreCase("memmodel")) {
+                    romID.setMemModel(unmarshallText(n));   
+                    
+                    tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));                    
                 } else if (nodeName.equalsIgnoreCase("filesize")) {
+                	
                     romID.setFileSize(RomAttributeParser
                             .parseFileSize(unmarshallText(n)));
                     

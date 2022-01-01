@@ -81,15 +81,17 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
            
            int validChecksums =  rom.validateChecksum();
            
+           String status = "";
+           
            if(rom.getNumChecksumsManagers() == 0) {
-        	   editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
+        	   status = ECUEditor.rb.getString("STATUSREADY");
            }
            else {
-        	   editor.getStatusPanel().setStatus(String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
-        			   validChecksums, rom.getNumChecksumsManagers()));        
+        	   status = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
+        			   validChecksums, rom.getNumChecksumsManagers());        
            }
-          
-          setProgress(100);              
+           
+           editor.getStatusPanel().update(status, 0);              
     }
     
     private Document createDocument(File f) {
