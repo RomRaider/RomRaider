@@ -22,11 +22,11 @@ package com.romraider.xml.ConversionLayer;
 import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
 import static com.romraider.util.LogManager.initDebugLogging;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,7 +46,6 @@ import org.xml.sax.SAXException;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.HexUtil;
 import com.romraider.util.SettingsManager;;
@@ -59,7 +58,7 @@ public class XDFConversionLayer extends ConversionLayer {
    private boolean signed;
    private int offset;
    private int numDigits;
-   private String dataType;
+   //private String dataType;
    private boolean lsbFirst;
    
    //Defaults
@@ -72,26 +71,31 @@ public class XDFConversionLayer extends ConversionLayer {
 	}
 	
 	@Override
-	public Document convertToDocumentTree(File f) {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
+	public Document convertToDocumentTree(File f) throws Exception {
 	    Document doc = null;
 	    FileInputStream fileStream = null; 
+	    BufferedReader br = null;
 	    
 		try {
-		    fileStream = new FileInputStream(f); 
+			//Check first if its an older definition
+			//which is not xml based
+		    br = new BufferedReader(new FileReader(f));	
+		    String firstLine = br.readLine();
+		    
+		    if(firstLine.equalsIgnoreCase("XDF")) {
+		    	br.close();
+		    	throw new SAXException("Sorry, only XML XDFs are currently supported!");
+		    }
+		    br.close();
+		    
 		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		    factory.setNamespaceAware(true);
 		    factory.setXIncludeAware(true);
 		    DocumentBuilder docBuilder = factory.newDocumentBuilder();
+		    
+		    fileStream = new FileInputStream(f); 
 	    	Document XMLdoc = docBuilder.parse(fileStream, f.getAbsolutePath());
 	    	doc = convertXDFDocument(XMLdoc);
-	   }
-	    catch (SAXException spe) {	    		
-	        showMessageDialog(editor,
-	        		spe.getMessage(),
-	        		//TODO: Add i18n
-	                "Error in loading XDF",
-	                ERROR_MESSAGE);
 	    } catch (ParserConfigurationException e) {
 			e.printStackTrace();
 	    } catch (IOException e) {
@@ -99,7 +103,8 @@ public class XDFConversionLayer extends ConversionLayer {
 		}
 	    finally {
 			try {
-				fileStream.close();
+				if(fileStream != null)
+					fileStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -224,6 +229,11 @@ public class XDFConversionLayer extends ConversionLayer {
     		}
     	}
     	
+    	if(!scaling.hasAttribute("format")) {
+			String format = "0." + new String(new char[numDigits]).replace("\0", "0");
+			scaling.setAttribute("format", format);
+		}
+    	
     	if(id.equalsIgnoreCase("z")) return null;
     	else
     		return axisNodeRR;   	
@@ -325,36 +335,30 @@ public class XDFConversionLayer extends ConversionLayer {
     		}
     		else if(n.getNodeName().equalsIgnoreCase("DEFAULTS")){
     			if(!n.getAttributes().getNamedItem("float").getNodeValue().equalsIgnoreCase("0")) {
-    				dataType = "float";
+    				//dataType = "float";
     			}
     			else {   				
     				bitCount = Integer.parseInt(n.getAttributes().getNamedItem("datasizeinbits").getNodeValue());
     				signed = !n.getAttributes().getNamedItem("signed").getNodeValue().equalsIgnoreCase("0");
     				
-    				dataType = (signed ? "" : "u") + "int" + bitCount;
+    				//dataType = (signed ? "" : "u") + "int" + bitCount;
     				lsbFirst = !n.getAttributes().getNamedItem("lsbfirst").getNodeValue().equalsIgnoreCase("0");   				
     				numDigits = HexUtil.hexToInt(n.getAttributes().getNamedItem("sigdigits").getNodeValue());
     			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("REGION")){
-    			//type
-    			//startAddress
-    			//regionFlags
-    			//name
-    			//desc
+    			//Ignored currently: type, startAddress, regionFlags, name, desc
+    			//TODO: Start address probably matters....
     			int fileSize = HexUtil.hexToInt(n.getAttributes().getNamedItem("size").getNodeValue());  
     	    	Node fileSizeN = doc.createElement("filesize");
     	    	fileSizeN.setTextContent(fileSize + "b");
     		}		
     	}
     		
+    	//XDFs dont have an identification component
+    	//So we just load it, no questions asked
     	Node idAddress = doc.createElement("internalidaddress");
-    	//idAddress.setTextContent("0x" + Integer.toHexString(bestIDFitAddress));
-
     	Node idString = doc.createElement("internalidstring");
-    	//idString.setTextContent("0x" + bestIDFitData.replace(" ", ""));
-    	
-    	//This can be used to force a definition file for a bin
     	idString.setTextContent("force");
     	idAddress.setTextContent("-1");
     	

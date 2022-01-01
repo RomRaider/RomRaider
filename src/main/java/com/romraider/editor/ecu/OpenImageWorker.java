@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -51,6 +52,7 @@ import com.romraider.xml.ConversionLayer.ConversionLayer;
 import com.romraider.xml.ConversionLayer.ConversionLayerFactory;
 
 public class OpenImageWorker extends SwingWorker<Void, Void> {
+    private static final Logger LOGGER = Logger.getLogger(OpenImageWorker.class);
     private final File inputFile;
     
     public OpenImageWorker(File inputFile) {
@@ -76,32 +78,28 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                   ECUEditor.rb.getString("DONELOAD"));
           setProgress(95);
 
-           editor.getStatusPanel().setStatus(
-                  ECUEditor.rb.getString("CHECKSUM"));
-           
-           int validChecksums =  rom.validateChecksum();
-           
-           String status = "";
-           
-           if(rom.getNumChecksumsManagers() == 0) {
-        	   status = ECUEditor.rb.getString("STATUSREADY");
-           }
-           else {
-        	   status = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
-        			   validChecksums, rom.getNumChecksumsManagers());        
-           }
-           
-           editor.getStatusPanel().update(status, 0);              
+	      editor.getStatusPanel().setStatus(
+	             ECUEditor.rb.getString("CHECKSUM"));
+	       
+	      int validChecksums =  rom.validateChecksum();
+	       
+	      String status = "";
+	       
+	      if(rom.getNumChecksumsManagers() == 0) {
+	    	  status = ECUEditor.rb.getString("STATUSREADY");
+	      }
+	      else {
+	    	  status = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
+	    			   validChecksums, rom.getNumChecksumsManagers());        
+	      }
+	       
+	      editor.getStatusPanel().update(status, 0);              
     }
     
-    private Document createDocument(File f) {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
+    private Document createDocument(File f) throws Exception {
 	    Document doc = null;
 	    FileInputStream fileStream = null;  
-	    
-	    final String errorLoading = MessageFormat.format(ECUEditor.rb.getString("ERRORFILE"),
-	    		inputFile.getName());
-	    
+	   	    
 	    try {
 		    fileStream = new FileInputStream(f); 
 		    
@@ -114,26 +112,17 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 		    //if it has to be converted first                
 		    if(ConversionLayerFactory.requiresConversionLayer(f)) {
 		    	ConversionLayer l = ConversionLayerFactory.getConversionLayerForFile(f);
-		    	if(l != null) {
-		    		doc = l.convertToDocumentTree(f);
-		    		
-		    		if(doc == null) {
-		    			throw new SAXParseException("Unknown file format!", null);
-		    		}
-		    	}		    	
+		    	
+		    	if(l != null) 
+		    		doc = l.convertToDocumentTree(f);		    				    	
+		    	
+	    		if(doc == null) 
+	    			throw new SAXParseException("Unknown file format!", null);
 		    }        
 			//Default case
 		    else {
 		    	doc = docBuilder.parse(fileStream, f.getAbsolutePath());
-		    	}
 		   }
-	    catch (SAXException spe) {
-            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
-            showMessageDialog(editor,
-                   // ECUEditor.rb.getString("UNREADABLEDEF"),
-            		spe.getMessage(),
-                    errorLoading,
-                    ERROR_MESSAGE);
 	    } catch (ParserConfigurationException e) {
 			e.printStackTrace();
 	    } catch (IOException e) {
@@ -150,36 +139,45 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	    return doc;
     }
     
-    private Node checkDefinitionMatch(File f, byte[] input) {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        final String errorLoading = MessageFormat.format(ECUEditor.rb.getString("ERRORFILE"),
-        		inputFile.getName());
-
-        try {  
-		    Document doc = createDocument(f);
-		    Node romNode = null;
-		    
-		    if(doc != null) {
-		    	romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
-		    }
-		    
-	        return romNode;
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	        showMessageDialog(editor,
-	                ECUEditor.rb.getString("LOADEXCEPTION"),
-	                errorLoading,
-	                ERROR_MESSAGE);
-	        return null;
-	    }
+    private Node checkDefinitionMatch(File f, byte[] input) throws Exception {
+	    Document doc = createDocument(f);
+	    Node romNode = null;
+	    
+	    if(doc != null) 
+	    	romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);	    
+	    else 
+	    	throw new Exception();	    
+	    
+        return romNode;
       }
-	        
+	 
+    private void showExceptionPopup(Exception ex, File defFile) {
+    	
+    	String errorMessage = defFile.getName() + ": " + (ex.getMessage() == null || ex.getMessage().isEmpty() ? 
+        		ECUEditor.rb.getString("LOADEXCEPTION") : ex.getMessage());
+    	
+        final String errorLoading = MessageFormat.format(
+                ECUEditor.rb.getString("ERRORFILE"),
+                inputFile.getName());
+        
+        ECUEditor editor = ECUEditorManager.getECUEditor();
+        showMessageDialog(editor,
+        		errorMessage,
+                errorLoading,
+                ERROR_MESSAGE);
+        
+        if(ex instanceof SAXException)
+        	LOGGER.error(errorMessage);
+        else
+        	ex.printStackTrace();
+    }
+    
 	 private Rom openRomWithDefinition(File f, Node romNode, byte[] input) {
 	        ECUEditor editor = ECUEditorManager.getECUEditor();
-	        
 	        final String errorLoading = MessageFormat.format(
 	                ECUEditor.rb.getString("ERRORFILE"),
 	                inputFile.getName());
+	        
 	        try {  
 			    Document doc = createDocument(f);
 	            Rom rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(f, doc.getDocumentElement(), romNode,
@@ -201,11 +199,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                     errorLoading,
                     ERROR_MESSAGE);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            showMessageDialog(editor,
-                    ECUEditor.rb.getString("LOADEXCEPTION"),
-                    errorLoading,
-                    ERROR_MESSAGE);
+            showExceptionPopup(ex, f);
             return null;
         }
         
@@ -247,7 +241,14 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                 continue;
             }      
             
-            Node romNode = checkDefinitionMatch(f, input);
+            Node romNode = null;
+            
+            try {
+            	romNode = checkDefinitionMatch(f, input);
+            }
+            catch(Exception e) {
+            	showExceptionPopup(e, f);
+            }
             
             if(romNode != null) {
             	openRomWithDefinition(f, romNode, input);
@@ -263,8 +264,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 		return null;    
     }
     
-    private String showNoDefinitionFoundPopup(byte[] input) {    	
-    	// no ECU definitions configured - let user choose to get latest or configure later
+    private void showNoDefinitionFoundPopup(byte[] input) {    	
+    	// no ECU definitions configured - let user choose one
         Object[] options = {ECUEditor.rb.getString("YES"), ECUEditor.rb.getString("NO")};
         int answer = showOptionDialog(null,
         		ECUEditor.rb.getString("DEFNOTFOUND"),
@@ -284,7 +285,14 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                 File file = fc.getSelectedFile();
             	settings.setLastDefinitionDir(file.getParentFile());
             	
-                Node romNode = checkDefinitionMatch(file, input);
+                Node romNode;
+                
+				try {
+					romNode = checkDefinitionMatch(file, input);
+				} catch (Exception e) {
+					showExceptionPopup(e, file);
+					return;
+				}
          	
             	if(romNode == null) {
 	                int answerForceLoad = showOptionDialog(null,
@@ -297,7 +305,14 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	                        options[0]);
 	                
 	                if(answerForceLoad == 0) {
-	                	Document doc = createDocument(file);
+	                	Document doc;
+	                	
+						try {
+							doc = createDocument(file);
+						} catch (Exception e) {
+							return;
+						}
+						
 	                	Node n = DOMRomUnmarshaller.findFirstRomNode(doc.getDocumentElement());
 	                	openRomWithDefinition(file, n, input);
 	                }
@@ -307,8 +322,6 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
             	}
             }
         }
-        
-        return null;
     }
 
     public void propertyChange(PropertyChangeEvent evnt)
@@ -325,7 +338,6 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     public void done() {
         ECUEditor editor = ECUEditorManager.getECUEditor();
         editor.refreshTableCompareMenus();
-        setProgress(0);
         editor.setCursor(null);
         editor.refreshUI();
         System.gc();
