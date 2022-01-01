@@ -23,7 +23,7 @@ import com.romraider.Settings;
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Table axisParent = null;
-    private final TableType type;
+    private TableType type;
     
     public Table1D(TableType type) {
         this.type = type;
@@ -33,7 +33,7 @@ public class Table1D extends Table {
     public TableType getType() {
         return type;
     }
-
+    
     public void setAxisParent(Table axisParent) {
         this.axisParent = axisParent;
     }

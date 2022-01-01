@@ -602,8 +602,10 @@ public abstract class Table implements Serializable {
     }
 
     public void setStringMask(String stringMask) {
-        int mask = ByteUtil.parseUnsignedInt(stringMask, 16);
-        setBitMask(mask);
+    	if(!stringMask.isEmpty()) {
+	        int mask = ByteUtil.parseUnsignedInt(stringMask, 16);
+	        setBitMask(mask);
+        }
     }
 
     public void setBitMask(int mask) {

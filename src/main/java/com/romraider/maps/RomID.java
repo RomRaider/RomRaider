@@ -233,7 +233,7 @@ public class RomID implements Serializable {
     
     public void setOffset(int offset) {
     	this.ramOffset = -offset;
-    	noRamOffset = true;
+    	noRamOffset=true;
     }
     
     public void disableRamOffset() {

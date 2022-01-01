@@ -53,6 +53,7 @@ import com.romraider.util.SettingsManager;;
 public class XDFConversionLayer extends ConversionLayer {
    private static final Logger LOGGER = Logger.getLogger(XDFConversionLayer.class);    
    private HashMap<Integer, String> categoryMap = new HashMap<Integer,String>();
+   private HashMap<Integer, String> tableMap = new HashMap<Integer, String>();
    
    int bitCount;
    private boolean signed;
@@ -117,12 +118,26 @@ public class XDFConversionLayer extends ConversionLayer {
     	Node n;
     	Element axisNodeRR = doc.createElement("table");
     	
-    	String id = axisNode.getAttributes().getNamedItem("id").getNodeValue();
-		Element targetTable = id.equalsIgnoreCase("z") ? tableNode : axisNodeRR;
-		
+    	String id = axisNode.getAttributes().getNamedItem("id").getNodeValue();  	
+		Element targetTable = id.equalsIgnoreCase("z") ? tableNode : axisNodeRR;		
 		Element scaling = doc.createElement("scaling");
 		targetTable.appendChild(scaling);
 		
+		boolean hasEmbedInfo = false;
+		
+		//Check first if we need to copy attributes from the base table
+    	for(int i=0; i < nodeCountAxis ; i++) {
+    		n = axisNode.getChildNodes().item(i);
+    		
+    		if(n.getNodeName().equalsIgnoreCase("embedinfo") && 
+    				n.getAttributes().getNamedItem("linkobjid") != null){   			
+    			Integer key = HexUtil.hexToInt(n.getAttributes().getNamedItem("linkobjid").getNodeValue());
+    			targetTable.setAttribute("name", tableMap.get(key)); 
+    			hasEmbedInfo = true;
+    			break;
+    		}
+    	}
+    		
     	for(int i=0; i < nodeCountAxis ; i++) {
     		n = axisNode.getChildNodes().item(i);
     		
@@ -132,84 +147,86 @@ public class XDFConversionLayer extends ConversionLayer {
     			
     			if(addressNode != null) {  					
 	    			String address = addressNode.getNodeValue();
-	    			Node flagsNode = n.getAttributes().getNamedItem("mmedtypeflags");
-	    			Node sizeBitsNode = n.getAttributes().getNamedItem("mmedelementsizebits");
-	    			//Node majorStrideBitsNode = n.getAttributes().getNamedItem("mmedmajorstridebits");
-	    			//Node minorStrideBitsNode = n.getAttributes().getNamedItem("mmedminorstridebits");
-	    			Node rowCountNode = n.getAttributes().getNamedItem("mmedrowcount");
-	    			Node colCountNode = n.getAttributes().getNamedItem("mmedcolcount");
-	    			
-	    			boolean signedLocal = signed;
-	    			boolean lsbFirstLocal = lsbFirst;
-	    			int flags = 0;
-	    			int sizeBits = 0; 
-	    			//int majorStrideBits = 0; HexUtil.hexToInt(majorStrideBitsNode.getNodeValue());
-	    			//int minorStrideBits = 0; HexUtil.hexToInt(minorStrideBitsNode.getNodeValue());
-	    			
-	    			if(flagsNode == null)
-	    				flagsNode = flagsNodeTable;
-	    				    			
-	    			if(flagsNode != null) {
-	    				try {
-	    					flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
-	    					
-		    				if((flags &(0x01)) > 0) {
-		    					signedLocal = true;
-		    				}
-		    				else if((flags & 0x01) == 0) {
-		    					signedLocal = false;
-		    				}
-		    				
-		    				if((flags & 0x02) > 0) {
-		    					lsbFirstLocal = false;
-		    				}
-		    				else {
-		    					lsbFirstLocal = true;
-		    				}
-		    				
-		    				if((flags & 0x04) > 0) {
-		    					targetTable.setAttribute("swapxy", "true");
-		    				}
-	    				}
-	    				catch(NumberFormatException e) {
-	    					//TODO: Not sure how to handle this yet...
-	    					LOGGER.error("Failed to parse flag " + flagsNode.getNodeValue());	    					
-	    				}	    		
-	    			}
-	    			
-	    			if(sizeBitsNode != null) {
-	    				sizeBits = Integer.parseInt(sizeBitsNode.getNodeValue());
-	    			}
-	    			else {
-	    				sizeBits = bitCount;
-	    			}
-	    			
-	    			if(colCountNode!=null) {
-	    				targetTable.setAttribute("sizex", colCountNode.getNodeValue());
-	    			}
-	    			
-	    			if(rowCountNode!=null) {
-	    				targetTable.setAttribute("sizey", rowCountNode.getNodeValue());
-	    			}
-	    			
-	    			targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
-	    			targetTable.setAttribute("endian", lsbFirstLocal ? "big" : "little");
 	    			targetTable.setAttribute("storageaddress", address);
-	    			
-	    			if(!id.equalsIgnoreCase("z")) {
-	    				targetTable.setAttribute("type", id.toUpperCase() + " Axis");
-	    			}
+	    		}
+    			
+    			if(addressNode == null && !hasEmbedInfo) return null;
+    			
+    			Node flagsNode = n.getAttributes().getNamedItem("mmedtypeflags");
+    			Node sizeBitsNode = n.getAttributes().getNamedItem("mmedelementsizebits");
+    			//Node majorStrideBitsNode = n.getAttributes().getNamedItem("mmedmajorstridebits");
+    			//Node minorStrideBitsNode = n.getAttributes().getNamedItem("mmedminorstridebits");
+    			Node rowCountNode = n.getAttributes().getNamedItem("mmedrowcount");
+    			Node colCountNode = n.getAttributes().getNamedItem("mmedcolcount");
+    			
+    			boolean signedLocal = signed;
+    			boolean lsbFirstLocal = lsbFirst;
+    			int flags = 0;
+    			int sizeBits = 0; 
+    			//int majorStrideBits = 0; HexUtil.hexToInt(majorStrideBitsNode.getNodeValue());
+    			//int minorStrideBits = 0; HexUtil.hexToInt(minorStrideBitsNode.getNodeValue());
+    			
+    			if(flagsNode == null)
+    				flagsNode = flagsNodeTable;
+    				    			
+    			if(flagsNode != null) {
+    				try {
+    					flags =  HexUtil.hexToInt(flagsNode.getNodeValue());
+    					
+	    				if((flags &(0x01)) > 0) {
+	    					signedLocal = true;
+	    				}
+	    				else if((flags & 0x01) == 0) {
+	    					signedLocal = false;
+	    				}
+	    				
+	    				if((flags & 0x02) > 0) {
+	    					lsbFirstLocal = false;
+	    				}
+	    				else {
+	    					lsbFirstLocal = true;
+	    				}
+	    				
+	    				if((flags & 0x04) > 0) {
+	    					targetTable.setAttribute("swapxy", "true");
+	    				}
+    				}
+    				catch(NumberFormatException e) {
+    					//TODO: Not sure how to handle this yet...
+    					LOGGER.error("Failed to parse flag " + flagsNode.getNodeValue());	    					
+    				}	    		
+    			}
+    			
+    			if(sizeBitsNode != null) {
+    				sizeBits = Integer.parseInt(sizeBitsNode.getNodeValue());
     			}
     			else {
-    				return null;
+    				sizeBits = bitCount;
+    			}
+    			
+    			if(colCountNode!=null) {
+    				targetTable.setAttribute("sizex", colCountNode.getNodeValue());
+    			}
+    			
+    			if(rowCountNode!=null) {
+    				targetTable.setAttribute("sizey", rowCountNode.getNodeValue());
+    			}
+   		
+    			if(!hasEmbedInfo) {
+        			targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
+	    			targetTable.setAttribute("endian", lsbFirstLocal ? "big" : "little");
+    			}
+    			 			
+    			if(!id.equalsIgnoreCase("z")) {
+    				targetTable.setAttribute("type", id.toUpperCase() + " Axis");
     			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("units")) {
     			scaling.setAttribute("units", n.getTextContent());
     			
-    			if(!id.equalsIgnoreCase("z")) {
+    			/*if(!id.equalsIgnoreCase("z")) {
     				targetTable.setAttribute("name", " ");
-    			}
+    			}*/
     		}
     		else if(n.getNodeName().equalsIgnoreCase("decimalpl")) {
     			String format = "0";
@@ -233,7 +250,7 @@ public class XDFConversionLayer extends ConversionLayer {
 			String format = "0." + new String(new char[numDigits]).replace("\0", "0");
 			scaling.setAttribute("format", format);
 		}
-    	
+       	
     	if(id.equalsIgnoreCase("z")) return null;
     	else
     		return axisNodeRR;   	
@@ -245,7 +262,7 @@ public class XDFConversionLayer extends ConversionLayer {
     	Element tableNodeRR = doc.createElement("table");
     	
     	LinkedList<String> categories = new LinkedList<String>();
-    	Node flagsNode = tableNode.getAttributes().getNamedItem("flags");
+    	Node flagsNode = tableNode.getAttributes().getNamedItem("flags");  	
 		int numAxis = 0;
 				
     	for(int i=0; i < nodeCountTable ; i++) {
@@ -298,8 +315,31 @@ public class XDFConversionLayer extends ConversionLayer {
     	
     	tableNodeRR.setAttribute("category", category);
     	tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
-    	
+    	   	
     	return tableNodeRR;
+	}
+	
+	private void createTableMap(Node tableNode) {
+    	int nodeCountTable = tableNode.getChildNodes().getLength();
+    	Node n;
+    	
+    	Node uniqueIDNode = tableNode.getAttributes().getNamedItem("uniqueid");   	
+    	String uniqueId = null;
+    	
+    	if(uniqueIDNode != null)
+    		uniqueId = uniqueIDNode.getNodeValue();
+    	else {
+    		return;
+    	}   	
+				
+    	for(int i=0; i < nodeCountTable ; i++) {
+    		n = tableNode.getChildNodes().item(i);
+    		
+    		if(n.getNodeName().equalsIgnoreCase("title")){
+    			tableMap.put(HexUtil.hexToInt(uniqueId), n.getTextContent());
+    			break;
+    		}
+    	}
 	}
 	
 	private Node parseXDFHeader(Document doc, Node romNode, Node header) {
@@ -327,7 +367,7 @@ public class XDFConversionLayer extends ConversionLayer {
     			//TODO
     		}
     		else if(n.getNodeName().equalsIgnoreCase("BASEOFFSET")){
-    			offset = HexUtil.hexToInt(n.getAttributes().getNamedItem("offset").getNodeValue());
+    			offset = Integer.parseInt(n.getAttributes().getNamedItem("offset").getNodeValue());
     			
     			if(!n.getAttributes().getNamedItem("subtract").getNodeValue().equals("0")) {
     				offset*=-1;
@@ -363,7 +403,7 @@ public class XDFConversionLayer extends ConversionLayer {
     	idAddress.setTextContent("-1");
     	
     	Element offsetNode = doc.createElement("offset");
-    	offsetNode.setTextContent("" + offset);
+    	offsetNode.setTextContent("0x" + Integer.toHexString(offset));
 	  	
     	romIDNode.appendChild(offsetNode);
     	romIDNode.appendChild(idAddress);
@@ -388,54 +428,68 @@ public class XDFConversionLayer extends ConversionLayer {
         Node baseNode = xdfDoc;
         Node romNode = null;
         int nodeCount = 0;
-        
-        if(baseNode.getFirstChild() != null && baseNode.getFirstChild().getNodeName().equalsIgnoreCase("XDFFORMAT")){
-        	baseNode = baseNode.getFirstChild();
-        	
-        	nodeCount = baseNode.getChildNodes().getLength();       	
-        	Node header = null;
-        	
-        	//Find XDF Header first
-        	for(int i=0; i < nodeCount; i++) {
-        		Node n = baseNode.getChildNodes().item(i);
-               	if(n.getNodeName().equalsIgnoreCase("XDFHEADER")){
-               		
-                	//Create the initial document
-                    Node roms = doc.createElement("roms");                   
-            		romNode = doc.createElement("rom");	
-            		
-            		doc.appendChild(roms);
-            		roms.appendChild(romNode);
-               		           		
-               		header = n;
-               		Node headerNode = parseXDFHeader(doc, romNode, header);
-               		romNode.appendChild(headerNode);
-               		break;
-            	}
-            }
-        	
-        	if(header == null) {
-        		LOGGER.error("XDF file does not have an XDFHEADER element!");
-        		return null;
-        	}
-        	
-        	//Go through all tables
-        	for(int i=0; i < nodeCount; i++) {
-        		Node n = baseNode.getChildNodes().item(i);
-               	if(n.getNodeName().equalsIgnoreCase("XDFTABLE")){
-               		Element table = parseTable(doc, romNode, n);
-               		
-               		if(table != null)
-               			romNode.appendChild(table);
-            	}
-            } 	
-        }
-        else {
+    	int nodeCountBase = baseNode.getChildNodes().getLength();
+    	
+    	for(int i=0; i < nodeCountBase; i++) {
+    		Node n = baseNode.getChildNodes().item(i);
+    		 if(n.getNodeName().equalsIgnoreCase("XDFFORMAT")) {
+    			 baseNode = n;
+    			 break;
+    		 }
+    	}
+    	
+    	if(baseNode == xdfDoc) {
         	LOGGER.error("XDF file does not have an XDFFORMAT element!");
         	return null;
-        }	
-        
-        //System.out.println(convertDocumentToString(doc));
+        }
+    	     	
+    	nodeCount = baseNode.getChildNodes().getLength();       	
+    	Node header = null;
+    	
+    	//Find XDF Header first
+    	for(int i=0; i < nodeCount; i++) {
+    		Node n = baseNode.getChildNodes().item(i);
+           	if(n.getNodeName().equalsIgnoreCase("XDFHEADER")){
+           		
+            	//Create the initial document
+                Node roms = doc.createElement("roms");                   
+        		romNode = doc.createElement("rom");	
+        		
+        		doc.appendChild(roms);
+        		roms.appendChild(romNode);
+           		           		
+           		header = n;
+           		Node headerNode = parseXDFHeader(doc, romNode, header);
+           		romNode.appendChild(headerNode);
+           		break;
+        	}
+        }
+    	
+    	if(header == null) {
+    		LOGGER.error("XDF file does not have an XDFHEADER element!");
+    		return null;
+    	}
+    	
+    	//Go through all tables just for the names so we can link them
+    	for(int j=0; j < nodeCount; j++) {
+    		Node n1 = baseNode.getChildNodes().item(j);
+           	if(n1.getNodeName().equalsIgnoreCase("XDFTABLE")){
+           		createTableMap(n1);
+           	}
+        } 	
+    	
+    	//Go through all tables and create RR tables
+    	for(int i=0; i < nodeCount; i++) {
+    		Node n = baseNode.getChildNodes().item(i);
+           	if(n.getNodeName().equalsIgnoreCase("XDFTABLE")){
+           		Element table = parseTable(doc, romNode, n);
+           		
+           		if(table != null)
+           			romNode.appendChild(table);
+        	}
+        } 	
+      
+        System.out.println(convertDocumentToString(doc));
         return doc;
 	}
 	
