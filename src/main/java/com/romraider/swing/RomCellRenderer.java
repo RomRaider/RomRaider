@@ -86,17 +86,18 @@ public class RomCellRenderer implements TreeCellRenderer {
             } else {
                 fileName.setText("+ " + rom.getFileName());
             }
-
-
-            carInfo.setText(rom.getRomIDString() + ", " +
+            
+            String carInfoText = rom.getRomIDString() + ", " +
                     rom.getRomID().getCaseId() + "; " +
                     rom.getRomID().getYear() + " " +
                     rom.getRomID().getMake() + " " +
                     rom.getRomID().getModel() + " " +
                     rom.getRomID().getSubModel() + ", " +
-                    rom.getRomID().getTransmission()
-                    );
-
+                    rom.getRomID().getTransmission();
+                     
+            //TODO: Bit of a hack to not show the string when most fields arent set
+            carInfoText = carInfoText.replace("null, ; Unknown null null null, null", "");
+            carInfo.setText(carInfoText);
             JPanel renderer = new JPanel(new GridLayout(2, 1));
             renderer.add(fileName);
             renderer.add(carInfo);

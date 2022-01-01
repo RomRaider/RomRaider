@@ -50,7 +50,7 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         }
         internalID.setText(rom.getRomID().getInternalIdString());
         storageAddress.setText("0x" + Integer.toHexString(rom.getRomID().getInternalIdAddress()));
-
+        
         make.setText(rom.getRomID().getMake());
         market.setText(rom.getRomID().getMarket());
         year.setText(rom.getRomID().getYear() + "");

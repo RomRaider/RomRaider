@@ -39,6 +39,9 @@ public class Scale implements Serializable {
     private double fineIncrement = 1;
     private double min = 0.0;
     private double max = 0.0;
+    
+    private double lastApproximatedInput;
+    private double lastApproximatedOutput;
 
     @Override
     public String toString() {
@@ -74,6 +77,10 @@ public class Scale implements Serializable {
     
     public double approximateToByteFunction(double input, int storageType, boolean signed) {
     	
+    	//If we just calculated this, return the last output
+    	if(lastApproximatedInput == input)
+    		return lastApproximatedOutput;
+    	
     	long maxValue = (int) Math.pow(2, 8 * storageType);
     	long minValue = 0;
     	
@@ -85,36 +92,45 @@ public class Scale implements Serializable {
     		maxValue--;
     	}
     	
-    	double error = 1.0f;
-    	int currentStep = (int) ((maxValue - minValue) / 2);
-    	boolean up = true;
+    	double error = 1;
+    	double lastError = 9999999;
     	
-    	while(currentStep > 1 && error > 0.00001f) {
+    	int currentStep = (int) ((maxValue - minValue) / 2);
+    	int stepSize = (int) (Math.pow(2, 8 * storageType) / 2);;
+    	double epsilon = 0.00001;
+    	double output = 0;
+    	
+    	while(stepSize > 0 && error > epsilon) {  		
+    		double minusValue = JEPUtil.evaluate(getExpression(), currentStep-stepSize);
+    		double plusValue = JEPUtil.evaluate(getExpression(), currentStep+stepSize);
     		
-    		double minusValue = JEPUtil.evaluate(getByteExpression(), currentStep-1);
-    		double plusValue = JEPUtil.evaluate(getByteExpression(), currentStep+1);
-    		
-    		double plusError = plusValue - input;
-    		double minusError = minusValue - input;
-    		
+    		double plusError = Math.abs(plusValue - input);
+    		double minusError = Math.abs(minusValue - input);
+    		    		
+    		//Check if we need to go up or down
     		if(plusError < minusError) {
-    			up = true;
+    			currentStep += stepSize;
     			error = plusError;
     		}
     		else {
-    			up = false;
+    			currentStep -= stepSize;
     			error = minusError;
     		}
+  		
+    		if(error < lastError)
+    			output = currentStep;
     		
-    		if(up) {
-    			currentStep+= currentStep / 2;
-    		}
-    		else {
-    			currentStep-=currentStep/2;
-    		}
+    		if(error < epsilon)
+    			break;
+    		
+			stepSize/=2;
+			lastError = error;
     	}
     	
-    	System.out.println("Input: " + input + "from approx: " + JEPUtil.evaluate(getByteExpression(), currentStep));
+    	lastApproximatedInput = input;
+    	lastApproximatedOutput = output;
+    	
+    	//System.out.println("Input: " + input + " from approx: " + JEPUtil.evaluate(getExpression(), output));
     	return currentStep;
     }
     
@@ -173,7 +189,10 @@ public class Scale implements Serializable {
     }
 
     public void setByteExpression(String byteExpression) {
-        this.byteExpression = byteExpression;
+    	if(byteExpression.isEmpty())
+    		this.byteExpression = null;
+    	else
+    		this.byteExpression = byteExpression;
     }
 
     public double getFineIncrement() {

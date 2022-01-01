@@ -54,7 +54,10 @@ public final class ScalesTableModel extends DefaultTableModel {
                 case 2:
                         return scale.getExpression();
                 case 3:
-                        return scale.getByteExpression();
+                		if(scale.getByteExpression() == null)
+                			return "Automatic";
+                		else
+                			return scale.getByteExpression();
                 case 4:
                         return scale.getUnit();
                 case 5:
