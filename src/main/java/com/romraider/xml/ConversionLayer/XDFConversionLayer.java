@@ -124,6 +124,7 @@ public class XDFConversionLayer extends ConversionLayer {
 		targetTable.appendChild(scaling);
 		
 		boolean hasEmbedInfo = false;
+		String staticTable = "";
 		
 		//Check first if we need to copy attributes from the base table
     	for(int i=0; i < nodeCountAxis ; i++) {
@@ -137,20 +138,21 @@ public class XDFConversionLayer extends ConversionLayer {
     			break;
     		}
     	}
-    		
+    	
+    	Node addressNode = null;
+    	int staticCells = 0;
+    	
     	for(int i=0; i < nodeCountAxis ; i++) {
     		n = axisNode.getChildNodes().item(i);
     		
     		if(n.getNodeName().equalsIgnoreCase("embeddeddata")){
 
-    			Node addressNode = n.getAttributes().getNamedItem("mmedaddress");
+    			addressNode = n.getAttributes().getNamedItem("mmedaddress");
     			
     			if(addressNode != null) {  					
 	    			String address = addressNode.getNodeValue();
 	    			targetTable.setAttribute("storageaddress", address);
-	    		}
-    			
-    			if(addressNode == null && !hasEmbedInfo) return null;
+	    		}    			
     			
     			Node flagsNode = n.getAttributes().getNamedItem("mmedtypeflags");
     			Node sizeBitsNode = n.getAttributes().getNamedItem("mmedelementsizebits");
@@ -216,10 +218,6 @@ public class XDFConversionLayer extends ConversionLayer {
         			targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
 	    			targetTable.setAttribute("endian", lsbFirstLocal ? "big" : "little");
     			}
-    			 			
-    			if(!id.equalsIgnoreCase("z")) {
-    				targetTable.setAttribute("type", id.toUpperCase() + " Axis");
-    			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("units")) {
     			scaling.setAttribute("units", n.getTextContent());
@@ -235,8 +233,7 @@ public class XDFConversionLayer extends ConversionLayer {
     				int count = Math.abs(Integer.parseInt(n.getTextContent()));
     				format = "0." + new String(new char[count]).replace("\0", "0");
 
-    			}
-    			
+    			}  			
 				scaling.setAttribute("format", format);
     		}
     		else if(n.getNodeName().equalsIgnoreCase("math")) {
@@ -244,16 +241,30 @@ public class XDFConversionLayer extends ConversionLayer {
     			formula = formula.replace("X", "x");
     			scaling.setAttribute("expression", formula);
     		}
+    		else if(n.getNodeName().equalsIgnoreCase("label")) {   			
+    			String label = n.getAttributes().getNamedItem("value").getNodeValue();	
+    			Element data = doc.createElement("data");
+    			data.setTextContent(label);
+    			targetTable.appendChild(data);
+    			staticTable = "Static ";
+    			staticCells++;
+    			
+    		}
     	}
+    	
+    	staticTable= "";
     	
     	if(!scaling.hasAttribute("format")) {
 			String format = "0." + new String(new char[numDigits]).replace("\0", "0");
 			scaling.setAttribute("format", format);
 		}
-       	
+
+		if(addressNode == null && !hasEmbedInfo) return null;
     	if(id.equalsIgnoreCase("z")) return null;
-    	else
-    		return axisNodeRR;   	
+    	else {
+    		targetTable.setAttribute("type", staticTable + id.toUpperCase() + " Axis");
+    		return axisNodeRR;   
+    	}
 	}
 	
 	private Element parseTable(Document doc, Node romNode, Node tableNode) {
