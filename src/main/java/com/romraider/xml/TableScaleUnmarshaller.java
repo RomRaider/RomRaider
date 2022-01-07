@@ -41,6 +41,7 @@ import com.romraider.maps.Rom;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
+import com.romraider.maps.Table1DView.Table1DType;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableBitwiseSwitch;
@@ -111,15 +112,15 @@ public class TableScaleUnmarshaller {
                     table = new Table2D();
 
                 } else if (type.equalsIgnoreCase("1D")) {
-                    table = new Table1D(Table.TableType.TABLE_1D);
+                    table = new Table1D();
 
                 } else if (type.equalsIgnoreCase("X Axis")
                         || type.equalsIgnoreCase("Static X Axis"))  {
-                    table = new Table1D(Table.TableType.X_AXIS);
+                    table = new Table1D();
 
                 } else if (type.equalsIgnoreCase("Y Axis")
                         || type.equalsIgnoreCase("Static Y Axis")) {
-                    table = new Table1D(Table.TableType.Y_AXIS);
+                    table = new Table1D();
                 } else if (type.equalsIgnoreCase("Switch")) {
                     table = new TableSwitch();
 
@@ -219,11 +220,11 @@ public class TableScaleUnmarshaller {
                     if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
                         if (RomAttributeParser
-                                .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Table.TableType.Y_AXIS
+                                .parseTableAxis(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table1DType.Y_AXIS
                                         || RomAttributeParser
-                                        .parseTableType(unmarshallAttribute(n,
-                                                "type", "unknown")) == Table.TableType.X_AXIS) {
+                                        .parseTableAxis(unmarshallAttribute(n,
+                                                "type", "unknown")) == Table1DType.X_AXIS) {
 
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table2D) table).getAxis(), rom);
@@ -237,8 +238,8 @@ public class TableScaleUnmarshaller {
                     } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
                         // is 3D, populate xAxis
                         if (RomAttributeParser
-                                .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Table.TableType.X_AXIS) {
+                                .parseTableAxis(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table1DType.X_AXIS) {
                         	
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table3D) table).getXAxis(), rom);
@@ -251,8 +252,8 @@ public class TableScaleUnmarshaller {
                             ((Table3D) table).setXAxis(tempTable);
 
                         } else if (RomAttributeParser
-                                .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Table.TableType.Y_AXIS) {
+                                .parseTableAxis(unmarshallAttribute(n, "type",
+                                        "unknown")) == Table1DType.Y_AXIS) {
 
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table3D) table).getYAxis(), rom);

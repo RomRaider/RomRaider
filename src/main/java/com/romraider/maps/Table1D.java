@@ -23,15 +23,10 @@ import com.romraider.Settings;
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Table axisParent = null;
-    private TableType type;
     
-    public Table1D(TableType type) {
-        this.type = type;
-    }
-
     @Override
     public TableType getType() {
-        return type;
+        return TableType.TABLE_1D;
     }
     
     public void setAxisParent(Table axisParent) {
@@ -84,12 +79,7 @@ public class Table1D extends Table {
     public boolean isButtonSelected() {
         return true;
     }
-
-    public boolean isAxis() {
-        return getType() == Table.TableType.X_AXIS ||
-                getType() == Table.TableType.Y_AXIS || isStaticDataTable();
-    }
-      
+    
     @Override
     public boolean equals(Object other) {
         try {
@@ -106,10 +96,6 @@ public class Table1D extends Table {
             }
 
             Table1D otherTable = (Table1D)other;
-
-            if(this.isAxis() != otherTable.isAxis()) {
-                return false;
-            }
 
             if(this.data.length != otherTable.data.length)
             {

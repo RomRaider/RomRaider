@@ -35,7 +35,7 @@ public class TableSwitch extends Table1D {
             TableSwitch.class.getName());
     
     public TableSwitch() {
-    	super(TableType.SWITCH);
+    	super();
         storageType = 1;
     }
    

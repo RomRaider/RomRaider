@@ -24,6 +24,6 @@ public class TableSwitchView extends Table1DView {
 
 	//Same as a Table1DView just hidden data
 	public TableSwitchView(TableSwitch t) {
-    	super(t, true);
+    	super(t, Table1DType.NO_AXIS, true);
     }
 }

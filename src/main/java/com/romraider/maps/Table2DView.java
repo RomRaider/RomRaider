@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
 import com.romraider.Settings;
+import com.romraider.maps.Table1DView.Table1DType;
 
 public class Table2DView extends TableView {
 	private static final long serialVersionUID = -7684570967109324784L;
@@ -35,7 +36,7 @@ public class Table2DView extends TableView {
    
     public Table2DView(Table2D table) {
 		super(table);
-		axis = new Table1DView(table.getAxis());
+		axis = new Table1DView(table.getAxis(), Table1DType.X_AXIS);
         verticalOverhead += 18;
         populateTableVisual();
 	}
@@ -263,7 +264,6 @@ public class Table2DView extends TableView {
             data[axis.getLiveDataIndex()].setLiveDataTrace(true);
         }
     }
-
 
     @Override
     public void setOverlayLog(boolean overlayLog) {
