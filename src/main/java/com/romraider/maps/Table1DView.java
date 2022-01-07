@@ -23,27 +23,37 @@ import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
-
-import com.romraider.maps.Table.TableType;
 import com.romraider.util.NumberUtil;
 
 public class Table1DView extends TableView {
 
 	private static final long serialVersionUID = -8747180767803835631L;
 	private Table1D table;
+	private Table1DType type;
 	
-    public Table1DView(Table1D table) {
-		this(table, false);
+    public enum Table1DType {
+    	NO_AXIS,
+        X_AXIS,
+        Y_AXIS;
+    }
+    
+    public Table1DView(Table1D table, Table1DType axisType) {
+		this(table, axisType, false);
 	}
     
-    public Table1DView(Table1D table, boolean hide) {
+    public Table1DView(Table1D table, Table1DType axisType, boolean hide) {
 		super(table);
     	this.table = table;
     	this.hide = hide;
+    	this.type = axisType;
     	
     	populateTableVisual();
 	}
-       
+    
+    public Table1DType getType() {
+    	return type;
+    }
+    
     public void addStaticDataCell(DataCellView input) {
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
@@ -59,7 +69,7 @@ public class Table1DView extends TableView {
         super.populateTableVisual();
         
         //Only populate the rest if we aren't an axis
-    	if(table.getType() != TableType.X_AXIS && table.getType() != TableType.Y_AXIS && !isHidden()) {
+    	if(!isAxis() && !isHidden()) {
 	        centerLayout.setRows(1);
 	        centerLayout.setColumns(table.getDataSize());
 
@@ -83,8 +93,8 @@ public class Table1DView extends TableView {
 	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));	       
     	}
     	
-    	if(table.getType() != TableType.X_AXIS && table.getType() != TableType.Y_AXIS)
-    		if(presetPanel != null) presetPanel.populatePanel();
+    	if(!isAxis() && presetPanel != null)
+    		presetPanel.populatePanel();
     }
 
     @Override
@@ -94,20 +104,16 @@ public class Table1DView extends TableView {
 
     @Override
     public void cursorUp() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             if (highlightBeginY > 0 && data[highlightBeginY].isSelected()) {
                 table.selectCellAt(highlightBeginY - 1);
             }
-        } else if (table.getType() == Table.TableType.X_AXIS) {
-            // Y axis is on top.. nothing happens
-        } else if (table.getType() == Table.TableType.TABLE_1D) {
-            // no where to move up to
         }
     }
 
     @Override
     public void cursorDown() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
                 if (highlightBeginY < table.getDataSize() - 1 && data[highlightBeginY].isSelected()) {
                     table.selectCellAt(highlightBeginY + 1);
@@ -117,7 +123,7 @@ public class Table1DView extends TableView {
                 	table.selectCellAt(highlightBeginY);
                 }
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             ((Table3D) table.getAxisParent()).selectCellAt(highlightBeginY);
         } else if (table.getType() == Table.TableType.TABLE_1D) {
             // no where to move down to
@@ -126,14 +132,14 @@ public class Table1DView extends TableView {
 
     @Override
     public void cursorLeft() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             // X axis is on left.. nothing happens
             if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
                 if (data[highlightBeginY].isSelected()) {
                     table.selectCellAt(highlightBeginY - 1);
                 }
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             if (highlightBeginY > 0) {
                 table.selectCellAt(highlightBeginY - 1);
             }
@@ -146,13 +152,13 @@ public class Table1DView extends TableView {
 
     @Override
     public void cursorRight() {
-        if (table.getType() == Table.TableType.Y_AXIS && data[highlightBeginY].isSelected()) {
+        if (type == Table1DType.Y_AXIS && data[highlightBeginY].isSelected()) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
                 ((Table3D) table.getAxisParent()).selectCellAt(highlightBeginY);
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
                 table.selectCellAt(highlightBeginY + 1);
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             if (highlightBeginY < table.getDataSize() - 1) {
                 table.selectCellAt(highlightBeginY + 1);
             }
@@ -165,20 +171,16 @@ public class Table1DView extends TableView {
 
 	@Override
 	public void shiftCursorUp() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             if (highlightBeginY > 0 && data[highlightBeginY].isSelected()) {
             	table.selectCellAtWithoutClear(highlightBeginY - 1);
             }
-        } else if (table.getType() == Table.TableType.X_AXIS) {
-            // Y axis is on top.. nothing happens
-        } else if (table.getType() == Table.TableType.TABLE_1D) {
-            // no where to move up to
         }
 	}
 
 	@Override
 	public void shiftCursorDown() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
                 if (highlightBeginY < table.getDataSize() - 1 && data[highlightBeginY].isSelected()) {
                 	table.selectCellAtWithoutClear(highlightBeginY + 1);
@@ -188,23 +190,21 @@ public class Table1DView extends TableView {
                     table.getAxisParent().getTableView().table.selectCellAtWithoutClear(highlightBeginY);
                 }
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             ((Table3D) table.getAxisParent()).selectCellAt(highlightBeginY);
-        } else if (table.getType() == Table.TableType.TABLE_1D) {
-            // no where to move down to
         }
 	}
 
 	@Override
 	public void shiftCursorLeft() {
-        if (table.getType() == Table.TableType.Y_AXIS) {
+        if (type == Table1DType.Y_AXIS) {
             // X axis is on left.. nothing happens
             if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
                 if (data[highlightBeginY].isSelected()) {
                 	table.selectCellAtWithoutClear(highlightBeginY - 1);
                 }
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             if (highlightBeginY > 0) {
             	table.selectCellAtWithoutClear(highlightBeginY - 1);
             }
@@ -217,13 +217,13 @@ public class Table1DView extends TableView {
 
 	@Override
 	public void shiftCursorRight() {
-        if (table.getType() == Table.TableType.Y_AXIS && data[highlightBeginY].isSelected()) {
+        if (type == Table1DType.Y_AXIS && data[highlightBeginY].isSelected()) {
             if (table.getAxisParent().getType() == Table.TableType.TABLE_3D) {
                 ((Table3D) table.getAxisParent()).selectCellAt(highlightBeginY);
             } else if (table.getAxisParent().getType() == Table.TableType.TABLE_2D) {
             	table.selectCellAtWithoutClear(highlightBeginY + 1);
             }
-        } else if (table.getType() == Table.TableType.X_AXIS && data[highlightBeginY].isSelected()) {
+        } else if (type == Table1DType.X_AXIS && data[highlightBeginY].isSelected()) {
             if (highlightBeginY < table.getDataSize() - 1) {
             	table.selectCellAtWithoutClear(highlightBeginY + 1);
             }
@@ -251,9 +251,9 @@ public class Table1DView extends TableView {
 
         if(axisParent instanceof Table3D) {
             Table3D table3D = (Table3D) axisParent;
-            if(table.getType() == Table.TableType.X_AXIS) {
+            if(type == Table1DType.X_AXIS) {
                 table3D.getYAxis().clearSelection();
-            } else if (table.getType() == Table.TableType.Y_AXIS) {
+            } else if (type == Table1DType.Y_AXIS) {
                 table3D.getXAxis().clearSelection();
             }
         } else if (axisParent instanceof Table2D) {
@@ -316,8 +316,8 @@ public class Table1DView extends TableView {
     }
 
     public boolean isAxis() {
-        return table.getType() == Table.TableType.X_AXIS ||
-                table.getType() == Table.TableType.Y_AXIS || table.isStaticDataTable();
+        return type == Table1DType.X_AXIS ||
+        		type == Table1DType.Y_AXIS || table.isStaticDataTable();
     }
 
     @Override
@@ -335,7 +335,7 @@ public class Table1DView extends TableView {
                 return false;
             }
 
-            Table1D otherTable = (Table1D)other;
+            Table1DView otherTable = (Table1DView)other;
 
             if(this.isAxis() != otherTable.isAxis()) {
                 return false;

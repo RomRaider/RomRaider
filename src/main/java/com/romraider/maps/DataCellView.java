@@ -141,11 +141,10 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     public Color getCompareColor() {
     	Table t = tableView.getTable();
     	
-        if(t instanceof Table1D) {
-            Table1D checkTable = (Table1D)t;
-            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
-                return getSettings().getAxisColor();
-            }
+        if(tableView instanceof Table1DView) {;
+	        if(((Table1DView)tableView).isAxis() && !getSettings().isColorAxis()) {
+	            return getSettings().getAxisColor();
+	        }
         }
 
         double compareScale;
@@ -162,9 +161,8 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
     public Color getBinColor() {
     	Table t = tableView.getTable();
     	
-        if(t instanceof Table1D) {
-            Table1D checkTable = (Table1D)t;
-            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
+        if(tableView instanceof Table1DView) {;
+            if(((Table1DView)tableView).isAxis() && !getSettings().isColorAxis()) {
                 return getSettings().getAxisColor();
             }
         }

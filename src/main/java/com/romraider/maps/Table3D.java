@@ -30,8 +30,8 @@ public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
 
-    private Table1D xAxis = new Table1D(TableType.X_AXIS);
-    private Table1D yAxis= new Table1D(TableType.Y_AXIS);;
+    private Table1D xAxis = new Table1D();
+    private Table1D yAxis= new Table1D();
 
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;

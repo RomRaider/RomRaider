@@ -26,7 +26,7 @@ import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D(TableType.Y_AXIS);
+    private Table1D axis = new Table1D();
 
     @Override
     public TableType getType() {

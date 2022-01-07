@@ -75,6 +75,7 @@ import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table1DView;
+import com.romraider.maps.Table1DView.Table1DType;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table2DView;
 import com.romraider.maps.Table3D;
@@ -426,7 +427,7 @@ public class ECUEditor extends AbstractFrame {
 		        	else if(t instanceof TableBitwiseSwitch)
 		        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
 		        	else if(t instanceof Table1D)
-		        		v = new Table1DView((Table1D)node.getTable());
+		        		v = new Table1DView((Table1D)node.getTable(), Table1DType.NO_AXIS);
 		        	else if(t instanceof Table2D)
 		        		v = new Table2DView((Table2D)t);
 		        	else if(t instanceof Table3D)

@@ -33,6 +33,7 @@ import javax.swing.border.EmptyBorder;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
+import com.romraider.maps.Table1DView.Table1DType;
 import com.romraider.util.NumberUtil;
 
 public class Table3DView extends TableView {
@@ -50,8 +51,8 @@ public class Table3DView extends TableView {
     public Table3DView(Table3D table) {
     	super(table);
     	this.table = table;
-    	xAxis = new Table1DView(table.getXAxis());
-    	yAxis = new Table1DView(table.getYAxis());
+    	xAxis = new Table1DView(table.getXAxis(), Table1DType.X_AXIS);
+    	yAxis = new Table1DView(table.getYAxis(), Table1DType.Y_AXIS);
     	
         verticalOverhead += 39;
         horizontalOverhead += 10;
@@ -281,8 +282,8 @@ public class Table3DView extends TableView {
         }
     }
 
-    public void selectCellAt(int y, Table1D axisType) {
-        if (axisType.getType() == Table.TableType.Y_AXIS) {
+    public void selectCellAt(int y, Table1DView axisType) {
+        if (axisType.getType() == Table1DType.Y_AXIS) {
             table.selectCellAt(0, y);
         } else { // y axis
             table.selectCellAt(y, 0);

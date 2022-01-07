@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,6 @@ import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableTreeNode;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.InvalidTableNameException;
-import com.romraider.xml.TableNotFoundException;
 
 public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final long serialVersionUID = 7865405179738828128L;

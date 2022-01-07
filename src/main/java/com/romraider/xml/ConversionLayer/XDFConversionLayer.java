@@ -85,9 +85,12 @@ public class XDFConversionLayer extends ConversionLayer {
 		    
 		    if(firstLine.equalsIgnoreCase("XDF")) {
 		    	br.close();
+		    	//TODO: Add i18n
 		    	throw new SAXException("Sorry, only XML XDFs are currently supported!");
 		    }
-		    br.close();
+		    else {
+		    	br.close();
+		    }
 		    
 		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		    factory.setNamespaceAware(true);
@@ -526,20 +529,23 @@ public class XDFConversionLayer extends ConversionLayer {
         
 		//Make sure we dont override any settings
 		SettingsManager.setTesting(true);
-		Settings settings = SettingsManager.getSettings();	
+		Settings settings = SettingsManager.getSettings();
 		
-		File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\");
-		//List<File> listOfFiles = new LinkedList<File>();
+		List<File> listOfFiles = new LinkedList<File>();
+		//File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\");
+				
+		listOfFiles.add(new File("C:\\Users\\User\\Downloads\\MS430069_64K.xdf"));
 		//listOfFiles.add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G series B58\\00003076501103.xdf"));
-		Collection<File> listOfFiles =  listFileTree(folder);
-		Collections.shuffle((List<?>) listOfFiles);
+		//Collection<File> listOfFiles =  listFileTree(folder);
+		//Collections.shuffle((List<?>) listOfFiles);
 	
 		for(File f: listOfFiles) {
 			ConversionLayer l = new XDFConversionLayer();
 			if (l.isFileSupported(f)) {
 				settings.getEcuDefinitionFiles().clear();
 				settings.getEcuDefinitionFiles().add(f);
-				File bin = new File(f.getAbsolutePath().replace(".xdf", "_original.bin"));
+				//File bin = new File(f.getAbsolutePath().replace(".xdf", "_original.bin"));
+				File bin = new File("C:\\google_drive\\ECU_Tuning\\maps\\MS43_430069_64KB_.bin");
 				
 				if(bin.exists()) {
 					System.out.println(f);

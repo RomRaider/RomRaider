@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,10 @@ import java.nio.ByteOrder;
 
 import com.romraider.Settings;
 import com.romraider.maps.Table;
+import com.romraider.maps.Table1DView;
 import com.romraider.util.ByteUtil;
 
 public final class RomAttributeParser {
-
-    private RomAttributeParser() {
-    }
 
     public static Settings.Endian parseEndian(String input) {
         if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(Settings.Endian.BIG.getMarshallingString())) {
@@ -97,7 +95,20 @@ public final class RomAttributeParser {
             return Settings.LINEAR;
         }
     }
-
+    
+    public static Table1DView.Table1DType parseTableAxis(String input) {
+        //4 and 5 are only for backwards compatibilty, is anybody even using this?
+        if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase("4")) {
+            return Table1DView.Table1DType.X_AXIS;
+        }
+        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase("5")) {
+        	return Table1DView.Table1DType.Y_AXIS;
+        }
+        else {
+        	return Table1DView.Table1DType.NO_AXIS;
+        }
+    }
+    
     public static Table.TableType parseTableType(String input) {
         if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(Table.TableType.TABLE_3D.getMarshallingString())) {
             return Table.TableType.TABLE_3D;
@@ -105,11 +116,12 @@ public final class RomAttributeParser {
         else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(Table.TableType.TABLE_2D.getMarshallingString())) {
             return Table.TableType.TABLE_2D;
         }
-        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(Table.TableType.X_AXIS.getMarshallingString())) {
-            return Table.TableType.X_AXIS;
+        //4 and 5 are only for backwards compatibilty, is anybody even using this?
+        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase("4")) {
+            return Table.TableType.TABLE_1D;
         }
-        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(Table.TableType.Y_AXIS.getMarshallingString())) {
-            return Table.TableType.Y_AXIS;
+        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase("5")) {
+            return Table.TableType.TABLE_1D;
         }
         else {
             return Table.TableType.TABLE_1D;
@@ -117,7 +129,6 @@ public final class RomAttributeParser {
     }
     
     //This assumes the bits inside the mask aren't spread. OK = 11110000, Not OK = 11001100
-
     public static long parseByteValueMasked(byte[] input, Settings.Endian endian, int address, int length, boolean signed, int mask) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException { 	 	
     	long tempValue = parseByteValue(input,endian,address,length,signed) & mask;
     	

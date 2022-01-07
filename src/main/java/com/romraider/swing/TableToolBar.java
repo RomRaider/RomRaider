@@ -69,6 +69,7 @@ import com.romraider.maps.DataCell;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
+import com.romraider.maps.Table1DView;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableView;
 import com.romraider.maps.UserLevelException;
@@ -401,7 +402,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         } else {
             if(currentTable instanceof Table1D) {
                 Table1D cur1DTable = (Table1D)currentTable;
-                if(cur1DTable.isAxis()) {
+                if(cur1DTable.getTableView() != null && (((Table1DView)(cur1DTable.getTableView())).isAxis())) {
                     newTitle = cur1DTable.getAxisParent().getName() + " ("+ cur1DTable.getName() +")";
                 } else {
                     newTitle = currentTable.getName();

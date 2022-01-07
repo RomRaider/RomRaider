@@ -836,8 +836,8 @@ public abstract class Table implements Serializable {
         TABLE_1D(1),
         TABLE_2D(2),
         TABLE_3D(3),
-        X_AXIS(4),
-        Y_AXIS(5),
+       // X_AXIS(4),
+       // Y_AXIS(5),
         SWITCH(6);
 
         private final int marshallingCode;
