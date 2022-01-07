@@ -172,9 +172,9 @@ public class Table3D extends Table {
         }
 
         int offset = 0;
-
         int iMax = swapXY ? xAxis.getDataSize() : yAxis.getDataSize();
         int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
+        
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
 

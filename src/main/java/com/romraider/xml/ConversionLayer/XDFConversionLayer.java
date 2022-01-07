@@ -28,9 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +52,7 @@ import com.romraider.util.SettingsManager;;
 public class XDFConversionLayer extends ConversionLayer {
    private static final Logger LOGGER = Logger.getLogger(XDFConversionLayer.class);    
    private HashMap<Integer, String> categoryMap = new HashMap<Integer,String>();
-   private HashMap<Integer, String> tableMap = new HashMap<Integer, String>();
+   private HashMap<Integer, TableInfo> tableMap = new HashMap<Integer, TableInfo>();
    
    int bitCount;
    private boolean signed;
@@ -136,19 +135,29 @@ public class XDFConversionLayer extends ConversionLayer {
     		if(n.getNodeName().equalsIgnoreCase("embedinfo") && 
     				n.getAttributes().getNamedItem("linkobjid") != null){   			
     			Integer key = HexUtil.hexToInt(n.getAttributes().getNamedItem("linkobjid").getNodeValue());
-    			targetTable.setAttribute("name", tableMap.get(key)); 
-    			hasEmbedInfo = true;
-    			break;
+    			
+    			if(tableMap.containsKey(key)) {
+	    			targetTable.setAttribute("name", tableMap.get(key).name); 
+	    			targetTable.setAttribute("storageaddress","0x" + Integer.toHexString(tableMap.get(key).address)); 
+	    			hasEmbedInfo = true;
+	    			break;
+    			}
+    			else return null;
     		}
     	}
     	
     	Node addressNode = null;
     	int staticCells = 0;
-    	
+    	int indexCount = -1;
+    	String lastStaticValue = "";
+
     	for(int i=0; i < nodeCountAxis ; i++) {
     		n = axisNode.getChildNodes().item(i);
     		
-    		if(n.getNodeName().equalsIgnoreCase("embeddeddata")){
+    		if(n.getNodeName().equalsIgnoreCase("indexcount")){
+    			indexCount = Integer.parseInt(n.getTextContent());
+    		}		
+    		else if(n.getNodeName().equalsIgnoreCase("embeddeddata")){
 
     			addressNode = n.getAttributes().getNamedItem("mmedaddress");
     			
@@ -244,25 +253,31 @@ public class XDFConversionLayer extends ConversionLayer {
     			formula = formula.replace("X", "x");
     			scaling.setAttribute("expression", formula);
     		}
+    		
+    		/*
+    		 * Static cells are currently buggy
+    		 * 
     		else if(n.getNodeName().equalsIgnoreCase("label")) {   			
     			String label = n.getAttributes().getNamedItem("value").getNodeValue();	
     			Element data = doc.createElement("data");
     			data.setTextContent(label);
-    			targetTable.appendChild(data);
-    			staticTable = "Static ";
-    			staticCells++;
-    			
-    		}
+    			targetTable.appendChild(data);  	
+    			lastStaticValue = label;
+    			staticCells++;	
+    		}*/
     	}
     	
-    	staticTable= "";
+    	/*
+    	if(staticCells == indexCount && indexCount > 1 && !lastStaticValue.equalsIgnoreCase("0.00")) {
+    		staticTable = "Static ";
+    	}*/
     	
     	if(!scaling.hasAttribute("format")) {
 			String format = "0." + new String(new char[numDigits]).replace("\0", "0");
 			scaling.setAttribute("format", format);
 		}
 
-		if(addressNode == null && !hasEmbedInfo) return null;
+		if(addressNode == null && !hasEmbedInfo && staticTable.isEmpty()) return null;
     	if(id.equalsIgnoreCase("z")) return null;
     	else {
     		targetTable.setAttribute("type", staticTable + id.toUpperCase() + " Axis");
@@ -283,13 +298,13 @@ public class XDFConversionLayer extends ConversionLayer {
     		n = tableNode.getChildNodes().item(i);
     		
     		if(n.getNodeName().equalsIgnoreCase("title")){
-    			tableNodeRR.setAttribute("name", n.getTextContent());
-    				
     			//TunerPro can currently not edit axis directly, but we can
     			//These tables contain the axis, which we can skip
     			if(n.getTextContent().endsWith("(autogen)")){
     				return null;
     			}
+    			
+    			tableNodeRR.setAttribute("name", n.getTextContent());   				
     		}
     		if(n.getNodeName().equalsIgnoreCase("description")){
     			Element desc = doc.createElement("description");
@@ -313,6 +328,29 @@ public class XDFConversionLayer extends ConversionLayer {
     			}
     		}
     	}
+    	
+    	/*
+    	if(tableNodeRR.hasAttribute("swapxy")) {   		
+    		int nodeCount = tableNodeRR.getChildNodes().getLength();
+        	
+        	for(int i=0; i < nodeCount; i++) {
+        		Node k = tableNodeRR.getChildNodes().item(i);
+        		
+               	if(k.getNodeName().equalsIgnoreCase("table")){
+               		String name = k.getAttributes().getNamedItem("type").getNodeValue();
+               		
+               		if(name.contains("X Axis")) {
+               			name = name.replace("X Axis", "Y Axis");
+               		}
+               		else if(name.contains("Y Axis")) {
+               			name = name.replace("Y Axis", "X Axis");
+               		}
+               		
+               		((Element)k).setAttribute("type", name);
+            	}
+            } 	
+    		
+    	}*/
     	 	
     	String category = "";
     	
@@ -323,34 +361,61 @@ public class XDFConversionLayer extends ConversionLayer {
 				if(i < categories.size() - 1)
 					category+="//";
     	}
-    	
-    	if(category.isEmpty())
-    		category = "Uncategorized";
-    	
+  	
     	tableNodeRR.setAttribute("category", category);
     	tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
     	   	
     	return tableNodeRR;
 	}
 	
+	private class TableInfo{
+		public String name = "";
+		public int address = -1;
+	}
+	
 	private void createTableMap(Node tableNode) {
     	int nodeCountTable = tableNode.getChildNodes().getLength();
     	Node n;
     	
+    	TableInfo ti = new TableInfo();
     	Node uniqueIDNode = tableNode.getAttributes().getNamedItem("uniqueid");   	
-    	String uniqueId = null;
+    	int uniqueId;
     	
     	if(uniqueIDNode != null)
-    		uniqueId = uniqueIDNode.getNodeValue();
+    		uniqueId = HexUtil.hexToInt(uniqueIDNode.getNodeValue());
     	else {
     		return;
     	}   	
-				
+    	
     	for(int i=0; i < nodeCountTable ; i++) {
     		n = tableNode.getChildNodes().item(i);
-    		
+    		 		
     		if(n.getNodeName().equalsIgnoreCase("title")){
-    			tableMap.put(HexUtil.hexToInt(uniqueId), n.getTextContent());
+    			String name = n.getTextContent();    						
+    			ti.name = name;
+    		}
+    		else if(n.getNodeName().equalsIgnoreCase("XDFAXIS")){
+    			if(n.getAttributes().getNamedItem("id").getNodeValue().equalsIgnoreCase("z")) {
+    				
+    				int nodeCountAxis = n.getChildNodes().getLength();
+    		    	for(int j=0; j < nodeCountAxis ; j++) {
+    		    		Node nAxis = n.getChildNodes().item(j);
+    		    		if(nAxis.getNodeName().equalsIgnoreCase("EMBEDDEDDATA")) {
+    		    			Node addrNode = nAxis.getAttributes().getNamedItem("mmedaddress");
+    		    			if(addrNode != null) {
+    		    				ti.address = HexUtil.hexToInt(addrNode.getNodeValue());
+    		    			}
+    		    			else {
+    		    				break;
+    		    			}
+    		    		}
+    		    	}
+    				
+    			}
+    		}
+    		
+    		if(!ti.name.isEmpty() && ti.address != -1) {
+    			tableMap.put(uniqueId, ti);
     			break;
     		}
     	}
@@ -491,7 +556,7 @@ public class XDFConversionLayer extends ConversionLayer {
            		createTableMap(n1);
            	}
         } 	
-    	
+    	    	
     	//Go through all tables and create RR tables
     	for(int i=0; i < nodeCount; i++) {
     		Node n = baseNode.getChildNodes().item(i);
@@ -502,7 +567,10 @@ public class XDFConversionLayer extends ConversionLayer {
            			romNode.appendChild(table);
         	}
         } 	
-      
+    	
+    	categoryMap.clear();
+    	tableMap.clear();
+    	
         System.out.println(convertDocumentToString(doc));
         return doc;
 	}

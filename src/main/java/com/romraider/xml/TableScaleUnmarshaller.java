@@ -216,7 +216,20 @@ public class TableScaleUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
-
+                	
+                	Table tablePrevious = rom.getTableByName(unmarshallAttribute(n, "name", null));
+                	Table tempTable = null; 
+                    int storageNew = -1;
+                    
+                    String storageString = unmarshallAttribute(n, "storageaddress", null);                  
+                    if(storageString != null) {
+                    	storageNew = RomAttributeParser.parseHexString(storageString);
+                    }
+                    
+                    boolean parseTable = tablePrevious == null || 
+                    		tablePrevious.getType() != Table.TableType.TABLE_1D ||
+                			storageNew == -1 || storageNew != tablePrevious.getStorageAddress();
+                	
                     if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
                         if (RomAttributeParser
@@ -225,45 +238,64 @@ public class TableScaleUnmarshaller {
                                         || RomAttributeParser
                                         .parseTableAxis(unmarshallAttribute(n,
                                                 "type", "unknown")) == Table1DType.X_AXIS) {
-
-                            Table1D tempTable = (Table1D) unmarshallTable(n,
-                                    ((Table2D) table).getAxis(), rom);
-                            if (tempTable.getDataSize() != table.getDataSize()) {
-                                tempTable.setDataSize(table.getDataSize());
-                            }
-                            tempTable.setData(((Table2D) table).getAxis().getData());
-                            ((Table2D) table).setAxis(tempTable);
+                        	                      	                   	
+                        	if(parseTable) {                        		
+	                            tempTable = (Table1D) unmarshallTable(n, ((Table2D) table).getAxis(), rom);
+	                            
+	                            if (tempTable.getDataSize() != table.getDataSize()) {
+	                                tempTable.setDataSize(table.getDataSize());
+	                            }
+	                            
+	                            tempTable.setData(((Table2D) table).getAxis().getData());
+	                            rom.addTableByName(tempTable);
+                        	}
+                        	else {
+                        		tempTable = tablePrevious;
+                        	}
+                        	
+                            ((Table2D) table).setAxis((Table1D)tempTable);                            
                         }
-
                     } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
                         // is 3D, populate xAxis
                         if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.X_AXIS) {
                         	
-                            Table1D tempTable = (Table1D) unmarshallTable(n,
-                                    ((Table3D) table).getXAxis(), rom);
-                            if (tempTable.getDataSize() != ((Table3D) table)
-                                    .getSizeX()) {
-                                tempTable.setDataSize(((Table3D) table)
-                                        .getSizeX());
-                            }
-                            tempTable.setData(((Table3D) table).getXAxis().getData());
-                            ((Table3D) table).setXAxis(tempTable);
+                        	if(parseTable) {                        		
+	                            tempTable = (Table1D) unmarshallTable(n, ((Table3D) table).getXAxis(), rom);
+	                            
+	                            if (tempTable.getDataSize() != ((Table3D) table).getSizeX()) {
+	                                tempTable.setDataSize(((Table3D) table).getSizeX());                               
+	                            }
+	                            
+	                            tempTable.setData(((Table3D) table).getXAxis().getData());
+	                            rom.addTableByName(tempTable);
+                        	}
+                        	else {
+                        		tempTable = tablePrevious;
+                        	}
 
-                        } else if (RomAttributeParser
+                            ((Table3D) table).setXAxis((Table1D)tempTable);
+                        } 
+                        else if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.Y_AXIS) {
 
-                            Table1D tempTable = (Table1D) unmarshallTable(n,
-                                    ((Table3D) table).getYAxis(), rom);
-                            if (tempTable.getDataSize() != ((Table3D) table)
-                                    .getSizeY()) {
-                                tempTable.setDataSize(((Table3D) table)
-                                        .getSizeY());
-                            }
-                            tempTable.setData(((Table3D) table).getYAxis().getData());
-                            ((Table3D) table).setYAxis(tempTable);
+                        	if(parseTable) {                       		
+	                            tempTable = (Table1D) unmarshallTable(n,((Table3D) table).getYAxis(), rom);
+	                            
+	                            if (tempTable.getDataSize() != ((Table3D) table).getSizeY()) {
+	                                tempTable.setDataSize(((Table3D) table).getSizeY());
+	                            }
+	                            
+	                            tempTable.setData(((Table3D) table).getYAxis().getData());	
+	                            rom.addTableByName(tempTable);
+                        	}
+                        	else {
+                        		tempTable = tablePrevious;
+                        	}
+                        	
+                            ((Table3D) table).setYAxis((Table1D)tempTable);                                                      
                         }
                     }
 
