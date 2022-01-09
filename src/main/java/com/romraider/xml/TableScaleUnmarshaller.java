@@ -182,8 +182,7 @@ public class TableScaleUnmarshaller {
 
         table.setDescription(unmarshallAttribute(tableNode, "description",
                 table.getDescription()));
-        table.setDataSize(unmarshallAttribute(tableNode, "sizey",
-                unmarshallAttribute(tableNode, "sizex", table.getDataSize())));
+        
         table.setFlip(unmarshallAttribute(tableNode, "flipy",
                 unmarshallAttribute(tableNode, "flipx", table.getFlip())));
         table.setUserLevel(unmarshallAttribute(tableNode, "userlevel",
@@ -207,6 +206,17 @@ public class TableScaleUnmarshaller {
             ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
                     ((Table3D) table).getSizeY()));
         }
+        else {
+            int sizeX = unmarshallAttribute(tableNode, "sizex", table.getDataSize());
+            int sizeY = unmarshallAttribute(tableNode, "sizey", table.getDataSize());
+            
+            if(sizeX > sizeY) {
+            	table.setDataSize(sizeX);
+            }
+            else {
+            	table.setDataSize(sizeY);
+            }
+        }
 
         Node n;
         NodeList nodes = tableNode.getChildNodes();
@@ -216,19 +226,7 @@ public class TableScaleUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
-                	
-                	Table tablePrevious = rom.getTableByName(unmarshallAttribute(n, "name", null));
                 	Table tempTable = null; 
-                    int storageNew = -1;
-                    
-                    String storageString = unmarshallAttribute(n, "storageaddress", null);                  
-                    if(storageString != null) {
-                    	storageNew = RomAttributeParser.parseHexString(storageString);
-                    }
-                    
-                    boolean parseTable = tablePrevious == null || 
-                    		tablePrevious.getType() != Table.TableType.TABLE_1D ||
-                			storageNew == -1 || storageNew != tablePrevious.getStorageAddress();
                 	
                     if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
@@ -239,20 +237,14 @@ public class TableScaleUnmarshaller {
                                         .parseTableAxis(unmarshallAttribute(n,
                                                 "type", "unknown")) == Table1DType.X_AXIS) {
                         	                      	                   	
-                        	if(parseTable) {                        		
-	                            tempTable = (Table1D) unmarshallTable(n, ((Table2D) table).getAxis(), rom);
-	                            
-	                            if (tempTable.getDataSize() != table.getDataSize()) {
-	                                tempTable.setDataSize(table.getDataSize());
-	                            }
-	                            
-	                            tempTable.setData(((Table2D) table).getAxis().getData());
-	                            rom.addTableByName(tempTable);
-                        	}
-                        	else {
-                        		tempTable = tablePrevious;
-                        	}
                         	
+                            tempTable = (Table1D) unmarshallTable(n, ((Table2D) table).getAxis(), rom);
+                            
+                            if (tempTable.getDataSize() != table.getDataSize()) {
+                                tempTable.setDataSize(table.getDataSize());
+                            }
+                            
+                            tempTable.setData(((Table2D) table).getAxis().getData());                        	
                             ((Table2D) table).setAxis((Table1D)tempTable);                            
                         }
                     } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
@@ -260,41 +252,28 @@ public class TableScaleUnmarshaller {
                         if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.X_AXIS) {
-                        	
-                        	if(parseTable) {                        		
-	                            tempTable = (Table1D) unmarshallTable(n, ((Table3D) table).getXAxis(), rom);
-	                            
-	                            if (tempTable.getDataSize() != ((Table3D) table).getSizeX()) {
-	                                tempTable.setDataSize(((Table3D) table).getSizeX());                               
-	                            }
-	                            
-	                            tempTable.setData(((Table3D) table).getXAxis().getData());
-	                            rom.addTableByName(tempTable);
-                        	}
-                        	else {
-                        		tempTable = tablePrevious;
-                        	}
+                        	                    		
+                            tempTable = (Table1D) unmarshallTable(n, ((Table3D) table).getXAxis(), rom);
+                            
+                            if (tempTable.getDataSize() != ((Table3D) table).getSizeX()) {
+                                tempTable.setDataSize(((Table3D) table).getSizeX());                               
+                            }
+                            
+                            tempTable.setData(((Table3D) table).getXAxis().getData());
 
                             ((Table3D) table).setXAxis((Table1D)tempTable);
                         } 
                         else if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.Y_AXIS) {
-
-                        	if(parseTable) {                       		
-	                            tempTable = (Table1D) unmarshallTable(n,((Table3D) table).getYAxis(), rom);
-	                            
-	                            if (tempTable.getDataSize() != ((Table3D) table).getSizeY()) {
-	                                tempTable.setDataSize(((Table3D) table).getSizeY());
-	                            }
-	                            
-	                            tempTable.setData(((Table3D) table).getYAxis().getData());	
-	                            rom.addTableByName(tempTable);
-                        	}
-                        	else {
-                        		tempTable = tablePrevious;
-                        	}
-                        	
+                      		
+                            tempTable = (Table1D) unmarshallTable(n,((Table3D) table).getYAxis(), rom);
+                            
+                            if (tempTable.getDataSize() != ((Table3D) table).getSizeY()) {
+                                tempTable.setDataSize(((Table3D) table).getSizeY());
+                            }
+                            
+                            tempTable.setData(((Table3D) table).getYAxis().getData());	                        	
                             ((Table3D) table).setYAxis((Table1D)tempTable);                                                      
                         }
                     }
