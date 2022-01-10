@@ -138,18 +138,6 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	    
 	    return doc;
     }
-    
-    private Node checkDefinitionMatch(File f, byte[] input) throws Exception {
-	    Document doc = createDocument(f);
-	    Node romNode = null;
-	    
-	    if(doc != null) 
-	    	romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);	    
-	    else 
-	    	throw new Exception();	    
-	    
-        return romNode;
-      }
 	 
     private void showExceptionPopup(Exception ex, File defFile) {
     	
@@ -244,7 +232,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
             Node romNode = null;
             
             try {
-            	romNode = checkDefinitionMatch(f, input);
+            	Document doc = createDocument(f);
+				romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
             }
             catch(Exception e) {
             	showExceptionPopup(e, f);
@@ -286,9 +275,11 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
             	settings.setLastDefinitionDir(file.getParentFile());
             	
                 Node romNode;
+                Document doc = null;
                 
 				try {
-					romNode = checkDefinitionMatch(file, input);
+					doc = createDocument(file);
+					romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
 				} catch (Exception e) {
 					showExceptionPopup(e, file);
 					return;
@@ -304,15 +295,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	                        options,
 	                        options[0]);
 	                
-	                if(answerForceLoad == 0) {
-	                	Document doc;
-	                	
-						try {
-							doc = createDocument(file);
-						} catch (Exception e) {
-							return;
-						}
-						
+	                if(answerForceLoad == 0) {						
 	                	Node n = DOMRomUnmarshaller.findFirstRomNode(doc.getDocumentElement());
 	                	openRomWithDefinition(file, n, input);
 	                }

@@ -39,10 +39,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
@@ -51,9 +51,7 @@ import com.romraider.util.ByteUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.ConversionLayer.ConversionLayer;;
 
-public class BMWCodingConversionLayer extends ConversionLayer {
-    private static final Logger LOGGER = Logger.getLogger(BMWCodingConversionLayer.class);
-   
+public class BMWCodingConversionLayer extends ConversionLayer {   
 	private int splitAddress = 0;
 	boolean guessChecksums = false;
 	
@@ -281,7 +279,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
         return -1;
 	}
 	
-	public Document convertToDocumentTree(File f) {		
+	public Document convertToDocumentTree(File f) throws SAXException {		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
                 
@@ -310,21 +308,18 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		  }
 		}
 		
+		//TODO: Add i18n
 		if(!fswF.exists()) {
-	    	LOGGER.error("Failed to find " +  fswF);
-	    	return null;
+			throw new SAXException("Failed to find " +  fswF);
 		}
 		if(!pswF.exists()) {
-	    	LOGGER.error("Failed to find " +  pswF);
-	    	return null;
+			throw new SAXException("Failed to find " +  pswF);
 		}
 		if(!aswF.exists()) {
-	    	LOGGER.error("Failed to find " +  aswF);
-	    	return null;
+			throw new SAXException("Failed to find " +  aswF);
 		}
 		if(!csvF.exists()) {
-	    	LOGGER.error("Failed to find " +  csvF);
-	    	return null;
+			throw new SAXException("Failed to find " +  csvF);
 		}
 			
 		fswMap= createMapFromNCSDict(fswF);
@@ -342,7 +337,7 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		try {
 			input = ECUEditor.readFile(f);
 		} catch (IOException e) {
-			return null;
+			throw new SAXException("Failed to open file " + f);
 		}
 		
 		dataBuffer = ByteBuffer.wrap(input);
@@ -384,9 +379,8 @@ public class BMWCodingConversionLayer extends ConversionLayer {
         //Look for 0xFFFF in the file to skip the header
         dataIndex = getStartOfFile(dataBuffer);  
         
-        if(dataIndex == 0) {
-        	LOGGER.error("Failed to find start of file for " +  f.toString());
-        	return null;
+        if(dataIndex == 0) {      	
+        	throw new SAXException("Failed to find start of file for " +  f.toString());
         }
 
         
@@ -664,7 +658,5 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 
 		w.execute();
 	}
-
-
 }
 
