@@ -149,17 +149,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         table.setRom(this);
         tableNodes.put(table.getName(), new TableTreeNode(table));
     }
-
-    /*
-    public void removeTable(Table table) {
-        for(int i = 0; i < tableNodes.size(); i++) {
-            if(tableNodes.get(i).getTable().equals(table)) {
-                tableNodes.remove(i);
-                return;
-            }
-        }
-    }
-*/
     
     public void removeTableByName(Table table) {
     	if(tableNodes.containsKey(table.getName())) {
