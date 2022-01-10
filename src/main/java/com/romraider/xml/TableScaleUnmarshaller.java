@@ -88,10 +88,6 @@ public class TableScaleUnmarshaller {
                 table = (Table) ObjectCloner
                         .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
                                 "base", "none")));
-            } catch (TableNotFoundException ex) { /* table not found, do nothing */
-
-            } catch (InvalidTableNameException ex) { // Table name is invalid, do nothing.
-
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),
                         new DebugPanel(ex, SettingsManager.getSettings().getSupportURL()), "Exception",
