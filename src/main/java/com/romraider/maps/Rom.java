@@ -44,6 +44,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -83,7 +84,34 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public Rom(RomID romID) {
     	this.romID = romID;
     }
-      
+
+    public void sortedAdd(DefaultMutableTreeNode currentParent, DefaultMutableTreeNode newNode) {
+        boolean found = false;	                    
+        for(int k = 0; k < currentParent.getChildCount(); k++){
+        	TreeNode n = currentParent.getChildAt(k);
+        	
+        	//Category nodes should be placed at the top
+        	if(newNode instanceof CategoryTreeNode && !(n instanceof CategoryTreeNode)) {
+        		found = true;
+        	}
+        	else if(!(newNode instanceof CategoryTreeNode) && n instanceof CategoryTreeNode) {
+        		continue;
+        	}
+        	else if(n.toString().compareToIgnoreCase(newNode.toString()) >= 0) {        		
+        		found = true;        		
+        	}
+        	
+        	if(found) {
+        		currentParent.insert(newNode, k);
+        		break;
+        	}
+        }
+        
+        if(!found) {
+        	currentParent.add(newNode);
+        }
+    }
+    
     public void refreshDisplayedTables() {
         // Remove all nodes from the ROM tree node.
         super.removeAllChildren();
@@ -113,12 +141,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 	                
 	                if(!categoryExists) {
 	                    CategoryTreeNode categoryNode = new CategoryTreeNode(categories[i]);
-	                    currentParent.add(categoryNode);
+	                    sortedAdd(currentParent,categoryNode);  
 	                    currentParent = categoryNode;
 	                }
 	                
                 	if(i == categories.length - 1){
-                		currentParent.add(tableTreeNode);
+                		sortedAdd(currentParent, tableTreeNode);
                 	}
                 }
             }
