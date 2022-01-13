@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -343,8 +344,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         return tables;
     }
 
-    public Vector<TableTreeNode> getTableNodes() {
-        return (Vector<TableTreeNode>) this.tableNodes.values();
+    public Collection<TableTreeNode> getTableNodes() {
+        return this.tableNodes.values();
     }
 
     public void setFileName(String fileName) {
