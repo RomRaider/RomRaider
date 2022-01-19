@@ -54,6 +54,7 @@ import com.romraider.xml.ConversionLayer.ConversionLayerFactory;
 public class OpenImageWorker extends SwingWorker<Void, Void> {
     private static final Logger LOGGER = Logger.getLogger(OpenImageWorker.class);
     private final File inputFile;
+    private String finalStatus;
     
     public OpenImageWorker(File inputFile) {
         this.inputFile = inputFile;
@@ -82,18 +83,14 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	             ECUEditor.rb.getString("CHECKSUM"));
 	       
 	      int validChecksums =  rom.validateChecksum();
-	       
-	      String status = "";
-	       
+	       	       
 	      if(rom.getNumChecksumsManagers() == 0) {
-	    	  status = ECUEditor.rb.getString("STATUSREADY");
+	    	  finalStatus = ECUEditor.rb.getString("STATUSREADY");
 	      }
 	      else {
-	    	  status = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
+	    	  finalStatus = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
 	    			   validChecksums, rom.getNumChecksumsManagers());        
-	      }
-	       
-	      editor.getStatusPanel().update(status, 0);              
+	      }	         
     }
     
     private Document createDocument(File f) throws Exception {
@@ -319,7 +316,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
+        ECUEditor editor = ECUEditorManager.getECUEditor();	      
+	    editor.getStatusPanel().update(finalStatus, 0);  
         editor.refreshTableCompareMenus();
         editor.setCursor(null);
         editor.refreshUI();
