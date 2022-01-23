@@ -41,13 +41,13 @@ public class DefinitionFilter extends FileFilter {
     		new XDFConversionLayer().getRegexFileNameFilter()
     		};
     
-    private String[] filterDescr = {".xml", ".Cxx", ".xdf"};
+    private String[] filterDescr = {".xml", ".Cxx (NCS Expert)", ".xdf (Tuner Pro)"};
     private String startDescription;
 
     public DefinitionFilter() {
         startDescription = rb.getString("DESC");
     }
-
+    
     public boolean accept(File f) {
         if (f != null) {
             if (f.isDirectory()) {

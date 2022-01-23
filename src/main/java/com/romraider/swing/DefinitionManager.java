@@ -32,6 +32,8 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+import com.romraider.xml.ConversionLayer.ConversionLayer;
+import com.romraider.xml.ConversionLayer.ConversionLayerFactory;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
@@ -228,7 +230,20 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
         			}
         		}
         		
-        		if(!alreadyAdded) fileNames.add(f.getAbsolutePath());	        	
+        		if(!alreadyAdded) {
+        			//If its a file that needs to be converted sometimes a warning
+        			//should be displayed to the user
+        			if(ConversionLayerFactory.requiresConversionLayer(f)) {
+        				ConversionLayer layer = ConversionLayerFactory.getConversionLayerForFile(f);
+        				
+        				if(layer.getDefinitionPickerInfo() != null) {
+        					JOptionPane.showMessageDialog(null, layer.getDefinitionPickerInfo(),
+        							rb.getString("CONVERSIONTITLE"), JOptionPane.WARNING_MESSAGE);
+        				}
+        			}
+        			
+        			fileNames.add(f.getAbsolutePath());	        	
+        		}
 	            settings.setLastDefinitionDir(f.getParentFile());
         	}
 

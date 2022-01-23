@@ -33,6 +33,8 @@ public abstract class ConversionLayer {
 	
 	public final static String xmlRegexFileNameFilter = "^.*\\.(xml|XML)$";
 	
+	public abstract String getDefinitionPickerInfo();
+	
 	public abstract String getRegexFileNameFilter();
 	
 	/*

@@ -434,8 +434,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for(TableTreeNode tableTreeNode : tableNodes.values()) {
             TableFrame frame = tableTreeNode.getFrame();
             
-            TableUpdateHandler.getInstance().deregisterTable(tableTreeNode.getTable());      
-            tableTreeNode.getTable().clearData();
+            TableUpdateHandler.getInstance().deregisterTable(tableTreeNode.getTable());
+            
+            // Quite slow and doesn't seem to be necessary after testing,
+            // uncomment if you disagree
+            
+            //tableTreeNode.getTable().clearData();
             
             if(frame != null) {           	
         

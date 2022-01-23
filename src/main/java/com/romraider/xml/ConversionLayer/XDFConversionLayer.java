@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,9 +47,12 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.HexUtil;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;;
 
 public class XDFConversionLayer extends ConversionLayer {
+    protected static final ResourceBundle rb = new ResourceUtil().getBundle(
+    		XDFConversionLayer.class.getName());
 	private static final Logger LOGGER = Logger.getLogger(XDFConversionLayer.class);
 	
 	private HashMap<Integer, String> categoryMap = new HashMap<Integer, String>();
@@ -65,6 +69,11 @@ public class XDFConversionLayer extends ConversionLayer {
 	// Defaults
 	String defaultDataType;
 
+	@Override
+	public String getDefinitionPickerInfo() {
+		return rb.getString("LOADINGWARNING");
+	}
+	
 	@Override
 	public String getRegexFileNameFilter() {
 		return "^.*xdf";
@@ -84,8 +93,7 @@ public class XDFConversionLayer extends ConversionLayer {
 
 			if (firstLine.equalsIgnoreCase("XDF")) {
 				br.close();
-				// TODO: Add i18n
-				throw new SAXException("Sorry, only XML XDFs are currently supported!");
+				throw new SAXException(rb.getString("ONLYXML"));
 			} else {
 				br.close();
 			}
@@ -495,8 +503,7 @@ public class XDFConversionLayer extends ConversionLayer {
 		}
 
 		if (baseNode == xdfDoc) {
-			//TODO: Add i18n
-			throw new SAXException("XDF file does not have an XDFFORMAT element!");
+			throw new SAXException(rb.getString("NOXDFFORMAT"));
 		}
 
 		nodeCount = baseNode.getChildNodes().getLength();
@@ -522,8 +529,7 @@ public class XDFConversionLayer extends ConversionLayer {
 		}
 
 		if (header == null) {
-			//TODO:Add i18n
-			throw new SAXException("XDF file does not have an XDFHEADER element!");
+			throw new SAXException(rb.getString("NOXDFHEADER"));
 		}
 
 		// Go through all tables and create RR tables

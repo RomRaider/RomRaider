@@ -54,6 +54,7 @@ import com.romraider.xml.ConversionLayer.ConversionLayerFactory;
 public class OpenImageWorker extends SwingWorker<Void, Void> {
     private static final Logger LOGGER = Logger.getLogger(OpenImageWorker.class);
     private final File inputFile;
+    private Rom rom;
     private String finalStatus;
     
     public OpenImageWorker(File inputFile) {
@@ -73,24 +74,22 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
                   ECUEditor.rb.getString("FINALIZING"));
           setProgress(90);
 
-          editor.addRom(rom);
-
           editor.getStatusPanel().setStatus(
                   ECUEditor.rb.getString("DONELOAD"));
           setProgress(95);
-
-	      editor.getStatusPanel().setStatus(
-	             ECUEditor.rb.getString("CHECKSUM"));
-	       
-	      int validChecksums =  rom.validateChecksum();
 	       	       
 	      if(rom.getNumChecksumsManagers() == 0) {
 	    	  finalStatus = ECUEditor.rb.getString("STATUSREADY");
 	      }
 	      else {
+		      editor.getStatusPanel().setStatus(
+			             ECUEditor.rb.getString("CHECKSUM"));
+		      
 	    	  finalStatus = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
-	    			   validChecksums, rom.getNumChecksumsManagers());        
-	      }	         
+	    			  rom.validateChecksum(), rom.getNumChecksumsManagers());        
+	      }	  
+	      
+	      this.rom = rom;
     }
     
     private Document createDocument(File f) throws Exception {
@@ -114,7 +113,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 		    		doc = l.convertToDocumentTree(f);		    				    	
 		    	
 	    		if(doc == null) 
-	    			throw new SAXParseException("Unknown file format!", null);
+	    			throw new SAXParseException(ECUEditor.rb.getString("UNREADABLEDEF"), null);
 		    }        
 			//Default case
 		    else {
@@ -316,11 +315,21 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        ECUEditor editor = ECUEditorManager.getECUEditor();	      
-	    editor.getStatusPanel().update(finalStatus, 0);  
-        editor.refreshTableCompareMenus();
-        editor.setCursor(null);
-        editor.refreshUI();
-        System.gc();
+        ECUEditor editor = ECUEditorManager.getECUEditor();	 
+        
+        //Add the rom in the main thread
+        if(rom != null) {
+        	editor.addRom(rom);
+        	rom = null; 
+      
+		    editor.getStatusPanel().update(finalStatus, 0);  
+	        editor.refreshTableCompareMenus();
+	        editor.setCursor(null);
+	        editor.refreshUI();               
+	        System.gc();
+        }
+        else {
+        	editor.getStatusPanel().update(ECUEditor.rb.getString("STATUSREADY"), 0);
+        }
     }
 }
