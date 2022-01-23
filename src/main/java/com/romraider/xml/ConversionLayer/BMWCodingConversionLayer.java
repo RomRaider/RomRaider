@@ -70,8 +70,8 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 	int dataIndex;
 
 	String currentCategory = "";
-	int currentFSW = 0;
-	Node currentTable = null;
+	int currentFSW;
+	Node currentTable;
 
 	String memoryLayout = "uint8";
 	String endian = "little";
@@ -433,7 +433,15 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		for (BMWConversionRomNodeManager man : romManagers) {
 			man.calculateRomID(f, "BMW");
 		}
-
+		
+		fswMap.clear();;
+		pswMap.clear();
+		aswMap.clear();
+		csvMap.clear();
+		transMap.clear();
+		dataBuffer.clear();		
+		romManagers = null;
+				
 		return doc;
 	}
 
