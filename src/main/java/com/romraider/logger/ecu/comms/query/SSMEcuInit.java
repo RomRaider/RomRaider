@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2021 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,11 @@ public final class SSMEcuInit implements EcuInit {
     private byte[] ecuInitBytes;
     private String ecuId;
 
+    /**
+     * Create a SSM ECU init class for the module and determine the ECU ID from
+     * within the init byte sequence.
+     * @param ecuInitBytes - init sequence from the module
+     */
     public SSMEcuInit(byte[] ecuInitBytes) {
         checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
         this.ecuInitBytes = ecuInitBytes;
@@ -35,10 +40,26 @@ public final class SSMEcuInit implements EcuInit {
         ecuId = asHex(ecuIdBytes);
     }
 
+    /**
+     * Create a SSM ECU init class for the module and set the ECU ID to the value
+     * provided.  Use this when the ECU ID contains characters that can't be
+     * encoded in the init byte sequence.
+     * @param ecuInitBytes - init sequence from the module
+     * @param ecuIdString - ECU ID string
+     */
+    public SSMEcuInit(byte[] ecuInitBytes, String ecuIdString) {
+        checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
+        checkNotNullOrEmpty(ecuIdString, "ecuIdString");
+        this.ecuInitBytes = ecuInitBytes;
+        this.ecuId = ecuIdString;
+    }
+
+    @Override
     public String getEcuId() {
         return ecuId;
     }
 
+    @Override
     public byte[] getEcuInitBytes() {
         return ecuInitBytes;
     }

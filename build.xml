@@ -133,7 +133,7 @@
 
         <!-- test classpath -->
         <path id="test.classpath">
-            <fileset dir="${testclasses.dir}" includes="**/*.class" />
+            <fileset dir="${testclasses.dir}" includes="**/*.jar" />
         </path>
 
         <!-- JUnit classpath. -->

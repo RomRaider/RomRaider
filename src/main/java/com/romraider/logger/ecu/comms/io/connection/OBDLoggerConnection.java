@@ -24,6 +24,7 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static org.apache.log4j.Logger.getLogger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
     public OBDLoggerConnection(ConnectionManager manager) {
         checkNotNull(manager, "manager");
         this.manager = manager;
-        final Settings settings = SettingsManager.getSettings();        
+        final Settings settings = SettingsManager.getSettings();
         this.protocol = (LoggerProtocolOBD) ProtocolFactory.getProtocol(settings.getLoggerProtocol(), settings.getTransportProtocol());
     }
 
@@ -72,28 +73,24 @@ public final class OBDLoggerConnection implements LoggerConnection {
 
     @Override
     // Build an init string similar to the SSM version so the logger definition
-    // can reference supported parameters with ecubyte/bit attributes. 
+    // can reference supported parameters with ecubyte/bit attributes.
     public void ecuInit(EcuInitCallback callback, Module module) {
         final byte[] processedResponse = new byte[46];
         final byte[] request = protocol.constructEcuInitRequest(module);
         LOGGER.debug(String.format("%s Calibration ID Request  ---> %s",
                 module, asHex(request)));
-        final byte[] tmp = manager.send(request);
-        final byte[] response = protocol.preprocessResponse(
-                request, tmp, new PollingStateImpl());
+        final byte[] response = manager.send(request);
         LOGGER.debug(String.format("%s Calibration ID Response <--- %s",
                 module, asHex(response)));
         System.arraycopy(response, 0, processedResponse, 0, response.length);
         int j = 7;
         // try to find the string termination character 0x00 in the response
-        while (response[j] != 0 && j < response.length) { j++; }
-        // make sure j is not pointing to a position past the end of the string
-        // if the termination character 0x00 was not found
-        if (j == response.length) { j--; }
-        final byte[] calIdStr = new byte[j - 7];
-        System.arraycopy(response, 7, calIdStr, 0, j - 7);
-        System.arraycopy(calIdStr, 0, processedResponse, 5, calIdStr.length);
+        while (j < response.length && response[j] != 0) { j++; }
+        byte[] calIdStr = new byte[j - 7];
+        System.arraycopy(response, 7, calIdStr, 0, calIdStr.length);
         LOGGER.info(String.format("%s Calibration ID: %s", module, new String(calIdStr)));
+        calIdStr = Arrays.copyOf(calIdStr, 8);  // extend to 8 bytes maximum
+        System.arraycopy(calIdStr, 0, processedResponse, 5, calIdStr.length);
 
         final byte[] supportedPidsPid = {
             (byte) 0x00, (byte) 0x20, (byte) 0x40, (byte) 0x60,
@@ -132,15 +129,16 @@ public final class OBDLoggerConnection implements LoggerConnection {
                     module, asHex(aiPpResponse)));
             System.arraycopy(aiPpResponse, 6, processedResponse, 45, 1);
         }
+        // contains CAL ID not ECU ID
         LOGGER.debug(String.format("%s Init Response <--- %s",
-                module, asHex(processedResponse)));  // contains CALID not ECUID
+                module, asHex(processedResponse)));
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
     @Override
     public final void sendAddressReads(
             Collection<EcuQuery> queries,
-            Module module, 
+            Module module,
             PollingState pollState) {
 
         final int obdQueryListLength = queries.size();
