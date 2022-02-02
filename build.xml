@@ -54,7 +54,7 @@
         <tstamp>
             <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z" />
             <format property="time.year" pattern="yyyy" />
-            <format property="mnth.day" pattern="MMMDD" />
+            <format property="mnth.day" pattern="MMMdd" />
         </tstamp>
 
         <scriptdef language="javascript" name="toUpper">
