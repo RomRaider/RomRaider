@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,6 +114,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
+import com.romraider.Version;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.io.serial.port.SerialPortRefresher;
@@ -191,7 +192,6 @@ import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
-import com.romraider.util.JREChecker;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
@@ -297,13 +297,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private Map<String, Object> componentList = new HashMap<String, Object>();
     private static boolean touchEnabled = false;
     private final JPanel moduleSelectPanel = new JPanel(new FlowLayout());
-    
+
     private static EcuLogger instance;
-    
+
     public static EcuLogger getEcuLoggerWithoutCreation() {
     	return instance;
     }
-    
+
     public static EcuLogger getEcuLogger(ECUEditor ecuEditor) {
     	if (instance != null ) return instance;
     	else {
@@ -311,34 +311,35 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     		return instance;
     	}
     }
-    
+
     private EcuLogger(ECUEditor ecuEditor) {
         super(ECU_LOGGER_TITLE);
         this.ecuEditor = ecuEditor;
         construct();
     }
-    
+
     public void setEcuEditor(ECUEditor ecuEditor) {
     	this.ecuEditor = ecuEditor;
-    	
+
         mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
         injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
         dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
-        
+
         injectorUpdateHandler.setInjectorTab(injectorTab);
         mafUpdateHandler.setMafTab(mafTab);
         dynoUpdateHandler.setDynoTab(dynoTab);
     }
-    
+
     private void construct() {
-        // 64-bit won't work with the native libs (e.g. serial rxtx) but won't
-        // fail until we actually try to use them since the logger requires
-        // these libraries, this is a hard error here
-        if (!JREChecker.is32bit()) {
+        /**
+         * Bitness of supporting libraries must match the bitness of RomRaider
+         * and the running JRE.  Notify and exit if mixed bitness is detected.
+         */
+        if (!System.getProperty("sun.arch.data.model").equals(Version.BUILD_ARCH)) {
             showMessageDialog(null,
                     MessageFormat.format(
                             rb.getString("INCOMPJRE"),
-                            PRODUCT_NAME),
+                            PRODUCT_NAME, Version.BUILD_ARCH),
                 rb.getString("INCOMPJREERR"),
                 ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
@@ -392,6 +393,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             if (!isLogging()) startLogging();
             ecuEditor.getStatusPanel().update(rb.getString("READY"),0);
         }
+        this.toFront();
     }
 
     private void bootstrap() {
@@ -445,22 +447,22 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         controller = new LoggerControllerImpl(ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, injectorUpdateHandler,
                 dynoUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
-        
+
         mafHandlerManager = new DataUpdateHandlerManagerImpl();
-        mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);        
-        mafTab = new MafTabImpl(mafTabBroker, ecuEditor);        
+        mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
+        mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
         mafUpdateHandler.setMafTab(mafTab);
-        
-        injectorHandlerManager = new DataUpdateHandlerManagerImpl();       
+
+        injectorHandlerManager = new DataUpdateHandlerManagerImpl();
         injectorTabBroker = new DataRegistrationBrokerImpl(controller, injectorHandlerManager);
-        injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);        
+        injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
         injectorUpdateHandler.setInjectorTab(injectorTab);
-        
+
         dynoHandlerManager = new DataUpdateHandlerManagerImpl();
         dynoTabBroker = new DataRegistrationBrokerImpl(controller, dynoHandlerManager);
         dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
         dynoUpdateHandler.setDynoTab(dynoTab);
-        
+
         resetManager = new ResetManagerImpl(this);
         messageLabel = new JLabel(ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -483,9 +485,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
         dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
-        
-
-
     }
 
     public void loadLoggerParams() {
@@ -629,7 +628,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         }
     }
-    
+
     private void showErrorConfigDialog(Exception e) {
         Object[] options = {"OK"};
         showOptionDialog(this,
@@ -641,7 +640,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 options,
                 options[0]);
     }
-    
+
     private void showMissingConfigDialog() {
         Object[] options = {rb.getString("YES"), rb.getString("NO")};
         int answer = showOptionDialog(this,
@@ -1000,7 +999,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                                     buildToggleGaugeStyleButton());
             tabbedPane.add("MAF", mafTab.getPanel());
             tabbedPane.add("Injector", injectorTab.getPanel());
-            tabbedPane.add("Dyno", dynoTab.getPanel());              
+            tabbedPane.add("Dyno", dynoTab.getPanel());
         }
         else
         {
@@ -1039,9 +1038,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Injector"+ "</body></html>", injectorTab.getPanel());
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());
         }
-                
+
         //Check for definitions only when we open the dyno tab
-        tabbedPane.addChangeListener(new ChangeListener() { 
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 if(tabbedPane.getSelectedComponent() == dynoTab.getPanel())
                 {
@@ -1049,7 +1049,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             }
         });
-        
+
         return tabbedPane;
     }
 
@@ -1590,7 +1590,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	                cb.setSelected(true);
 	                setTarget(module.getName());
 	            }
-	            
+
 	            cb.addActionListener(new ActionListener() {
 	                @Override
 	                public void actionPerformed(ActionEvent actionEvent) {
@@ -1606,7 +1606,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	                    startLogging();
 	                }
 	            });
-	
+
 	            moduleGroup.add(cb);
 	            moduleSelectPanel.add(cb);
 	            moduleSelectPanel.validate();
@@ -1666,7 +1666,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	private Transport getTransportById(String id) {
         Transport loggerTransport = null;
         Map<Transport, Collection<Module>> transportMap = getTransportMap();
-        
+
         for (Transport transport : transportMap.keySet()) {
             if (transport.getId().equalsIgnoreCase(id))
                 loggerTransport = transport;
@@ -1675,17 +1675,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return loggerTransport;
     }
 
-	public void updateElmSelectable() {	
+	public void updateElmSelectable() {
 		boolean value = getSettings().isObdProtocol();
 		RadioButtonMenuItem c = (RadioButtonMenuItem)getComponentList().get("elmEnabled");
-		c.setEnabled(value);	
-		
+		c.setEnabled(value);
+
 		if(!value) {
 			c.setSelected(false);
 			getSettings().setElm327Enabled(false);
 		}
 	}
-    
+
     private Map<Transport, Collection<Module>> getTransportMap() {
         return protocolList.get(getSettings().getLoggerProtocol());
     }
@@ -1928,10 +1928,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             saveSettings();
             backupCurrentProfile();
             LOGGER.info("Logger shutdown successful");
-            
-            if(ECUEditorManager.getECUEditorWithoutCreation() == null) {        
+
+            if(ECUEditorManager.getECUEditorWithoutCreation() == null) {
             	System.exit(0);
-            }  
+            }
             else {
             	instance = null;
             }
@@ -2073,8 +2073,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         getSettings().setRefreshMode(refreshMode);
         refresher.setRefreshMode(refreshMode);
     }
-    
-	public void setElmEnabled(Boolean value) {		
+
+	public void setElmEnabled(Boolean value) {
         getSettings().setElm327Enabled(value);
 	}
 
@@ -2112,7 +2112,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private static boolean containsFullScreenArg(String... args) {
     	if(args == null) return false;
-    	
+
         for (String arg : args) {
             if (LOGGER_FULLSCREEN_ARG.equalsIgnoreCase(arg)) return true;
         }
@@ -2121,7 +2121,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private static boolean setTouchEnabled(String... args) {
     	if(args == null) return false;
-    	
+
         for (String arg : args) {
             if (LOGGER_TOUCH_ARG.equalsIgnoreCase(arg)) return true;
         }

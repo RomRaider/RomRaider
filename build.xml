@@ -3,7 +3,7 @@
 <!-- Master build file for RomRaider
 
  RomRaider Open-Source Tuning, Logging and Reflashing
- Copyright (C) 2006-2021 RomRaider.com
+ Copyright (C) 2006-2022 RomRaider.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -54,8 +54,15 @@
         <tstamp>
             <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z" />
             <format property="time.year" pattern="yyyy" />
+            <format property="mnth.day" pattern="MMMDD" />
         </tstamp>
 
+        <scriptdef language="javascript" name="toUpper">
+            project.setProperty("mnth.day",
+                    project.getProperty("mnth.day").toUpperCase());
+        </scriptdef>
+        <toUpper/>
+        
         <!-- set os specific properties -->
         <property name="os.windows" value="windows" />
         <property name="ext.windows" value="bat" />
@@ -76,10 +83,10 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
-    	<condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
-    	                   else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
-    	            <isset property="env.JRE_DIR" />
-    	</condition>
+        <condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
+                           else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
+                    <isset property="env.JRE_DIR" />
+        </condition>
         <property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />
@@ -167,6 +174,7 @@
             <filter token="version.extra" value="${version.extra}" />
             <filter token="version.extra1" value="${version.extra1}" />
             <filter token="min.logger.def.version" value="${min.logger.def.version}" />
+            <filter token="build.arch" value="${build.arch}" />
             <filter token="jvm.args.win" value="${jvm.args.win}" />
             <filter token="jvm.args.linux" value="${jvm.args.linux}" />
         </filterset>

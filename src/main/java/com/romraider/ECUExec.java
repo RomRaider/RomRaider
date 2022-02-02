@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ import org.apache.log4j.Logger;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.util.JREChecker;
 import com.romraider.util.ResourceUtil;
 
 public class ECUExec {
@@ -76,12 +75,15 @@ public class ECUExec {
         LOGGER.info("System Properties: \n\t"
                 + System.getProperties().toString().replace(COMMA, "\n\t"));
 
-        // 64-bit won't work with the native libs (e.g. serial rxtx) but won't
-        // fail until we actually try to use them we'll just warn here
-        if (!JREChecker.is32bit() &&
+        /**
+         * Bitness of supporting libraries must match the bitness of RomRaider
+         * and the running JRE.  Notify if mixed bitness is detected.
+         */
+        if (!System.getProperty("sun.arch.data.model").equals(Version.BUILD_ARCH) &&
                 !containsLoggerArg(args)) {
             showMessageDialog(null,
-                    MessageFormat.format(rb.getString("COMPATJRE"), PRODUCT_NAME),
+                    MessageFormat.format(
+                    		rb.getString("COMPATJRE"), PRODUCT_NAME, Version.BUILD_ARCH),
                     rb.getString("JREWARN"),
                     WARNING_MESSAGE);
         }
@@ -92,10 +94,10 @@ public class ECUExec {
         // set look and feel
         initLookAndFeel();
         setExecType(args);
-        
+
         // check if already running
-        if (isRunning()) {        	
-        	//The other exectuable will open us, close this app
+        if (isRunning()) {
+        	// The other executable will open us, close this app
         	EditorLoggerCommunication.sendTypeToOtherExec(args);
         } else {
             // open editor or logger
@@ -104,7 +106,7 @@ public class ECUExec {
             } else {
                 openEditor(DISPOSE_ON_CLOSE, args);
             }
-            
+
             startExecCommunication();
         }
     }
@@ -113,7 +115,7 @@ public class ECUExec {
     	Exec_type execType = containsLoggerArg(args) ? Exec_type.LOGGER : Exec_type.EDITOR;
     	EditorLoggerCommunication.setExectable(execType, args);
     }
-    
+
     public static void showAlreadyRunningMessage() {
         showMessageDialog(null,
                 MessageFormat.format(rb.getString("ISRUNNING"), PRODUCT_NAME),
@@ -122,7 +124,7 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (	arg.equalsIgnoreCase(START_LOGGER_ARG) || 
+            if (	arg.equalsIgnoreCase(START_LOGGER_ARG) ||
             		arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG) ||
             		arg.equalsIgnoreCase(LOGGER_TOUCH_ARG)) {
                 return true;
@@ -150,31 +152,31 @@ public class ECUExec {
 	    while (true) {
 	    	try {
 	    		ExecutableInstance instance = EditorLoggerCommunication.waitForOtherExec();
-	    		
+
 	    		if(instance.execType == Exec_type.LOGGER) {
 	    			if(EditorLoggerCommunication.getExecutableType() == Exec_type.LOGGER ||
 	    					EcuLogger.getEcuLoggerWithoutCreation() != null) {
 	    				showAlreadyRunningMessage();
 	    				continue;
 	    			}
-	    					    		
-	    			openLogger(DISPOSE_ON_CLOSE, instance.currentArgs);	    					    		
+
+	    			openLogger(DISPOSE_ON_CLOSE, instance.currentArgs);
 	    			LOGGER.info("Opening Logger with args: " +  Arrays.toString(instance.currentArgs));
 	    		}
 	    		else if(instance.execType == Exec_type.EDITOR) {
-	    			openEditor(DISPOSE_ON_CLOSE, instance.currentArgs);	
-	    			
-		    		if(EditorLoggerCommunication.getExecutableType() == Exec_type.LOGGER) { 
+	    			openEditor(DISPOSE_ON_CLOSE, instance.currentArgs);
+
+		    		if(EditorLoggerCommunication.getExecutableType() == Exec_type.LOGGER) {
 		    			EcuLogger.getEcuLoggerWithoutCreation().setEcuEditor(
 		    					ECUEditorManager.getECUEditorWithoutCreation());
 		    		}
-		    		
+
 	    			LOGGER.info("Opening Editor with args: " +  Arrays.toString(instance.currentArgs));
 	    		}
 	    		else {
 	    			LOGGER.error("Unknown type in Editor/Logger communication with args: " +  Arrays.toString(instance.currentArgs));
 	    		}
-	    		
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
