@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,8 +115,8 @@ public final class QueryManagerImpl implements QueryManager {
         checkNotNull(callerId, loggerData);
 
         //Reset stats
-        queryCounter = 0;
-        queryStart = System.currentTimeMillis();
+        queryCounter = 1;
+        queryStart = currentTimeMillis();
 
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
@@ -134,8 +134,8 @@ public final class QueryManagerImpl implements QueryManager {
         checkNotNull(callerId, loggerData);
 
         //Reset stats
-        queryCounter = 0;
-        queryStart = System.currentTimeMillis();
+        queryCounter = 1;
+        queryStart = currentTimeMillis();
 
         removeList.add(buildQueryId(callerId, loggerData));
         if (loggerData.getDataType() != EXTERNAL) {
@@ -186,40 +186,35 @@ public final class QueryManagerImpl implements QueryManager {
             LOGGER.debug("QueryManager stopped.");
 
             if (dataUpdater != null) {
-	            dataUpdater.stopUpdater();
+                dataUpdater.stopUpdater();
             }
         }
     }
 
     private boolean doEcuInit(Module module) {
+        LoggerConnection connection = null;
+        boolean rv = false;
         try {
-            LoggerConnection connection =
+            connection =
                     getConnection(settings.getLoggerProtocol(),
                             settings.getLoggerPort(),
                             settings.getLoggerConnectionProperties());
-            try {
                 messageListener.reportMessage(MessageFormat.format(
                         rb.getString("SENDINIT"), module.getName()));
                 connection.ecuInit(ecuInitCallback, module);
                 messageListener.reportMessage(MessageFormat.format(
                         rb.getString("INITDONE"), module.getName()));
-                return true;
-            } finally {
-                connection.close();
-            }
+                rv = true;
         } catch (Exception e) {
-            messageListener.reportMessage(MessageFormat.format(rb.getString("INITFAIL"), module.getName()));
-            logError(e);
-            return false;
+            messageListener.reportMessage(MessageFormat.format(
+                    rb.getString("INITFAIL"), module.getName()));
+            LOGGER.error("Error sending init: " + e.getMessage());
+            settings.setJ2534Device("");
         }
-    }
-
-    private void logError(Exception e) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Error sending init", e);
-        } else {
-            LOGGER.info("Error sending init: " + e.getMessage());
+        finally {
+            if (connection != null) connection.close();
         }
+        return rv;
     }
 
     private void runLogger(Module module) {
@@ -232,17 +227,18 @@ public final class QueryManagerImpl implements QueryManager {
         }
         TransmissionManager txManager = new TransmissionManagerImpl();
         queryStart = currentTimeMillis();
+        queryCounter = 1;
         long end = currentTimeMillis();
 
         try {
             txManager.start();
 
             if(dataUpdater != null && dataUpdater.isRunning()) {
-            	dataUpdater.stopUpdater();
+                dataUpdater.stopUpdater();
             }
 
-			dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
-	    	dataUpdater.start();
+            dataUpdater = new AsyncDataUpdateHandler(updateHandlers);
+            dataUpdater.start();
 
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
@@ -255,8 +251,6 @@ public final class QueryManagerImpl implements QueryManager {
                         pollState.setLastState(PollingState.State.STATE_0);
                     }
 
-                    queryStart = System.currentTimeMillis();
-                    queryCounter = 0;
                     messageListener.reportMessage(rb.getString("SELECTPARAMS"));
                     sleep(100L);
                 } else {
@@ -338,7 +332,7 @@ public final class QueryManagerImpl implements QueryManager {
         if (fileLoggerQuery != null
                 && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
-        	txManager.sendQueries(ecuQueries, pollState);
+            txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
@@ -438,12 +432,12 @@ public final class QueryManagerImpl implements QueryManager {
             state = MessageFormat.format(
                     rb.getString("EXTERNALS"), settings.getLoggerProtocol());
         }
-        double duration = (System.currentTimeMillis() - start) / 1000.0;
+        double duration = (currentTimeMillis() - start) / 1000.0;
         String result = MessageFormat.format(
                 rb.getString("QUERYSTATS"),
                 state,
-                (count) / duration,
-                duration / (count)
+                (count / duration),
+                (duration / count)
                 );
         return result;
     }
@@ -464,10 +458,10 @@ public final class QueryManagerImpl implements QueryManager {
             @Override
             public void run() {
                 for (StatusChangeListener listener : listeners) {
-                	if(settings.isLogExternalsOnly()) listener.readingDataExternal();
-                	else {
-                		listener.readingData();
-                	}
+                    if(settings.isLogExternalsOnly()) listener.readingDataExternal();
+                    else {
+                        listener.readingData();
+                    }
                 }
             }
         });
