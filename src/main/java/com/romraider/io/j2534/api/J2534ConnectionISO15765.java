@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
             String library) {
 
         api = null;
+        deviceId = -1;
+        msgId = -1;
         timeout = 2000;
         initJ2534(500000, library);
         LOGGER.info("J2534/ISO15765 connection initialized");
@@ -141,7 +143,6 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     }
 
     private void version(int deviceId) {
-        if (!LOGGER.isDebugEnabled()) return;
         final Version version = api.readVersion(deviceId);
         LOGGER.info("J2534 Version => firmware: " + version.firmware +
                 ", dll: " + version.dll + ", api: " + version.api);
@@ -158,6 +159,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     }
 
     private void stopFcFilter() {
+        if (msgId == -1) return;
         try {
             api.stopMsgFilter(channelId, msgId);
             LOGGER.debug("J2534/ISO15765 stopped message filter:" + msgId);
@@ -168,6 +170,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     }
 
     private void disconnectChannel() {
+        if (deviceId == -1) return;
         try {
             api.disconnect(channelId);
             LOGGER.debug("J2534/ISO15765 disconnected channel:" + channelId);
@@ -179,10 +182,15 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
 
     private void closeDevice() {
         try {
-            api.close(deviceId);
-            LOGGER.info("J2534/ISO15765 closed connection to device:" + deviceId);
+            if (deviceId != -1) {
+                api.close(deviceId);
+                LOGGER.info("J2534/ISO15765 closed connection to device:" + deviceId);
+            }
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO15765 Error closing device: " + e.getMessage());
+        }
+        finally {
+            deviceId = -1;
         }
     }
 }

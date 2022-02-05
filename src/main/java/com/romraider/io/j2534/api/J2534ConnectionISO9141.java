@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,14 +43,12 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     private int msgId;
     private byte[] lastResponse;
     private long timeout;
-    private boolean deviceClosed;
 
     public J2534ConnectionISO9141(ConnectionProperties connectionProperties, String library) {
         checkNotNull(connectionProperties, "connectionProperties");
         deviceId = -1;
         msgId = -1;
-        deviceClosed = true;
-        timeout = (long)connectionProperties.getConnectTimeout();
+        timeout = connectionProperties.getConnectTimeout();
         initJ2534(connectionProperties, library);
         LOGGER.info("J2534/ISO9141 connection initialised");
     }
@@ -60,6 +58,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     }
 
     // Send request and wait for response with known length
+    @Override
     public void send(byte[] request, byte[] response, PollingState pollState) {
         checkNotNull(request, "request");
         checkNotNull(response, "response");
@@ -81,7 +80,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
                 && (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
                 &&  response[3] == (response.length - 5)
                 &&  response[response.length - 1] == calculateChecksum(response)) {
-    
+
                 lastResponse = new byte[response.length];
                 arraycopy(response, 0, lastResponse, 0, response.length);
             }
@@ -94,18 +93,20 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     }
 
     // Send request and wait specified time for response with unknown length
+    @Override
     public byte[] send(byte[] request) {
         checkNotNull(request, "request");
         api.writeMsg(channelId, request, timeout, TxFlags.NO_FLAGS);
         return api.readMsg(channelId, 1, timeout);
     }
 
+    @Override
     public void clearLine() {
         LOGGER.debug("J2534/ISO9141 sending line break");
         api.writeMsg(
-                channelId, 
-                new byte[] {0,0,0,0,0,0,0,0,0,0}, 
-                100L, 
+                channelId,
+                new byte[20],
+                100L,
                 TxFlags.NO_FLAGS);
         boolean empty = false;
         do {
@@ -117,9 +118,10 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
             else {
                 empty = true;
             }
-        } while (!empty ); 
+        } while (!empty );
     }
 
+    @Override
     public void close() {
         stopMsgFilter();
         disconnectChannel();
@@ -127,37 +129,28 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     }
 
     private void initJ2534(ConnectionProperties connectionProperties, String library) {
+        api = new J2534Impl(Protocol.ISO9141, library);
+        deviceId = api.open();
         try {
-            api = new J2534Impl(Protocol.ISO9141, library);
-            deviceId = api.open();
-            deviceClosed = false;
-            try {
-                version(deviceId);
-                channelId = api.connect(
-                        deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(),
-                        connectionProperties.getBaudRate());
-                setConfig(channelId, connectionProperties);
-                msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
-                LOGGER.debug(String.format(
-                        "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
-                        deviceId, channelId, msgId));
-            } catch (Exception e) {
-                LOGGER.debug(String.format(
-                        "J2534/ISO9141 exception: deviceId:%d, channelId:%d, msgId:%d",
-                        deviceId, channelId, msgId));
-                close();
-                throw new J2534Exception("J2534/ISO9141 Error opening device: " + e.getMessage(), e);
-            }
-        } catch (J2534Exception e) {
-            if (!deviceClosed) api.close(deviceId);
-            deviceClosed = true;
-            api = null;
-            throw new J2534Exception(e.getMessage(), e);
+            version(deviceId);
+            channelId = api.connect(
+                    deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(),
+                    connectionProperties.getBaudRate());
+            setConfig(channelId, connectionProperties);
+            msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
+            LOGGER.debug(String.format(
+                    "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
+                    deviceId, channelId, msgId));
+        } catch (Exception e) {
+            LOGGER.debug(String.format(
+                    "J2534/ISO9141 exception: deviceId:%d, channelId:%d, msgId:%d",
+                    deviceId, channelId, msgId));
+            close();
+            throw new J2534Exception("J2534/ISO9141 Error opening device: " + e.getMessage(), e);
         }
     }
 
     private void version(int deviceId) {
-        if (!LOGGER.isDebugEnabled()) return;
         final Version version = api.readVersion(deviceId);
         LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
@@ -190,6 +183,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     }
 
     private void disconnectChannel() {
+        if (deviceId == -1) return;
         try {
             api.disconnect(channelId);
             LOGGER.debug("J2534/ISO9141 disconnected channel:" + channelId);
@@ -200,11 +194,15 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
 
     private void closeDevice() {
         try {
-            if (deviceId != -1) api.close(deviceId);
-            deviceClosed = true;
-            LOGGER.info("J2534/ISO9141 closed connection to device:" + deviceId);
+            if (deviceId != -1) {
+                api.close(deviceId);
+                LOGGER.info("J2534/ISO9141 closed connection to device:" + deviceId);
+            }
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO9141 Error closing device: " + e.getMessage());
+        }
+        finally {
+            deviceId = -1;
         }
     }
 }
