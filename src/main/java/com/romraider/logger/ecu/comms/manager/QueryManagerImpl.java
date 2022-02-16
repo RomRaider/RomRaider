@@ -22,6 +22,7 @@ package com.romraider.logger.ecu.comms.manager;
 import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
 import static com.romraider.util.ParamChecker.checkNotNull;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.synchronizedList;
@@ -34,12 +35,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
+import com.romraider.io.j2534.api.J2534Library;
+import com.romraider.io.j2534.api.J2534LibraryLocator;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
@@ -192,24 +196,58 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private boolean doEcuInit(Module module) {
+
+        final Set<J2534Library> libraries = J2534LibraryLocator.getLibraries(
+                settings.getTransportProtocol().toUpperCase());
+
+        if (isNullOrEmpty(settings.getJ2534Device())) {
+            // No previous J2534 library selected in settings
+            for (J2534Library dll : libraries) {
+                LOGGER.info(String.format("Trying new J2534/%s connection: %s",
+                        settings.getTransportProtocol(),
+                        dll.getVendor()));
+
+                settings.setJ2534Device(dll.getLibrary());
+                if (initConnection(module, dll.getVendor())) {
+                    return true;
+                }
+            }
+        }
+        else {
+            // Try previous J2534 library from settings
+            LOGGER.info(String.format(
+                    "Trying previous J2534/%s connection: %s",
+                    settings.getTransportProtocol(),
+                    settings.getJ2534Device()));
+            if (initConnection(module, settings.getJ2534Device())) {
+                return true;
+            }
+        }
+        settings.setJ2534Device("");
+        // Finally try Serial
+        if (initConnection(module, settings.getLoggerPort())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean initConnection(final Module module, final String name) {
         LoggerConnection connection = null;
         boolean rv = false;
         try {
-            connection =
-                    getConnection(settings.getLoggerProtocol(),
-                            settings.getLoggerPort(),
-                            settings.getLoggerConnectionProperties());
-                messageListener.reportMessage(MessageFormat.format(
-                        rb.getString("SENDINIT"), module.getName()));
-                connection.ecuInit(ecuInitCallback, module);
-                messageListener.reportMessage(MessageFormat.format(
-                        rb.getString("INITDONE"), module.getName()));
-                rv = true;
+            messageListener.reportMessage(MessageFormat.format(
+                    rb.getString("SENDINIT"), module.getName(), name));
+            connection = getConnection(settings.getLoggerProtocol(),
+                    settings.getLoggerPort(),
+                    settings.getLoggerConnectionProperties());
+            connection.ecuInit(ecuInitCallback, module);
+            messageListener.reportMessage(MessageFormat.format(
+                    rb.getString("INITDONE"), module.getName(), name));
+            rv = true;
         } catch (Exception e) {
             messageListener.reportMessage(MessageFormat.format(
                     rb.getString("INITFAIL"), module.getName()));
             LOGGER.error("Error sending init: " + e.getMessage());
-            settings.setJ2534Device("");
         }
         finally {
             if (connection != null) connection.close();
