@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,14 @@
 
 package com.romraider.io.connection;
 
-import static com.romraider.util.Platform.WINDOWS;
-import static com.romraider.util.Platform.isPlatform;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static com.romraider.util.proxy.Proxifier.proxy;
 import static org.apache.log4j.Logger.getLogger;
-
-import java.io.File;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.io.elm327.ElmConnectionManager;
-import com.romraider.io.j2534.api.J2534DllLocator;
-import com.romraider.io.j2534.api.J2534Library;
 import com.romraider.io.j2534.api.J2534TransportFactory;
 import com.romraider.io.serial.connection.SerialConnectionManager;
 import com.romraider.util.SettingsManager;
@@ -46,116 +40,32 @@ public final class ConnectionManagerFactory {
     }
 
     public static ConnectionManager getManager(
-            String portName,
-            ConnectionProperties connectionProperties) {
+            final String portName,
+            final ConnectionProperties connectionProperties) {
 
-        ConnectionManager manager = manager(portName, connectionProperties);
+        final Settings settings = SettingsManager.getSettings();
+        ConnectionManager manager = null;
+
+        // Try a serial connection
+        if (isNullOrEmpty(settings.getJ2534Device())) {
+
+            if(SettingsManager.getSettings().getElm327Enabled()) {
+                LOGGER.info("Trying to connect to ELM327...");
+                manager = new ElmConnectionManager(portName, connectionProperties);
+            }
+            else {
+                LOGGER.info("Trying serial connection...");
+                manager = new SerialConnectionManager(portName, connectionProperties);
+            }
+        }
+        else {
+            // Try a J2534 connection
+            manager = J2534TransportFactory.getManager(
+                    settings.getTransportProtocol().toUpperCase(),
+                    connectionProperties,
+                    settings.getJ2534Device());
+        }
         if (ENABLE_TIMER) return proxy(manager, TimerWrapper.class);
         return manager;
-    }
-
-    private static ConnectionManager manager(
-            String portName,
-            ConnectionProperties connectionProperties) {
-
-        Settings settings = SettingsManager.getSettings();
-
-        try {
-
-            if (!isPlatform(WINDOWS)) {
-                final String[] op2Lib = {
-                        settings.getJ2534Device(),
-                        "lib/linux/j2534.so",
-                        "/usr/local/lib/j2534.so"
-                };
-                for (String lib : op2Lib) {
-                    if (lib == null) continue;
-                    final File libFile = new File(lib);
-                    if (libFile.exists()) {
-                        settings.setJ2534Device(lib);
-                        LOGGER.debug("Loading Linux Openport 2.0 library from: " +
-                                lib);
-                        return J2534TransportFactory.getManager(
-                                settings.getTransportProtocol().toUpperCase(),
-                                connectionProperties,
-                                lib);
-                    }
-                    else {
-                        LOGGER.info("Linux Openport 2.0 library not found at: " +
-                                lib);
-                    }
-                }
-                settings.setJ2534Device("");
-                throw new RuntimeException("Linux Openport 2.0 library not found");
-            }
-            Set<J2534Library> libraries =
-                    J2534DllLocator.listLibraries(
-                            settings.getTransportProtocol().toUpperCase());
-
-            if (libraries.isEmpty())
-                throw new RuntimeException(
-                        "No J2534 libraries found that support protocol " +
-                                settings.getTransportProtocol());
-
-            // if the J2534 device has not been previously defined, search for it
-            // else use the defined device
-            if (settings.getJ2534Device() == null) {
-                for (J2534Library dll : libraries) {
-                    LOGGER.info(String.format("Trying new J2534/%s connection: %s",
-                            settings.getTransportProtocol(),
-                            dll.getVendor()));
-                    try {
-                        settings.setJ2534Device(dll.getLibrary());
-                        return J2534TransportFactory.getManager(
-                                settings.getTransportProtocol().toUpperCase(),
-                                connectionProperties,
-                                dll.getLibrary());
-
-                    }
-                    catch (Throwable t) {
-                        settings.setJ2534Device(null);
-                        LOGGER.info(String.format("%s is not available: %s",
-                                dll.getVendor(), t.getMessage()));
-                    }
-                }
-            }
-            else {
-                for (J2534Library dll : libraries) {
-                    if (dll.getLibrary().toLowerCase().contains(
-                            settings.getJ2534Device().toLowerCase())) {
-
-                        LOGGER.info(String.format(
-                                "Re-trying previous J2534/%s connection: %s",
-                                settings.getTransportProtocol(),
-                                dll.getVendor()));
-                        try {
-                            settings.setJ2534Device(dll.getLibrary());
-                            return J2534TransportFactory.getManager(
-                                    settings.getTransportProtocol().toUpperCase(),
-                                    connectionProperties,
-                                    dll.getLibrary());
-                        }
-                        catch (Throwable t) {
-                            settings.setJ2534Device(null);
-                            LOGGER.info(String.format("%s is not available: %s",
-                                    dll.getVendor(), t.getMessage()));
-                        }
-                    }
-                }
-            }
-            throw new RuntimeException("J2534 connection not available");
-        }
-        catch (Throwable t) {
-            settings.setJ2534Device(null);
-            
-            if(SettingsManager.getSettings().getElm327Enabled()) {           
-	            LOGGER.info(String.format("%s, trying to connect to ELM327...", t.getMessage()));
-	            return new ElmConnectionManager(portName, connectionProperties);	
-            }
-            else {
-              LOGGER.info(String.format("%s, trying serial connection...", t.getMessage()));
-              return new SerialConnectionManager(portName, connectionProperties);	
-            }
-        }   
     }
 }
