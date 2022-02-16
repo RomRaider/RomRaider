@@ -37,7 +37,6 @@ import com.romraider.io.j2534.api.J2534_v0404.SCONFIG;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG.ByReference;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG_LIST;
 import com.romraider.util.HexUtil;
-import com.romraider.util.ThreadUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
@@ -50,6 +49,7 @@ public final class J2534Impl implements J2534 {
     private final NativeLong protocolID;
     private boolean loopback;
     private static J2534_v0404 lib;
+
 
     /**
     *    Enum class representing the J2534-1 protocols with methods to
@@ -727,6 +727,27 @@ public final class J2534Impl implements J2534 {
      * messages received.  Then purge the PassThru device's receive buffer.
      * @param    channelId  - handle to the open communications channel
      * @param    mask       - used to isolate the receive message
+     *                        header section(s) of interest to pass
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @param    flag       - TX Flag to apply to PassThruMessage
+     * @return   the message filter ID to be used to later stop the filter
+     */
+    @Override
+    public int startPassMsgFilter(int channelId, byte[] mask, byte[] pattern, TxFlags flag) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(flag, mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(flag, pattern);
+
+        int filterType = Filter.PASS_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, null);
+        return rc;
+    }
+
+    /**
+     * Setup network protocol filter(s) to selectively restrict or limit
+     * messages received.  Then purge the PassThru device's receive buffer.
+     * @param    channelId  - handle to the open communications channel
+     * @param    mask       - used to isolate the receive message
      *                        header section(s) of interest to block
      * @param    pattern    - a message pattern to compare with the receive messages
      * @return   the message filter ID to be used to later stop the filter
@@ -747,8 +768,31 @@ public final class J2534Impl implements J2534 {
      * messages received.  Then purge the PassThru device's receive buffer.
      * @param    channelId  - handle to the open communications channel
      * @param    mask       - used to isolate the receive message
+     *                        header section(s) of interest to block
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @param    flag       - TX Flag to apply to PassThruMessage
+     * @return   the message filter ID to be used to later stop the filter
+     */
+    @Override
+    public int startBlockMsgFilter(int channelId, byte[] mask, byte[] pattern, TxFlags flag) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(flag, mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(flag, pattern);
+
+        int filterType = Filter.BLOCK_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, null);
+        return rc;
+    }
+
+    /**
+     * Setup network protocol filter(s) to selectively restrict or limit
+     * messages received.  Then purge the PassThru device's receive buffer.
+     * @param    channelId  - handle to the open communications channel
+     * @param    mask       - used to isolate the receive message
      *                        header section(s) of interest to pass
      * @param    pattern    - a message pattern to compare with the receive messages
+     * @param    flowCntrl  - FlowControl message transmitted by the PassThru device
+     * @param    flag       - TX Flag to apply to PassThruMessage
      * @return   the message filter ID to be used to later stop the filter
      */
     @Override
@@ -775,7 +819,8 @@ public final class J2534Impl implements J2534 {
         SBYTE_ARRAY inMsg = sByteMessage(input);
         final byte[] out = new byte[2];
         SBYTE_ARRAY outMsg = sByteMessage(out);
-        LOGGER.trace("Ioctl inMsg: " + inMsg.toString());
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Ioctl inMsg: " + inMsg.toString());
         NativeLong ret = lib.PassThruIoctl(
                 new NativeLong(channelId),
                 new NativeLong(IOCtl.FIVE_BAUD_INIT.value),
@@ -785,7 +830,8 @@ public final class J2534Impl implements J2534 {
         if (ret.intValue() != Status.NOERROR.getValue()) handleError(
                 "PassThruIoctl FIVE_BAUD_INIT", ret.intValue());
         outMsg.read();
-        LOGGER.trace("Ioctl outMsg: " + outMsg.toString());
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Ioctl outMsg: " + outMsg.toString());
         byte[] response = new byte[outMsg.numOfBytes.intValue()];
         arraycopy(outMsg.bytePtr, 0, response, 0, outMsg.numOfBytes.intValue());
         clearBuffers(channelId);
@@ -802,7 +848,8 @@ public final class J2534Impl implements J2534 {
     public byte[] fastInit(int channelId, byte[] input) {
         PASSTHRU_MSG inMsg = passThruMessage(input);
         PASSTHRU_MSG outMsg = passThruMessage();
-        LOGGER.trace("Ioctl inMsg: " + toString(inMsg));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Ioctl inMsg: " + toString(inMsg));
         NativeLong ret = lib.PassThruIoctl(
                 new NativeLong(channelId),
                 new NativeLong(IOCtl.FAST_INIT.value),
@@ -812,7 +859,8 @@ public final class J2534Impl implements J2534 {
         if (ret.intValue() != Status.NOERROR.getValue()) handleError(
                 "PassThruIoctl FAST_INIT", ret.intValue());
         outMsg.read();
-        LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
         byte[] response = new byte[outMsg.dataSize.intValue()];
         arraycopy(outMsg.data, 0, response, 0, outMsg.dataSize.intValue());
         clearBuffers(channelId);
@@ -833,9 +881,10 @@ public final class J2534Impl implements J2534 {
                 null,
                 vBatt.getPointer()
             );
-           if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                   "PassThruIoctl", ret.intValue());
-        LOGGER.trace("Ioctl result: " + vBatt.getValue().longValue());
+       if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+               "PassThruIoctl", ret.intValue());
+       if (LOGGER.isTraceEnabled())
+           LOGGER.trace("Ioctl result: " + vBatt.getValue().longValue());
         double response = vBatt.getValue().doubleValue() / 1000;
         return response;
     }
@@ -844,12 +893,14 @@ public final class J2534Impl implements J2534 {
      * Send a message through the existing communication channel to the vehicle.
      * @param    channelId - handle to the open communications channel
      * @param    data      - data bytes to be transmitted to the vehicle network
-     * @param    timeout      - maximum time (in milliseconds) for write completion
+     * @param    timeout   - maximum time (in milliseconds) for write completion
+     * @param    flag      - TX Flag to apply to PassThruMessage
      */
     @Override
     public void writeMsg(int channelId, byte[] data, long timeout, TxFlags flag) {
         PASSTHRU_MSG msg = passThruMessage(flag, data);
-        LOGGER.trace("Write Msg: " + toString(msg));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Write Msg: " + toString(msg));
         NativeLongByReference numMsg = new NativeLongByReference();
         numMsg.setValue(new NativeLong(1));
         NativeLong ret = lib.PassThruWriteMsgs(
@@ -884,7 +935,8 @@ public final class J2534Impl implements J2534 {
                 throw new J2534Exception(errString);
             }
             PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read B Msg: " + toString(msg));
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Read B Msg: " + toString(msg));
             if (!isResponse(msg)) continue;
             // if we get a large msg back, only read what will fit in the response buffer
             int len = 0;
@@ -893,7 +945,8 @@ public final class J2534Impl implements J2534 {
             }
             else {
                 len = response.length;
-                LOGGER.trace(String.format(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(String.format(
                         "readMsg: only read %d of %d bytes from response message",
                         len, msg.dataSize.intValue()));
             }
@@ -901,7 +954,8 @@ public final class J2534Impl implements J2534 {
             index += len;
             current = currentTimeMillis();
         } while ((current <= end) && (index < response.length));
-        LOGGER.trace(String.format(
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(String.format(
                 "readMsg: read %d of %d bytes in %d msecs",
                 index, response.length, (current - start)));
     }
@@ -918,9 +972,10 @@ public final class J2534Impl implements J2534 {
         long end = currentTimeMillis() + maxWait;
         do {
             PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read W Msg: " + toString(msg));
-            if (isResponse(msg)) responses.add(data(msg));
-                ThreadUtil.sleep(2);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Read W Msg: " + toString(msg));
+            if (isResponse(msg))
+                responses.add(data(msg));
         } while (currentTimeMillis() <= end);
         return concat(responses);
     }
@@ -948,13 +1003,16 @@ public final class J2534Impl implements J2534 {
                     numMsg);
                 throw new J2534Exception(errString);
             }
-            PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read # Msg: " + toString(msg));
-            if (isResponse(msg)) {
-                responses.add(data(msg));
-                numMsg--;
+            PASSTHRU_MSG[] msgs = doReadMsg(channelId, 1);  // num of msgs to read
+            for (PASSTHRU_MSG msg : msgs) {
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Read # Msg: " + toString(msg));
+                if (isResponse(msg)) {
+                    responses.add(data(msg));
+                    numMsg--;
+                }
+                if (numMsg == 0) break;
             }
-            ThreadUtil.sleep(2);
         } while (numMsg != 0);
         return concat(responses);
     }
@@ -1105,6 +1163,30 @@ public final class J2534Impl implements J2534 {
         return msg;
     }
 
+    private PASSTHRU_MSG[] doReadMsg(int channelId, int nm) {
+        PASSTHRU_MSG[] msgs =
+        (PASSTHRU_MSG[]) new PASSTHRU_MSG.ByReference().toArray(nm);
+        NativeLongByReference pNumMsgs = new NativeLongByReference();
+        pNumMsgs.setValue(new NativeLong(nm));
+        NativeLong status = lib.PassThruReadMsgs(
+                new NativeLong(channelId),
+                msgs[0].getPointer(),
+                pNumMsgs,
+                new NativeLong(50)
+            );
+        if (status.intValue() != Status.NOERROR.getValue() &&
+            status.intValue() != Status.ERR_TIMEOUT.getValue() &&
+            status.intValue() != Status.ERR_BUFFER_EMPTY.getValue())
+                handleError("PassThruReadMsgs", status.intValue());
+        int cnt = pNumMsgs.getValue().intValue();
+        if (cnt > nm && LOGGER.isTraceEnabled())
+            LOGGER.trace(cnt - nm + " msgs dropped");
+        for (int i = 0; i < cnt ; i++) {
+            msgs[i].read();
+        }
+        return msgs;
+    }
+
     private ConfigItem[] configItems(SCONFIG_LIST sConfigs) {
         SCONFIG.ByReference[] configs =
             (ByReference[]) sConfigs.configPtr.toArray(
@@ -1131,10 +1213,6 @@ public final class J2534Impl implements J2534 {
                 }
             }
         }
-//        for (SCONFIG sc : sConfigs) {
-//            sc.write();
-//            System.out.printf("%s%n", sc);
-//        }
         return sConfigs;
     }
 
@@ -1153,7 +1231,6 @@ public final class J2534Impl implements J2534 {
         list.numOfParams = new NativeLong(sConfigs.length);
         list.configPtr = (SCONFIG.ByReference) sConfigs[0];
         list.write();
-//        System.out.printf("list:%n%s%n", list);
         return list;
     }
 
