@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,13 @@ public final class AemRunner implements Stoppable {
         this.dataItem = dataItem;
     }
 
+    @Override
     public void run() {
         try {
             while (!stop) {
                 final String response = connection.readLine();
-                LOGGER.trace("AEM UEGO Lambda Response: " + response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("AEM UEGO Lambda Response: " + response);
                 if (!isNullOrEmpty(response)) dataItem.setData(parseString(response));
             }
             connection.close();
@@ -55,6 +57,7 @@ public final class AemRunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }

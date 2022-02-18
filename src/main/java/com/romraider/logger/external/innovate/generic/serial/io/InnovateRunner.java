@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ public final class InnovateRunner implements Stoppable {
         this.listener = listener;
     }
 
+    @Override
     public void run() {
         try {
             while (!stop) {
@@ -60,10 +61,12 @@ public final class InnovateRunner implements Stoppable {
                         int numWords = numWords(b0, b1);
                         byte[] bytes = new byte[numWords * 2];
                         connection.read(bytes);
-                        LOGGER.trace("Innovate response: " + packet(b0, b1, bytes));
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("Innovate response: " + packet(b0, b1, bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace("Innovate discarded: " + asHex(b1));
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("Innovate discarded: " + asHex(b1));
                     }
                 } else if (isLm1HighByte(b0)) {
                     byte b1 = nextByte();
@@ -74,13 +77,16 @@ public final class InnovateRunner implements Stoppable {
                         bytes[0] = b0;
                         bytes[1] = b1;
                         arraycopy(rest, 0, bytes, 2, rest.length);
-                        LOGGER.trace("Innovate response: " + asHex(bytes));
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("Innovate response: " + asHex(bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace("Innovate discarded: " + asHex(b1));
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("Innovate discarded: " + asHex(b1));
                     }
                 } else {
-                    LOGGER.trace("Innovate discarded: " + asHex(b0));
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("Innovate discarded: " + asHex(b0));
                 }
             }
             connection.close();
@@ -91,6 +97,7 @@ public final class InnovateRunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }
@@ -102,7 +109,8 @@ public final class InnovateRunner implements Stoppable {
             listener.setData(error);
         } else if (isOk(bytes)) {
             double afr = getAfr(bytes);
-            LOGGER.trace("Innovate AFR: " + afr);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Innovate AFR: " + afr);
             listener.setData(afr > MAX_AFR ? MAX_AFR : afr);
         }
     }

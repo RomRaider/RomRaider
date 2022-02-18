@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
             "A/F Learning Airflow Ranges");
-    // LTFT table column and row names can be overridden in the 
+    // LTFT table column and row names can be overridden in the
     // ./customize/ncslearning.properties file
     private static List<String> LTFT_TABLE_COLUMN_NAMES = Arrays.asList(
             "Learning map TP shaft lattice point table");
@@ -105,6 +105,7 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
 
     public NCSLearningTableValues() {}
 
+    @Override
     public void init(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel,
@@ -165,7 +166,8 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                     }
                     s++;
                 }
-                LOGGER.trace(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                     String.format(
                             "Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                             queries.size(), setSize, querySet1.size(), querySet2.size()));
@@ -257,11 +259,12 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                 }
                                 s++;
                             }
-                            LOGGER.trace(
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace(
                                 String.format(
                                         "Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                                         queries.size(), setSize, querySet1.size(), querySet2.size()));
-    
+
                             connection.sendAddressReads(
                                     querySet1,
                                     settings.getDestinationTarget(),
@@ -317,10 +320,11 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                 }
                                 s++;
                             }
-                            LOGGER.trace(
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace(
                                 String.format("Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                                     queries.size(), setSize, querySet1.size(), querySet2.size()));
-    
+
                             connection.sendAddressReads(
                                     querySet1,
                                     settings.getDestinationTarget(),

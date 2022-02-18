@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 /**
  * Inspect the address of each query to determine if a single query
  * with a start address and byte length can be substituted as opposed
- * to querying each address separately. 
+ * to querying each address separately.
  */
 public final class EcuQueryRangeTest {
     private static final Logger LOGGER =
@@ -54,14 +54,14 @@ public final class EcuQueryRangeTest {
     /**
      * Inspect the address of each query to determine if a single query
      * with a start address and byte length can be substituted as opposed
-     * to querying each address separately. 
+     * to querying each address separately.
      */
     public final Collection<EcuQuery> validate() {
         if (queries == null) {
             datalength = -1;
             return null;
         }
-        
+
         final List<EcuQuery> queryList = (List<EcuQuery>) queries;
         final Collection<EcuQuery> newQuery = new ArrayList<EcuQuery>();
         datalength = 0;
@@ -79,7 +79,8 @@ public final class EcuQueryRangeTest {
                 if (address > highestAddress) {
                     highestAddress = address;
                 }
-                LOGGER.trace(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                         String.format(
                                 "addr:%d size:%d lowest:%d highest:%d",
                                 address, highestAddress - lowestAddress + 1,
@@ -100,7 +101,8 @@ public final class EcuQueryRangeTest {
      * @return the length or -1 if not properly initialized
      */
     public final int getLength() {
-        LOGGER.trace(
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(
                 String.format("EcuQueryRange length:%d", datalength));
         return datalength;
     }

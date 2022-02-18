@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ public final class IntfKitRunner implements Stoppable {
      * @throws PhidgetException
      * @see IntfKitSensorChangeListener
      */
+    @Override
     public void run() {
         try {
             while (!stop) {
@@ -82,6 +83,7 @@ public final class IntfKitRunner implements Stoppable {
      * This method is used stop the reading of the PhidgetInterfaceKits data
      * and close the connections to the devices.
      */
+    @Override
     public void stop() {
         stop = true;
     }
@@ -96,13 +98,13 @@ public final class IntfKitRunner implements Stoppable {
     public void updateDataItem(final int serial, final int sensor, final int value) {
         if (serial != -1) {
         final String inputName = String.format("%d:%d", serial, sensor);
-        dataItems.get(inputName).setData((double) value);
-        final String result = String.format(
-                "Phidget InterfaceKit sensor %s event - raw value: %d",
-                inputName,
-                sensor,
-                value);
-        LOGGER.trace(result);
+        dataItems.get(inputName).setData(value);
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(String.format(
+                    "Phidget InterfaceKit sensor %s event - raw value: %d",
+                    inputName,
+                    sensor,
+                    value));
         }
         else {
             LOGGER.error("Phidget InterfaceKit dataitem update error");

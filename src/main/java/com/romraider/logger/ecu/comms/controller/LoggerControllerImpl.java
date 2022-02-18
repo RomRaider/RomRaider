@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,21 +52,24 @@ public final class LoggerControllerImpl implements LoggerController {
     @Override
     public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
         checkNotNull(monitor);
-        LOGGER.debug("Setting file logger switch monitor: [" + monitor.getEcuSwitch().getId() + "] " + monitor.getEcuSwitch().getName());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Setting file logger switch monitor: [" + monitor.getEcuSwitch().getId() + "] " + monitor.getEcuSwitch().getName());
         queryManager.setFileLoggerSwitchMonitor(monitor);
     }
 
     @Override
     public void addLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData);
-        LOGGER.debug("Adding logger:   [" + loggerData.getId() + "] " + loggerData.getName());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Adding logger:   [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.addQuery(callerId, loggerData);
     }
 
     @Override
     public void removeLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData, "ecuParam");
-        LOGGER.debug("Removing logger: [" + loggerData.getId() + "] " + loggerData.getName());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Removing logger: [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.removeQuery(callerId, loggerData);
     }
 
@@ -85,12 +88,14 @@ public final class LoggerControllerImpl implements LoggerController {
         if (isStarted() && queryManager.getThread().isAlive()) {
             queryManager.stop();
             try {
-                LOGGER.debug(String.format(
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format(
                         "%s - Stopping QueryManager: %s",
                         this.getClass().getSimpleName(),
                         queryManager.getThread().getName()));
                 queryManager.getThread().interrupt();
-                LOGGER.debug(String.format(
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format(
                         "%s - Waiting for QueryManager %s to terminate",
                         this.getClass().getSimpleName(),
                         queryManager.getThread().getName()));
@@ -100,7 +105,8 @@ public final class LoggerControllerImpl implements LoggerController {
                 e.printStackTrace();
             }
             finally {
-                LOGGER.debug(String.format(
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format(
                         "%s - QueryManager %s state: %s",
                         this.getClass().getSimpleName(),
                         queryManager.getThread().getName(),

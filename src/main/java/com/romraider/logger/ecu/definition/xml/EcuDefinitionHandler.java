@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,10 +86,12 @@ public final class EcuDefinitionHandler extends DefaultHandler {
         this.ecuDefsFile = ecuDefsFile;
     }
 
+    @Override
     public void startDocument() {
         ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_ROM.equals(qName)) {
             inherit = attributes.getValue(ATTR_BASE);
@@ -114,16 +116,18 @@ public final class EcuDefinitionHandler extends DefaultHandler {
         charBuffer = new StringBuilder();
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) {
         charBuffer.append(ch, start, length);
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) {
         if (TAG_ROM.equals(qName)) {
             inherit = null;
         }
         else if (TAG_ROMID.equals(qName)) {
-            if (!isNullOrEmpty(ecuId)    && 
+            if (!isNullOrEmpty(ecuId)    &&
                 !isNullOrEmpty(calId)    &&
                 !isNullOrEmpty(year)     &&
                 !isNullOrEmpty(market)   &&
@@ -138,7 +142,7 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                         new EcuDefinitionImpl(
                                 ecuId, calId, carString, inherit, ecuDefsFile));
             }
-            if (!isNullOrEmpty(ecuId)    && 
+            if (!isNullOrEmpty(ecuId)    &&
                 !isNullOrEmpty(calId)    &&
                 !isNullOrEmpty(address)  &&
                 !isNullOrEmpty(year)     &&
@@ -151,7 +155,8 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                 !isNullOrEmpty(flashmethod) &&
                 !isNullOrEmpty(obsolete)
                 ) {
-                LOGGER.debug(romDetail());
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(romDetail());
             }
         }
         else if (TAG_CALID.equals(qName)) {
@@ -177,7 +182,7 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                 catch (NumberFormatException e) {
                     if ((year.contains("/") || year.contains("-")) &&
                             year.length() < 6 )
-                        year = "20" + year;                
+                        year = "20" + year;
                 }
             }
             else {

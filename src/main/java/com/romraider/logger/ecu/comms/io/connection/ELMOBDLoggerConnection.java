@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,10 +46,10 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     private final ElmConnectionManager manager;
     private Collection<EcuQuery> obdQueries = new ArrayList<EcuQuery>();
     final Settings settings = SettingsManager.getSettings();
-    
+
     public ELMOBDLoggerConnection(ElmConnectionManager manager) {
         checkNotNull(manager, "manager");
-        this.manager = manager;     	
+        this.manager = manager;
         this.protocol = (LoggerProtocolOBD) ProtocolFactory.getProtocol("OBD", "iso15765");
     }
 
@@ -58,19 +58,19 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    // TODO: 
+    // TODO:
     public void ecuReset(Module module, int resetCode) {
     }
-    
+
 
     @Override
     public void ecuInit(EcuInitCallback callback, Module module) {
-    	String moduleStr =  concatBytes(module.getAddress());   
-    	String testerStr =  concatBytes(module.getTester());   
-    	
+    	String moduleStr =  concatBytes(module.getAddress());
+    	String testerStr =  concatBytes(module.getTester());
+
     	ERROR_TYPE result = manager.resetAndInit(settings.getTransportProtocol(),
     			moduleStr, testerStr);
-    	
+
     	if(result == ERROR_TYPE.ELM_NOT_FOUND) {
     		throw new SerialCommunicationException("ELM327 was not found!");
     	}
@@ -85,26 +85,26 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
     	else if(result == ERROR_TYPE.ELM_REJECTED_REQUEST) {
     		throw new SerialCommunicationException("ELM rejected request!");
     	}
-    	
+
     }
-    
+
     private String concatBytes(final byte[] bytes) {
         final StringBuilder sb = new StringBuilder();
         boolean foundData = false;
-        
+
         for (byte b : bytes) {
         	if(b!= 0) foundData = true;
-        	
+
         	if(foundData)
-        		sb.append(String.format("%02X", (int)b & 0xFF)); //Unsigned
+        		sb.append(String.format("%02X", b & 0xFF)); //Unsigned
         }
-        
+
         String finalS = sb.toString();
         if(finalS.startsWith("0")) finalS = finalS.replaceFirst("0", "");
-        
+
         return finalS;
     }
-    
+
 
     @Override
     //TODO: CAN supports requesting multiple PIDs at once
@@ -114,16 +114,18 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
 
         final int obdQueryListLength = queries.size();
         for (int i = 0; i < obdQueryListLength; i++) {
-            
+
         	EcuQuery query = ((ArrayList<EcuQuery>) queries).get(i);
             obdQueries.add(query);
-   	
+
             final byte[] request = protocol.constructReadAddressRequest(module, obdQueries);
             String reqStr = String.format("%02X %02X", (int)request[4], (int)request[5]);
-            LOGGER.trace("Request: " + reqStr);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Request: " + reqStr);
             String result = manager.sendAndWaitForChar(reqStr, 2500, ">");
-           	LOGGER.trace("ELM: " + result);
-          	
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("ELM: " + result);
+
            	if(result.contains("BUS INIT"))
            	{
            		LOGGER.warn("ELM 327 still initializing bus while querying!");
@@ -137,33 +139,33 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
             	LOGGER.warn("ELM327 received no response from ECU!");
             	continue;
             }
-           	           	
+
            	boolean found = false;
-           	
+
            	String[] resultSplit = result.split("\r");
-           	
-           	for(String s : resultSplit) {          		
+
+           	for(String s : resultSplit) {
 		        String[] bytesSplit = s.split(" ");
-		        
+
 		        for(int j = 0; j < bytesSplit.length; j++) {
-		        			      
+
 		        	if(bytesSplit[j].equals(String.format("%02X",(int)request[5]))) {
-		                      	            	            
+
 			            byte[] response = new byte[bytesSplit.length - j - 1];
-			         
+
 			            for(int k = 0; k < response.length; k++) {
-			            		response[k] = (byte) Integer.parseInt(bytesSplit[k + j + 1], 16);	
+			            		response[k] = (byte) Integer.parseInt(bytesSplit[k + j + 1], 16);
 			            }
-			            
+
 			            query.setResponse(response);
 			            found = true;
 			            break;
 		            }
 		        }
-		        
+
 		        if(found) break;
            	}
-            
+
             obdQueries.clear();
         }
     }

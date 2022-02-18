@@ -163,7 +163,8 @@ public final class QueryManagerImpl implements QueryManager {
         started = true;
         queryManagerThread = Thread.currentThread();
         queryManagerThread.setName("Query Manager");
-        LOGGER.debug("QueryManager started.");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("QueryManager started.");
 
         try {
             stop = false;
@@ -187,7 +188,8 @@ public final class QueryManagerImpl implements QueryManager {
         } finally {
             notifyStopped();
             messageListener.reportMessage(rb.getString("DISCONNECTED"));
-            LOGGER.debug("QueryManager stopped.");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("QueryManager stopped.");
 
             if (dataUpdater != null) {
                 dataUpdater.stopUpdater();

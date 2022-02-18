@@ -24,7 +24,7 @@ package com.romraider.io.j2534.api;
  * installed device.  On Windows these are discovered on the local computer
  * from keys and value settings in the Windows registry.
  * On Linux, from a static list.
- * @see J2534DllLocator
+ * @see J2534LibraryLocator
  */
 public class J2534Library {
     private String vendor;

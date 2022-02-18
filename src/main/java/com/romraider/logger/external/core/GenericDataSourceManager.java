@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,27 +41,33 @@ public final class GenericDataSourceManager implements ExternalDataSource {
         this.dataSource = dataSource;
     }
 
+    @Override
     public String getId() {
         return dataSource.getId();
     }
 
+    @Override
     public String getName() {
         return dataSource.getName();
     }
 
+    @Override
     public String getVersion() {
         return dataSource.getVersion();
     }
 
+    @Override
     public List<? extends ExternalDataItem> getDataItems() {
         return dataSource.getDataItems();
     }
 
+    @Override
     public Action getMenuAction(EcuLogger logger) {
         Action action = dataSource.getMenuAction(logger);
         return action == null ? new GenericPluginMenuAction(logger, this) : action;
     }
 
+    @Override
     public synchronized void setPort(String port) {
         if (port == null || port.length() == 0) return;
         if (port.equals(getPort())) return;
@@ -70,22 +76,28 @@ public final class GenericDataSourceManager implements ExternalDataSource {
         dataSource.setPort(port);
     }
 
+    @Override
     public String getPort() {
         return dataSource.getPort();
     }
 
+    @Override
     public void setProperties(Properties properties) {
     }
 
+    @Override
     public synchronized void connect() {
         if (connectCount++ == 0) doConnect();
-        LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
     }
 
+    @Override
     public synchronized void disconnect() {
         if (connectCount-- == 1) doDisconnect();
         if (connectCount < 0) connectCount = 0;
-        LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
     }
 
     private void doConnect() {

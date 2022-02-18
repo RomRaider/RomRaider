@@ -102,7 +102,8 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
 
     @Override
     public void clearLine() {
-        LOGGER.debug("J2534/ISO9141 sending line break");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("J2534/ISO9141 sending line break");
         api.writeMsg(
                 channelId,
                 new byte[20],
@@ -112,7 +113,8 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         do {
             byte[] badBytes = api.readMsg(channelId, 100L);
             if (badBytes.length > 0) {
-                LOGGER.debug("J2534/ISO9141 clearing line (stale data): " + asHex(badBytes));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("J2534/ISO9141 clearing line (stale data): " + asHex(badBytes));
                 empty = false;
             }
             else {
@@ -138,11 +140,13 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
                     connectionProperties.getBaudRate());
             setConfig(channelId, connectionProperties);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
         } catch (Exception e) {
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO9141 exception: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
             close();
@@ -167,7 +171,8 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
                 Config.PARITY.getValue(),
                 connectionProperties.getParity());
         api.setConfig(channelId, p1Max, p3Min, p4Min, loopback, dataBits, parity);
-        LOGGER.debug("J2534/ISO9141 set connection properties: bits=" +
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("J2534/ISO9141 set connection properties: bits=" +
                 connectionProperties.getDataBits() + ", parity=" +
                 connectionProperties.getParity());
     }
@@ -176,7 +181,8 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         if (msgId == -1) return;
         try {
             api.stopMsgFilter(channelId, msgId);
-            LOGGER.debug("J2534/ISO9141 stopped message filter:" + msgId);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("J2534/ISO9141 stopped message filter:" + msgId);
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO9141 Error stopping msg filter: " + e.getMessage());
         }
@@ -186,7 +192,8 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         if (deviceId == -1) return;
         try {
             api.disconnect(channelId);
-            LOGGER.debug("J2534/ISO9141 disconnected channel:" + channelId);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("J2534/ISO9141 disconnected channel:" + channelId);
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO9141 Error disconnecting channel: " + e.getMessage());
         }

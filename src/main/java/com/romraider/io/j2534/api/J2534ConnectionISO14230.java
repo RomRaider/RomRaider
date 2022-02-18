@@ -130,7 +130,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
         }
         while (repeat) {
             try {
-                LOGGER.debug("J2534/ISO14230 sending line break");
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("J2534/ISO14230 sending line break");
                 int p3_min = getP3Min();
                 setP3Min(2);
                 api.writeMsg(
@@ -154,7 +155,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
             do {
                 byte[] badBytes = api.readMsg(channelId, 700L);
                 if (badBytes.length > 0) {
-                    LOGGER.debug(String.format(
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(String.format(
                             "J2534/ISO14230 clearing line (stale data %d): %s", i, asHex(badBytes)));
                     empty = false;
                     i++;
@@ -206,12 +208,14 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                     connectionProperties.getBaudRate());
             setConfig(channelId, (KwpConnectionProperties) connectionProperties);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO14230 connection success: deviceId:%d, channelId:%d, msgId:%d, baud:%d",
                     deviceId, channelId, msgId, connectionProperties.getBaudRate()));
             fastInit();
         } catch (Exception e) {
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO14230 exception: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
             close();
@@ -243,7 +247,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                 Config.PARITY.getValue(),
                 connectionProperties.getParity());
         api.setConfig(channelId, dataBits, parity, p1Max, p3Min, p4Min, loopback);
-        LOGGER.debug(String.format("J2534/ISO14230 connection properties: %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("J2534/ISO14230 connection properties: %s",
                 connectionProperties.toString()));
     }
 
@@ -251,7 +256,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
         if (msgId == -1) return;
         try {
             api.stopMsgFilter(channelId, msgId);
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO14230 stopped message filter:%s", msgId));
         } catch (Exception e) {
             LOGGER.warn(String.format(
@@ -263,7 +269,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
         if (deviceId == -1) return;
         try {
             api.disconnect(channelId);
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO14230 disconnected channel:%d", channelId));
         } catch (Exception e) {
             LOGGER.warn(String.format(
@@ -289,7 +296,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
 
     private void fastInit() {
         final byte[] timing = api.fastInit(channelId, startRequest);
-        LOGGER.debug(String.format(
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format(
                 "J2534/ISO14230 Fast Init: deviceId:%d, channelId:%d, timing:%s",
                 deviceId, channelId, asHex(timing)));
         if (timing.length < 1) {
@@ -301,7 +309,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
 
     private void stopComms() {
         final byte[] response = send(stopRequest);
-        LOGGER.debug(String.format("Stop comms Response = %s", asHex(response)));
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Stop comms Response = %s", asHex(response)));
     }
 
     private void setP3Min(int msec) {
@@ -309,7 +318,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                 Config.P3_MIN.getValue(),
                 msec);
         api.setConfig(channelId, p3_min);
-        LOGGER.trace(String.format("Config set P3_MIN value  = %d msec", msec / 2));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(String.format("Config set P3_MIN value  = %d msec", msec / 2));
     }
 
     private int getP3Min() {
@@ -322,7 +332,8 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
                 i = item.value;
             }
         }
-        LOGGER.trace(String.format("Config get P3_MIN value  = %d msec", i / 2));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(String.format("Config get P3_MIN value  = %d msec", i / 2));
         return i;
     }
 }

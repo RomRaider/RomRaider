@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,11 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
     private double lastMafv;
     private long lastUpdate;
 
+    @Override
     public synchronized void registerData(LoggerData loggerData) {
     }
 
+    @Override
     public synchronized void handleDataUpdate(Response response) {
         if (injectorTab!= null && injectorTab.isRecordData()
                 && (containsData(response, PULSE_WIDTH_16, ENGINE_LOAD_16)
@@ -53,54 +55,67 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
-                    LOGGER.trace("INJ:[CL/OL:E3]:  " + clOl);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("INJ:[CL/OL:E3]:  " + clOl);
                 }
                 if (containsData(response, "E33")) {
                     clOl = (int) findValue(response, "E33");
-                    LOGGER.trace("INJ:[CL/OL:E33]: " + clOl);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("INJ:[CL/OL:E33]: " + clOl);
                 }
                 valid = injectorTab.isValidClOl(clOl);
-                LOGGER.trace("INJ:[CL/OL]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[CL/OL]:     " + valid);
             }
 
             // afr check
             if (valid && containsData(response, "P58")) {
                 double afr = findValue(response, "P58");
-                LOGGER.trace("INJ:[AFR:P58]: " + afr);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[AFR:P58]: " + afr);
                 valid = injectorTab.isValidAfr(afr);
-                LOGGER.trace("INJ:[AFR]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[AFR]:     " + valid);
             }
 
             // rpm check
             if (valid && containsData(response, "P8")) {
                 double rpm = findValue(response, "P8");
-                LOGGER.trace("INJ:[RPM:P8]: " + rpm);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[RPM:P8]: " + rpm);
                 valid = injectorTab.isValidRpm(rpm);
-                LOGGER.trace("INJ:[RPM]:    " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[RPM]:    " + valid);
             }
 
             // maf check
             if (valid && containsData(response, "P12")) {
                 double maf = findValue(response, "P12");
-                LOGGER.trace("INJ:[MAF:P12]: " + maf);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[MAF:P12]: " + maf);
                 valid = injectorTab.isValidMaf(maf);
-                LOGGER.trace("INJ:[MAF]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[MAF]:     " + valid);
             }
 
             // intake air temp check
             if (valid && containsData(response, "P11")) {
                 double temp = findValue(response, "P11");
-                LOGGER.trace("INJ:[IAT:P11]: " + temp);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[IAT:P11]: " + temp);
                 valid = injectorTab.isValidIntakeAirTemp(temp);
-                LOGGER.trace("INJ:[IAT]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[IAT]:     " + valid);
             }
 
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
-                LOGGER.trace("INJ:[CT:P2]: " + temp);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[CT:P2]: " + temp);
                 valid = injectorTab.isValidCoolantTemp(temp);
-                LOGGER.trace("INJ:[CT]:    " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[CT]:    " + valid);
             }
 
             // dMAFv/dt check
@@ -108,9 +123,11 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double mafv = findValue(response, "P18");
                 long now = currentTimeMillis();
                 double mafvChange = abs((mafv - lastMafv) / (now - lastUpdate) * 1000);
-                LOGGER.trace("INJ:[dMAFv/dt]: " + mafvChange);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[dMAFv/dt]: " + mafvChange);
                 valid = injectorTab.isValidMafvChange(mafvChange);
-                LOGGER.trace("INJ:[dMAFv/dt]: " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[dMAFv/dt]: " + valid);
                 lastMafv = mafv;
                 lastUpdate = now;
             }
@@ -120,14 +137,17 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
-                    LOGGER.trace("INJ:[TIP:E23]: " + tipIn);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("INJ:[TIP:E23]: " + tipIn);
                 }
                 if (containsData(response, "E54")) {
                     tipIn = findValue(response, "E54");
-                    LOGGER.trace("INJ:[TIP:E54]: " + tipIn);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("INJ:[TIP:E54]: " + tipIn);
                 }
                 valid = injectorTab.isValidTipInThrottle(tipIn);
-                LOGGER.trace("INJ:[TIP]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("INJ:[TIP]:     " + valid);
             }
 
             if (valid) {
@@ -136,8 +156,10 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double stoichAfr = injectorTab.getFuelStoichAfr();
                 double density = injectorTab.getFuelDensity();
                 final double fuelcc = load / 2 / stoichAfr * 1000 / density;
-                LOGGER.trace("Injector Data: " + pulseWidth + "ms, " + fuelcc + "cc");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Injector Data: " + pulseWidth + "ms, " + fuelcc + "cc");
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         injectorTab.addData(pulseWidth, fuelcc);
                     }
@@ -172,12 +194,15 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
         throw new IllegalStateException("Expected data item " + id + " not in response.");
     }
 
+    @Override
     public synchronized void deregisterData(LoggerData loggerData) {
     }
 
+    @Override
     public synchronized void cleanUp() {
     }
 
+    @Override
     public synchronized void reset() {
     }
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +46,14 @@ public class SSMLoggerCANSubQuery {
     private static final Logger LOGGER = getLogger(SSMLoggerCANSubQuery.class);
     private static final int CAN_HEADER_LENGTH = 5;
     private static final ArrayList<EcuQuery> subQuery = new ArrayList<EcuQuery>();
-    
+
     public static final byte[] doSubQuery(
             ArrayList<EcuQuery> tcuSubQuery,
             ConnectionManager manager,
-            LoggerProtocol protocol, 
+            LoggerProtocol protocol,
             Module module,
             PollingState pollState) {
-        
+
         final byte[][] addresses = convertToByteAddresses(tcuSubQuery);
         final byte[] responses = new byte[CAN_HEADER_LENGTH + addresses.length];
         for (int i = 0; i < addresses.length; i++) {
@@ -69,10 +69,11 @@ public class SSMLoggerCANSubQuery {
                             }
                     );
             subQuery.clear();
-            subQuery.add(new EcuQueryImpl((EcuData) epi));
+            subQuery.add(new EcuQueryImpl(epi));
             final byte[] request = protocol.constructReadAddressRequest(
                     module, subQuery);
-            LOGGER.debug(module + " CAN Sub Request " + i + " ---> " + asHex(request));
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(module + " CAN Sub Request " + i + " ---> " + asHex(request));
             final byte[] response = protocol.constructReadAddressResponse(
                     subQuery, pollState);
             manager.send(request, response, pollState);

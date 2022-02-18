@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ public class BrowserControl {
             Method browseMethod = display.getDeclaredMethod("browse", java.net.URI.class);
             browseMethod.invoke(getDesktopMethod, new URI(url));
         } catch (Exception e) {
-            LOGGER.debug("Failed to display URL via java.awt.Desktop. Calling by OS depended method.", e);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Failed to display URL via java.awt.Desktop. Calling by OS depended method.", e);
             displayURLtraditional(url);
         }
     }

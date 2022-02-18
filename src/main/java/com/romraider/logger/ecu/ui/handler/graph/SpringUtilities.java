@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,9 +43,11 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        LOGGER.debug("minimumSize = " + c.getMinimumSize());
-        LOGGER.debug("preferredSize = " + c.getPreferredSize());
-        LOGGER.debug("maximumSize = " + c.getMaximumSize());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("minimumSize = " + c.getMinimumSize());
+            LOGGER.debug("preferredSize = " + c.getPreferredSize());
+            LOGGER.debug("maximumSize = " + c.getMaximumSize());
+        }
     }
 
     /**

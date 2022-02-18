@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,7 +197,8 @@ public class DataCell implements Serializable  {
                         }
                     } else if(table.isStaticDataTable() && storageType < 1) {
                         // Do not save the value.
-                        //LOGGER.debug("The static data table value will not be saved.");
+                        //if (LOGGER.isDebugEnabled())
+                        //    LOGGER.debug("The static data table value will not be saved.");
                         return;
                     }  else {
                         finalValue = (int) (isBoschSubtract ? crossedValue : getBinValue());
@@ -367,7 +368,7 @@ public class DataCell implements Serializable  {
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-            	
+
                 if(table.getCurrentScale().getByteExpression() == null) {
                 	result = table.getCurrentScale().approximateToByteFunction(NumberUtil.doubleValue(input), table.getStorageType(), table.isSignedData());
                 }
@@ -452,7 +453,7 @@ public class DataCell implements Serializable  {
         else {
         	incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
         }
-        
+
         if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
             if(binValue != incResult) {
                 this.setBinValue(incResult);
@@ -471,7 +472,8 @@ public class DataCell implements Serializable  {
                 oldValue == getRealValue() &&
                 binValue > 0.0 &&
                 binValue < maxValue) {
-            LOGGER.debug(maxValue + " " + binValue);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(maxValue + " " + binValue);
             increment(increment * 2);
         }
     }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public final class MTSConnector {
     {
         createMts();
     }
-    
+
     /**
      * MTS Connector is a set of methods to create the MTS connection,
      * retrieve a set of available ports and the sensor inputs available
@@ -60,11 +60,11 @@ public final class MTSConnector {
     public MTS getMts() {
         return mts;
     }
-    
+
     public int[] getMtsPorts() {
         return ports;
     }
-    
+
     public void usePort(int mtsPort) {
         mts(mtsPort);
     }
@@ -100,7 +100,7 @@ public final class MTSConnector {
             throw t;
         }
     }
-    
+
     public void mts(int mtsPort) {
         // bail out early if we know specified mts port is invalid
         if (mtsPort < 0) throw new IllegalArgumentException("Bad Innovate MTS port: " + mtsPort);
@@ -108,7 +108,7 @@ public final class MTSConnector {
         try {
             int portCount = mts.portCount();
             if (portCount <= 0) throw new IllegalStateException("No Innovate MTS ports found");
-            
+
             // select the specified port
             mts.currentPort(mtsPort);
             String portName = mts.portName();
@@ -159,7 +159,8 @@ public final class MTSConnector {
                                         mts.inputMaxValue(),
                                         mts.inputAFRMultiplier()
                                 ));
-                        LOGGER.debug(String.format(
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format(
                             "Innovate MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
                             i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue()));
                     }

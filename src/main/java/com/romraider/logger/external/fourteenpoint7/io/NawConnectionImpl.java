@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,11 +37,13 @@ public final class NawConnectionImpl implements NawConnection {
         connection = serialConnection(port);
     }
 
+    @Override
     public byte[] readBytes() {
         try {
             byte[] bytes = new byte[9];
             connection.read(bytes);
-            LOGGER.trace("NAW_7S Response: " + asHex(bytes));
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("NAW_7S Response: " + asHex(bytes));
             return bytes;
         } catch (Exception e) {
             close();
@@ -49,6 +51,7 @@ public final class NawConnectionImpl implements NawConnection {
         }
     }
 
+    @Override
     public void write(byte[] bytes) {
         try {
             connection.write(bytes);
@@ -58,6 +61,7 @@ public final class NawConnectionImpl implements NawConnection {
         }
     }
 
+    @Override
     public void close() {
         connection.close();
     }

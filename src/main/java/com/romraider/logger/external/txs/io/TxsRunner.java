@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public final class TxsRunner implements Stoppable{
             String device) {
         this.connection = new SerialConnectionImpl(port, CONNECTION_PROPS);
         this.dataItems = dataItems;
-        this.txsLogger = logger;        
+        this.txsLogger = logger;
         this.txsDevice = device;
     }
 
@@ -65,33 +65,40 @@ public final class TxsRunner implements Stoppable{
         this.dataItems = dataItems;
     }
 
+    @Override
     public void run() {
         try {
-            
-            LOGGER.trace("TXS Runner Begin.");
+
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Begin.");
 
             //Convert string into bytes[]
             byte[] device = txsDevice.getBytes();
-            byte[] logger = this.txsLogger.getBytes();        
+            byte[] logger = this.txsLogger.getBytes();
 
-            LOGGER.trace("TXS Runner Send Exit to Main Screen.");
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Send Exit to Main Screen.");
 
-            //Exit to main screen 
+            //Exit to main screen
             connection.write(EXIT);
 
-            LOGGER.trace("TXS Runner Sleep 250 ms to exit to main.");
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Sleep 250 ms to exit to main.");
             //wait for exit to complete.
             Thread.sleep(250L);
 
-            LOGGER.trace("TXS Runner Readline 1.");
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Readline 1.");
             String response = connection.readLine();
 
             if(response != null && response.trim().isEmpty() == false)
             {
-                LOGGER.trace("TXS Runner Readline 1 Response: "+ response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("TXS Runner Readline 1 Response: "+ response);
             }
-            
-            LOGGER.trace("TXS Runner Switching to Device. " + txsDevice);
+
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Switching to Device. " + txsDevice);
             //Send command to switch device: utec / tuner.
             connection.write(device);
 
@@ -100,10 +107,12 @@ public final class TxsRunner implements Stoppable{
 
             if(response != null && response.trim().isEmpty() == false)
             {
-                LOGGER.trace("TXS Runner Readline 2 Response: "+ response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("TXS Runner Readline 2 Response: "+ response);
             }
 
-            LOGGER.trace("TXS Runner Start Logger.");
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("TXS Runner Start Logger.");
 
             //Start device logger
             connection.write(logger);
@@ -119,22 +128,24 @@ public final class TxsRunner implements Stoppable{
                 }
 
                 //Trace response
-                LOGGER.trace("TXS Runner Response: " + response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("TXS Runner Response: " + response);
                 //Split Values for parsing
-                String[] values = SplitUtecString(response);            
+                String[] values = SplitUtecString(response);
                 //Set Data Item Values
                 SetDataItemValues(values);
             }
             connection.close();
-        } 
+        }
         catch (Throwable t) {
             LOGGER.error("Error occurred", t);
-        } 
+        }
         finally {
             connection.close();
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }
@@ -144,7 +155,7 @@ public final class TxsRunner implements Stoppable{
             value = value.trim();
             value = value.replaceAll(WHITESPACE_REGEX, SPLIT_DELIMITER);
             String[] utecArray = value.split(SPLIT_DELIMITER);
-            return utecArray;    
+            return utecArray;
         }
         catch (Exception e) {
             return new String[]{};
@@ -154,17 +165,19 @@ public final class TxsRunner implements Stoppable{
     void SetDataItemValues(String[] values) {
         for (TxsDataItem dataItem : dataItems)
         {
-            if(dataItem != null) 
+            if(dataItem != null)
             {
                 //Set value to dataItem
                 if(values.length <= dataItem.getItemIndex())
                 {
-                    LOGGER.trace("TXS DataItem: " + dataItem.getName() +  " Index requested: " + dataItem.getItemIndex() + " TXS data size: " + values.length);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("TXS DataItem: " + dataItem.getName() +  " Index requested: " + dataItem.getItemIndex() + " TXS data size: " + values.length);
                     dataItem.setData(0);
                 }
                 else
                 {
-                    LOGGER.trace("TXS Setting DataItem: " + dataItem.getName());
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("TXS Setting DataItem: " + dataItem.getName());
                     dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));
                 }
             }
@@ -172,10 +185,10 @@ public final class TxsRunner implements Stoppable{
     }
 
     private double parseDouble(String value) {
-        try {    
+        try {
             //try to parse value.
             return Double.parseDouble(value);
-        } 
+        }
         catch (Exception e) {
             //return 0 if value could not be parsed.
             return 0.0;

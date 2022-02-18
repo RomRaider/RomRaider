@@ -1957,7 +1957,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         getSettings().setLoggerPluginPorts(getPluginPorts(externalDataSources));
         try {
             SettingsManager.save(getSettings());
-            LOGGER.debug("Logger settings saved");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Logger settings saved");
         } catch (Exception e) {
             LOGGER.warn("Error saving logger settings:", e);
         }
@@ -1966,7 +1967,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void backupCurrentProfile() {
         try {
             saveProfileToFile(getCurrentProfile(), new File(HOME + BACKUP_PROFILE));
-            LOGGER.debug("Backup profile saved");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Backup profile saved");
         } catch (Exception e) {
             LOGGER.warn("Error backing up profile", e);
         }

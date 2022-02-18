@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public void write(byte[] bytes) {
         try {
             os.write(bytes, 0, bytes.length);
@@ -77,6 +78,7 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public int available() {
         try {
             return is.available();
@@ -85,6 +87,7 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public int read() {
         try {
             waitForBytes(1);
@@ -94,6 +97,7 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public void read(byte[] bytes) {
         try {
             waitForBytes(bytes.length);
@@ -103,6 +107,7 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public String readLine() {
         try {
             waitForBytes(1);
@@ -117,23 +122,27 @@ public class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    @Override
     public byte[] readAvailable() {
         byte[] response = new byte[available()];
         read(response);
         return response;
     }
 
+    @Override
     public void readStaleData() {
         if (available() <= 0) return;
         final long end = currentTimeMillis() + 100L;
         do {
             byte[] staleBytes = readAvailable();
-            LOGGER.debug("Stale data read: " + asHex(staleBytes));
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Stale data read: " + asHex(staleBytes));
             sleep(2);
         } while (  (available() > 0)
                 && (currentTimeMillis() <= end));
     }
 
+    @Override
     public void close() {
         if (os != null) {
             try {
@@ -168,6 +177,7 @@ public class SerialConnectionImpl implements SerialConnection {
         LOGGER.info("Connection closed.");
     }
 
+    @Override
     public void sendBreak(int duration) {
         try {
             serialPort.sendBreak(duration);

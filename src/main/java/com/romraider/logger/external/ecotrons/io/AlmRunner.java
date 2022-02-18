@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ public final class AlmRunner implements Stoppable {
         this.dataItems = dataItems;
     }
 
+    @Override
     public void run() {
         try {
             int length = 0;
@@ -105,7 +106,8 @@ public final class AlmRunner implements Stoppable {
                         if (stage == 0) {
                             if (buffer.get(4) == (byte) 0xE5
                                     && buffer.get(5) == (byte) 0x01) {
-                                LOGGER.trace(String.format(
+                                if (LOGGER.isTraceEnabled())
+                                    LOGGER.trace(String.format(
                                         "Stage:%d, ALM Connect response:%s",
                                         stage, asHex(toArray(buffer))));
                                 stage = 1;
@@ -120,7 +122,8 @@ public final class AlmRunner implements Stoppable {
                         else if (stage > 0) {
                             if (buffer.get(4) == (byte) 0xE5
                                     && buffer.get(5) == (byte) 0x0D) {
-                                LOGGER.trace(String.format(
+                                if (LOGGER.isTraceEnabled())
+                                    LOGGER.trace(String.format(
                                         "Stage:%d, ALM measuring response:%s",
                                         stage, asHex(toArray(buffer))));
                                 stage = 2;
@@ -157,7 +160,8 @@ public final class AlmRunner implements Stoppable {
                 connection.write(STOP_CMD);
                 final byte[] response = new byte[8];
                 connection.readBytes(response);
-                LOGGER.trace(String.format(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(String.format(
                         "Stage:%d, ALM stop response:%s",
                         stage, asHex(response)));
             }
@@ -165,6 +169,7 @@ public final class AlmRunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }

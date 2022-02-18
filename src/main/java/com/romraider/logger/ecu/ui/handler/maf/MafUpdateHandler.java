@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,11 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     private double lastMafv;
     private long lastUpdate;
 
+    @Override
     public synchronized void registerData(LoggerData loggerData) {
     }
 
+    @Override
     public synchronized void handleDataUpdate(Response response) {
         if (mafTab!= null && mafTab.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
             boolean valid = true;
@@ -51,54 +53,67 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
-                    LOGGER.trace("MAF:[CL/OL:E3]:  " + clOl);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("MAF:[CL/OL:E3]:  " + clOl);
                 }
                 if (containsData(response, "E33")) {
                     clOl = (int) findValue(response, "E33");
-                    LOGGER.trace("MAF:[CL/OL:E33]: " + clOl);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("MAF:[CL/OL:E33]: " + clOl);
                 }
                 valid = mafTab.isValidClOl(clOl);
-                LOGGER.trace("MAF:[CL/OL]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[CL/OL]:     " + valid);
             }
 
             // afr check
             if (valid && containsData(response, "P58")) {
                 double afr = findValue(response, "P58");
-                LOGGER.trace("MAF:[AFR:P58]: " + afr);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[AFR:P58]: " + afr);
                 valid = mafTab.isValidAfr(afr);
-                LOGGER.trace("MAF:[AFR]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[AFR]:     " + valid);
             }
 
             // rpm check
             if (valid && containsData(response, "P8")) {
                 double rpm = findValue(response, "P8");
-                LOGGER.trace("MAF:[RPM:P8]: " + rpm);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[RPM:P8]: " + rpm);
                 valid = mafTab.isValidRpm(rpm);
-                LOGGER.trace("MAF:[RPM]:    " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[RPM]:    " + valid);
             }
 
             // maf check
             if (valid && containsData(response, "P12")) {
                 double maf = findValue(response, "P12");
-                LOGGER.trace("MAF:[MAF:P12]: " + maf);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[MAF:P12]: " + maf);
                 valid = mafTab.isValidMaf(maf);
-                LOGGER.trace("MAF:[MAF]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[MAF]:     " + valid);
             }
 
             // intake air temp check
             if (valid && containsData(response, "P11")) {
                 double temp = findValue(response, "P11");
-                LOGGER.trace("MAF:[IAT:P11]: " + temp);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[IAT:P11]: " + temp);
                 valid = mafTab.isValidIntakeAirTemp(temp);
-                LOGGER.trace("MAF:[IAT]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[IAT]:     " + valid);
             }
 
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
-                LOGGER.trace("MAF:[CT:P2]: " + temp);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[CT:P2]: " + temp);
                 valid = mafTab.isValidCoolantTemp(temp);
-                LOGGER.trace("MAF:[CT]:    " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[CT]:    " + valid);
             }
 
             // dMAFv/dt check
@@ -106,9 +121,11 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 double mafv = findValue(response, "P18");
                 long now = currentTimeMillis();
                 double mafvChange = abs((mafv - lastMafv) / (now - lastUpdate) * 1000);
-                LOGGER.trace("MAF:[dMAFv/dt]: " + mafvChange);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[dMAFv/dt]: " + mafvChange);
                 valid = mafTab.isValidMafvChange(mafvChange);
-                LOGGER.trace("MAF:[dMAFv/dt]: " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[dMAFv/dt]: " + valid);
                 lastMafv = mafv;
                 lastUpdate = now;
             }
@@ -118,22 +135,27 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
-                    LOGGER.trace("MAF:[TIP:E23]: " + tipIn);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("MAF:[TIP:E23]: " + tipIn);
                 }
                 if (containsData(response, "E54")) {
                     tipIn = findValue(response, "E54");
-                    LOGGER.trace("MAF:[TIP:E54]: " + tipIn);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("MAF:[TIP:E54]: " + tipIn);
                 }
                 valid = mafTab.isValidTipInThrottle(tipIn);
-                LOGGER.trace("MAF:[TIP]:     " + valid);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF:[TIP]:     " + valid);
             }
 
             if (valid) {
                 final double mafv = findValue(response, MAFV);
                 final double learning = findValue(response, AF_LEARNING_1);
                 final double correction = findValue(response, AF_CORRECTION_1);
-                LOGGER.trace("MAF Data: " + mafv + "v, " + correction + "%");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("MAF Data: " + mafv + "v, " + correction + "%");
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         mafTab.addData(mafv, learning + correction);
                     }
@@ -168,12 +190,15 @@ public final class MafUpdateHandler implements DataUpdateHandler {
         throw new IllegalStateException("Expected data item " + id + " not in response.");
     }
 
+    @Override
     public synchronized void deregisterData(LoggerData loggerData) {
     }
 
+    @Override
     public synchronized void cleanUp() {
     }
 
+    @Override
     public synchronized void reset() {
     }
 

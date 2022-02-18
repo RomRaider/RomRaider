@@ -59,11 +59,13 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         checkNotNull(start, "start");
         checkNotNull(stop, "stop");
         this.stopRequest = stop;
-        LOGGER.debug(String.format("Start Diagnostics Request  ---> %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Start Diagnostics Request  ---> %s",
                 asHex(start)));
         api.writeMsg(channelId, start, timeout, TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, timeout);
-        LOGGER.debug(String.format("Start Diagnostics Response <--- %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Start Diagnostics Response <--- %s",
                 asHex(response)));
     }
 
@@ -90,18 +92,21 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
 
     @Override
     public void clearLine() {
-        //        LOGGER.debug("J2534/ISO15765 clearing buffers");
+        //        if (LOGGER.isDebugEnabled())
+        //            LOGGER.debug("J2534/ISO15765 clearing buffers");
         //        api.clearBuffers(channelId);
     }
 
     @Override
     public void close() {
         if (stopRequest != null) {  // OBD has no open or close procedure
-            LOGGER.debug(String.format("Stop Diagnostics Request  ---> %s",
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format("Stop Diagnostics Request  ---> %s",
                     asHex(stopRequest)));
             api.writeMsg(channelId, stopRequest, timeout, TxFlags.ISO15765_FRAME_PAD);
             final byte[] response = api.readMsg(channelId, 1, timeout);
-            LOGGER.debug(String.format("Stop Diagnostics Response <--- %s",
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format("Stop Diagnostics Response <--- %s",
                     asHex(response)));
         }
         stopFcFilter();
@@ -128,12 +133,14 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
                     channelId, mask, pattern,
                     flowCntrl, TxFlags.ISO15765_FRAME_PAD);
 
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO15765 success: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
         }
         catch (Exception e) {
-            LOGGER.debug(String.format(
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
                     "J2534/ISO15765 exception: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
             close();
@@ -162,7 +169,8 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         if (msgId == -1) return;
         try {
             api.stopMsgFilter(channelId, msgId);
-            LOGGER.debug("J2534/ISO15765 stopped message filter:" + msgId);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("J2534/ISO15765 stopped message filter:" + msgId);
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO15765 Error stopping msg filter: " +
                     e.getMessage());
@@ -173,7 +181,8 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         if (deviceId == -1) return;
         try {
             api.disconnect(channelId);
-            LOGGER.debug("J2534/ISO15765 disconnected channel:" + channelId);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("J2534/ISO15765 disconnected channel:" + channelId);
         } catch (Exception e) {
             LOGGER.warn("J2534/ISO15765 Error disconnecting channel: " +
                     e.getMessage());

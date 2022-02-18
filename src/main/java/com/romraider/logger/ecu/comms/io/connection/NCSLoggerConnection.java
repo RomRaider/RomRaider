@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,19 +74,21 @@ public final class NCSLoggerConnection implements LoggerConnection {
     //TODO: not yet implemented
     public void ecuReset(Module module, int resetCode) {
         byte[] request = protocol.constructEcuResetRequest(module, resetCode);
-        LOGGER.debug(String.format("%s Reset Request  ---> %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s Reset Request  ---> %s",
                 module, asHex(request)));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(
                 request, response, new PollingStateImpl());
-        LOGGER.debug(String.format("%s Reset Response <--- %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s Reset Response <--- %s",
                 module, asHex(processedResponse)));
         protocol.processEcuResetResponse(processedResponse);
     }
 
     @Override
     // Build an init string similar to the SSM version so the logger definition
-    // can reference supported parameters using ecubyte/bit attributes. 
+    // can reference supported parameters using ecubyte/bit attributes.
     public void ecuInit(EcuInitCallback callback, Module module) {
         // ConnectionManger must have completed a fastInit to start comms
         if (!commsStarted) open(module);
@@ -94,13 +96,16 @@ public final class NCSLoggerConnection implements LoggerConnection {
         byte[] request;
         byte[] response;
         request = protocol.constructEcuIdRequest(module);
-        LOGGER.debug(String.format("%s ID Request  ---> %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s ID Request  ---> %s",
                 module, asHex(request)));
         response = manager.send(request);
-        LOGGER.debug(String.format("%s ID Raw Response <--- %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s ID Raw Response <--- %s",
                 module, asHex(response)));
         response = protocol.processEcuIdResponse(response);
-        LOGGER.debug(String.format("%s ID Processed Response <--- %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s ID Processed Response <--- %s",
                 module, asHex(response)));
         System.arraycopy(response, 0, initResponse, 2, response.length);
         sleep(55L);
@@ -115,14 +120,17 @@ public final class NCSLoggerConnection implements LoggerConnection {
             if (test_grp) {
                 request = protocol.constructReadSidPidRequest(
                         module, sid, new byte[]{pid});
-                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Request  ---> %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("%s SID %02X, PID Group %02X Request  ---> %s",
                         module, sid, pid, asHex(request)));
                 response = manager.send(request);
-                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Raw Response <--- %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("%s SID %02X, PID Group %02X Raw Response <--- %s",
                         module, sid ,pid, asHex(response)));
                 // Validate response
                 response = protocol.processReadSidPidResponse(response);
-                LOGGER.debug(String.format("%s SID %02X, PID Group %02X Processed Response <--- %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("%s SID %02X, PID Group %02X Processed Response <--- %s",
                         module, sid ,pid, asHex(response)));
                 System.arraycopy(response, 0, initResponse, i, 4);
                 // Check lsb to see if next PID group is supported
@@ -143,14 +151,17 @@ public final class NCSLoggerConnection implements LoggerConnection {
                     if (test_grp) {
                         request = protocol.constructReadSidPidRequest(
                                 module, sid, new byte[]{hb, pid});
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
                                 module, sid, hb, pid, asHex(request)));
                         response = manager.send(request);
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
                                 module, sid, hb, pid, asHex(response)));
                         // Validate response
                         response = protocol.processReadSidPidResponse(response);
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
                                 module, sid, hb, pid, asHex(response)));
                         // Check lsb to see if next PID group is supported
                         if ((response[response.length-1] & 0x01) == 0) {
@@ -158,7 +169,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
                         }
                         final short[] supported = new short[2];
                         for (int j = 0; j < 2; j++) {
-                            supported[j] = (short) ((short)(response[j*2] << 8) + ((short)response[j*2+1] & 0x00FF));
+                            supported[j] = (short) ((short)(response[j*2] << 8) + (response[j*2+1] & 0x00FF));
                         }
                         for (int k = 0; k < supported.length; k++) {
                             // ex: 7FFC2000
@@ -167,14 +178,17 @@ public final class NCSLoggerConnection implements LoggerConnection {
                                     byte cid = (byte) ((16 - shift) + (k * 16));
                                     request = protocol.constructReadSidPidRequest(
                                             module, sid, new byte[]{hb, cid});
-                                    LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Request  ---> %s",
+                                    if (LOGGER.isDebugEnabled())
+                                        LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Request  ---> %s",
                                             module, sid, hb, cid, asHex(request)));
                                     response = manager.send(request);
-                                    LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Raw Response <--- %s",
+                                    if (LOGGER.isDebugEnabled())
+                                        LOGGER.debug(String.format("%s SID %02X, PID %02X%02X Raw Response <--- %s",
                                             module, sid ,hb, cid, asHex(response)));
                                     // Validate response
                                     response = protocol.processReadSidPidResponse(response);
-                                    LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                                    if (LOGGER.isDebugEnabled())
+                                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
                                             module, sid, hb, pid, asHex(response)));
                                     // 2 bytes returned, we only need the second byte
                                     System.arraycopy(response, 1, initResponse, i, 1);
@@ -195,15 +209,18 @@ public final class NCSLoggerConnection implements LoggerConnection {
                     if (test_grp) {
                         request = protocol.constructReadSidPidRequest(
                                 module, sid, new byte[]{hb, pid});
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Request  ---> %s",
                                 module, sid, hb, pid, asHex(request)));
                         response = manager.send(request);
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Raw Response <--- %s",
                                 module, sid ,hb, pid, asHex(response)));
                         // Validate response
                         response = protocol.processReadSidPidResponse(response);
                         System.arraycopy(response, 0, initResponse, i, 4);
-                        LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug(String.format("%s SID %02X, PID Group %02X%02X Processed Response <--- %s",
                                 module, sid, hb, pid, asHex(response)));
                         // Check lsb to see if next PID group is supported
                         if ((response[response.length-1] & 0x01) == 0) {
@@ -214,7 +231,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
                 }
             }
         }
-        LOGGER.debug(String.format("%s Init Response <--- %s",
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("%s Init Response <--- %s",
                 module, asHex(initResponse)));  // contains ECUID
         protocol.processEcuInitResponse(callback, initResponse);
     }
@@ -222,7 +240,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
     @Override
     public final void sendAddressReads(
             Collection<EcuQuery> queries,
-            Module module, 
+            Module module,
             PollingState pollState) {
 
         // ConnectionManger must have completed a fastInit to start comms
@@ -289,7 +307,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
 
     private void doKlineQueries(
             Collection<EcuQuery> queries,
-            Module module, 
+            Module module,
             PollingState pollState) {
 
         // k-line max data bytes is 63 when length encoded into format byte
@@ -311,7 +329,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
         if (queries.size() != queryCount
                 || pollState.isNewQuery()) {
             final byte[] request = protocol.constructLoadAddressRequest(queries);
-            LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
                     pollState.getCurrentState(), module, asHex(request)));
 
             byte[] response = new byte[4];  // short header response
@@ -325,7 +344,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
         final byte[] request = protocol.constructReadAddressRequest(
                 module, queries, pollState);
         if (pollState.getCurrentState() == PollingState.State.STATE_0) {
-            LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format("Mode:%s %s Read request  ---> %s",
                     pollState.getCurrentState(), module, asHex(request)));
             pollState.setLastState(PollingState.State.STATE_0);
         }
@@ -364,7 +384,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
 
     private void doSlowCanQueries(
             Collection<EcuQuery> queries,
-            Module module, 
+            Module module,
             PollingState pollState) {
 
         splitSidFromRamQueries(queries);
@@ -378,17 +398,20 @@ public final class NCSLoggerConnection implements LoggerConnection {
                 sidQuery.add(query);
                 if (elevatedDiag) {
                     request = protocol.constructStartDiagRequest(module);
-                    LOGGER.debug(String.format("%s Standard Diagnostics Request  ---> %s",
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(String.format("%s Standard Diagnostics Request  ---> %s",
                             module, asHex(request)));
                     response = manager.send(request);
-                    LOGGER.debug(String.format("%s Standard Diagnostics Response <--- %s",
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(String.format("%s Standard Diagnostics Response <--- %s",
                             module, asHex(response)));
                     elevatedDiag = false;
                 }
                 request = protocol.constructReadAddressRequest(
                         module, sidQuery);
                 response = new byte[0];
-                LOGGER.debug(module + " CAN Request  ---> " + asHex(request));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(module + " CAN Request  ---> " + asHex(request));
                 response = protocol.constructReadAddressResponse(
                         sidQuery, pollState);
                 protocol.processReadAddressResponses(
@@ -402,22 +425,25 @@ public final class NCSLoggerConnection implements LoggerConnection {
         if (!ramQuery.isEmpty()) {
             if (!elevatedDiag) {
                 request = protocol.constructElevatedDiagRequest(module);
-                LOGGER.debug(String.format("%s Elevated Diagnostics Request  ---> %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("%s Elevated Diagnostics Request  ---> %s",
                         module, asHex(request)));
                 response = manager.send(request);
-                LOGGER.debug(String.format("%s Elevated Diagnostics Response <--- %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("%s Elevated Diagnostics Response <--- %s",
                         module, asHex(response)));
                 elevatedDiag = true;
             }
             // Inspect the address of each query to determine if a single query
             // with a start address and byte length can be substituted as opposed
-            // to querying each address separately. 
+            // to querying each address separately.
             final EcuQueryRangeTest range = new EcuQueryRangeTest(ramQuery, 63);
             final Collection<EcuQuery> newQuery = range.validate();
             int length = range.getLength();
             if (newQuery != null && length > 0) {
                 request = protocol.constructReadMemoryRequest(module, newQuery, length);
-                LOGGER.debug(module + " CAN $23 Request  ---> " + asHex(request));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(module + " CAN $23 Request  ---> " + asHex(request));
                 response = protocol.constructReadMemoryResponse(1, length);
                 protocol.processReadMemoryResponses(
                         ramQuery,
@@ -430,9 +456,10 @@ public final class NCSLoggerConnection implements LoggerConnection {
                     newQuery.add(query);
                     request = protocol.constructReadMemoryRequest(
                             module, newQuery, EcuQueryData.getDataLength(query));
-                    LOGGER.debug(String.format("Mode:%s %s Memory request  ---> %s",
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(String.format("Mode:%s %s Memory request  ---> %s",
                             pollState.getCurrentState(), module, asHex(request)));
-                    response = protocol.constructReadMemoryResponse(1, 
+                    response = protocol.constructReadMemoryResponse(1,
                             EcuQueryData.getDataLength(query));
                     protocol.processReadMemoryResponses(
                             newQuery,
@@ -444,7 +471,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
 
     private void doFastCanQueries (
             Collection<EcuQuery> queries,
-            Module module, 
+            Module module,
             PollingState pollState) {
 
         // When parameter selection changes or there are RAM parameters present
@@ -462,7 +489,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
         if (!scQuery.isEmpty()) {   // SID/CID queries
             if (pollState.isNewQuery() || !ramQuery.isEmpty()) {
                 request = protocol.constructLoadAddressRequest(scQuery);
-                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
                         pollState.getCurrentState(), module, asHex(request)));
                 // CAN max is 99 bytes
                 if (request.length > 99) {
@@ -470,7 +498,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
                             rb.getString("TOOLARGE"));
                 }
                 response = manager.send(request);
-                LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
                         pollState.getCurrentState(), module, asHex(response)));
                 protocol.validateLoadAddressResponse(response);
             }
@@ -488,7 +517,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
         if (!ramQuery.isEmpty()) {  // RAM queries
             if (pollState.isNewQuery() || !scQuery.isEmpty()) {
                 request = protocol.constructLoadAddressRequest(ramQuery);
-                LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
                         pollState.getCurrentState(), module, asHex(request)));
                 // CAN max is 99 bytes
                 if (request.length > 99) {
@@ -496,7 +526,8 @@ public final class NCSLoggerConnection implements LoggerConnection {
                             rb.getString("TOOLARGE"));
                 }
                 response = manager.send(request);
-                LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
                         pollState.getCurrentState(), module, asHex(response)));
                 protocol.validateLoadAddressResponse(response);
                 pollState.setFastPoll(true);
@@ -517,12 +548,14 @@ public final class NCSLoggerConnection implements LoggerConnection {
             byte[] response, PollingState pollState) {
 
         manager.send(request, response, pollState);
-        LOGGER.trace(module + " Read Raw Response <--- " + asHex(response));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace(module + " Read Raw Response <--- " + asHex(response));
         final byte[] processedResponse = protocol.preprocessResponse(
                 request, response, pollState);
-        LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
                 module + " Response <--- " + asHex(processedResponse));
         return processedResponse;
     }
-    
+
 }

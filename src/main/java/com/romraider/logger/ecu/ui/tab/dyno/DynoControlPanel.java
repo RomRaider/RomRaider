@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,8 @@ public final class DynoControlPanel extends JPanel {
 
     public boolean isValidET(long now, double vs) {
         try {
-            //            LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
+            //if (LOGGER.isTraceEnabled())
+            //    LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
             if (vs > 0) {
                 if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
                 distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
@@ -954,7 +955,8 @@ public final class DynoControlPanel extends JPanel {
         //                ambTemp.setText(String.format("%1.1f", result));
         //                result = parseDouble(carMass) * 0.4536;
         //                carMass.setText(String.format("%1.0f", result));
-        //                LOGGER.trace("units selcted: " + units + " result: " + result);
+        //                if (LOGGER.isTraceEnabled())
+        //                    LOGGER.trace("units selcted: " + units + " result: " + result);
         //                result = parseDouble(deltaMass) * 0.4536;
         //                deltaMass.setText(String.format("%1.0f", result));
         //                result = parseDouble(elevation) * 0.3048;
@@ -1037,7 +1039,8 @@ public final class DynoControlPanel extends JPanel {
                     if (headers[x].contains(LOG_VS_I)) vsLogUnits = LOG_VS_I;
                     if (headers[x].contains(LOG_VS_M)) vsLogUnits = LOG_VS_M;
                 }
-                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + "; Time X: " + timeMult +
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + "; Time X: " + timeMult +
                         "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
                         "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
@@ -1077,7 +1080,8 @@ public final class DynoControlPanel extends JPanel {
                             maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
                         chartPanel.addRawData(logTime, logRpm);
-                        LOGGER.trace("DYNO log file time: " + logTime + "; speed: " + logRpm);
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("DYNO log file time: " + logTime + "; speed: " + logRpm);
                     }
                 }
                 inputStream.close();
@@ -1624,7 +1628,8 @@ public final class DynoControlPanel extends JPanel {
                                             gearsRatioArr[s][g] = grsValueList.item(0).getNodeValue().trim();
                                         }
                                     }
-                                    //                                        LOGGER.trace("Car: " + s + " Gear: " + g + " Ratio: " + gearsRatioArr[s][g]);
+                                    //if (LOGGER.isTraceEnabled())
+                                    //    LOGGER.trace("Car: " + s + " Gear: " + g + " Ratio: " + gearsRatioArr[s][g]);
                                 }
                                 break;
                             case 1:

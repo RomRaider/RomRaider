@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,12 +43,14 @@ public final class AemRunner implements Stoppable {
         this.dataItems = dataItems;
     }
 
+    @Override
     public void run() {
         try {
             while (!stop) {
                 final String response = connection.readLine();
                 if (isNullOrEmpty(response)) continue;
-                LOGGER.trace("AEM X-Wifi Response: " + response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("AEM X-Wifi Response: " + response);
                 final String[] values = response.split(COMMA);
                 for (int i = 0; i < values.length; i++) {
                     final AemDataItem dataItem = dataItems.get(AemSensorType.valueOf(i));
@@ -63,6 +65,7 @@ public final class AemRunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }

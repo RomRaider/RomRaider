@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,13 @@ public final class ApsxRunner implements Stoppable {
         this.dataItem = dataItem;
     }
 
+    @Override
     public void run() {
         try {
             while (!stop) {
                 final int response = connection.read();
-                LOGGER.trace("APSX AFR Response: " + response);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("APSX AFR Response: " + response);
                 if (response != -1) dataItem.setData(response / 10.0);
             }
         } catch (Throwable t) {
@@ -54,6 +56,7 @@ public final class ApsxRunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }

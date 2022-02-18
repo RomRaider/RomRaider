@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ import static org.apache.log4j.Logger.getLogger;
 public final class NawConvertorImpl implements NawConvertor {
     private static final Logger LOGGER = getLogger(NawConvertorImpl.class);
 
+    @Override
     public double convert(byte[] bytes) {
         int temp = 0;
         double lambda = 0.0;
@@ -79,14 +80,15 @@ public final class NawConvertorImpl implements NawConvertor {
         } else { // Rich
             lambda = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368);
         }
-        temp = (0x000000FF & ((int) bytes[8])); // convert signed byte to unsigned byte
+        temp = (0x000000FF & (bytes[8])); // convert signed byte to unsigned byte
         if (temp < 11) { // check sensor temperature range for valid reading
             lambda = 99.99;    // sensor too hot
         } else if (temp > 19) {
             lambda = -99.99;    // sensor too cold
         }
         temp = 1500 / temp;  // temperature in percent, 100% is best
-        LOGGER.trace("Converting NAW_7S response: " + asHex(bytes) + " --> Ip:" + unCalIp + " --> temp:" + temp + "% --> lambda:" + lambda);
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Converting NAW_7S response: " + asHex(bytes) + " --> Ip:" + unCalIp + " --> temp:" + temp + "% --> lambda:" + lambda);
         return lambda;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,13 +72,15 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
         else if (ecuInitLength < 56) {
             lastCode = "D256";
         }
-        LOGGER.debug(
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(
                 "DT codes ECU init length: " + ecuInitLength +
                 ", Last code: " + lastCode);
 
         for (int i = 0; !dtcodes.get(i).getId().equals(lastCode); i++) {
             queries.add(new EcuQueryImpl(dtcodes.get(i)));
-            LOGGER.debug("Adding query for DTC: " + dtcodes.get(i).getName());
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Adding query for DTC: " + dtcodes.get(i).getName());
         }
 
         final Settings settings = SettingsManager.getSettings();
@@ -114,7 +116,8 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
                         int mem = 0;
                         if (result == 1 || result == 3) tmp = 1;
                         if (result == 2 || result == 3) mem = 1;
-                        LOGGER.debug("DTC: " +
+                        if (LOGGER.isDebugEnabled())
+                            LOGGER.debug("DTC: " +
                                 query.getLoggerData().getName() +
                                 " tmp:" + tmp + " mem:" + mem);
                         dtcSet.add(query);

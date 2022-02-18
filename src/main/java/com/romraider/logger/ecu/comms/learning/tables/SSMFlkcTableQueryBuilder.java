@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.util.HexUtil;
 
 /**
- * Build an EcuQuery for each of the cells in the FLKC RAM table. 
+ * Build an EcuQuery for each of the cells in the FLKC RAM table.
  */
 public class SSMFlkcTableQueryBuilder {
     private static final Logger LOGGER =
@@ -71,7 +71,8 @@ public class SSMFlkcTableQueryBuilder {
             checksummed = 2;
             dataSize = 4;
         }
-        LOGGER.debug(
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(
                 String.format(
                         "FLKC Data format rows:%d col:%d checksummed:%d " +
                         "dataSize:%d FLKC:%s",
@@ -87,7 +88,8 @@ public class SSMFlkcTableQueryBuilder {
                 final String addrStr =
                         HexUtil.intToHexString(
                                 flkcAddr + (i * dataSize * checksummed));
-                LOGGER.debug(
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(
                         String.format(
                                 "FLKC Data row:%d col:%d addr:%s",
                                 j, k, addrStr));
@@ -98,7 +100,7 @@ public class SSMFlkcTableQueryBuilder {
                             flkc.getLoggerData().getSelectedConvertor()
                         }
                     );
-                flkcQueryCols.add(new EcuQueryImpl((EcuData) epi));
+                flkcQueryCols.add(new EcuQueryImpl(epi));
                 i++;
             }
             flkcQueryRows.add(flkcQueryCols);

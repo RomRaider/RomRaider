@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,11 @@ public final class FileAssociator {
 
         // remove association if it already exists
 
-        LOGGER.debug("Removing 1...");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Removing 1...");
         removeAssociation(extension);
-        LOGGER.debug("Removing 2...");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Removing 2...");
 
         AssociationService serv = new AssociationService();
         Association logassoc = new Association();
@@ -51,7 +53,8 @@ public final class FileAssociator {
         logassoc.addAction(new Action("open", command + " %1"));
         logassoc.setIconFileName(FileAssociator.class.getClass().getResource("/graphics/romraider-ico.ico").toString());
 
-        LOGGER.debug("Adding ...\n" + logassoc + "\n\n\n");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Adding ...\n" + logassoc + "\n\n\n");
 
         try {
             serv.registerUserAssociation(logassoc);
@@ -68,16 +71,19 @@ public final class FileAssociator {
         Association logassoc = serv.getFileExtensionAssociation(extension.toUpperCase());
 
         if(null == logassoc) {
-            LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
             return true;
         }
 
-        LOGGER.debug("Removing ...\n" + logassoc + "\n\n\n");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Removing ...\n" + logassoc + "\n\n\n");
 
         try {
             serv.unregisterUserAssociation(logassoc);
         } catch (AssociationNotRegisteredException anre) {
-            LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
         } catch (Exception e) {
             LOGGER.error("Error removing association", e);
             return false;

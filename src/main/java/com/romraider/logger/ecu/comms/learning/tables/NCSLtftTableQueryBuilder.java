@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.util.HexUtil;
 
 /**
- * Build an EcuQuery for each of the cells in the FLKC RAM table. 
+ * Build an EcuQuery for each of the cells in the FLKC RAM table.
  */
 public class NCSLtftTableQueryBuilder {
     private static final Logger LOGGER =
@@ -66,7 +66,8 @@ public class NCSLtftTableQueryBuilder {
         final List<List<EcuQuery>> ltftQueryRows = new ArrayList<List<EcuQuery>>();
         final EcuData parameter = (EcuData) ltft.getLoggerData();
         int dataSize = EcuQueryData.getDataLength(parameter);
-        LOGGER.debug(
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(
                 String.format(
                         "LTFT Data format rows:%d col:%d " +
                         "dataSize:%d LTFT:%s",
@@ -82,7 +83,8 @@ public class NCSLtftTableQueryBuilder {
                 final String addrStr =
                         HexUtil.intToHexString(
                                 ltftAddr + (i * dataSize));
-                LOGGER.debug(
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(
                         String.format(
                                 "LTFT Data row:%d col:%d addr:%s",
                                 j, k, addrStr));
@@ -93,7 +95,7 @@ public class NCSLtftTableQueryBuilder {
                             ltft.getLoggerData().getSelectedConvertor()
                         }
                     );
-                ltftQueryCols.add(new EcuQueryImpl((EcuData) epi));
+                ltftQueryCols.add(new EcuQueryImpl(epi));
                 i++;
             }
             ltftQueryRows.add(ltftQueryCols);

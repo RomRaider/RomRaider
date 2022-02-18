@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 
 /**
- * Build an EcuQuery for each of the cells in the FLKC RAM table. 
+ * Build an EcuQuery for each of the cells in the FLKC RAM table.
  */
 public class DS2FlkcTableQueryBuilder {
     private static final Logger LOGGER =
@@ -65,7 +65,8 @@ public class DS2FlkcTableQueryBuilder {
         final List<List<EcuQuery>> flkcQueryRows = new ArrayList<List<EcuQuery>>();
         final EcuData parameter = (EcuData) flkc.getLoggerData();
         int dataSize = EcuQueryData.getDataLength(parameter);
-        LOGGER.debug(
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(
                 String.format(
                         "Knock Data format rows:%d col:%d " +
                         "dataSize:%d Knock Index:%s",
@@ -79,7 +80,8 @@ public class DS2FlkcTableQueryBuilder {
             for (int k = 0; k < columns; k++) {
                 String id = "Knock-r" + j + "c" + k;
                 final String addrStr = String.format("0x%06X", flkcAddr + (i * dataSize));
-                LOGGER.trace(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                         String.format(
                                 "Knock Data row:%d col:%d addr:%s",
                                 j, k, addrStr));
@@ -94,7 +96,7 @@ public class DS2FlkcTableQueryBuilder {
                             parameter.getSelectedConvertor()
                         }
                     );
-                flkcQueryCols.add(new EcuQueryImpl((EcuData) epi));
+                flkcQueryCols.add(new EcuQueryImpl(epi));
                 i++;
             }
             flkcQueryRows.add(flkcQueryCols);

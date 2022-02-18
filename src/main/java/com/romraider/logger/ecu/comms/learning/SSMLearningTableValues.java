@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
     public SSMLearningTableValues() {}
 
+    @Override
     public void init(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel,
@@ -170,7 +171,8 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     }
                     s++;
                 }
-                LOGGER.trace(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                     String.format("Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                         queries.size(), setSize, querySet1.size(), querySet2.size()));
 
@@ -242,7 +244,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                                             flkcAddr,
                                             flkcRpm.length,
                                             flkcLoad.length - 1);
-    
+
                     for (int i = 0; i < flkcQueryGroups.size(); i++) {
                         queries.clear();
                         for (int j = 0; j < flkcQueryGroups.get(i).size(); j++) {
@@ -257,7 +259,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                                 queries,
                                 settings.getDestinationTarget(),
                                 new PollingStateImpl());
-                        LOGGER.info("FLKC row " + i + " values retrieved.");               
+                        LOGGER.info("FLKC row " + i + " values retrieved.");
                     }
                 }
                 else {
@@ -431,30 +433,30 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     break;
                 case E13:
                 case E44:
-                    afLearningBank1.add((Object) "#1");
-                    afLearningBank1.add((Object) result);
+                    afLearningBank1.add("#1");
+                    afLearningBank1.add(result);
                     break;
                 case E14:
                 case E45:
                 case E15:
                 case E46:
-                    afLearningBank1.add((Object) result);
+                    afLearningBank1.add(result);
                     break;
                 case E16:
                 case E47:
-                    afLearningBank1.add((Object) result);
+                    afLearningBank1.add(result);
                     afLearning.add(afLearningBank1);
                     break;
                 case E62:
-                    afLearningBank2.add((Object) "#2");
-                    afLearningBank2.add((Object) result);
+                    afLearningBank2.add("#2");
+                    afLearningBank2.add(result);
                     break;
                 case E63:
                 case E64:
-                    afLearningBank2.add((Object) result);
+                    afLearningBank2.add(result);
                     break;
                 case E65:
-                    afLearningBank2.add((Object) result);
+                    afLearningBank2.add(result);
                     afLearning.add(afLearningBank2);
                     break;
                 default:

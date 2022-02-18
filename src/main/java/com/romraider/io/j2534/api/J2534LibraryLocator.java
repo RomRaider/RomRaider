@@ -148,7 +148,8 @@ public class J2534LibraryLocator {
 	            final int supported = getDWord(advapi32, vendorKey.getValue(), protocol);
 	            if (supported == 0 ) continue;
 	            final String library = getSZ(advapi32, vendorKey.getValue(), FUNCTIONLIBRARY);
-	            LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
+	            if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
 	                    vendor, library));
 	            if (ParamChecker.isNullOrEmpty(library)) continue;
 	            libraries.add(new J2534Library(vendor, library));

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
         this.pollMode = pollMode;
     }
 
+    @Override
     public void run() {
         running = true;
         try {
@@ -74,6 +75,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
         // wait for it to stop running so mts can disconnect/dispose... timeout after 5secs
@@ -108,10 +110,12 @@ public final class MTSRunner implements MTSEvents, Stoppable {
         }
     }
 
+    @Override
     public void connectionEvent(int result) {
         if (result == 0) {
             mts.startData();
-            LOGGER.debug("Innovate MTS connection success, pollmode:" + pollMode);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Innovate MTS connection success, pollmode:" + pollMode);
         }
         else if (result == -1) {
             throw new IllegalStateException("No Innovate MTS Data detected");
@@ -120,19 +124,22 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             throw new IllegalStateException("Innovate MTS Connect Error: " + result);
         }
     }
-      
+
+    @Override
     public void connectionError() {
         stop();
         throw new IllegalStateException("Innovate MTS Connection Timeout");
     }
 
+    @Override
     public void newData() {
         if(!pollMode) {
-            LOGGER.debug("Innovate MTS newData event");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Innovate MTS newData event");
             readData();
         }
     }
-    
+
     public void readData() {
         Lm2MtsDataItem dataItem;
         int type;
@@ -150,7 +157,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                 type = mts.inputType();
                 function = mts.inputFunction();
                 sample = mts.inputSample();
-    
+
                 // 5V channel
                 // Determine the range between min and max,
                 // calculate what percentage of that our sample represents,
@@ -159,15 +166,15 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                     if (function == MTS_FUNC_NOTLAMBDA.getFunction()) {
                         min = dataItem.getMinValue();
                         max = dataItem.getMaxValue();
-                        data = ((max - min) * ((float) sample / 1024f)) + min;
+                        data = ((max - min) * (sample / 1024f)) + min;
                     }
                     else {
                         // this will report other functions, such as ERROR states
                         // as a negative constant value
-                        data = (float)function * -1f;
+                        data = function * -1f;
                     }
                 }
-    
+
                 // AFR
                 // Take each sample step as .001 Lambda,
                 // add 0.5 (so our range is 0.5 to 1.523 for our 1024 steps),
@@ -175,36 +182,36 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                 if (type == MTS_TYPE_AFR.getType()) {
                     if (function == MTS_FUNC_LAMBDA.getFunction()) {
                         multiplier = dataItem.getMultiplier();
-                        data = ((float) sample / 1000f + 0.5f) * multiplier;
+                        data = (sample / 1000f + 0.5f) * multiplier;
                     }
                     else if (function == MTS_FUNC_O2.getFunction()) {
-                        data = ((float) sample / 10f);
+                        data = (sample / 10f);
                     }
                     else {
                         // this will report other functions, such as ERROR states
                         // as a negative constant value
-                        data = (float)function * -1f;
+                        data = function * -1f;
                     }
                 }
-    
+
                 // LAMBDA
                 // Identical to AFR, except we do not multiply for AFR.
                 if (type == MTS_TYPE_LAMBDA.getType()) {
                     if (function == MTS_FUNC_LAMBDA.getFunction()) {
-                        data = (float) sample / 1000f + 0.5f;
+                        data = sample / 1000f + 0.5f;
                     }
                     else {
                         // this will report other functions, such as ERROR states
                         // as a negative constant value
-                        data = (float)function * -1f;
+                        data = function * -1f;
                     }
                 }
                 // set data for this sensor based on inputNumber
                 if (dataItem != null) dataItem.setData(data);
-                final String result = String.format(
-                        "Innovate MTS input: %d, type: %d, function: %d, sample: %d, result: %f",
-                        i, type, function, sample, data);
-                LOGGER.trace(result);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(String.format(
+                            "Innovate MTS input: %d, type: %d, function: %d, sample: %d, result: %f",
+                            i, type, function, sample, data));
             }
         }
         catch (Exception e) {

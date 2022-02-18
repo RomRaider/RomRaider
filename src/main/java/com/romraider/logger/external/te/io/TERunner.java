@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +46,13 @@ public final class TERunner implements Stoppable {
     private byte byteSum;
     private int sequenceNo;
     private int lastSequenceNo = -1;
-    
+
     public TERunner(String port, Map<ExternalSensorType, TEDataItem> dataItems) {
         this.connection = new TEConnectionImpl(port);
         this.dataItems = dataItems;
     }
 
+    @Override
     public void run() {
         try {
             boolean packetStarted = false;
@@ -80,9 +81,10 @@ public final class TERunner implements Stoppable {
                             byteSum = (byte) ~byteSum; // 1's complement of sum
                             break;
                         case 28:
-                            LOGGER.trace("Tech Edge (data 2.0): LastSeq:" + lastSequenceNo + " seq:" + sequenceNo + " data:" + buffer);
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace("Tech Edge (data 2.0): LastSeq:" + lastSequenceNo + " seq:" + sequenceNo + " data:" + buffer);
                             if (byteSum != b) {
-                                LOGGER.error("Tech Edge (data 2.0): CheckSum Failed, calculated:" + byteSum + ", received:" + b);                                
+                                LOGGER.error("Tech Edge (data 2.0): CheckSum Failed, calculated:" + byteSum + ", received:" + b);
                             }
                             if (lastSequenceNo == -1) {
                                 lastSequenceNo = sequenceNo;
@@ -181,6 +183,7 @@ public final class TERunner implements Stoppable {
         }
     }
 
+    @Override
     public void stop() {
         stop = true;
     }

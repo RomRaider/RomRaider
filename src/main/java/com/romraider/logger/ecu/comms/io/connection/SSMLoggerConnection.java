@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,20 +65,24 @@ public final class SSMLoggerConnection implements LoggerConnection {
     @Override
     public void ecuReset(Module module, int resetCode) {
         byte[] request = protocol.constructEcuResetRequest(module, resetCode);
-        LOGGER.debug(module + " Reset Request  ---> " + asHex(request));
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(module + " Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
-        LOGGER.debug(module + " Reset Response <--- " + asHex(processedResponse));
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(module + " Reset Response <--- " + asHex(processedResponse));
         protocol.processEcuResetResponse(processedResponse);
     }
 
     @Override
     public void ecuInit(EcuInitCallback callback, Module module) {
         byte[] request = protocol.constructEcuInitRequest(module);
-        LOGGER.debug(module + " Init Request  ---> " + asHex(request));
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(module + " Init Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
-        LOGGER.debug(module + " Init Response <--- " + asHex(processedResponse));
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(module + " Init Response <--- " + asHex(processedResponse));
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
@@ -102,7 +106,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
                         module, tcuSubQuery);
                 byte[] response = new byte[0];
                 if (addrLength == 1) {
-                    LOGGER.debug(module + " CAN Request  ---> " + asHex(request));
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(module + " CAN Request  ---> " + asHex(request));
                     response = protocol.constructReadAddressResponse(
                             tcuSubQuery, pollState);
                     manager.send(request, response, pollState);
@@ -114,7 +119,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
                 }
                 final byte[] processedResponse = protocol.preprocessResponse(
                         request, response, pollState);
-                LOGGER.debug(module + " CAN Response <--- " + asHex(processedResponse));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(module + " CAN Response <--- " + asHex(processedResponse));
                 protocol.processReadAddressResponses(
                         tcuSubQuery, processedResponse, pollState);
             }
@@ -123,7 +129,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
             final byte[] request = protocol.constructReadAddressRequest(
                     module, queries);
             if (pollState.getCurrentState() == PollingState.State.STATE_0) {
-                LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
                         module + " Request  ---> " + asHex(request));
             }
             final byte[] response = protocol.constructReadAddressResponse(
@@ -131,7 +138,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
             manager.send(request, response, pollState);
             final byte[] processedResponse = protocol.preprocessResponse(
                     request, response, pollState);
-            LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
                     module + " Response <--- " + asHex(processedResponse));
             protocol.processReadAddressResponses(
                     queries, processedResponse, pollState);
@@ -160,14 +168,16 @@ public final class SSMLoggerConnection implements LoggerConnection {
                                 writeKey.getBytes(),
                                 writeQueries.get(writeKey)[0]);
 
-                LOGGER.debug(module + " Write Request  ---> " + asHex(request));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(module + " Write Request  ---> " + asHex(request));
                 final byte[] response = manager.send(request);
                 byte[] processedResponse =
                         protocol.preprocessResponse(
                                 request,
                                 response,
                                 new PollingStateImpl());
-                LOGGER.debug(module + " Write Response <--- " + asHex(processedResponse));
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(module + " Write Response <--- " + asHex(processedResponse));
                 protocol.processWriteResponse(
                         writeQueries.get(writeKey), processedResponse);
             }

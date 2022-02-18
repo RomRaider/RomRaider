@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             super.setBorder(BorderFactory.createEmptyBorder());
         }
     }
-    
+
     private void saveFineCourseValuesInTable(Table t) {
         if(t == null || t.getCurrentScale() == null) return;
 
@@ -455,7 +455,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
         else{
             overlayLog.setEnabled(false);
-            clearOverlay.setEnabled(false);           
+            clearOverlay.setEnabled(false);
         }
 
         if(null != currentTable && currentTable.isStaticDataTable()) {
@@ -679,7 +679,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             //***********
             /*minV = 0.0;
             maxV = 13.01;*/
-            LOGGER.debug("Scale: " + maxV + COMMA + minV);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Scale: " + maxV + COMMA + minV);
             //***********
 
             Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, currentTable.getName());
@@ -758,7 +759,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         } else if (e.getSource() == overlayLog) {
             // enable/disable log overlay and live data display
             curTable.getTableView().setOverlayLog(overlayLog.isSelected());
-            
+
             if(!overlayLog.isSelected())
             	curTable.getTableView().clearLiveDataTrace();
         }
