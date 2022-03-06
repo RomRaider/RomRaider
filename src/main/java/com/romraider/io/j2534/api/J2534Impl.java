@@ -927,6 +927,7 @@ public final class J2534Impl implements J2534 {
         long start = currentTimeMillis();
         long end = start + timeout;
         long current = start;
+        int len = 0;
         do {
             if (currentTimeMillis() >= end) {
                 String errString = String.format(
@@ -934,19 +935,25 @@ public final class J2534Impl implements J2534 {
                     response.length - index);
                 throw new J2534Exception(errString);
             }
-            PASSTHRU_MSG msg = doReadMsg(channelId);
+            PASSTHRU_MSG msg = doReadMsg(channelId, timeout);
             if (LOGGER.isTraceEnabled())
                 LOGGER.trace("Read B Msg: " + toString(msg));
             if (!isResponse(msg)) continue;
             // if we get a large msg back, only read what will fit in the response buffer
-            int len = 0;
-            if (msg.dataSize.intValue() <= response.length) {
+            len = 0;
+            if (msg.dataSize.intValue() <= (response.length - index)) {
                 len = msg.dataSize.intValue();
             }
-            else {
+            else if (msg.dataSize.intValue() == (response.length - index)) {
                 len = response.length;
                 if (LOGGER.isTraceEnabled())
                     LOGGER.trace(String.format(
+                        "readMsg: only read %d of %d bytes from response message",
+                        len, msg.dataSize.intValue()));
+            }
+            else if (msg.dataSize.intValue() > (response.length - index)) {
+                len = response.length - index;
+                LOGGER.trace(String.format(
                         "readMsg: only read %d of %d bytes from response message",
                         len, msg.dataSize.intValue()));
             }
@@ -971,7 +978,7 @@ public final class J2534Impl implements J2534 {
         List<byte[]> responses = new ArrayList<byte[]>();
         long end = currentTimeMillis() + maxWait;
         do {
-            PASSTHRU_MSG msg = doReadMsg(channelId);
+            PASSTHRU_MSG msg = doReadMsg(channelId, maxWait);
             if (LOGGER.isTraceEnabled())
                 LOGGER.trace("Read W Msg: " + toString(msg));
             if (isResponse(msg))
@@ -1003,7 +1010,7 @@ public final class J2534Impl implements J2534 {
                     numMsg);
                 throw new J2534Exception(errString);
             }
-            PASSTHRU_MSG[] msgs = doReadMsg(channelId, 1);  // num of msgs to read
+            PASSTHRU_MSG[] msgs = doReadMsg(channelId, numMsg, timeout);  // num of msgs to read
             for (PASSTHRU_MSG msg : msgs) {
                 if (LOGGER.isTraceEnabled())
                     LOGGER.trace("Read # Msg: " + toString(msg));
@@ -1145,7 +1152,7 @@ public final class J2534Impl implements J2534 {
         return false;
     }
 
-    private PASSTHRU_MSG doReadMsg(int channelId) {
+    private PASSTHRU_MSG doReadMsg(int channelId, long timeout) {
         PASSTHRU_MSG msg = passThruMessage();
         NativeLongByReference pNumMsgs = new NativeLongByReference();
         pNumMsgs.setValue(new NativeLong(1));
@@ -1153,7 +1160,7 @@ public final class J2534Impl implements J2534 {
                 new NativeLong(channelId),
                 msg.getPointer(),
                 pNumMsgs,
-                new NativeLong(50)
+                new NativeLong(timeout)
             );
         if (status.intValue() != Status.NOERROR.getValue() &&
             status.intValue() != Status.ERR_TIMEOUT.getValue() &&
@@ -1163,7 +1170,7 @@ public final class J2534Impl implements J2534 {
         return msg;
     }
 
-    private PASSTHRU_MSG[] doReadMsg(int channelId, int nm) {
+    private PASSTHRU_MSG[] doReadMsg(int channelId, int nm, long timeout) {
         PASSTHRU_MSG[] msgs =
         (PASSTHRU_MSG[]) new PASSTHRU_MSG.ByReference().toArray(nm);
         NativeLongByReference pNumMsgs = new NativeLongByReference();
@@ -1172,7 +1179,7 @@ public final class J2534Impl implements J2534 {
                 new NativeLong(channelId),
                 msgs[0].getPointer(),
                 pNumMsgs,
-                new NativeLong(50)
+                new NativeLong(timeout)
             );
         if (status.intValue() != Status.NOERROR.getValue() &&
             status.intValue() != Status.ERR_TIMEOUT.getValue() &&
