@@ -307,16 +307,20 @@ public class J2534LibraryLocator {
             propFile = new FileInputStream("./customize/j2534Libraries.properties");
             libraries.load(propFile);
             final String win_names = libraries.getProperty("windows");
-            String[] names = win_names.split(";", 0);
-            for (String name : names) {
-                if (isNullOrEmpty(name)) continue;
-                WIN_LIBRARIES.add(name.trim());
+            if (!isNullOrEmpty(win_names)) {
+                final String[] names = win_names.split(";", 0);
+                for (String name : names) {
+                    if (isNullOrEmpty(name)) continue;
+                    WIN_LIBRARIES.add(name.trim());
+                }
             }
             final String linux_names = libraries.getProperty("linux");
-            names = linux_names.split(";", 0);
-            for (String name : names) {
-                if (isNullOrEmpty(name)) continue;
-                LINUX_LIBRARIES.add(name.trim());
+            if (!isNullOrEmpty(linux_names)) {
+                final String[] names = linux_names.split(";", 0);
+                for (String name : names) {
+                    if (isNullOrEmpty(name)) continue;
+                    LINUX_LIBRARIES.add(name.trim());
+                }
             }
             propFile.close();
             LOGGER.info("J2534 Library names loaded from file: ./customize/j2534Libraries.properties");
