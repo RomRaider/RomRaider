@@ -108,7 +108,11 @@ public final class SerialConnectionManager implements ConnectionManager {
     @Override
     public byte[] send(byte[] bytes) {
         checkNotNull(bytes, "bytes");
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Reading stale data");
         connection.readStaleData();
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Writing bytes");
         connection.write(bytes);
         int available = 0;
         boolean keepLooking = true;
@@ -126,13 +130,13 @@ public final class SerialConnectionManager implements ConnectionManager {
 
     @Override
     public void clearLine() {
-        if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Serial sending line break");
-        connection.sendBreak( 1 /
-                (connectionProperties.getBaudRate() *
+        int duration = (10000 / connectionProperties.getBaudRate()) *
                         (connectionProperties.getDataBits() +
-                                connectionProperties.getStopBits() +
-                                connectionProperties.getParity() + 1)));
+                         connectionProperties.getStopBits() +
+                         connectionProperties.getParity() + 1);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Serial sending line break of duration: " + duration + " msec");
+        connection.sendBreak(duration);
         do {
             sleep(2);
             byte[] badBytes = connection.readAvailable();

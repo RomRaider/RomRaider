@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 
 package com.romraider.io.serial.port;
 
-import gnu.io.CommPortIdentifier;
+import com.fazecast.jSerialComm.*;
 import java.util.List;
 
 public interface SerialPortDiscoverer {
 
-    List<CommPortIdentifier> listPorts();
+    List<SerialPort> listPorts();
 
 }

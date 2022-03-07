@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,25 +19,24 @@
 
 package com.romraider.io.elm327;
 
-import com.romraider.io.serial.connection.SerialConnectionImpl;
-import com.romraider.logger.ecu.exception.NotConnectedException;
-import com.romraider.logger.ecu.exception.PortNotFoundException;
-import com.romraider.logger.ecu.exception.SerialCommunicationException;
-import com.romraider.logger.ecu.exception.UnsupportedPortTypeException;
+import static com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_DISABLED;
+import static com.fazecast.jSerialComm.SerialPort.TIMEOUT_READ_SEMI_BLOCKING;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import gnu.io.CommPortIdentifier;
-import static gnu.io.CommPortIdentifier.PORT_SERIAL;
-import static gnu.io.CommPortIdentifier.getPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import static gnu.io.SerialPort.FLOWCONTROL_NONE;
-import gnu.io.UnsupportedCommOperationException;
-import org.apache.log4j.Logger;
+import static com.romraider.util.ThreadUtil.sleep;
 import static org.apache.log4j.Logger.getLogger;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import org.apache.log4j.Logger;
+
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortInvalidPortException;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
+import com.romraider.logger.ecu.exception.ConfigurationException;
+import com.romraider.logger.ecu.exception.NotConnectedException;
+import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 
 public final class ElmConnection {
@@ -45,21 +44,21 @@ public final class ElmConnection {
     private SerialPort serialPort;
     private PrintWriter os;
     private BufferedInputStream is;
-    
+
     public ElmConnection(String portName, int baudrate) {
         checkNotNullOrEmpty(portName, "portName");
-        
-        try {      	
+
+        try {
             serialPort = connect(portName, baudrate);
             os = new PrintWriter(serialPort.getOutputStream());
-            is = new BufferedInputStream (serialPort.getInputStream());	  
-            
+            is = new BufferedInputStream(serialPort.getInputStream());
+
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
-        }    
+        }
     }
-    
+
     public void flush() {
         try {
             os.flush();
@@ -68,7 +67,7 @@ public final class ElmConnection {
         }
     }
 
-       
+
     public void write(String command) {
         try {
             os.println(command);
@@ -84,7 +83,7 @@ public final class ElmConnection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        
+
         return 0;
     }
 
@@ -94,7 +93,7 @@ public final class ElmConnection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        
+
         return "";
     }
 
@@ -105,24 +104,24 @@ public final class ElmConnection {
         try {
             for(int i = 0; i < numChars && available() > 0; i++) {
                 response.append((char)is.read());
-            }           
+            }
 
         } catch (Exception e) {
             throw new SerialCommunicationException(e);
         }
-        
+
         return response.toString();
     }
 
     //Reads everything that is available
     public String readAvailable() {
         String response = "";
-        
+
         response += read(available());
         return response;
     }
 
-    public void readStaleData() {      
+    public void readStaleData() {
     	while(available() > 0)
 			try {
 				is.read();
@@ -147,11 +146,8 @@ public final class ElmConnection {
 			}
         }
         if (serialPort != null) {
-            try {
-                serialPort.close();              
-            } catch (Exception e) {
-                LOGGER.error("Error closing serial port", e);
-            }
+            if (!serialPort.closePort())
+                LOGGER.error("Error closing serial port: " + serialPort.getSystemPortName());
         }
         LOGGER.info("Connection closed.");
         try {
@@ -162,57 +158,47 @@ public final class ElmConnection {
 		}
     }
 
-    public void sendBreak(int duration) {
-        try {
-            serialPort.sendBreak(duration);
-        } catch (Exception e) {
-            throw new SerialCommunicationException(e);
-        }
+    public void sendBreak(long duration) {
+        if (!serialPort.setBreak())
+            throw new SerialCommunicationException("Send Break");
+        sleep(duration);
+        if (!serialPort.clearBreak())
+            throw new SerialCommunicationException("Clear Break");
     }
-    
+
     private SerialPort connect(String portName, int baudrate) {
-        CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
-        SerialPort serialPort = openPort(portIdentifier, 3000);
-        
-        initSerialPort(serialPort, baudrate, 8, 1 ,0);
-        LOGGER.info("Connected to: " + portName);      
+        final SerialPort serialPort = openPort(portName);
+        serialPort.openPort();
+        configSerialPort(serialPort, baudrate, 8, 1, 0);
+        LOGGER.info("Connected to: " + portName);
         return serialPort;
     }
 
-    private SerialPort openPort(CommPortIdentifier portIdentifier, int connectTimeout) {
-        checkIsSerialPort(portIdentifier);
+    private SerialPort openPort(String portName) {
+    	SerialPort serialPort;
         try {
-            return (SerialPort) portIdentifier.open(this.getClass().getName(), connectTimeout);
-        } catch (PortInUseException e) {
-            throw new SerialCommunicationException("Port is currently in use: " 
-        + portIdentifier.getName());
+        	serialPort = SerialPort.getCommPort(portName);
+        	if (!serialPort.openPort())
+        		throw new SerialCommunicationException("Failed to open port: " + portName);
+        } catch (SerialPortInvalidPortException e) {
+            throw new SerialCommunicationException("Port is unavailable: " + portName);
         }
+		return serialPort;
     }
 
-    private void checkIsSerialPort(CommPortIdentifier portIdentifier) {
-        if (portIdentifier.getPortType() != PORT_SERIAL) {
-            throw new UnsupportedPortTypeException("Port type "
-        + portIdentifier.getPortType() + " not supported - must be serial.");
-        }
-    }
-
-    private void initSerialPort(SerialPort serialPort, int baudrate, int dataBits,
-    		int stopBits, int parity) {
+    private void configSerialPort(
+    		SerialPort serialPort, int baudrate, int dataBits, int stopBits, int parity) {
         try {
-            serialPort.setFlowControlMode(FLOWCONTROL_NONE);
-            serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
-            serialPort.disableReceiveTimeout();
-            serialPort.setRTS(false);
-        } catch (UnsupportedCommOperationException e) {
+            if(!serialPort.setFlowControl(FLOW_CONTROL_DISABLED))
+            	throw new ConfigurationException("Flow control");
+            if (!serialPort.setComPortParameters(baudrate, dataBits, stopBits, parity))
+            	throw new ConfigurationException("Connection properties");
+            if (!serialPort.setComPortTimeouts(TIMEOUT_READ_SEMI_BLOCKING, 0, 0))
+            	throw new ConfigurationException("Timeout values");
+            if (!serialPort.setRTS())
+            	throw new ConfigurationException("RTS value");
+        } catch (ConfigurationException e) {
             throw new UnsupportedOperationException(e);
-        }
-    }
-
-    private CommPortIdentifier resolvePortIdentifier(String portName) {
-        try {
-            return getPortIdentifier(portName);
-        } catch (NoSuchPortException e) {
-            throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
     }
 }

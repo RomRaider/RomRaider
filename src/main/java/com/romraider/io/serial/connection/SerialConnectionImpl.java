@@ -19,35 +19,32 @@
 
 package com.romraider.io.serial.connection;
 
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.logger.ecu.exception.NotConnectedException;
-import com.romraider.logger.ecu.exception.PortNotFoundException;
-import com.romraider.logger.ecu.exception.SerialCommunicationException;
-import com.romraider.logger.ecu.exception.UnsupportedPortTypeException;
+import static com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_DISABLED;
+import static com.fazecast.jSerialComm.SerialPort.TIMEOUT_READ_SEMI_BLOCKING;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
-import gnu.io.CommPortIdentifier;
-import static gnu.io.CommPortIdentifier.PORT_SERIAL;
-import static gnu.io.CommPortIdentifier.getPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import static gnu.io.SerialPort.FLOWCONTROL_NONE;
 import static java.lang.System.currentTimeMillis;
-import gnu.io.UnsupportedCommOperationException;
-import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Logger;
+
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortInvalidPortException;
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.exception.ConfigurationException;
+import com.romraider.logger.ecu.exception.NotConnectedException;
+import com.romraider.logger.ecu.exception.SerialCommunicationException;
+
 public class SerialConnectionImpl implements SerialConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
-    private static final String RXTX_READ_LINE_HACK = "Underlying input stream returned zero bytes";
     private final SerialPort serialPort;
     private final BufferedOutputStream os;
     private final BufferedInputStream is;
@@ -74,7 +71,7 @@ public class SerialConnectionImpl implements SerialConnection {
             os.write(bytes, 0, bytes.length);
             os.flush();
         } catch (IOException e) {
-            throw new SerialCommunicationException(e);
+            throw new SerialCommunicationException("Write bytes: " + e);
         }
     }
 
@@ -83,7 +80,7 @@ public class SerialConnectionImpl implements SerialConnection {
         try {
             return is.available();
         } catch (IOException e) {
-            throw new SerialCommunicationException(e);
+            throw new SerialCommunicationException("Available: " + e);
         }
     }
 
@@ -93,7 +90,7 @@ public class SerialConnectionImpl implements SerialConnection {
             waitForBytes(1);
             return is.read();
         } catch (IOException e) {
-            throw new SerialCommunicationException(e);
+            throw new SerialCommunicationException("Read: " + e);
         }
     }
 
@@ -103,7 +100,7 @@ public class SerialConnectionImpl implements SerialConnection {
             waitForBytes(bytes.length);
             is.read(bytes, 0, bytes.length);
         } catch (IOException e) {
-            throw new SerialCommunicationException(e);
+            throw new SerialCommunicationException("Read bytes: " + e);
         }
     }
 
@@ -113,12 +110,7 @@ public class SerialConnectionImpl implements SerialConnection {
             waitForBytes(1);
             return reader.readLine();
         } catch (IOException e) {
-            /*
-            This is a dodgy hack to workaround RXTX seemingly not respecting the request
-            to disable to the receive timeout. ie. gnu.io.SerialPort.disableReceiveTimeout()
-             */
-            if (RXTX_READ_LINE_HACK.equalsIgnoreCase(e.getMessage())) return null;
-            throw new SerialCommunicationException(e);
+            throw new SerialCommunicationException("Read line: " + e);
         }
     }
 
@@ -168,64 +160,54 @@ public class SerialConnectionImpl implements SerialConnection {
             }
         }
         if (serialPort != null) {
-            try {
-                serialPort.close();
-            } catch (Exception e) {
-                LOGGER.error("Error closing serial port", e);
-            }
+            if (!serialPort.closePort())
+                LOGGER.error("Error closing serial port: " + serialPort.getSystemPortName());
         }
         LOGGER.info("Connection closed.");
     }
 
-    @Override
     public void sendBreak(int duration) {
-        try {
-            serialPort.sendBreak(duration);
-        } catch (Exception e) {
-            throw new SerialCommunicationException(e);
-        }
+        if (!serialPort.setBreak())
+            throw new SerialCommunicationException("Send Break");
+        sleep((long)duration);
+        if (!serialPort.clearBreak())
+            throw new SerialCommunicationException("Clear Break");
     }
 
     private SerialPort connect(String portName, ConnectionProperties connectionProperties) {
-        CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
-        SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
-        initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),
-                connectionProperties.getParity());
+        final SerialPort serialPort = openPort(portName);
+        serialPort.openPort();
+        configSerialPort(serialPort,
+        		connectionProperties.getBaudRate(), connectionProperties.getDataBits(),
+        		connectionProperties.getStopBits(), connectionProperties.getParity());
         LOGGER.info("Connected to: " + portName);
         return serialPort;
     }
 
-    private SerialPort openPort(CommPortIdentifier portIdentifier, int connectTimeout) {
-        checkIsSerialPort(portIdentifier);
+    private SerialPort openPort(String portName) {
+    	SerialPort serialPort;
         try {
-            return (SerialPort) portIdentifier.open(this.getClass().getName(), connectTimeout);
-        } catch (PortInUseException e) {
-            throw new SerialCommunicationException("Port is currently in use: " + portIdentifier.getName());
+        	serialPort = SerialPort.getCommPort(portName);
+        	if (!serialPort.openPort())
+        		throw new SerialCommunicationException("Failed to open port: " + portName);
+        } catch (SerialPortInvalidPortException e) {
+            throw new SerialCommunicationException("Port is unavailable: " + portName);
         }
+		return serialPort;
     }
 
-    private void checkIsSerialPort(CommPortIdentifier portIdentifier) {
-        if (portIdentifier.getPortType() != PORT_SERIAL) {
-            throw new UnsupportedPortTypeException("Port type " + portIdentifier.getPortType() + " not supported - must be serial.");
-        }
-    }
-
-    private void initSerialPort(SerialPort serialPort, int baudrate, int dataBits, int stopBits, int parity) {
+    private void configSerialPort(SerialPort serialPort, int baudrate, int dataBits, int stopBits, int parity) {
         try {
-            serialPort.setFlowControlMode(FLOWCONTROL_NONE);
-            serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
-            serialPort.disableReceiveTimeout();
-            serialPort.setRTS(false);
-        } catch (UnsupportedCommOperationException e) {
+            if(!serialPort.setFlowControl(FLOW_CONTROL_DISABLED))
+            	throw new ConfigurationException("Flow control");
+            if (!serialPort.setComPortParameters(baudrate, dataBits, stopBits, parity))
+            	throw new ConfigurationException("Connection properties");
+            if (!serialPort.setComPortTimeouts(TIMEOUT_READ_SEMI_BLOCKING, 0, 0))
+            	throw new ConfigurationException("Timeout values");
+            if (!serialPort.setRTS())
+            	throw new ConfigurationException("RTS value");
+        } catch (ConfigurationException e) {
             throw new UnsupportedOperationException(e);
-        }
-    }
-
-    private CommPortIdentifier resolvePortIdentifier(String portName) {
-        try {
-            return getPortIdentifier(portName);
-        } catch (NoSuchPortException e) {
-            throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,15 @@ package com.romraider.io.serial.port;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
-import gnu.io.CommPortIdentifier;
-import org.apache.log4j.Logger;
-
 import static org.apache.log4j.Logger.getLogger;
+
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
+import com.fazecast.jSerialComm.SerialPort;
 
 public final class SerialPortRefresher implements Runnable {
     private static final Logger LOGGER = getLogger(SerialPortRefresher.class);
@@ -77,10 +79,10 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     private Set<String> listSerialPorts() {
-        List<CommPortIdentifier> portIdentifiers = serialPortDiscoverer.listPorts();
-        Set<String> portNames = new TreeSet<String>();
-        for (CommPortIdentifier portIdentifier : portIdentifiers) {
-            String portName = portIdentifier.getName();
+        final List<SerialPort> portIdentifiers = serialPortDiscoverer.listPorts();
+        final Set<String> portNames = new TreeSet<String>();
+        for (final SerialPort portIdentifier : portIdentifiers) {
+            final String portName = portIdentifier.getSystemPortName();
             if (!portNames.contains(portName)) {
                 portNames.add(portName);
             }

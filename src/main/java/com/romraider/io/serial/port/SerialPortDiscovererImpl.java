@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,38 +19,31 @@
 
 package com.romraider.io.serial.port;
 
-import gnu.io.CommPortIdentifier;
-import static gnu.io.CommPortIdentifier.PORT_SERIAL;
-import static gnu.io.CommPortIdentifier.getPortIdentifiers;
 import static org.apache.log4j.Logger.getLogger;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.fazecast.jSerialComm.SerialPort;
 
 public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
     private static final Logger LOGGER = getLogger(SerialPortDiscovererImpl.class);
 
-    @SuppressWarnings({"unchecked"})
-    public List<CommPortIdentifier> listPorts() {
-        List<CommPortIdentifier> serialPortIdentifiers = new ArrayList<CommPortIdentifier>();
+    public List<SerialPort> listPorts() {
+        final List<SerialPort> serialPortIdentifiers = new ArrayList<SerialPort>();
         
         try {
-	        Enumeration<CommPortIdentifier> portEnum = getPortIdentifiers();
-	        while (portEnum.hasMoreElements()) {
-	            CommPortIdentifier portIdentifier = portEnum.nextElement();
-	            
-	            if (portIdentifier.getPortType() == PORT_SERIAL) {
-	                serialPortIdentifiers.add(portIdentifier);
-	            }
-	     }
+	        for (final SerialPort port : SerialPort.getCommPorts()) {
+	        	serialPortIdentifiers.add(port);
+	        }
         }
         catch(NoClassDefFoundError e) {
-        	LOGGER.error("Could not load RXTX library!");
+        	LOGGER.error("Could not load jSerialComm library!");
         }
         catch(UnsatisfiedLinkError e) {
-        	LOGGER.error("Could not load RXTX library!");
+        	LOGGER.error("Could not load jSerialComm library!");
         }
         
         return serialPortIdentifiers;

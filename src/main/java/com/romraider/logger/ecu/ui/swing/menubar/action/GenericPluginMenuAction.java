@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,17 +19,19 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.showInputDialog;
+
+import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
+import java.util.List;
+
+import com.fazecast.jSerialComm.SerialPort;
 import com.romraider.io.serial.port.SerialPortDiscoverer;
 import com.romraider.io.serial.port.SerialPortDiscovererImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.swing.menubar.action.AbstractAction;
-import gnu.io.CommPortIdentifier;
-import static javax.swing.JOptionPane.QUESTION_MESSAGE;
-import static javax.swing.JOptionPane.showInputDialog;
-import java.awt.event.ActionEvent;
-import java.text.MessageFormat;
-import java.util.List;
 
 public final class GenericPluginMenuAction extends AbstractAction {
     private final SerialPortDiscoverer portDiscoverer = new SerialPortDiscovererImpl();
@@ -41,7 +43,7 @@ public final class GenericPluginMenuAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        String port = (String) showInputDialog(
+        final String port = (String) showInputDialog(
                 logger,
                 rb.getString("SELECTPORT"),
                 MessageFormat.format(
@@ -54,11 +56,11 @@ public final class GenericPluginMenuAction extends AbstractAction {
     }
 
     private String[] getPorts() {
-        List<CommPortIdentifier> portIdentifiers = portDiscoverer.listPorts();
-        String[] ports = new String[portIdentifiers.size()];
+    	final List<SerialPort> portIdentifiers = portDiscoverer.listPorts();
+    	final String[] ports = new String[portIdentifiers.size()];
         for (int i = 0; i < portIdentifiers.size(); i++) {
-            CommPortIdentifier identifier = portIdentifiers.get(i);
-            ports[i] = identifier.getName();
+        	final SerialPort identifier = portIdentifiers.get(i);
+            ports[i] = identifier.getSystemPortName();
         }
         return ports;
     }
