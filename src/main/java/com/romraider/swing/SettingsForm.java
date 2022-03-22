@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 package com.romraider.swing;
 
 import static com.romraider.Version.PRODUCT_NAME;
-import static java.io.File.separator;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -28,24 +27,32 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
-
-import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.util.FileAssociator;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+
+import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
@@ -74,21 +81,9 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnCancel.addMouseListener(this);
         btnChooseFont.addMouseListener(this);
         reset.addMouseListener(this);
-        btnAddAssocs.addMouseListener(this);
-        btnRemoveAssocs.addMouseListener(this);
 
         tableClickCount.setBackground(Color.WHITE);
         tableClickBehavior.setBackground(Color.WHITE);
-
-        // disable file association buttons if user is not in Windows
-        StringTokenizer osName = new StringTokenizer(System.getProperties().getProperty("os.name"));
-        if (!osName.nextToken().equalsIgnoreCase("windows")) {
-            btnAddAssocs.setEnabled(false);
-            btnRemoveAssocs.setEnabled(false);
-            extensionHex.setEnabled(false);
-            extensionBin.setEnabled(false);
-        }
-
     }
 
     private void initSettings() {
@@ -213,11 +208,6 @@ public class SettingsForm extends JFrame implements MouseListener {
         displayHighTables = new javax.swing.JCheckBox();
         valueLimitWarning = new javax.swing.JCheckBox();
         chckbxColorAxis = new javax.swing.JCheckBox();
-        jPanel4 = new javax.swing.JPanel();
-        extensionHex = new javax.swing.JCheckBox();
-        extensionBin = new javax.swing.JCheckBox();
-        btnAddAssocs = new javax.swing.JButton();
-        btnRemoveAssocs = new javax.swing.JButton();
         editorIconsPanel = new javax.swing.JPanel();
         tableIconsPanel = new javax.swing.JPanel();
         tableClickBehavior = new javax.swing.JComboBox();
@@ -240,7 +230,7 @@ public class SettingsForm extends JFrame implements MouseListener {
                 rb.getString("RRSETTINGS"), PRODUCT_NAME));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFont(new java.awt.Font("Tahoma", 0, 12));
-        
+
         obsoleteWarning.setText(rb.getString("WARNOOD"));
         obsoleteWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         obsoleteWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -248,11 +238,11 @@ public class SettingsForm extends JFrame implements MouseListener {
         localeFormatCheckBox.setText(rb.getString("USNUMBER"));
         localeFormatCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         localeFormatCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        
+
         calcConflictWarning.setText(rb.getString("WARNREAL"));
         calcConflictWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         calcConflictWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        
+
         debug.setText(rb.getString("DEBUG"));
         debug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         debug.setEnabled(false);
@@ -458,46 +448,6 @@ public class SettingsForm extends JFrame implements MouseListener {
         chckbxColorAxis.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         chckbxColorAxis.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(rb.getString("FILEASSOC")));
-        extensionHex.setText("HEX");
-        extensionHex.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        extensionHex.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
-        extensionBin.setText("BIN");
-        extensionBin.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        extensionBin.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
-        btnAddAssocs.setText(rb.getString("ADDASSOC"));
-
-        btnRemoveAssocs.setText(rb.getString("RMVASSOC"));
-
-        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(extensionBin)
-                                .addComponent(extensionHex))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnAddAssocs, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRemoveAssocs))
-                        .addGap(25, 25, 25))
-                );
-        jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnAddAssocs)
-                                .addComponent(extensionHex))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnRemoveAssocs)
-                                .addComponent(extensionBin)))
-                );
-
         initTabs();
 
         settingsTabbedPane.addTab(rb.getString("TABGEN"), jPanelDefault);
@@ -702,28 +652,25 @@ public class SettingsForm extends JFrame implements MouseListener {
                                                 .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
                                                 .addGap(47))
                                                 .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
-                                                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                                                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                                                         .addContainerGap())
+                                                        .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
-                                                                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
-                                                                .addContainerGap())
-                                                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addContainerGap()
+                                                                .addComponent(saveDebugTables)
+                                                                .addContainerGap(184, Short.MAX_VALUE))
                                                                 .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
                                                                         .addContainerGap()
-                                                                        .addComponent(saveDebugTables)
-                                                                        .addContainerGap(184, Short.MAX_VALUE))
+                                                                        .addComponent(displayHighTables)
+                                                                        .addContainerGap(214, Short.MAX_VALUE))
                                                                         .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
                                                                                 .addContainerGap()
-                                                                                .addComponent(displayHighTables)
-                                                                                .addContainerGap(214, Short.MAX_VALUE))
+                                                                                .addComponent(valueLimitWarning)
+                                                                                .addContainerGap(246, Short.MAX_VALUE))
                                                                                 .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
                                                                                         .addContainerGap()
-                                                                                        .addComponent(valueLimitWarning)
-                                                                                        .addContainerGap(246, Short.MAX_VALUE))
-                                                                                        .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
-                                                                                                .addContainerGap()
-                                                                                                .addComponent(chckbxColorAxis)
-                                                                                                .addContainerGap(324, Short.MAX_VALUE))
+                                                                                        .addComponent(chckbxColorAxis)
+                                                                                        .addContainerGap(324, Short.MAX_VALUE))
                 );
         jPanelTableDisplayLayout.setVerticalGroup(
                 jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
@@ -732,8 +679,6 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(saveDebugTables)
                         .addPreferredGap(ComponentPlacement.RELATED)
@@ -972,61 +917,6 @@ public class SettingsForm extends JFrame implements MouseListener {
             SettingsManager.save(newSettings);
 
             initSettings();
-        } else if (e.getSource() == btnAddAssocs) {
-            // add file associations for selected file types
-            boolean added = false;
-            try {
-                if (extensionHex.isSelected()) {
-                    FileAssociator.addAssociation("HEX",
-                            new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe",
-                            rb.getString("ECIIMAG"));
-                    added = true;
-                }
-
-                if (extensionBin.isSelected()) {
-                    FileAssociator.addAssociation("BIN",
-                            new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe",
-                            rb.getString("ECIIMAG"));
-                    added = true;
-                }
-            } catch (Exception ex) {
-                added = false;
-            } finally {
-                if(added) {
-                    JOptionPane.showMessageDialog(null,
-                            rb.getString("ASSOCADD1"),
-                            rb.getString("ASSOCADD2"),
-                            JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            rb.getString("ASSOCFAIL1"),
-                            rb.getString("ASSOCFAIL2"),
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-        } else if (e.getSource() == btnRemoveAssocs) {
-            // remove file associations for selected file types
-            boolean removed = false;
-            if (extensionHex.isSelected()) {
-                removed = FileAssociator.removeAssociation("HEX");
-            }
-
-            if (extensionBin.isSelected()) {
-                removed = FileAssociator.removeAssociation("BIN");
-            }
-
-            if(removed) {
-                JOptionPane.showMessageDialog(null,
-                        rb.getString("ASSOCRMV1"),
-                        rb.getString("ASSOCRMV2"),
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        rb.getString("ASSOCRMVF1"),
-                        rb.getString("ASSOCRMVF2"),
-                        JOptionPane.ERROR_MESSAGE);
-            }
         }
     }
 
@@ -1047,11 +937,11 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setObsoleteWarning(obsoleteWarning.isSelected());
 
         //Apply locale settings
-        if (localeFormatCheckBox.isSelected()) 
-            getSettings().setLocale("en_US");       
-        else 
+        if (localeFormatCheckBox.isSelected())
+            getSettings().setLocale("en_US");
+        else
             getSettings().setLocale("system");
-        
+
         //Show Info if locale changed
         if(!oldLocale.equals(getSettings().getLocale())){
         showMessageDialog(this, MessageFormat.format(
@@ -1059,7 +949,7 @@ public class SettingsForm extends JFrame implements MouseListener {
                 getSettings().getLocale()),
                 rb.getString("LOCALETITLE"), INFORMATION_MESSAGE);
         }
-        
+
         getSettings().setCalcConflictWarning(calcConflictWarning.isSelected());
         getSettings().setDisplayHighTables(displayHighTables.isSelected());
         getSettings().setSaveDebugTables(saveDebugTables.isSelected());
@@ -1181,12 +1071,10 @@ public class SettingsForm extends JFrame implements MouseListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel axisColor;
-    private javax.swing.JButton btnAddAssocs;
     private javax.swing.JButton btnApply;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnChooseFont;
     private javax.swing.JButton btnOk;
-    private javax.swing.JButton btnRemoveAssocs;
     private javax.swing.JCheckBox calcConflictWarning;
     private javax.swing.JTextField cellHeight;
     private javax.swing.JTextField cellWidth;
@@ -1194,8 +1082,6 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox debug;
     private javax.swing.JLabel decreaseColor;
     private javax.swing.JCheckBox displayHighTables;
-    private javax.swing.JCheckBox extensionBin;
-    private javax.swing.JCheckBox extensionHex;
     private javax.swing.JLabel highlightColor;
     private javax.swing.JLabel selectColor;
     private javax.swing.JLabel increaseColor;
@@ -1209,7 +1095,6 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JPanel jPanelScale;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel lblAxis;
     private javax.swing.JLabel lblCellHeight;
     private javax.swing.JLabel lblCellWidth;
