@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,10 @@
 
 package com.romraider.maps;
 
+import static com.romraider.util.HexUtil.asBytes;
+
 import java.io.Serializable;
 import java.util.Arrays;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.log4j.Logger;
 
@@ -46,50 +47,51 @@ public class RomID implements Serializable {
     private String editStamp;           //YYYY-MM-DD and v, the save count for this ROM
     private int fileSize;
     private int ramOffset;
-    
+
     private boolean noRamOffset;
     private boolean obsolete;           // whether a more recent revision exists
     private String checksum;            // checksum method used to validate ROM contents
-    
+
     public boolean checkMatch(byte[] file) {
         try {
         	if(internalIdString == null || internalIdString.length() == 0) return false;
-        	
+
         	//If both fields are set to force, use this definition no matter what
         	if(internalIdAddress == -1 && internalIdString.equalsIgnoreCase("force")) return true;
-        	
+
             // romid is hex string
             if (internalIdString.length() > 2
                     && internalIdString.substring(0, 2).equalsIgnoreCase("0x")) {
-            	
+
                 // put romid in to byte array to check for match without "0x"
-                byte[] romIDBytes = DatatypeConverter.parseHexBinary(internalIdString.substring(2));
-                
+                byte[] romIDBytes = asBytes(internalIdString.substring(2));
+
                 //If file is smaller than the address we are looking for, it can't be it
                 if(file.length < getInternalIdAddress() + romIDBytes.length) return false;
-                
+
                 //Extract bytes at specified location in ROM
-                byte[] romBytes = Arrays.copyOfRange(file, 
+                byte[] romBytes = Arrays.copyOfRange(file,
                 		getInternalIdAddress(), getInternalIdAddress() + romIDBytes.length);
-                
+
                 //Check if bytes match
                 return Arrays.equals(romIDBytes, romBytes);
             }
             else {
             	if(file.length < getInternalIdAddress() + getInternalIdString().length()) return false;
-            	
+
                 String ecuID = new String(file, getInternalIdAddress(),
                         getInternalIdString().length());
                 return ecuID.equalsIgnoreCase(getInternalIdString());
             }
-                          
+
         } catch (Exception ex) {
             // if any exception is encountered, names do not match or code is buggy :)
             LOGGER.warn("Error finding match", ex);
             return false;
        }
     }
- 
+
+    @Override
     public String toString() {
         return String.format(
                 "%n   ---- RomID %s ----" +
@@ -230,24 +232,24 @@ public class RomID implements Serializable {
     public void setMemModel(String memModel) {
         this.memModel = memModel;
     }
-    
+
     public void setOffset(int offset) {
     	this.ramOffset = -offset;
     	noRamOffset=true;
     }
-    
+
     public void disableRamOffset() {
         noRamOffset = true;
         ramOffset = 0;
     }
-    
+
     public int getRamOffset() {
         return ramOffset;
     }
-      
+
     public void setRamOffset(int ramOffset) {
     	if(noRamOffset) return;
-    	
+
         this.ramOffset = ramOffset;
     }
 
