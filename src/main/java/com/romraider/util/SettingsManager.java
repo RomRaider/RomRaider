@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ResourceBundle;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -36,7 +39,6 @@ import com.romraider.Settings;
 import com.romraider.swing.JProgressPane;
 import com.romraider.xml.DOMSettingsBuilder;
 import com.romraider.xml.DOMSettingsUnmarshaller;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class SettingsManager {
     private static final Logger LOGGER =
@@ -58,11 +60,11 @@ public class SettingsManager {
         }
         return settings;
     }
-    
+
     public static void setTesting(boolean b) {
     	testing = b;
     }
-    
+
     private static Settings load() {
         Settings loadedSettings;
         try {
@@ -80,9 +82,9 @@ public class SettingsManager {
 
             final InputSource src = new InputSource(settingsFileIn);
             final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-            final DOMParser parser = new DOMParser();
-            parser.parse(src);
-            final Document doc = parser.getDocument();
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = dbf.newDocumentBuilder();
+            final Document doc = builder.parse(src);
             loadedSettings = domUms.unmarshallSettings(doc.getDocumentElement());
         } catch (FileNotFoundException e) {
             showMessageDialog(null,
@@ -101,7 +103,7 @@ public class SettingsManager {
 
     public static void save(Settings newSettings, JProgressPane progress) {
     	if(testing) return;
-    	
+
         final DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
             final File newDir = new File(settingsDir);
