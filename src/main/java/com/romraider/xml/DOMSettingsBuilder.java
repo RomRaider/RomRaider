@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,18 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.imageio.metadata.IIOMetadataNode;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import com.romraider.Settings;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.ResourceUtil;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public final class DOMSettingsBuilder {
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
@@ -60,17 +65,25 @@ public final class DOMSettingsBuilder {
         progress.update(rb.getString("SAVEICON"), 85);
         settingsNode.appendChild(buildIcons(settings));
 
-        OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-        of.setIndent(1);
-        of.setIndenting(true);
-
         progress.update(rb.getString("WTOF"), 90);
 
-        FileOutputStream fos = new FileOutputStream(output);
+        final FileOutputStream fos = new FileOutputStream(output);
         try {
-            XMLSerializer serializer = new XMLSerializer(fos, of);
-            serializer.serialize(settingsNode);
+            // https://xml.apache.org/xalan-j/usagepatterns.html
+            final TransformerFactory tFactory = TransformerFactory.newInstance();
+            final Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            final DOMSource dom = new DOMSource(settingsNode);
+            final StreamResult sr = new StreamResult(fos);
+            transformer.transform(dom, sr);
             fos.flush();
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         } finally {
             fos.close();
         }
@@ -111,7 +124,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode imageDir = new IIOMetadataNode("image_dir");
         imageDir.setAttribute("path", settings.getLastImageDir().getAbsolutePath());
         files.appendChild(imageDir);
-        
+
         IIOMetadataNode defDir = new IIOMetadataNode("def_dir");
         defDir.setAttribute("path", settings.getLastDefinitionDir().getAbsolutePath());
         files.appendChild(defDir);
@@ -402,7 +415,7 @@ public final class DOMSettingsBuilder {
 
         // Dashboard Gauge Index
         IIOMetadataNode gaugeindex = new IIOMetadataNode("gauge");
-        gaugeindex.setAttribute("index", String.valueOf(((int) settings.getLoggerSelectedGaugeIndex())));
+        gaugeindex.setAttribute("index", String.valueOf((settings.getLoggerSelectedGaugeIndex())));
         loggerSettings.appendChild(gaugeindex);
 
         // Dyno tab settings
