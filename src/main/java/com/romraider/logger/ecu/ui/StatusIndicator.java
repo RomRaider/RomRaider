@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2022 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,10 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     private static final String TEXT_READING_EXTERNAL = rb.getString("READING_EXTERNAL");
     private static final String TEXT_LOGGING = rb.getString("LOGGING");
     private static final String TEXT_STOPPED = rb.getString("STOPPED");
-    private static final ImageIcon ICON_CONNECTING = new ImageIcon(StatusIndicator.class.getResource("/graphics/logger_blue.png"));
-    private static final ImageIcon ICON_READING = new ImageIcon(StatusIndicator.class.getResource("/graphics/logger_green.png"));
-    private static final ImageIcon ICON_LOGGING = new ImageIcon(StatusIndicator.class.getResource("/graphics/logger_recording.png"));
-    private static final ImageIcon ICON_STOPPED = new ImageIcon(StatusIndicator.class.getResource("/graphics/logger_stop.png"));
+    private static final ImageIcon ICON_CONNECTING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_blue.png"));
+    private static final ImageIcon ICON_READING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_green.png"));
+    private static final ImageIcon ICON_LOGGING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_recording.png"));
+    private static final ImageIcon ICON_STOPPED = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_stop.png"));
 
     public StatusIndicator() {
         setLayout(new BorderLayout());
@@ -53,34 +53,28 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
         stopped();
     }
 
-    @Override
     public void connecting() {
         updateStatusLabel(TEXT_CONNECTING, ICON_CONNECTING);
     }
 
-    @Override
     public void readingData() {
         updateStatusLabel(TEXT_READING, ICON_READING);
     }
-
-    @Override
+    
     public void readingDataExternal() {
         updateStatusLabel(TEXT_READING_EXTERNAL, ICON_READING);
     }
-
-    @Override
+    
     public void loggingData() {
         updateStatusLabel(TEXT_LOGGING, ICON_LOGGING);
     }
 
-    @Override
     public void stopped() {
         updateStatusLabel(TEXT_STOPPED, ICON_STOPPED);
     }
 
     private void updateStatusLabel(final String text, final ImageIcon icon) {
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 statusLabel.setText(text);
                 statusLabel.setIcon(icon);

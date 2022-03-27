@@ -217,7 +217,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | " + rb.getString("TITLE");
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String LOGGER_TOUCH_ARG = "-logger.touch";
-    private static final URL ICON_PATH =  Settings.class.getResource("/graphics/romraider-ico.gif");
+    private static final URL ICON_PATH =  Settings.class.getClass().getResource("/graphics/romraider-ico.gif");
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
