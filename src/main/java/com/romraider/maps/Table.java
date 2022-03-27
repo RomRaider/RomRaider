@@ -49,6 +49,7 @@ public abstract class Table implements Serializable {
     protected Scale curScale;
     protected PresetManager presetManager;
 
+    protected int tableBitMask;
     protected int storageAddress;
     protected int storageType;
     protected boolean signed;
@@ -64,10 +65,6 @@ public abstract class Table implements Serializable {
     protected int userLevel = 0;
     protected boolean locked = false;
     protected String logParam = Settings.BLANK;
-    private int bitMask = 0;
-
-    protected double minAllowedBin = 0.0;
-    protected double maxAllowedBin = 0.0;
 
     protected double maxBin;
     protected double minBin;
@@ -256,7 +253,6 @@ public abstract class Table implements Serializable {
 
     public void setStorageType(int storageType) {
         this.storageType = storageType;
-        calcValueRange();
     }
 
     public boolean isSignedData() {
@@ -374,10 +370,6 @@ public abstract class Table implements Serializable {
                 return false;
             }
 
-            if (this.bitMask != otherTable.bitMask) {
-                return false;
-            }
-
             return true;
         } catch(Exception ex) {
             // TODO: Log Exception.
@@ -404,70 +396,6 @@ public abstract class Table implements Serializable {
         } catch(Exception ex) {
             // TODO: Log Exception.
             return false;
-        }
-    }
-
-    public double getMaxAllowedBin() {
-        return maxAllowedBin;
-    }
-
-    public double getMinAllowedBin() {
-        return minAllowedBin;
-    }
-
-    public double getMaxAllowedReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxAllowedBin());
-    }
-
-    public double getMinAllowedReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
-    }
-
-    protected void calcValueRange() {
-        if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
-            if (isSignedData()) {
-                switch (getStorageType()) {
-                case 1:
-                    minAllowedBin = Byte.MIN_VALUE;
-                    maxAllowedBin = Byte.MAX_VALUE;
-                    break;
-                case 2:
-                    minAllowedBin = Short.MIN_VALUE;
-                    maxAllowedBin = Short.MAX_VALUE;
-                    break;
-                case 4:
-                    minAllowedBin = Integer.MIN_VALUE;
-                    maxAllowedBin = Integer.MAX_VALUE;
-                    break;
-                case Settings.STORAGE_TYPE_MOVI20:
-                    minAllowedBin = Settings.MOVI20_MIN_VALUE;
-                    maxAllowedBin = Settings.MOVI20_MAX_VALUE;
-                    break;
-                case Settings.STORAGE_TYPE_MOVI20S:
-                    minAllowedBin = Settings.MOVI20S_MIN_VALUE;
-                    maxAllowedBin = Settings.MOVI20S_MAX_VALUE;
-                    break;
-                }
-            }
-            else {
-
-                if(bitMask == 0) {
-                    maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
-                }
-                else {
-                    maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
-                }
-
-                minAllowedBin = 0.0;
-            }
-        } else {
-            maxAllowedBin = Float.MAX_VALUE;
-
-            if(isSignedData()) {
-                minAllowedBin = 0.0;
-            } else {
-                minAllowedBin = -Float.MAX_VALUE;
-            }
         }
     }
 
@@ -609,15 +537,13 @@ public abstract class Table implements Serializable {
     }
 
     public void setBitMask(int mask) {
-        if(mask == 0) return;
-
-        //Clamp mask to max size
-        bitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
-        calcValueRange();
+    	//We dont update the DataCells here!
+    	//Clamp to max size
+    	tableBitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1); 
     }
-
+    
     public int getBitMask() {
-        return bitMask;
+    	return tableBitMask;
     }
 
     public void validateScaling() {

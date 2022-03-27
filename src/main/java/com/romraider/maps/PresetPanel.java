@@ -187,7 +187,6 @@ public class PresetPanel extends JPanel {
 			}
 			
 			table.getTable().calcCellRanges();
-			table.getTable().calcValueRange();
 			repaint();
 		}
 	}

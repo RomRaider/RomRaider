@@ -557,10 +557,15 @@ public abstract class TableView extends JPanel implements Serializable {
     public String toString() {
         return table.toString();
     }
-     
+    
+    public void updatePresetPanel() {
+    	if(presetPanel != null)
+    		presetPanel.repaint();
+    }
+    
     public void drawTable() {
     	updateTableLabel();
-    	
+
     	if(data!=null && !isHidden()) {
 	        for(DataCellView cell : data) {
 	            if(null != cell) {

@@ -83,6 +83,9 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         cell.setDataView(this);
         this.y = cell.getIndexInTable();
         this.setPreferredSize(getSettings().getCellSize());
+        
+        //Once we create a view of the datacell, it should be safe to calculate the value range
+        cell.calcValueRange();
     }
     
     public DataCellView(DataCell cell, TableView view, int x, int y) {
@@ -110,6 +113,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
             return;
         }
 
+        tableView.updatePresetPanel();
         this.invalidate();
         setFont(getSettings().getTableFont());
         setText(getCellText());
@@ -167,9 +171,9 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
             }
         }
 
-        if (t.getMaxAllowedBin() < dataCell.getBinValue()) {
+        if (dataCell.getMaxAllowedBin() < dataCell.getBinValue()) {
             return getSettings().getWarningColor();
-        } else if (t.getMinAllowedBin() > dataCell.getBinValue()) {
+        } else if (dataCell.getMinAllowedBin() > dataCell.getBinValue()) {
             return getSettings().getWarningColor();
         } else {
             // limits not set, scale based on table values

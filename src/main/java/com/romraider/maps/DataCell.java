@@ -43,10 +43,13 @@ public class DataCell implements Serializable  {
     private DataCellView view = null;
     private Table table;
 
-    //This sounds like a View property, but the manipulations
+    //This sounds like a View property, but the manipulation
     //functions depend on this, so its better to put it here
     private boolean isSelected = false;
 
+    private int bitMask = 0;
+    private double minAllowedBin = 0.0;
+    private double maxAllowedBin = 0.0;
     private double binValue = 0.0;
     private double originalValue = 0.0;
     private double compareToValue = 0.0;
@@ -60,6 +63,8 @@ public class DataCell implements Serializable  {
     public DataCell(Table table, Rom rom) {
         this.table = table;
         this.rom = rom;
+        setBitMask(table.getBitMask()); //Take the global bitmask first
+        calcValueRange();
     }
 
     public DataCell(Table table, String staticText, Rom rom) {
@@ -91,6 +96,61 @@ public class DataCell implements Serializable  {
         return rom.getBinary();
     }
 
+    public void setBitMask(int mask) {
+        if(mask == 0) return;
+
+        //Clamp mask to max size
+        bitMask = (int) Math.min(mask, Math.pow(2,table.getStorageType()*8)-1);
+    }
+    
+    protected void calcValueRange() {
+        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
+            if (table.isSignedData()) {
+                switch (table.getStorageType()) {
+                case 1:
+                    minAllowedBin = Byte.MIN_VALUE;
+                    maxAllowedBin = Byte.MAX_VALUE;
+                    break;
+                case 2:
+                    minAllowedBin = Short.MIN_VALUE;
+                    maxAllowedBin = Short.MAX_VALUE;
+                    break;
+                case 4:
+                    minAllowedBin = Integer.MIN_VALUE;
+                    maxAllowedBin = Integer.MAX_VALUE;
+                    break;
+                case Settings.STORAGE_TYPE_MOVI20:
+                    minAllowedBin = Settings.MOVI20_MIN_VALUE;
+                    maxAllowedBin = Settings.MOVI20_MAX_VALUE;
+                    break;
+                case Settings.STORAGE_TYPE_MOVI20S:
+                    minAllowedBin = Settings.MOVI20S_MIN_VALUE;
+                    maxAllowedBin = Settings.MOVI20S_MAX_VALUE;
+                    break;
+                }
+            }
+            else {
+
+                if(bitMask == 0) {
+                    maxAllowedBin = (Math.pow(256, table.getStorageType()) - 1);
+                }
+                else {
+                    maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
+                }
+
+                minAllowedBin = 0.0;
+            }
+        } else {
+            maxAllowedBin = Float.MAX_VALUE;
+
+            if(table.isSignedData()) {
+                minAllowedBin = 0.0;
+            } else {
+                minAllowedBin = -Float.MAX_VALUE;
+            }
+        }
+    }
+    
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
         byte[] input = getBinary();
@@ -118,7 +178,7 @@ public class DataCell implements Serializable  {
                     signed);
 
         } else { // integer storage type
-            if(table.getBitMask() == 0) {
+            if(bitMask == 0) {
                 dataValue = RomAttributeParser.parseByteValue(input,
                         endian, storageAddress + index * storageType - ramOffset,
                         storageType, signed);
@@ -126,7 +186,7 @@ public class DataCell implements Serializable  {
                 else {
                     dataValue = RomAttributeParser.parseByteValueMasked(input, endian,
                             storageAddress + index * storageType - ramOffset,
-                            storageType, signed, table.getBitMask());
+                            storageType, signed, bitMask);
                 }
         }
 
@@ -179,7 +239,7 @@ public class DataCell implements Serializable  {
         if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
                 // determine output byte values
                 byte[] output;
-                int mask = table.getBitMask();
+                int mask = bitMask;
 
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                     int finalValue = 0;
@@ -421,12 +481,12 @@ public class DataCell implements Serializable  {
         double checkedValue = newBinValue;
 
         // make sure it's in range
-        if(checkedValue < table.getMinAllowedBin()) {
-            checkedValue = table.getMinAllowedBin();
+        if(checkedValue < minAllowedBin) {
+            checkedValue = minAllowedBin;
         }
 
-        if(checkedValue > table.getMaxAllowedBin()) {
-            checkedValue = table.getMaxAllowedBin();
+        if(checkedValue > maxAllowedBin) {
+            checkedValue = maxAllowedBin;
         }
 
         if(binValue == checkedValue) {
@@ -465,15 +525,12 @@ public class DataCell implements Serializable  {
             }
         }
 
-        // make sure table is incremented if change isn't great enough
-        int maxValue = (int) Math.pow(8, table.getStorageType());
-
         if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT &&
                 oldValue == getRealValue() &&
                 binValue > 0.0 &&
-                binValue < maxValue) {
+                binValue < maxAllowedBin) {
             if (LOGGER.isDebugEnabled())
-                LOGGER.debug(maxValue + " " + binValue);
+                LOGGER.debug(maxAllowedBin + " " + binValue);
             increment(increment * 2);
         }
     }
@@ -540,4 +597,12 @@ public class DataCell implements Serializable  {
 
         return binValue == otherCell.binValue;
     }
+
+	public double getMaxAllowedBin() {
+		return maxAllowedBin;
+	}
+
+	public double getMinAllowedBin() {
+		return minAllowedBin;
+	}
 }
