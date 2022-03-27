@@ -52,9 +52,9 @@
         <property name="initialized" value="true" />
         <!-- set the various timestamp properties we may need -->
         <tstamp>
-            <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z" />
-            <format property="time.year" pattern="yyyy" />
-            <format property="mnth.day" pattern="MMMdd" />
+            <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z" locale="en"/>
+            <format property="time.year" pattern="yyyy" locale="en"/>
+            <format property="mnth.day" pattern="MMMdd" locale="en"/>
         </tstamp>
 
         <scriptdef language="javascript" name="toUpper">
