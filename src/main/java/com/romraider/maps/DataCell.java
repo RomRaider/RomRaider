@@ -524,11 +524,12 @@ public class DataCell implements Serializable  {
                 this.setBinValue(roundResult);
             }
         }
-
+        
+        //Make sure we always change something. If the defined increment is too small this triggers
+        //TODO: This should use real values
         if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT &&
                 oldValue == getRealValue() &&
-                binValue > 0.0 &&
-                binValue < maxAllowedBin) {
+                ((increment > 0 && binValue < maxAllowedBin) || (increment < 0 && binValue > minAllowedBin))) {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug(maxAllowedBin + " " + binValue);
             increment(increment * 2);
