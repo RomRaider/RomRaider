@@ -19,8 +19,10 @@
 
 package com.romraider.xml;
 
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
+
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -67,7 +69,7 @@ public final class DOMSettingsBuilder {
 
         progress.update(rb.getString("WTOF"), 90);
 
-        final FileOutputStream fos = new FileOutputStream(output);
+        final FileWriter fos = new FileWriter(output);
         try {
             // https://xml.apache.org/xalan-j/usagepatterns.html
             final TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -78,7 +80,7 @@ public final class DOMSettingsBuilder {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             final DOMSource dom = new DOMSource(settingsNode);
             final StreamResult sr = new StreamResult(fos);
-            transformer.transform(dom, sr);
+            transformer.transform(dom, sr); // make sure attributes are not null before transforming
             fos.flush();
         } catch (TransformerConfigurationException e) {
             throw new RuntimeException(e);
@@ -322,7 +324,7 @@ public final class DOMSettingsBuilder {
 
         // serial connection
         IIOMetadataNode serial = new IIOMetadataNode("serial");
-        serial.setAttribute("port", settings.getLoggerPortDefault());
+        serial.setAttribute("port", validateAttr(settings.getLoggerPortDefault()));
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
         loggerSettings.appendChild(serial);
 
@@ -332,7 +334,7 @@ public final class DOMSettingsBuilder {
         protocol.setAttribute("transport", settings.getTransportProtocol());
         protocol.setAttribute("module", settings.getTargetModule());
         protocol.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
-        protocol.setAttribute("library", settings.getJ2534Device());
+        protocol.setAttribute("library", validateAttr(settings.getJ2534Device()));
         loggerSettings.appendChild(protocol);
 
         // window maximized
@@ -366,7 +368,7 @@ public final class DOMSettingsBuilder {
 
         // profile path
         IIOMetadataNode profile = new IIOMetadataNode("profile");
-        profile.setAttribute("path", settings.getLoggerProfileFilePath());
+        profile.setAttribute("path", validateAttr(settings.getLoggerProfileFilePath()));
         loggerSettings.appendChild(profile);
 
         // file logging
@@ -388,8 +390,8 @@ public final class DOMSettingsBuilder {
             IIOMetadataNode plugins = new IIOMetadataNode("plugins");
             for (Map.Entry<String, String> entry : pluginPorts.entrySet()) {
                 IIOMetadataNode plugin = new IIOMetadataNode("plugin");
-                plugin.setAttribute("id", entry.getKey());
-                plugin.setAttribute("port", entry.getValue());
+                plugin.setAttribute("id", (entry.getKey()));
+                plugin.setAttribute("port", (entry.getValue()));
                 plugins.appendChild(plugin);
             }
             final Map<String, IntfKitSensor> phidgets = settings.getPhidgetSensors();
@@ -420,10 +422,10 @@ public final class DOMSettingsBuilder {
 
         // Dyno tab settings
         IIOMetadataNode dyno = new IIOMetadataNode("dyno");
-        dyno.setAttribute("car", settings.getSelectedCar());
-        dyno.setAttribute("gear", settings.getSelectedGear());
-        dyno.setAttribute("threshold", settings.getDynoThreshold());
-        dyno.setAttribute("units", settings.getDynoThrottle());
+        dyno.setAttribute("car", (settings.getSelectedCar()));
+        dyno.setAttribute("gear", validateAttr(settings.getSelectedGear()));
+        dyno.setAttribute("threshold", (settings.getDynoThreshold()));
+        dyno.setAttribute("units", (settings.getDynoThrottle()));
         loggerSettings.appendChild(dyno);
 
         return loggerSettings;
@@ -444,7 +446,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode table3DFormatSetting = new IIOMetadataNode(Settings.TABLE3D_ELEMENT);
 
         tableFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTableHeader());
-        table1DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable1DHeader());
+        table1DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, validateAttr(settings.getTable1DHeader()));
         table2DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable2DHeader());
         table3DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable3DHeader());
 
@@ -472,5 +474,12 @@ public final class DOMSettingsBuilder {
         iconsSettings.appendChild(tableIconsScaleSettings);
 
         return iconsSettings;
+    }
+
+    private String validateAttr(String attr) {
+        if (isNullOrEmpty(attr)) {
+            return "";
+        }
+        return attr;
     }
 }

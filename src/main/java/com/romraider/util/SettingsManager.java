@@ -80,12 +80,20 @@ public class SettingsManager {
             }
             LOGGER.info("Loaded settings from file: " + settingsDir.replace("\\", "/") + SETTINGS_FILE);
 
-            final InputSource src = new InputSource(settingsFileIn);
-            final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder builder = dbf.newDocumentBuilder();
-            final Document doc = builder.parse(src);
-            loadedSettings = domUms.unmarshallSettings(doc.getDocumentElement());
+            if (sf.length() > 0) {
+                final InputSource src = new InputSource(settingsFileIn);
+                final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
+                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                final DocumentBuilder builder = dbf.newDocumentBuilder();
+                final Document doc = builder.parse(src);
+                loadedSettings = domUms.unmarshallSettings(doc.getDocumentElement());
+                settingsFileIn.close();
+            }
+            else {
+                if (settingsFileIn != null)
+                    settingsFileIn.close();
+                throw new FileNotFoundException("file length is 0");
+            }
         } catch (FileNotFoundException e) {
             showMessageDialog(null,
                     rb.getString("FNF"),
@@ -111,9 +119,10 @@ public class SettingsManager {
             final File sf = new File(settingsDir + SETTINGS_FILE);
             builder.buildSettings(newSettings, sf, progress, VERSION);
             settings = newSettings;
+            if (sf.length() == 0)
+                throw new RuntimeException("Settings file write failed");
         } catch (Exception e) {
-            // Load the settings from disk.
-            settings = load();
+            settings = newSettings;
             throw new RuntimeException(e);
         }
     }

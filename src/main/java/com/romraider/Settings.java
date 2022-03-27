@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,10 +207,10 @@ public class Settings implements Serializable {
     private boolean colorAxis = false;
 
     private String loggerPort;
-    private String loggerPortDefault;
+    private String loggerPortDefault = "";
     private static String loggerProtocol = SSM;
-    private static String loggerDefinitionFilePath;
-    private static String loggerProfileFilePath;
+    private static String loggerDefinitionFilePath = "";
+    private static String loggerProfileFilePath = "";
     private static String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = false;
@@ -234,7 +234,7 @@ public class Settings implements Serializable {
     private boolean fastPoll = true;
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
-    private static String j2534Device;
+    private static String j2534Device = "";
     private static String transportProtocol = ISO9141;
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
@@ -322,7 +322,7 @@ public class Settings implements Serializable {
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
     }
-    
+
     public File getLastDefinitionDir() {
         return lastDefDir;
     }
@@ -957,11 +957,11 @@ public class Settings implements Serializable {
     public String getDynoThreshold() {
         return this.tpsThreshold;
     }
-    
+
 	public boolean getElm327Enabled() {
 		return this.searchElm327;
 	}
-	
+
     public void setSelectedCar(final String value) {
         this.selectedCar = value;
     }
@@ -979,7 +979,7 @@ public class Settings implements Serializable {
     }
 
 	public void setElm327Enabled(Boolean value) {
-		this.searchElm327 = value;			
+		this.searchElm327 = value;
 	}
 
 
