@@ -12,7 +12,6 @@
         </authors>
         <url>@supporturl@</url>
     </info>
-    <native type="izpack" name="ShellLink.dll"/>
     <guiprefs width="640" height="480" resizable="no"/>
     <locale>
         <langpack iso3="eng"/>
@@ -73,7 +72,7 @@
             <fileset dir="i18n" targetdir="$INSTALL_PATH/i18n"/>
 
             <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
-            <fileset dir="lib/linux" targetdir="$INSTALL_PATH/lib/linux"/>
+            <fileset dir="lib/linux/@build.arch@" targetdir="$INSTALL_PATH/lib/linux"/>
 
             <updatecheck>
                 <include name="plugins/**"/>

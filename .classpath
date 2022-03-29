@@ -5,10 +5,10 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/common/com4j.jar"/>
-	<classpathentry kind="lib" path="lib/windows/j3dcore.jar"/>
-	<classpathentry kind="lib" path="lib/windows/j3dutils.jar"/>
-	<classpathentry kind="lib" path="lib/windows/vecmath.jar"/>
-	<classpathentry kind="lib" path="lib/windows/Graph3d.jar"/>
+	<classpathentry kind="lib" path="lib/common/j3dcore.jar"/>
+	<classpathentry kind="lib" path="lib/common/j3dutils.jar"/>
+	<classpathentry kind="lib" path="lib/common/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/common/Graph3d.jar"/>
 	<classpathentry kind="lib" path="lib/common/jama-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/common/jep.jar"/>
 	<classpathentry kind="lib" path="lib/common/jamlab.jar"/>

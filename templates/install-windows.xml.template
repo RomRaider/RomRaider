@@ -63,7 +63,7 @@
             <fileset dir="i18n" targetdir="$INSTALL_PATH/i18n"/>
 
             <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
-            <fileset dir="lib/windows" targetdir="$INSTALL_PATH/lib/windows"/>
+            <fileset dir="lib/windows/@build.arch@" targetdir="$INSTALL_PATH/lib/windows"/>
 
             <updatecheck>
                 <include name="plugins/**"/>
