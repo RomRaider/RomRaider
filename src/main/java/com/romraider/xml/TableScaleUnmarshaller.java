@@ -299,7 +299,7 @@ public class TableScaleUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("bit")) {
                     table.setPresetValues(
                             unmarshallAttribute(n, "name", ""),
-                            unmarshallAttribute(n, "position", "0"));
+                            unmarshallAttribute(n, "position", ""));
 
                 } else { /* unexpected element in Table (skip) */
                 }

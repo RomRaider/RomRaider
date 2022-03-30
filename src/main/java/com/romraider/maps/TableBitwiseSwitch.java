@@ -68,7 +68,9 @@ public class TableBitwiseSwitch extends TableSwitch {
 	
     @Override
 	public void setPresetValues(String name, String bitPos) {
-    	bits.add(Integer.parseInt(bitPos));
-    	super.setPresetValues(name, "1", bits.size() - 1);
+    	if (bitPos != null && bitPos.length() > 0) {
+	    	bits.add(Integer.parseInt(bitPos));
+	    	super.setPresetValues(name, "1", bits.size() - 1);
+    	}
 	}
 }

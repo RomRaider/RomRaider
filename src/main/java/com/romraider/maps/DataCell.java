@@ -64,7 +64,6 @@ public class DataCell implements Serializable  {
         this.table = table;
         this.rom = rom;
         setBitMask(table.getBitMask()); //Take the global bitmask first
-        calcValueRange();
     }
 
     public DataCell(Table table, String staticText, Rom rom) {
@@ -130,14 +129,12 @@ public class DataCell implements Serializable  {
                 }
             }
             else {
-
                 if(bitMask == 0) {
                     maxAllowedBin = (Math.pow(256, table.getStorageType()) - 1);
                 }
                 else {
                     maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
                 }
-
                 minAllowedBin = 0.0;
             }
         } else {
