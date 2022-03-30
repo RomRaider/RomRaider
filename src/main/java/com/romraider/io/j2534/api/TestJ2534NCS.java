@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ public final class TestJ2534NCS {
         try {
             version(deviceId);
             final int channelId = api.connect(deviceId, 0, 500000);
-            
+
             final double vBatt = api.getVbattery(deviceId);
             report = String.format("J2534 Interface Pin 16: %sVDC%n", vBatt);
             System.out.print(report);
@@ -97,11 +97,11 @@ public final class TestJ2534NCS {
                             new byte[]{pid},        // pid
                             true,                   // pid valid
                             tester);                // source
-                    api.writeMsg(channelId, 
+                    api.writeMsg(channelId,
                             mode9,
-                            1000L, 
+                            1000L,
                             TxFlags.ISO15765_FRAME_PAD);
-    
+
                     final byte[] response;
                     response = api.readMsg(channelId, 1, 1000L);
                     handleResponse(response);
@@ -111,9 +111,9 @@ public final class TestJ2534NCS {
                         new byte[]{0},          // pid
                         false,                  // pid valid
                         tester);                // source
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         mode3,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
 
                 byte[] response;
@@ -133,9 +133,9 @@ public final class TestJ2534NCS {
                         tester);             // source
                 System.out.println("UDS 22 1103 BattVDC request  = " +
                         HexUtil.asHex(mode22xx));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         mode22xx,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("UDS 22 1103 BattVDC response = " +
@@ -149,9 +149,9 @@ public final class TestJ2534NCS {
                         tester);                // source
                 System.out.println("Init request = " +
                         HexUtil.asHex(init));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         init,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("Init response = " +
@@ -160,9 +160,9 @@ public final class TestJ2534NCS {
                 // UDS 22 1101 - try again
                 System.out.println("UDS 22 1103 BattVDC request  = " +
                         HexUtil.asHex(mode22xx));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         mode22xx,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("UDS 22 1103 BattVDC response = " +
@@ -176,9 +176,9 @@ public final class TestJ2534NCS {
                         tester);                // source
                 System.out.println("Ident request = " +
                         HexUtil.asHex(id));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         id,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("Ident response = " +
@@ -192,9 +192,9 @@ public final class TestJ2534NCS {
                         tester);                // source
                 System.out.println("UDS 21 01 request  = " +
                         HexUtil.asHex(mode2101));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         mode2101,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("UDS 21 01 response = " +
@@ -214,9 +214,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("UDS 21 request  = " +
                                 HexUtil.asHex(mode21));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 mode21,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("UDS 21 response = " +
@@ -241,9 +241,9 @@ public final class TestJ2534NCS {
                                     tester);                // source
                             System.out.println("UDS 22 request  = " +
                                     HexUtil.asHex(mode22));
-                            api.writeMsg(channelId, 
+                            api.writeMsg(channelId,
                                     mode22,
-                                    1000L, 
+                                    1000L,
                                     TxFlags.ISO15765_FRAME_PAD);
                             response = api.readMsg(channelId, 1, 1000L);
                             System.out.println("UDS 22 response = " +
@@ -316,9 +316,9 @@ public final class TestJ2534NCS {
                         tester);             // source
                 System.out.println("UDS 2C request  = " +
                         HexUtil.asHex(mode2Cxx));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         mode2Cxx,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("UDS 2C response = " +
@@ -331,9 +331,9 @@ public final class TestJ2534NCS {
                         tester);                // source
                 System.out.println("UDS 21 request = " +
                         HexUtil.asHex(_21e0));
-                api.writeMsg(channelId, 
+                api.writeMsg(channelId,
                         _21e0,
-                        1000L, 
+                        1000L,
                         TxFlags.ISO15765_FRAME_PAD);
                 response = api.readMsg(channelId, 1, 1000L);
                 System.out.println("UDS 21 reponse = " +
@@ -350,9 +350,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("Init request = " +
                                 HexUtil.asHex(_10fb));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _10fb,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("Init response = " +
@@ -365,9 +365,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("ID request = " +
                                 HexUtil.asHex(_2110));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _2110,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("ID response = " +
@@ -380,9 +380,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("VIN request = " +
                                 HexUtil.asHex(_2181));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _2181,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("VIN response = " +
@@ -395,14 +395,14 @@ public final class TestJ2534NCS {
                             tester);                // source
                         System.out.println("UDS 2180 request = " +
                                 HexUtil.asHex(_2180));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                             _2180,
-                            1000L, 
+                            1000L,
                             TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("UDS 2180 response = " +
                             HexUtil.asHex(response));
-   
+
                         final byte[] _21f0 = buildRequest(
                                 READ_MODE21_COMMAND,    // mode
                                 new byte[]{(byte) 0xf0},// pid
@@ -410,9 +410,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("Prod Num request long = " +
                                 HexUtil.asHex(_21f0));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _21f0,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("Prod Num response long = " +
@@ -425,9 +425,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("Prod Num request = " +
                                 HexUtil.asHex(_21fe));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _21fe,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("Prod Num response = " +
@@ -446,9 +446,9 @@ public final class TestJ2534NCS {
                                 tester);                // source
                         System.out.println("HW Num request = " +
                                 HexUtil.asHex(_21ff));
-                        api.writeMsg(channelId, 
+                        api.writeMsg(channelId,
                                 _21ff,
-                                1000L, 
+                                1000L,
                                 TxFlags.ISO15765_FRAME_PAD);
                         response = api.readMsg(channelId, 1, 1000L);
                         System.out.println("HW Num response = " +
@@ -456,7 +456,7 @@ public final class TestJ2534NCS {
                         if (response[4] != 0x7f) {
                             System.arraycopy(response, 10, uds3483_d, 28, 10);
                         }
-                        // Read from start address for length bytes 
+                        // Read from start address for length bytes
                         if (args[1].equalsIgnoreCase("r")) {
                             long start;
                             int size;
@@ -474,7 +474,7 @@ public final class TestJ2534NCS {
                             }
 
                             final String filename = String.format("%s\\%s_read.bin",
-                                    System.getenv("HOME"), calid);
+                                    System.getProperty("user.home"), calid);
                             System.out.println(String.format(
                                     "Writing file: %s%nRead start: 0x%X, length: %s",
                                     filename, start, size));
@@ -497,9 +497,9 @@ public final class TestJ2534NCS {
                                         true,
                                         tester);
                                 System.out.println(String.format("Reading addr: 0x%06X, len: %d", i, len));
-                                api.writeMsg(channelId, 
+                                api.writeMsg(channelId,
                                         _2300,
-                                        1000L, 
+                                        1000L,
                                         TxFlags.ISO15765_FRAME_PAD);
                                 response = api.readMsg(channelId, 1, 1000L);
                                 final byte[] out = new byte[response.length-5];
@@ -621,7 +621,7 @@ public final class TestJ2534NCS {
                                     if (!test) uds3483(channelId, uds3483_data.array());
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                } 
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -806,7 +806,7 @@ public final class TestJ2534NCS {
     private final void assertNrc(byte expected, byte actual, byte command, byte code, String msg) {
         if (actual == expected) {
             String ec = " unsupported";
-            switch(code) { 
+            switch(code) {
                 case 0x10:
                     ec = " generalReject";
                     break;
@@ -907,7 +907,7 @@ public final class TestJ2534NCS {
         final int idActual = asUnsignedInt(idBytes);
         if (idActual != idExpected) {
             throw new InvalidResponseException(
-                    msg + ". Expected: " + asHex(expected) + 
+                    msg + ". Expected: " + asHex(expected) +
                     ". Actual: " + asHex(idBytes) + ".");
         }
     }
@@ -929,7 +929,7 @@ public final class TestJ2534NCS {
     }
 
     private final byte[] buildRequest(
-            byte mode, 
+            byte mode,
             byte[] pid,
             boolean pidValid,
             byte[] address) {
@@ -970,9 +970,9 @@ public final class TestJ2534NCS {
                 tester);
         System.out.println("Ending session: " +
                 HexUtil.asHex(_1081));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _1081,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
@@ -988,9 +988,9 @@ public final class TestJ2534NCS {
                 tester);
         System.out.println("Starting programming session: " +
                 HexUtil.asHex(_1085));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _1085,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
@@ -1006,9 +1006,9 @@ public final class TestJ2534NCS {
                 tester);
         System.out.println("Requesting security access: " +
                 HexUtil.asHex(_2781));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _2781,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
@@ -1024,16 +1024,16 @@ public final class TestJ2534NCS {
                 tester);
         System.out.println("Sending security access key: " +
                 HexUtil.asHex(_2782));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _2782,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
         System.out.println("Security access granted: " +
                 HexUtil.asHex(response));
     }
- 
+
     private final void uds3181(int channelId) {
           byte[] _3181 = buildRequest(
           (byte) 0x31,
@@ -1042,15 +1042,15 @@ public final class TestJ2534NCS {
           tester);
         System.out.println("Requesting download service: " +
           HexUtil.asHex(_3181));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
           _3181,
-          1000L, 
+          1000L,
           TxFlags.ISO15765_FRAME_PAD);
         byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
         System.out.println("Preparing ECU for download: " +
                 HexUtil.asHex(response));
-    
+
         // wait for "ready" response
         while (response[response.length-1] == 1) {
             _3181 = buildRequest(
@@ -1062,7 +1062,7 @@ public final class TestJ2534NCS {
             //      HexUtil.asHex(_3181));
             api.writeMsg(channelId,
                   _3181,
-                  1000L, 
+                  1000L,
                   TxFlags.ISO15765_FRAME_PAD);
             response = api.readMsg(channelId, 1, 1000L);
             validateResponse(response);
@@ -1086,9 +1086,9 @@ public final class TestJ2534NCS {
         tester);
       System.out.println("Closing download service: " +
         HexUtil.asHex(_3182));
-      api.writeMsg(channelId, 
+      api.writeMsg(channelId,
               _3182,
-              1000L, 
+              1000L,
               TxFlags.ISO15765_FRAME_PAD);
       byte[] response = api.readMsg(channelId, 1, 1000L);
       validateResponse(response);
@@ -1110,9 +1110,9 @@ public final class TestJ2534NCS {
                 tester);
           //System.out.println("UDS 31 request = " +
           //      HexUtil.asHex(_3181));
-          api.writeMsg(channelId, 
+          api.writeMsg(channelId,
                   _3182,
-                  1000L, 
+                  1000L,
                   TxFlags.ISO15765_FRAME_PAD);
           response = api.readMsg(channelId, 1, 1000L);
           validateResponse(response);
@@ -1140,9 +1140,9 @@ public final class TestJ2534NCS {
                 tester);
         System.out.print(String.format("%d: writing address 0x%02X%02X%02X : ",
                 System.currentTimeMillis(), data[2], data[3], data[4]));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _34,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         validateResponse(response);
@@ -1155,16 +1155,16 @@ public final class TestJ2534NCS {
             throw new InvalidResponseException("Programming failed at last address block");
         }
     }
- 
+
     private final void uds3483(int channelId, byte[] data) {
         final byte[] _3483 = buildBareRequest(
                 data,
                 tester);
         System.out.println("Finalizing ECU: " +
                 HexUtil.asHex(_3483));
-        api.writeMsg(channelId, 
+        api.writeMsg(channelId,
                 _3483,
-                1000L, 
+                1000L,
                 TxFlags.ISO15765_FRAME_PAD);
         final byte[] response = api.readMsg(channelId, 1, 1000L);
         System.out.println("Finalizing ECU response: " +
@@ -1174,7 +1174,7 @@ public final class TestJ2534NCS {
             System.out.println("Complete! ");
         }
     }
- 
+
     /**
      * For the given inputFile, read data into chunks of size bytes
      * and return a List of read chunks
