@@ -367,6 +367,7 @@ public class DataCell implements Serializable  {
     public boolean isSelected() {
         return isSelected;
     }
+    
     public void updateBinValueFromMemory() {
         this.binValue = getValueFromMemory();
         updateView();
@@ -548,6 +549,10 @@ public class DataCell implements Serializable  {
     public void setOriginalValue(double originalValue) {
         this.originalValue = originalValue;
     }
+    
+    public int getBitMask() {
+    	return this.bitMask;
+    }
 
     public void setCompareValue(DataCell compareCell) {
         if(Settings.DataType.BIN == table.getCompareValueType())
@@ -567,17 +572,13 @@ public class DataCell implements Serializable  {
     }
 
     public void multiply(double factor) throws UserLevelException {
-        if(table.getCurrentScale().getCategory().equals("Raw Value"))
-            setBinValue(binValue * factor);
-        else {
-            String newValue = (getRealValue() * factor) + "";
+        String newValue = (getRealValue() * factor) + "";
 
-            //We need to convert from dot to comma, in the case of EU Format.
-            // This is because getRealValue to String has dot notation.
-            if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
+        //We need to convert from dot to comma, in the case of EU Format.
+        // This is because getRealValue to String has dot notation.
+        if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
 
-            setRealValue(newValue);
-        }
+        setRealValue(newValue);    
     }
 
     @Override
@@ -595,7 +596,11 @@ public class DataCell implements Serializable  {
         if(this.table.isStaticDataTable() != otherCell.table.isStaticDataTable()) {
             return false;
         }
-
+        
+        if(this.getBitMask() != otherCell.getBitMask()) {
+        	return false;
+        }
+        
         return binValue == otherCell.binValue;
     }
 

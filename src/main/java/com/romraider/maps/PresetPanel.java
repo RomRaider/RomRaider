@@ -28,7 +28,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -38,6 +37,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import com.romraider.maps.PresetManager.PresetEntry;
+import com.romraider.maps.Table.TableType;
 
 public class PresetPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -55,7 +55,7 @@ public class PresetPanel extends JPanel {
 	
 	public void populatePanel() {		
 		//If this is an axis within another table dont show the panel
-		if(table.getTable() instanceof Table1D) {
+		if(table.getTable().getType() == TableType.TABLE_1D) {
 			if(((Table1D) (table.getTable())).getAxisParent() != null) {
 				return;
 			}
@@ -80,17 +80,16 @@ public class PresetPanel extends JPanel {
 		
 		//Setup button for each preset
 		for (PresetEntry entry : manager.getPresets()) {
-			PresetButton button = new PresetButton();
+			PresetButton button = new PresetButton(entry);
 
 			button.setText(entry.name);
-			button.setPresetData(entry.data);
 
 			if (isSwitchTable) {
 				Font x = button.getFont();
 				button.setFont(x.deriveFont(x.getStyle(), 15));
 			}
 				
-			button.addActionListener(new PresetListener());			
+			button.addActionListener(new PresetListener(entry));
 			buttonGroup.add(button);
 			radioPanel.add(button);
 		}
@@ -136,58 +135,38 @@ public class PresetPanel extends JPanel {
 			for (PresetButton button: buttonGroup) {
 					button.checkIfActive();
 			}
-		}
-		
+		}		
 		super.repaint();
 	} 
 		
-	/*
-	 * Custom Button and Actionlistener
-	 */
 	class PresetButton extends JCheckBox{
 		private static final long serialVersionUID = 1L;
-		LinkedList<Integer> values; //Pointer to PresetEntry.data
+		PresetEntry entry;
 		
-		public void setPresetData(LinkedList<Integer> list) {
-			values = list;
+		public PresetButton(PresetEntry entry) {
+			this.entry = entry;
 		}
-		
-		public void checkIfActive() {
-			// Check if the radio button is current selected
-			boolean found = true;
 			
-			if (values != null) {
-				for (int i = 0; i < table.getTable().getDataSize(); i++) {
-					if(table.getTable().getDataSize() == values.size()) {
-						DataCell[] data = table.getTable().data;
-						if ((int) data[i].getBinValue() != values.get(i)) {
-							found = false;
-							break;
-						}
-					}
-				}				
-				setSelected(found);
-			}	
+		public void checkIfActive() {	
+			setSelected(manager.isPresetActive(entry));
 		}
 	}
 	
 	class PresetListener implements ActionListener{
+		PresetEntry entry;
+		
+		public PresetListener(PresetEntry entry) {
+			this.entry = entry;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			PresetButton button = (PresetButton)event.getSource();
-			
-			if(table.getTable().getDataSize() == button.values.size()) {
-				for (int i = 0; i < table.getTable().getDataSize(); i++) {
-					try {
-						table.getTable().data[i].setBinValue(button.values.get(i));
-					} catch (UserLevelException e) {
-						e.printStackTrace();
-					}
-				}
+			if (((PresetButton) (event.getSource())).isSelected()) {
+				manager.applyPreset(entry);
 			}
-			
-			table.getTable().calcCellRanges();
-			repaint();
+			else {
+				manager.clearPreset(entry);
+			}
 		}
 	}
 }

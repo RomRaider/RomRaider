@@ -32,37 +32,76 @@ public class PresetManager {
 		table = t;
 	}
 	
-	//Struct for saving Preset values
 	public class PresetEntry {
+		int dataCellOffset = 0;
 		String name;
 		LinkedList<Integer> data;
 	}
 	
-	public void setValues(String name, String data) {
+	private int parseStringToInt(String s) {
+		Integer i = ByteUtil.parseUnsignedInt(s, 16);
+		
+		if (table.getStorageType() > 1 && table.getEndian() == Endian.LITTLE)
+		{
+			if(table.getStorageType() == 2) {
+				i = Short.reverseBytes((short)(i&0xFFFF))&0xFFFF;
+			}				
+			else if(table.getStorageType() == 4) {
+				i = Integer.reverseBytes(i);	
+			}
+		}	
+		return i;
+	}
+	
+	public boolean isPresetActive(PresetEntry entry) {
+		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
+			for (int i = 0; i < entry.data.size(); i++) {
+					DataCell[] data = table.data;
+					if ((int) data[i + entry.dataCellOffset].getBinValue() != entry.data.get(i)) {
+						return false;
+					}
+			}
+			return true;
+		}		
+		return false;
+	}
+	
+	public void applyPreset(PresetEntry entry) {
+		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
+			for (int i = 0; i < entry.data.size(); i++) {
+				try {
+					table.data[i + entry.dataCellOffset].setBinValue(entry.data.get(i));
+				} catch (UserLevelException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void clearPreset(PresetEntry entry) {
+		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
+			for (int i = 0; i < entry.data.size(); i++) {
+				try {
+					table.data[i+ entry.dataCellOffset].setBinValue(0);
+				} catch (UserLevelException e) {
+					e.printStackTrace();
+				}
+			}
+		}	
+	}
+	
+	public void setPresetValues(String name, String data, int dataCellOffset) {
 		PresetEntry entry = new PresetEntry();
+		entry.name = name;
 		entry.data = new LinkedList<Integer>();
+		entry.dataCellOffset = dataCellOffset;
 	
 		data =  data.trim();
-		String seperator = data.contains(",") ? "," : " ";
 		
-		for (String s : data.split(seperator)) {	
-			Integer i = ByteUtil.parseUnsignedInt(s, 16);
-			
-			if (table.getStorageType() > 1 && table.getEndian() == Endian.LITTLE)
-			{
-				if(table.getStorageType() == 2) {
-					i = Short.reverseBytes((short)(i&0xFFFF))&0xFFFF;
-				}
-					
-				else if(table.getStorageType() == 4)
-					i = Integer.reverseBytes(i);
-				
-			}
-				
-			entry.data.add(i);
+		for (String s : data.split(data.contains(",") ? "," : " ")) {				
+			entry.data.add(parseStringToInt(s));
 		}
 		
-		entry.name = name;
 		presets.add(entry);
 	}
 	

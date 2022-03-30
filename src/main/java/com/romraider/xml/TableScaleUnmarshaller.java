@@ -293,11 +293,11 @@ public class TableScaleUnmarshaller {
                     table.setDescription(unmarshallText(n));
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
-                    table.setValues(
+                    table.setPresetValues(
                                 unmarshallAttribute(n, "name", ""),
                                 unmarshallAttribute(n, "data", "0"));
                 } else if (n.getNodeName().equalsIgnoreCase("bit")) {
-                    table.setValues(
+                    table.setPresetValues(
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "position", "0"));
 

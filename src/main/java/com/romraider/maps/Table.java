@@ -499,9 +499,13 @@ public abstract class Table implements Serializable {
 
     abstract public byte[] saveFile(byte[] binData);
 
-    public void setValues(String name, String value) {
-        if(presetManager == null) presetManager = new PresetManager(this);
-        presetManager.setValues(name, value);
+    public void setPresetValues(String name, String value) {
+    	setPresetValues(name, value, 0);
+    }
+    
+    public void setPresetValues(String name, String value, int dataCellOffset) {
+    	if(presetManager == null) presetManager = new PresetManager(this);
+    	presetManager.setPresetValues(name, value, dataCellOffset);
     }
 
     public boolean isBeforeRam() {

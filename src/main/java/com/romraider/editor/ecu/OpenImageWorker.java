@@ -171,12 +171,14 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	    	    loadRom(rom, input);	
 
         } catch (StackOverflowError ex) {
+        	ex.printStackTrace();
             // handles looped inheritance, which will use up all available memory
             showMessageDialog(editor,
                     ECUEditor.rb.getString("LOOPEDBASE"),
                     errorLoading,
                     ERROR_MESSAGE);
         } catch (OutOfMemoryError ome) {
+        	ome.printStackTrace();
             // handles Java heap space issues when loading multiple Roms.
             showMessageDialog(editor,
                     ECUEditor.rb.getString("OUTOFMEMORY"),

@@ -143,6 +143,10 @@ public final class ByteUtil {
     	
     	return counter;
     }
+    
+    public static int bitToMask(int bit) {
+    	return  1 << bit;
+    }
 
     private static int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
