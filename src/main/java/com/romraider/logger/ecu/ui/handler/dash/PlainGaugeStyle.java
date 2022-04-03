@@ -20,7 +20,6 @@
 package com.romraider.logger.ecu.ui.handler.dash;
 
 import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.tts.Speaker;
 import com.romraider.util.ResourceUtil;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
@@ -32,6 +31,9 @@ import static java.awt.Color.WHITE;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import static javax.swing.BorderFactory.createLineBorder;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -45,6 +47,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ResourceBundle;
 
 public class PlainGaugeStyle implements GaugeStyle, ActionListener {
@@ -72,6 +75,7 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     private double max = Double.MAX_VALUE * -1;
     private double min = Double.MAX_VALUE;
     private JPanel panel = new JPanel();
+    private String warningFilePath = "customize/warningSound.wav";
 
     public PlainGaugeStyle(LoggerData loggerData) {
         checkNotNull(loggerData, "loggerData");
@@ -248,21 +252,28 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         return Double.parseDouble(warnTextField.getText());
     }
 
-    private void setWarning(final boolean enabled) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if (enabled) {
-                    panel.setBackground(RED);
-                    liveValuePanel.setBackground(RED);
-                    progressBar.setForeground(RED);
-                    Speaker.say("Warning!");
-                } else {
-                    panel.setBackground(LIGHT_GREY);
-                    liveValuePanel.setBackground(LIGHT_GREY);
-                    progressBar.setForeground(GREEN);
-                }
+    private void setWarning(boolean enabled) {
+        if (enabled) {
+            panel.setBackground(RED);
+            liveValuePanel.setBackground(RED);
+            progressBar.setForeground(RED);
+            
+            // Play Warning Sound
+            try
+            {
+                Clip clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(new File(warningFilePath)));
+                clip.start();
             }
-        });
+            catch (Exception exc)
+            {
+                exc.printStackTrace();
+            }
+        } else {
+            panel.setBackground(LIGHT_GREY);
+            liveValuePanel.setBackground(LIGHT_GREY);
+            progressBar.setForeground(GREEN);
+        }       
     }
 
     private String format(LoggerData loggerData, double value) {

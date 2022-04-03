@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!ELEMENT rom ( scales?, tables? ) >
+<!ATTLIST rom name ID #REQUIRED >
+<!ATTLIST rom abstract CDATA "false" >
+<!ATTLIST rom idaddress CDATA #IMPLIED >
+<!ATTLIST rom idstring CDATA #IMPLIED >
+<!ATTLIST rom base CDATA #IMPLIED >
+<!ATTLIST rom description CDATA #IMPLIED >
+<!ATTLIST rom memmodel IDREF #IMPLIED >
+<!ATTLIST rom flashmethod IDREF #IMPLIED >
+<!ATTLIST rom caseid IDREF #IMPLIED >
+<!ATTLIST rom obsolete CDATA "false" >
+
+<!ELEMENT tables ( category+ ) >
+
+<!ELEMENT table3d ( xaxis?, yaxis?, description? ) >
+<!ATTLIST table3d name ID #REQUIRED >
+<!ATTLIST table3d userlevel (1|2|3|4|5) "0" >
+<!ATTLIST table3d scale IDREF #IMPLIED >
+<!ATTLIST table3d address CDATA #IMPLIED >
+<!ATTLIST table3d xaddress CDATA #IMPLIED >
+<!ATTLIST table3d yaddress CDATA #IMPLIED >
+<!ATTLIST table3d sizex CDATA #IMPLIED >
+<!ATTLIST table3d sizey CDATA #IMPLIED >
+
+<!ELEMENT table2d ( axis?, description? ) >
+<!ATTLIST table2d name ID #REQUIRED >
+<!ATTLIST table2d userlevel (1|2|3|4|5) "0" >
+<!ATTLIST table2d scale IDREF #IMPLIED >
+<!ATTLIST table2d address CDATA #IMPLIED >
+<!ATTLIST table2d size CDATA #IMPLIED >
+<!ATTLIST table2d axisaddress CDATA #IMPLIED >
+
+<!ELEMENT parameter ( description? ) >
+<!ATTLIST parameter name ID #REQUIRED >
+<!ATTLIST parameter userlevel (1|2|3|4|5) "0" >
+<!ATTLIST parameter scale IDREF #IMPLIED >
+<!ATTLIST parameter address CDATA #IMPLIED >
+
+<!ELEMENT switch ( description?, on?, off? ) >
+<!ATTLIST switch name ID #REQUIRED >
+<!ATTLIST switch userlevel (1|2|3|4|5) "0" >
+<!ATTLIST switch address CDATA #IMPLIED >
+<!ATTLIST switch size CDATA "1" >
+<!ATTLIST switch hidden (true|false) "false" >
+<!ATTLIST switch default (on|off|none) "none" >
+
+<!ELEMENT switchgroup ( switch* ) >
+<!ATTLIST switchgroup name ID #REQUIRED >
+<!ATTLIST switchgroup default (on|off|none) "none" >
+<!ATTLIST switchgroup userlevel (1|2|3|4|5) "0" >
+<!ATTLIST switchgroup hidden (true|false) "false" >
+<!ATTLIST switchgroup description CDATA #IMPLIED >
+
+<!ELEMENT description ( #PCDATA ) >
+
+<!ELEMENT axis ( data? ) >
+<!ATTLIST axis name ID #REQUIRED >
+<!ATTLIST axis scale IDREF #IMPLIED >
+<!ATTLIST axis address CDATA #IMPLIED >
+<!ATTLIST axis size CDATA "1" >
+<!ATTLIST axis static (true|false) "false" >
+
+<!ELEMENT xaxis ( data? ) >
+<!ATTLIST xaxis name ID #REQUIRED >
+<!ATTLIST xaxis scale IDREF #IMPLIED >
+<!ATTLIST xaxis address CDATA #IMPLIED >
+<!ATTLIST xaxis size CDATA "1" >
+
+<!ELEMENT yaxis ( data? ) >
+<!ATTLIST yaxis name ID #REQUIRED >
+<!ATTLIST yaxis scale IDREF #IMPLIED >
+<!ATTLIST yaxis address CDATA #IMPLIED >
+<!ATTLIST yaxis size CDATA "1" >
+
+<!ELEMENT data ( #PCDATA ) >
+
+<!ELEMENT on EMPTY >
+<!ATTLIST on name ID #REQUIRED >
+<!ATTLIST on data CDATA #REQUIRED >
+
+<!ELEMENT off EMPTY >
+<!ATTLIST off name ID #REQUIRED >
+<!ATTLIST off data CDATA #REQUIRED >
+
+<!ELEMENT category ( table3d*, table2d*, parameter*, switch*, string* ) >
+<!ATTLIST category name ID #REQUIRED >
+<!ATTLIST category description CDATA #IMPLIED >
+
+<!ELEMENT scales ( scale+ ) >
+
+<!ELEMENT scale ( unit+ ) >
+<!ATTLIST scale name ID #REQUIRED >
+<!ATTLIST scale storagetype (uint8|int8|uint16|int16|float|hex|char) "uint8" >
+<!ATTLIST scale endian (big|little) "big" >
+<!ATTLIST scale logparam IDREF #IMPLIED >
+
+<!ELEMENT unit EMPTY >
+<!ATTLIST unit name ID #REQUIRED >
+<!ATTLIST unit system (stantard|metric|universal) "universal" >
+<!ATTLIST unit to_real CDATA #REQUIRED >
+<!ATTLIST unit to_byte CDATA #REQUIRED >
+<!ATTLIST unit format CDATA "0.00" >
+<!ATTLIST unit coarseincrement CDATA "1" >
+<!ATTLIST unit fineincrement CDATA "0.1" >

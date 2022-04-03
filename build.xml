@@ -72,11 +72,11 @@
         <condition property="os" value="${os.windows}" else="${os.linux}">
             <os family="windows" />
         </condition>
-
+    	
         <condition property="is.windows">
             <equals arg1="${os}" arg2="${os.windows}" />
         </condition>
-
+       	
         <property name="izpack.compile.${os.windows}" value="compile.bat" />
         <property name="izpack.compile.${os.linux}" value="compile" />
 
@@ -86,8 +86,9 @@
         <condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
                            else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
                     <isset property="env.JRE_DIR" />
-        </condition>
-        <property name="debug" value="off" />
+       	</condition>
+        
+    	<property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />
 
@@ -394,20 +395,16 @@
             </javac>
         </sequential>
     </macrodef>
-
+	
     <macrodef name="macro_standalone">
         <attribute name="os" />
         <sequential>
             <zip destfile="${dist.dir}/@{os}/${name.package}${version.major}.${version.minor}.${version.patch}${version.extra}${version.extra1}-@{os}.zip">
                 <zipfileset file="build/@{os}/lib/${jar.package}" prefix="${name.package}" />
-                <zipfileset file="run.${ext.@{os}}" prefix="${name.package}" filemode="755" />
+                <zipfileset file="scripts/run.${ext.@{os}}" prefix="${name.package}" filemode="755" />
                 <zipfileset file="license.txt" prefix="${name.package}" />
                 <zipfileset file="release_notes.txt" prefix="${name.package}" />
-                <zipfileset file="log4j.properties" prefix="${name.package}" />
-                <zipfileset file="cars_def.dtd" prefix="${name.package}" />
-                <zipfileset file="ecu_defs.dtd" prefix="${name.package}" />
-                <zipfileset file="logger.dtd" prefix="${name.package}" />
-                <zipfileset file="profile.dtd" prefix="${name.package}" />
+                <zipfileset file="lib/log4j.properties" prefix="${name.package}/lib"/>
                 <zipfileset dir="plugins" prefix="${name.package}/plugins" />
                 <zipfileset dir="lib/common" prefix="${name.package}/lib/common" />
                 <zipfileset dir="lib/@{os}" prefix="${name.package}/lib/@{os}" />

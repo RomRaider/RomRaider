@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT address ( #PCDATA ) >
+<!ATTLIST address length CDATA #IMPLIED >
+<!ATTLIST address bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 ) #IMPLIED >
+
+<!ELEMENT ecu ( address+ ) >
+<!ATTLIST ecu id CDATA #REQUIRED >
+
+<!ELEMENT ref EMPTY >
+<!ATTLIST ref ecuparam CDATA #IMPLIED >
+<!ATTLIST ref parameter IDREF #IMPLIED >
+
+<!ELEMENT depends ( ref+ ) >
+
+<!ELEMENT replace EMPTY >
+<!ATTLIST replace value CDATA #REQUIRED >
+<!ATTLIST replace with CDATA #REQUIRED >
+
+<!ELEMENT conversion ( replace* ) >
+<!ATTLIST conversion expr CDATA #REQUIRED >
+<!ATTLIST conversion format ( 0 | 0.0 | 0.00 | 0.000 | 0.0000 | 0.00000 | 0.000000) #REQUIRED >
+<!ATTLIST conversion storagetype ( int8 | int16 | uint8 | uint16 | int32 | uint32 | float ) #IMPLIED >
+<!ATTLIST conversion endian CDATA #IMPLIED >
+<!ATTLIST conversion units CDATA #REQUIRED >
+<!ATTLIST conversion gauge_min CDATA #IMPLIED >
+<!ATTLIST conversion gauge_max CDATA #IMPLIED >
+<!ATTLIST conversion gauge_step CDATA #IMPLIED >
+
+<!ELEMENT conversions ( conversion+ ) >
+
+<!ELEMENT parameter ( ( address+, conversions?) | (depends, conversions?) ) >
+<!ATTLIST parameter target CDATA #REQUIRED >
+<!ATTLIST parameter ecubit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #IMPLIED >
+<!ATTLIST parameter ecubyteindex CDATA #IMPLIED >
+<!ATTLIST parameter desc CDATA #REQUIRED >
+<!ATTLIST parameter name CDATA #REQUIRED >
+<!ATTLIST parameter id ID #REQUIRED >
+
+<!ELEMENT parameters ( parameter+ ) >
+<!ATTLIST parameters mode CDATA #IMPLIED >
+
+<!ELEMENT switch EMPTY >
+<!ATTLIST switch target CDATA #REQUIRED >
+<!ATTLIST switch ecubyteindex CDATA #IMPLIED >
+<!ATTLIST switch bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #REQUIRED >
+<!ATTLIST switch byte CDATA #REQUIRED >
+<!ATTLIST switch desc CDATA #REQUIRED >
+<!ATTLIST switch name CDATA #REQUIRED >
+<!ATTLIST switch id ID #REQUIRED >
+
+<!ELEMENT switches ( switch+ ) >
+
+<!ELEMENT dtcode EMPTY >
+<!ATTLIST dtcode bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #REQUIRED >
+<!ATTLIST dtcode memaddr CDATA #REQUIRED >
+<!ATTLIST dtcode tmpaddr CDATA #REQUIRED >
+<!ATTLIST dtcode desc CDATA #REQUIRED >
+<!ATTLIST dtcode name CDATA #REQUIRED >
+<!ATTLIST dtcode id ID #REQUIRED >
+
+<!ELEMENT dtcodes ( dtcode+) >
+
+<!ELEMENT ecuparam ( ecu+, conversions? ) >
+<!ATTLIST ecuparam target CDATA #REQUIRED >
+<!ATTLIST ecuparam groupsize CDATA #IMPLIED >
+<!ATTLIST ecuparam subgroup CDATA #IMPLIED >
+<!ATTLIST ecuparam group CDATA #IMPLIED >
+<!ATTLIST ecuparam desc CDATA #REQUIRED >
+<!ATTLIST ecuparam name CDATA #REQUIRED >
+<!ATTLIST ecuparam id ID #REQUIRED >
+
+<!ELEMENT ecuparams ( ecuparam+ ) >
+
+<!ELEMENT module EMPTY >
+<!ATTLIST module fastpoll CDATA #IMPLIED >
+<!ATTLIST module tester CDATA #IMPLIED >
+<!ATTLIST module desc CDATA #REQUIRED >
+<!ATTLIST module address CDATA #REQUIRED >
+<!ATTLIST module id ID #REQUIRED >
+
+<!ELEMENT transport ( module+ ) >
+<!ATTLIST transport desc CDATA #REQUIRED >
+<!ATTLIST transport name CDATA #REQUIRED >
+<!ATTLIST transport id ID #REQUIRED >
+
+<!ELEMENT transports ( transport+ ) >
+
+<!ELEMENT protocol ( transports, parameters?, switches?, dtcodes?, ecuparams? ) >
+<!ATTLIST protocol id ID #REQUIRED >
+<!ATTLIST protocol baud CDATA #REQUIRED >
+<!ATTLIST protocol databits CDATA #REQUIRED >
+<!ATTLIST protocol stopbits CDATA #REQUIRED >
+<!ATTLIST protocol parity CDATA #REQUIRED >
+<!ATTLIST protocol connect_timeout CDATA #REQUIRED >
+<!ATTLIST protocol send_timeout CDATA #REQUIRED >
+
+<!ELEMENT protocols ( protocol+ ) >
+
+<!ELEMENT logger ( protocols ) >
+<!ATTLIST logger version CDATA #IMPLIED >

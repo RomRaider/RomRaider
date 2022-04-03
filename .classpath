@@ -13,13 +13,6 @@
 	<classpathentry kind="lib" path="lib/common/jep.jar"/>
 	<classpathentry kind="lib" path="lib/common/jamlab.jar"/>
 	<classpathentry kind="lib" path="lib/common/log4j-1.2.14.jar"/>
-	<classpathentry kind="lib" path="lib/common/cmu_time_awb.jar"/>
-	<classpathentry kind="lib" path="lib/common/cmu_us_kal.jar"/>
-	<classpathentry kind="lib" path="lib/common/cmudict04.jar"/>
-	<classpathentry kind="lib" path="lib/common/cmulex.jar"/>
-	<classpathentry kind="lib" path="lib/common/cmutimelex.jar"/>
-	<classpathentry kind="lib" path="lib/common/en_us.jar"/>
-	<classpathentry kind="lib" path="lib/common/freetts.jar"/>
 	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/common/jcommon-1.0.12.jar"/>
 	<classpathentry kind="lib" path="lib/common/jna.jar">

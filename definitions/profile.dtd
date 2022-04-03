@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!ELEMENT serial EMPTY >
+<!ATTLIST serial port CDATA #REQUIRED >
+
+<!ELEMENT logfilelocation EMPTY >
+<!ATTLIST logfilelocation dir CDATA #REQUIRED >
+
+<!ELEMENT parameter EMPTY >
+<!ATTLIST parameter id ID #REQUIRED >
+<!ATTLIST parameter livedata ( selected ) #IMPLIED >
+<!ATTLIST parameter graph ( selected ) #IMPLIED >
+<!ATTLIST parameter dash ( selected ) #IMPLIED >
+<!ATTLIST parameter units CDATA #IMPLIED >
+
+<!ELEMENT parameters ( parameter* ) >
+
+<!ELEMENT switch EMPTY >
+<!ATTLIST switch id ID #REQUIRED >
+<!ATTLIST switch livedata ( selected ) #IMPLIED >
+<!ATTLIST switch graph ( selected ) #IMPLIED >
+<!ATTLIST switch dash ( selected ) #IMPLIED >
+
+<!ELEMENT switches ( switch* ) >
+
+<!ELEMENT external EMPTY >
+<!ATTLIST external id ID #REQUIRED >
+<!ATTLIST external livedata ( selected ) #IMPLIED >
+<!ATTLIST external graph ( selected ) #IMPLIED >
+<!ATTLIST external dash ( selected ) #IMPLIED >
+<!ATTLIST external units CDATA #IMPLIED >
+
+<!ELEMENT externals ( external* ) >
+
+<!ELEMENT profile ( serial?, logfilelocation?, parameters?, switches?, externals? ) >
+<!ATTLIST profile protocol CDATA #IMPLIED >

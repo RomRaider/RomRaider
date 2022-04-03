@@ -1,0 +1,169 @@
+Building RomRaider
+
+  As an open source project, RomRaider depends on Java developers like you for enhancements, 
+bug fixes and general maintenance. This page is meant to be a guide to setting up a 
+development environment from scratch.
+
+  These instructions will get you up and running.  You will be able to modify and build your
+own version of RomRaider.  If you intend to contribute back to the project (that includes
+updating these instructions!) see below for further information.
+
+  RomRaider’s official IDE is Eclipse. You are free to use any Java IDE you choose, but due
+to the extremely simple process of setting up the environment and the power of Eclipse, it’s
+probably your best choice.
+
+* Installing the Java Development Kit and Eclipse
+    o Install the latest version of the 32bit Java SE Development Kit
+          (http://java.sun.com/javase/downloads/index.jsp)
+      If you wish to use a 64-bit version of Eclipse, see below for additional instructions.
+    o Get and install ‘Eclipse IDE for Java Developers’ 32bit
+          (http://www.eclipse.org/downloads)
+      for your specific platform. The Java EE version will work too but there are subtle
+      differences (noted below).
+    o Set the JAVA_HOME environment variable for your Operating System to point to the JDK
+      installation directory. e.g.: For Windows 32bit
+          JAVA_HOME=C:\Program Files\Java\jdk1.6.0_32 
+
+* Setting up the RomRaider project
+    o If you use the Java EE version you may need to install the Git plugin, or you can use
+      the non integrated command line Git tools outside of Eclipse (while Eclipse is not
+      running of course).
+    o If you have Java EE and wish to install the Git plugin, open:
+          Help > Eclipse Marketplace, Search for ‘EGit’ (name of the plug in), select it,
+          Install, and restart Eclipse
+    o Open the Git perspective in Eclipse by clicking:
+          Window > Open Perspective > Other > Git Repository Exploring
+    o Press the Clone Git Repository button
+    o In the window the pops up paste in the repository URL:
+          (https://github.com/RomRaider/RomRaider.git)
+    o Click “Next”
+    o In the branches window click “Deselect All”, then scroll to the bottom and select
+      “master”, click “Next”
+    o Enter a directory path on your computer to store the repository in. DO NOT save it in
+      the Eclipse workspace directory.
+    o Click “Finish”
+    o After the repository has been copied to your system it will appear in the left pane of 
+      Eclipse, Git Repositories.
+    o Right-click on the repository entry and select “Import Projects”.
+    o Click “Next” and select “Finish”.
+    o To switch to the Java view, open the Java perspective by clicking:
+          Window > Open Perspective > Java
+
+* Setting the library path
+    o You may need to change the path to the Jars within your libs directory
+      (ex: Linux). You should read this to set the Build Paths:
+          (http://help.eclipse.org/indigo/topic/org.eclipse.jdt.doc.user/reference/ref-properties-build-path.htm) 
+
+* Building the Project for the First Time
+    o When the project is created as above (Setting up the RomRaider Project) Eclipse will
+      initially report numerous problems, such as the inability to resolve some references.
+      This is due to the absence of some generated files, not problems with the project itself.
+      These files will be generated next.
+    o First complete a build using ant. Right-click on build.xml and select:
+          Run As -> 2 Ant build (this may appear as item 3 in the Java EE version)
+      then select the "all" target in the targets tab.
+    o When the build is finished (successfully I hope), Right-click on the root romraider
+      project and select Refresh. This should clear all the errors.  Some warnings may remain,
+      depending on the source code itself.
+    o The built files are stored in the repository’s build directory:
+          RomRaider\build\dist
+    o Install the build of your choosing and enjoy RomRaider.
+
+* Setup EGit
+    o Ensure you have configured your user settings in Eclipse under menu:
+          Window > Preferences > Team > Git > Configuration > User Settings
+      add entries for user.name and user.email
+    o Switch to the Repository Settings tab and Add Entry branch.master.rebase
+      with a value of true
+    o The EGit reference can be found here:
+          (http://wiki.eclipse.org/EGit/User_Guide)
+      and a Git command x-ref here:
+          (http://wiki.eclipse.org/EGit/Mapping_Git_Commands)
+          
+* Contributing changes back to the master repository
+    o Set up an account on github.  This should include a verified email (github is fairly
+      insistent on this) and an SSH key.  The SSH key may not be necessary, but it makes
+      life much simpler.
+    o Go to the github RomRaider project page:
+        https://github.com/RomRaider/RomRaider
+      Click the "fork" button.  A private clone will be created for you on github.
+    o Clone your own fork to your local git repository
+    o Ensure you're up to date with latest HEAD
+    o <add unit tests for intended changes>
+    o <make changes until all tests pass>
+    o git add files (with or without an IDE)
+    o git commit (with or without an IDE)
+    o git push <remote> <refspec>:<refspec> (if set up correctly, "git push" should default
+      to the correct values)
+    o Recheck latest HEAD.  If not current, rebase
+    o Send pull request and/or pm and/or email and/or forum post.  A pull request on github is
+      probably the best way to get the request noticed, and allows comments.
+
+----------------------------------------------
+
+
+Notes on the above:
+
+1)  Make sure the build path for the Java builder is set correctly.  On the top menu:
+
+        Project -> Properties -> Java Build Path
+
+    On the Source tab, the default output folder should be set to
+
+        romraider/build/classes
+
+2)  The jars in the java build path mentioned above should be correct in the repository for a
+    Windows environment.  These settings are in the .classpath file and should all have a
+    relative path to the project root directory.
+
+3)  The ant build file is in the main directory and uses the default name of
+      "build.xml".
+
+    The Java builder is set as the default.  During development it's convenient to have the
+    "Problems" pane show warning and errors.  The ant build does not send warnings or errors
+    there.  The ant build is primarily for automation of the complete build process for packaging.
+    
+    To build using ant, right-click on the build.xml file in the Package Explorer (Java
+    perspective) and select
+    
+    Run As -> 2 Ant build (this could be item 3 in Java EE), then select the "all" target in
+    the targets tab. To get more verbose output from ant set the -v option in the arguments
+    field on the Main tab.
+    
+    The "help" target lists available targets with a brief description of each.
+    
+    The "all" target does just that.  It rebuilds everything, finishing with the installers.
+    The final artifacts will be saved in the
+    
+        <repository_path>\RomRaider\build\dist\
+    
+    directory under each OS name.  Windows and Linux are the only target operating systems
+    supported.
+
+----------------------------------------------
+
+
+Additional instructions for using 64-bit versions of Eclipse
+
+NOTE:  While development can be done using a 64-bit version of Eclipse by configuring it to use
+one of several available JREs, the final installation should still follow the instructions
+available with the official download.
+
+  The 64-bit version of Eclipse is usable for development, but a 32-bit JRE must be installed.
+RomRaider can only run properly in a 32-bit JVM.  By default, projects will use the default JRE.
+This needs to be changed so that execution of RomRaider from the IDE will use a compatible
+JRE.
+
+To configure the RomRaider project to use a 32-bit JRE:
+
+1)  Select the Java perspective.  Window -> Open Perspective -> Other -> Java
+2)  Right-click on the RomRaider project adn select Properties
+3)  Select Run/Debug Settings, select the Launch Configuration, then click the Edit button.
+4)  Select the JRE tab, then choose the Alternate JRE radio button.
+5)  Click the Installed JREs button.
+6)  Click on the Add button, and then select the installation directory of your 32-bit JRE.
+7)  Check the box next to this JRE, then click OK.  This JRE should now be selected in the
+    dropdown box.
+8)  Click OK, then OK.  Your project should now use the 32-bit JRE when running and debugging
+    through Eclipse.
+

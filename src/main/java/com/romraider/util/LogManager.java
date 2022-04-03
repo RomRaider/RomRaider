@@ -28,6 +28,6 @@ public final class LogManager {
     }
 
     public static void initDebugLogging() {
-        configureAndWatch("log4j.properties");
+        configureAndWatch("lib/log4j.properties");
     }
 }

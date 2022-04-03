@@ -1,0 +1,692 @@
+<ecus>
+    <ecu_tools>
+        <convert_factor type="afr" name="Convert Lambda to AFR" metric="AFR" expr="[value]*14.7"/>
+        <convert_factor type="temp" name="Convert Celsius to Fahrenheit" metric="F" expr="([value]*9/5)+32"/>
+        <convert_factor type="press" name="Convert PSI to Bar" metric="Bar" expr="[value]*0.06894757"/>
+        <convert_factor type="speed" name="Convert km/h to mph" metric="mph" expr="[value]*0.6213712"/>
+        <convert_factor type="inj" name="Convert Injector Milliseconds to Duty %" metric="%"
+                        expr="GetLogParam(&quot;Engine Speed&quot;)*([value]/1200)"/>
+    </ecu_tools>
+    <logprotocols>
+        <logprotocol type="SSM" default="ssmbase">
+            <ecu id="base" name="SSM base" type="ssmbase">
+                <parameter id="Engine Speed" offset="#000E" storagetype="uint16" decimals="0" bit="1" byte="1" expr="[value]/4" metric="RPM"
+                           desc="Engine speed in Revolutions Per Minute.  More accurate than your|tachometer, which will normally indicate higher."/>
+                <parameter id="Manifold Absolute Pressure" offset="#000D" storagetype="uint8" decimals="3" type="press" bit="2" byte="1"
+                           expr="[value]*37/255" metric="PSI"
+                           desc="Absolute pressure read by the MAP sensor typically located just after|the throttle body.  Absolute pressure means air pressure including|amtospheric, therefore the values normall seen here are Atmospheric|Pressure plus any boost pressure."/>
+                <parameter id="Air/Fuel Learning #2" offset="#000C" storagetype="uint8" decimals="2" bit="3" byte="1" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop. This value|is based on trends seen in the Air/Fuel Trim Immediate field.|Adjustments are made slower. The combined value of this field and the|Air/Fuel Trim Immediate field equal your total fuel trim. This|correction is not directly active when in open loop."/>
+                <parameter id="Air/Fuel Correction #2" offset="#000B" storagetype="uint8" decimals="2" bit="4" byte="1" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop.  This|value is updated most frequently.  Adjustments are made based on the|values provided by the Front O2 Sensor.  This correction is not active|when in open loop."/>
+                <parameter id="Air/Fuel Learning #1" offset="#000A" storagetype="uint8" decimals="2" bit="5" byte="1" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop. This value|is based on trends seen in the Air/Fuel Trim Immediate field.|Adjustments are made slower. The combined value of this field and the|Air/Fuel Trim Immediate field equal your total fuel trim. This|correction is not directly active when in open loop."/>
+                <parameter id="Air/Fuel Correction #1" offset="#0009" storagetype="uint8" decimals="2" bit="6" byte="1" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop.  This|value is updated most frequently.  Adjustments are made based on the|values provided by the Front O2 Sensor.  This correction is not active|when in open loop."/>
+                <parameter id="Coolant Temperature" offset="#0008" storagetype="uint8" decimals="2" type="temp" bit="7" byte="1" expr="([value]-40)"
+                           metric="B C"
+                           desc="Engine coolant temperature reading.  Do not base your decision on|engine operating temperature on this value.  The engine oil will take|slightly longer to heat up than the coolant."/>
+                <parameter id="Engine Load" offset="#0007" storagetype="uint8" decimals="2" bit="8" byte="1" expr="[value]*100/255" metric="g/s"
+                           desc="Calculated engine load based on a number of conditions such as MAF|sensor reading, engine coolant temp, etc.  This represents how hard|the engine is being asked to work.  Load does not simply mean boost.|This value is used as an axis reference point on many of the ECU maps."/>
+                <parameter id="Front O2 Sensor #2" offset="#001A" storagetype="uint16" decimals="3" bit="1" byte="2" expr="[value]*5/1000" metric="V"
+                           desc="Voltage of the O2 sensor.  These sensors do not report an accurate|Air/Fuel ratio but instead provide a rich/lean signal to the ECU.|Their output voltages switches sharply as the AFR crosses the|stoichiometric ratio.  Values of ~0 to ~0.9 are normal.  0 being lean|and 0.9 being very rich."/>
+                <parameter id="Rear O2 Sensor" offset="#0018" storagetype="uint16" decimals="3" bit="2" byte="2" expr="[value]*5/1000" metric="V"
+                           desc="Voltage of the O2 sensor.  These sensors do not report an accurate|Air/Fuel ratio but instead provide a rich/lean signal to the ECU.|Their output voltages switches sharply as the AFR crosses the|stoichiometric ratio.  Values of ~0 to ~0.9 are normal.  0 being lean|and 0.9 being very rich."/>
+                <parameter id="Front O2 Sensor #1" offset="#0016" storagetype="uint16" decimals="3" bit="3" byte="2" expr="[value]*5/1000" metric="V"
+                           desc="Voltage of the O2 sensor.  These sensors do not report an accurate|Air/Fuel ratio but instead provide a rich/lean signal to the ECU.|Their output voltages switches sharply as the AFR crosses the|stoichiometric ratio.  Values of ~0 to ~0.9 are normal.  0 being lean|and 0.9 being very rich."/>
+                <parameter id="Throttle Opening Angle" offset="#0015" storagetype="uint8" decimals="2" bit="4" byte="2" expr="[value]*100/255"
+                           metric="%" desc="Percentage displaying how much the throttle blade has opened.  100% =|wide open throttle."/>
+                <parameter id="Mass Air Flow" offset="#0013" storagetype="uint16" decimals="2" bit="5" byte="2" expr="[value]/100" metric="g/s"
+                           desc="Mass air flow sensor value in gram of air per second.  Measured by the|MAF sensor located just after your intake air box."/>
+                <parameter id="Intake Air Temperature" offset="#0012" storagetype="uint8" decimals="2" type="temp" bit="6" byte="2"
+                           expr="([value]-40)" metric="B C"
+                           desc="Temperature of the air drawn into the engine for combustion.|Generally measured as the point of entry to the air box.  This does|NOT give an indication of actual charge air temperature.  This value|is useful to the ECU for determination of the wastegate duty cycle|required to produce a given boost pressure.  Higher boost pressures|may be achieved with lower wastegate duty cycles when the IAT is low."/>
+                <parameter id="Ignition Timing" offset="#0011" storagetype="uint8" decimals="0" bit="7" byte="2" expr="([value]-128)/2"
+                           metric="B BTDC"
+                           desc="Actual spark advance Before Top Dead Center after all corrections have|been made.  This is the actual timing value the engine is experiencing|after all the knock correction and environment corrections have been|made."/>
+                <parameter id="Vehicle Speed" offset="#0010" storagetype="uint8" decimals="0" type="speed" bit="8" byte="2" expr="[value]"
+                           metric="KPH"
+                           desc="Actual vehicle speed.  This value is updated slower but may beore|accurate than what your speedometer.  This value may not be accurate|if the car wheels or tyres have been changed from standard, since this|changes the rolling circumference."/>
+                <parameter id="Atmospheric Pressure" offset="#0023" storagetype="uint8" decimals="3" type="press" bit="1" byte="3"
+                           expr="[value]*37/255" metric="PSI"
+                           desc="Measured atmospheric pressure.  At sea-level this should be around|1bar or 14.5PSI.  On some vehicles this value is not updated|continuously since a single pressure sensor is shared for reading both|manifold and atmospheric pressure."/>
+                <parameter id="Knock Correction" offset="#0022" storagetype="uint8" decimals="0" bit="2" byte="3" expr="([value]-128)/2"
+                           metric="B BTDC"
+                           desc="This value represents how much additional ignition timing is being|added/removed to/from the primary ignition table.  + values are|ignition advance and indicate the absence of knock.  -ve values are|ignition retard and may indicate that the engine knock sensor is|detecting some knock.  This value is generated by the Ignition Advance|Multiplier and the Knock Correction map."/>
+                <parameter id="Fuel Injector #2 Pulse Width" offset="#0021" storagetype="uint8" decimals="2" type="inj" bit="3" byte="3"
+                           expr="[value]*256/1000" metric="ms"
+                           desc="Represents how long the injector has been sent a signal to open.  This|includes both the injector latency time as well as the time the|injector actually flowed fuel.  If you are regularly seeing over 90%|duty, you may need bigger injectors."/>
+                <parameter id="Fuel Injector #1 Pulse Width" offset="#0020" storagetype="uint8" decimals="2" type="inj" bit="4" byte="3"
+                           expr="[value]*256/1000" metric="ms"
+                           desc="Represents how long the injector has been sent a signal to open.  This|includes both the injector latency time as well as the time the|injector actually flowed fuel.  If you are regularly seeing over 90%|duty, you may need bigger injectors."/>
+                <parameter id="Differential Pressure Sensor Voltage" offset="#001F" storagetype="uint8" decimals="3" bit="5" byte="3"
+                           expr="[value]*2/100" metric="V" desc=""/>
+                <parameter id="Throttle Sensor Voltage" offset="#001E" storagetype="uint8" decimals="3" bit="6" byte="3" expr="[value]*2/100"
+                           metric="V" desc="Voltage generated by the throttle sensor.  As throttle blade angle|increases, voltage increases."/>
+                <parameter id="Air Flow Sensor Voltage" offset="#001D" storagetype="uint8" decimals="3" bit="7" byte="3" expr="[value]*2/100"
+                           metric="V" desc="Voltage generated by the MAF sensor.  As air flow increases, voltage|increases."/>
+                <parameter id="Battery Voltage" offset="#001C" storagetype="uint8" decimals="3" bit="8" byte="3" expr="[value]*8/100" metric="V"
+                           desc="Voltage measured at the ECU.  May be as low as 10 volts when the|ignition is off, should rise to ~14 volts when the engine is running."/>
+                <parameter id="Front O2 Heater #1" offset="#002B" storagetype="uint8" decimals="3" bit="1" byte="4" expr="[value]*1004/25600"
+                           metric="Amps" desc=""/>
+                <parameter id="Fuel Temperature" offset="#002A" storagetype="uint8" decimals="2" type="temp" bit="2" byte="4" expr="([value]-40)"
+                           metric="B C" desc=""/>
+                <parameter id="Accelerator Opening Angle" offset="#0029" storagetype="uint8" decimals="2" bit="3" byte="4" expr="[value]*100/256"
+                           metric="%" desc=""/>
+                <parameter id="Learned Ignition Timing" offset="#0028" storagetype="uint8" decimals="0" bit="4" byte="4" expr="([value]-128)/2"
+                           metric="B BTDC" desc=""/>
+                <parameter id="CO Adjustment" offset="#0027" storagetype="uint8" decimals="3" bit="5" byte="4" expr="[value]*2/100" metric="V"
+                           desc=""/>
+                <parameter id="Fuel Tank Pressure" offset="#0026" storagetype="uint8" decimals="3" type="press" bit="6" byte="4"
+                           expr="([value]-128)*35/10000" metric="PSI" desc=""/>
+                <parameter id="Pressure Differential Sensor" offset="#0025" storagetype="uint8" decimals="3" bit="7" byte="4"
+                           expr="([value]-128)*37/255" metric="PSI" desc=""/>
+                <parameter id="Manifold Relative Pressure" offset="#0024" storagetype="uint8" decimals="3" type="press" bit="8" byte="4"
+                           expr="([value]-128)*37/255" metric="PSI"
+                           desc="Calculated by the ECU from subtracting the Air Pressure sensor value|against the Manifold Absolute Pressure sensor.  The result is relative|or &quot;boost&quot; pressure, which is what is shown by a boost gauge."/>
+                <parameter id="Tumble Valve Position Sensor Right" offset="#0033" storagetype="uint8" decimals="3" bit="1" byte="5"
+                           expr="[value]*2/100" metric="V" desc="Voltage generated by the tumble value position sensor."/>
+                <parameter id="CPC Valve Duty Ratio" offset="#0032" storagetype="uint8" decimals="2" bit="2" byte="5" expr="[value]*100/255"
+                           metric="%" desc="Charge Purge Cannister"/>
+                <parameter id="Secondary Wastegate Duty Cycle" offset="#0031" storagetype="uint8" decimals="2" bit="3" byte="5" expr="[value]*100/255"
+                           metric="%"
+                           desc="Duty cycle used to drive the boost control solenoid.  This is the|final value used after corrections.  Very helpful in tuning the boost|control system.  The higher the duty cycles the more exhaust gas is|being used to drive the turbocharger.  As the wastegate is opened more|exhaust gases are by-passed to reduce the boost pressure generated by|the turbo."/>
+                <parameter id="Primary Wastegate Duty Cycle" offset="#0030" storagetype="uint8" decimals="2" bit="4" byte="5" expr="[value]*100/255"
+                           metric="%"
+                           desc="Duty cycle used to drive the boost control solenoid.  This is the|final value used after corrections.  Very helpful in tuning the boost|control system.  The higher the duty cycles the more exhaust gas is|being used to drive the turbocharger.  As the wastegate is opened more|exhaust gases are by-passed to reduce the boost pressure generated by|the turbo."/>
+                <parameter id="Fuel Level Voltage" offset="#002E" storagetype="uint8" decimals="3" bit="6" byte="5" expr="[value]*2/100" metric="V"
+                           desc="Voltage generated by the fuel level sensor inside the fuel tank."/>
+                <parameter id="Front O2 Heater #2" offset="#002D" storagetype="uint8" decimals="3" bit="7" byte="5" expr="[value]*1004/25600"
+                           metric="Amps" desc=""/>
+                <parameter id="Rear O2 Heater Current" offset="#002C" storagetype="uint8" decimals="3" bit="8" byte="5" expr="[value]*1004/25600"
+                           metric="Amps" desc=""/>
+                <parameter id="Fuel Pump Duty" offset="#003B" storagetype="uint8" decimals="2" bit="1" byte="6" expr="[value]*100/255" metric="%"
+                           desc="Duty cycle used to drive the fuel pump.  At idle and very low load|conditions, the duty cycle is reduced to extend the pump's life time|and importantly reduces fuel temperature at idle and this reduces fuel|system related emissions."/>
+                <parameter id="Alternator Duty" offset="#003A" storagetype="uint8" decimals="2" bit="2" byte="6" expr="[value]" metric="%"
+                           desc="On some cars the alternator duty can be controlled by the ECU.  This|allows the load on the engine from the alternator to be controlled.|The ECU may reduce the alternator load at high engine loads to reduce|the power drawn from the engine."/>
+                <parameter id="Number Of Ex. Gas Recirc Steps" offset="#0039" storagetype="uint8" decimals="2" bit="3" byte="6" expr="[value]"
+                           metric="steps" desc=""/>
+                <parameter id="Idle Speed Control Valve Step" offset="#0038" storagetype="uint8" decimals="2" bit="4" byte="6" expr="[value]"
+                           metric="steps" desc=""/>
+                <parameter id="Air/Fuel Heater Duty" offset="#0037" storagetype="uint8" decimals="2" bit="5" byte="6" expr="[value]*100/255"
+                           metric="%" desc=""/>
+                <parameter id="Air/Fuel Lean Correction" offset="#0036" storagetype="uint8" decimals="2" bit="6" byte="6" expr="[value]*100/255"
+                           metric="%" desc=""/>
+                <parameter id="Idle Speed Control Valve Duty Ratio" offset="#0035" storagetype="uint8" decimals="2" bit="7" byte="6" expr="[value]/2"
+                           metric="%"
+                           desc="Duty cycle used to maintain idle speed.   Controls the amount of air|let into the manifold when the engine is idling.  It is normal to see|this value fluctuating slightly with lambda on idle."/>
+                <parameter id="Tumble Valve Position Sensor Left" offset="#0034" storagetype="uint8" decimals="3" bit="8" byte="6"
+                           expr="[value]*2/100" metric="V" desc="Voltage generated by the tumble value position sensor."/>
+                <parameter id="Air/Fuel Sensor #2 Current" offset="#0043" storagetype="uint8" decimals="3" bit="1" byte="7"
+                           expr="([value]-128)*125/1000" metric="mA" desc="Current generated by the Air/Fuel Sensor."/>
+                <parameter id="Air/Fuel Sensor #1 Current" offset="#0042" storagetype="uint8" decimals="3" bit="2" byte="7"
+                           expr="([value]-128)*125/1000" metric="mA" desc="Current generated by the Air/Fuel Sensor."/>
+                <parameter id="Intake OCV Current Left" offset="#0041" storagetype="uint8" decimals="3" bit="3" byte="7" expr="[value]*32" metric="mA"
+                           desc="Current generated by the Oil Control Valve solenoid."/>
+                <parameter id="Intake OCV Current Right" offset="#0040" storagetype="uint8" decimals="3" bit="4" byte="7" expr="[value]*32"
+                           metric="mA" desc="Current generated by the Oil Control Valve solenoid."/>
+                <parameter id="Intake OCV Duty Left" offset="#003F" storagetype="uint8" decimals="2" bit="5" byte="7" expr="[value]*100/255"
+                           metric="%"
+                           desc="The Oil Control Valve controls the intake VVT advance angles.  The|values are a duty %, indicating the proportion of time that the valves|are energised."/>
+                <parameter id="Intake OCV Duty Right" offset="#003E" storagetype="uint8" decimals="2" bit="6" byte="7" expr="[value]*100/255"
+                           metric="%"
+                           desc="The Oil Control Valve controls the intake VVT advance angles.  The|values are a duty %, indicating the proportion of time that the valves|are energised."/>
+                <parameter id="Intake VVT Advance Angle Left" offset="#003D" storagetype="uint8" decimals="0" bit="7" byte="7" expr="([value]-50)"
+                           metric="B "
+                           desc="Degrees of intake camshaft advance applied.  The higher the advance|angle, the earlier the intake valves open; this causes more intake|valve overlap which can help the engine to breathe more efficiently at|a particular RPM and load.  It is normal to see small differences|between left and right sides of the engine, however, large continuous|differences may indicate a fault."/>
+                <parameter id="Intake VVT Advance Angle Right" offset="#003C" storagetype="uint8" decimals="0" bit="8" byte="7" expr="([value]-50)"
+                           metric="B "
+                           desc="Degrees of intake camshaft advance applied.  The higher the advance|angle, the earlier the intake valves open; this causes more intake|valve overlap which can help the engine to breathe more efficiently at|a particular RPM and load.  It is normal to see small differences|between left and right sides of the engine, however, large continuous|differences may indicate a fault."/>
+                <parameter id="Air/Fuel Adjustment Voltage" offset="#00D3" storagetype="uint8" decimals="3" bit="1" byte="8" expr="[value]*2/100"
+                           metric="V" desc=""/>
+                <parameter id="Rear O2 Heater Voltage" offset="#00D2" storagetype="uint8" decimals="3" bit="2" byte="8" expr="[value]*2/100"
+                           metric="V" desc=""/>
+                <parameter id="Air/Fuel Learning #3" offset="#00D1" storagetype="uint8" decimals="2" bit="3" byte="8" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop. This value|is based on trends seen in the Air/Fuel Trim Immediate field.|Adjustments are made slower. The combined value of this field and the|Air/Fuel Trim Immediate field equal your total fuel trim. This|correction is not directly active when in open loop."/>
+                <parameter id="Air/Fuel Correction #3" offset="#00D0" storagetype="uint8" decimals="2" bit="4" byte="8" expr="([value]-128)*100/128"
+                           metric="%"
+                           desc="Fuel trim corrections made by the ECU while in closed loop.  This|value is updated most frequently.  Adjustments are made based on the|values provided by the Front O2 Sensor.  This correction is not active|when in open loop."/>
+                <parameter id="Air/Fuel Sensor #2" offset="#0047" storagetype="uint8" decimals="2" type="afr" bit="5" byte="8" expr="[value]/128"
+                           metric="Lambda"
+                           desc="Calculated Air/Fuel ratio based on the readings from the factory front|O2 sensor.  The factory front O2 sensor is not a true wideband, and|typically loses accuracy at Air/Fuel ratios richer than 11.5:1.  This|sensor is only used during closed loop fueling.  A good value to|monitor for reference, but not one suggested to be used solely for|tuning."/>
+                <parameter id="Air/Fuel Sensor #1" offset="#0046" storagetype="uint8" decimals="2" type="afr" bit="6" byte="8" expr="[value]/128"
+                           metric="Lambda"
+                           desc="Calculated Air/Fuel ratio based on the readings from the factory front|O2 sensor.  The factory front O2 sensor is not a true wideband, and|typically loses accuracy at Air/Fuel ratios richer than 11.5:1.  This|sensor is only used during closed loop fueling.  A good value to|monitor for reference, but not one suggested to be used solely for|tuning."/>
+                <parameter id="Air/Fuel Sensor #2 Resistance" offset="#0045" storagetype="uint8" decimals="3" bit="7" byte="8" expr="[value]"
+                           metric="Ohms" desc="Resistance measured at the Air/Fuel sensor."/>
+                <parameter id="Air/Fuel Sensor #1 Resistance" offset="#0044" storagetype="uint8" decimals="3" bit="8" byte="8" expr="[value]"
+                           metric="Ohms" desc="Resistance measured at the Air/Fuel sensor."/>
+                <parameter id="Gear Position" offset="#004A" storagetype="uint8" decimals="3" bit="6" byte="9" expr="([value]+1)" metric="gear"
+                           desc=""/>
+                <parameter id="Air/Fuel Sensor #2 Heater Current" offset="#0054" storagetype="uint8" decimals="3" bit="4" byte="10" expr="[value]/10"
+                           metric="Amps" desc=""/>
+                <parameter id="Air/Fuel Sensor #1 Heater Current" offset="#0053" storagetype="uint8" decimals="3" bit="5" byte="10" expr="[value]/10"
+                           metric="Amps" desc=""/>
+                <parameter id="Read Memory Signal" offset="#0061" storagetype="uint8" decimals="0" type="bool" bit="5" byte="12" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Test Mode Signal" offset="#0061" storagetype="uint8" decimals="0" type="bool" bit="6" byte="12" expr="[value]"
+                           metric="On/Off" desc="When test mode connector is connected."/>
+                <parameter id="AT/MT Identification Signal" offset="#0061" storagetype="uint8" decimals="0" type="bool" bit="7" byte="12"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="A/C Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="2" byte="13" expr="[value]"
+                           metric="On/Off" desc="When air conditioning switch is turned ON."/>
+                <parameter id="Power Steering Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="3" byte="13"
+                           expr="[value]" metric="On/Off" desc="When power steering switch is entered."/>
+                <parameter id="Ignition Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="4" byte="13" expr="[value]"
+                           metric="On/Off" desc="When ignition is turned to ON."/>
+                <parameter id="Intercooler Auto-Wash Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="5" byte="13"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="Idle Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="7" byte="13" expr="[value]"
+                           metric="On/Off" desc="When idle switch signal is entered."/>
+                <parameter id="Neutral Position Switch Signal" offset="#0062" storagetype="uint8" decimals="0" type="bool" bit="8" byte="13"
+                           expr="[value]" metric="On/Off" desc="When neutral position signal is entered."/>
+                <parameter id="Electrical Load Signal" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="1" byte="14" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Knock Signal #2" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="2" byte="14" expr="[value]"
+                           metric="On/Off"
+                           desc="Knock sensor input.  Knock signals occur extremely fast and may not|always be captured, it is suggested to rather watch the Knock|Correction value."/>
+                <parameter id="Knock Signal #1" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="3" byte="14" expr="[value]"
+                           metric="On/Off"
+                           desc="Knock sensor input.  Knock signals occur extremely fast and may not|always be captured, it is suggested to rather watch the Knock|Correction value."/>
+                <parameter id="Front O2 #2 Rich Signal" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="4" byte="14" expr="[value]"
+                           metric="On/Off" desc="When front O2 sensor mixture ratio is rich."/>
+                <parameter id="Rear O2 Rich Signal" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="5" byte="14" expr="[value]"
+                           metric="On/Off" desc="When rear O2 sensor mixture ratio is rich."/>
+                <parameter id="Front O2 Rich Signal" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="6" byte="14" expr="[value]"
+                           metric="On/Off" desc="When front O2 sensor mixture ratio is rich."/>
+                <parameter id="Starter Switch Signal" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="7" byte="14" expr="[value]"
+                           metric="On/Off" desc="When starter switch signal is entered."/>
+                <parameter id="Handle Switch" offset="#0063" storagetype="uint8" decimals="0" type="bool" bit="8" byte="14" expr="[value]"
+                           metric="RHD/LHD" desc="When the vehicle is LHD model."/>
+                <parameter id="A/C Mid Pressure Switch" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="1" byte="15" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="A/C Lock Signal" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="2" byte="15" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Wiper Switch" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="3" byte="15" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Interior Light Switch" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="4" byte="15" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Blower Fan Switch" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="5" byte="15" expr="[value]"
+                           metric="On/Off" desc="When blower flan switch is turned ON."/>
+                <parameter id="Rear Defogger Switch Signal" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="6" byte="15"
+                           expr="[value]" metric="On/Off"
+                           desc="When the rear window defogger is turned ON.  This sensor is used to|initiate data logging to a .csv file."/>
+                <parameter id="Camshaft Position Sensor Signal" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="7" byte="15"
+                           expr="[value]" metric="On/Off" desc="When camshaft position sensor signal is entered."/>
+                <parameter id="Crankshaft Position Sensor Signal" offset="#0064" storagetype="uint8" decimals="0" type="bool" bit="8" byte="15"
+                           expr="[value]" metric="On/Off" desc="When crankshaft position sensor signal is entered"/>
+                <parameter id="Blow-By Leak Connector" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="1" byte="16" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="CPC Solenoid Valve" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="2" byte="16" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Intercooler Auto-Wash Relay" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="3" byte="16"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="Fuel Pump Relay" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="4" byte="16" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Radiator Fan Relay #2" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="5" byte="16" expr="[value]"
+                           metric="On/Off" desc="When radiator sub fan relay is in function."/>
+                <parameter id="Radiator Fan Relay #1" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="6" byte="16" expr="[value]"
+                           metric="On/Off" desc="When radiator sub fan relay is in function."/>
+                <parameter id="Radiator Fan Relay #3" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="7" byte="16" expr="[value]"
+                           metric="On/Off" desc="When radiator sub fan relay is in function."/>
+                <parameter id="A/C Compressor Signal" offset="#0065" storagetype="uint8" decimals="0" type="bool" bit="8" byte="16" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Assist Air Solenoid Valve" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="1" byte="17" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Power Steering Solenoid Valve" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="2" byte="17"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="Vent Solenoid Valve" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="3" byte="17" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Pressure Sources Change" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="4" byte="17" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Variable Intake Air Solenoid" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="5" byte="17"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="TGV Drive Signal" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="6" byte="17" expr="[value]"
+                           metric="On/Off" desc="Tumble Generator Valve Drive Signal.  When TGV moves and valve opens."/>
+                <parameter id="TGV Output Signal" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="7" byte="17" expr="[value]"
+                           metric="On/Off" desc="Tumble Generator Valve Output Signal.  When TGV actuator signal is|entered."/>
+                <parameter id="Fuel Pressure Control Solenoid Valve" offset="#0066" storagetype="uint8" decimals="0" type="bool" bit="8" byte="17"
+                           expr="[value]" metric="On/Off" desc="When fuel pressure control solenoid valve is in function."/>
+                <parameter id="Muffler Control" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="1" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Intake Air Solenoid" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="2" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Exhaust Gas Negative Pressure" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="3" byte="18"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="Exhaust Gas Positive Pressure" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="4" byte="18"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="TCS Relief Valve Solenoid" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="5" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Relief Valve Solenoid #2" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="6" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Relief Valve Solenoid #1" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="7" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Tank Sensor Control Valve" offset="#0067" storagetype="uint8" decimals="0" type="bool" bit="8" byte="18" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Request Torque Down VDC" offset="#0068" storagetype="uint8" decimals="0" type="bool" bit="1" byte="19" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Ban Of Torque Down" offset="#0068" storagetype="uint8" decimals="0" type="bool" bit="2" byte="19" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Fuel Cut Signal From AT" offset="#0068" storagetype="uint8" decimals="0" type="bool" bit="3" byte="19" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Retard Signal From AT" offset="#0068" storagetype="uint8" decimals="0" type="bool" bit="4" byte="19" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="AET Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="1" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="AT Coop. Rich Spike Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="2" byte="20"
+                           expr="[value]" metric="On/Off" desc=""/>
+                <parameter id="AT Coop. Lean Burn Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="3" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="AT Coop. Lock Up Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="4" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="EAM Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="5" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Torque Permission Signal" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="6" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Torque Control Signal #2" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="7" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Torque Control Signal #1" offset="#0069" storagetype="uint8" decimals="0" type="bool" bit="8" byte="20" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Throttle Motor Voltage" offset="#00FB" storagetype="uint8" decimals="3" bit="5" byte="31" expr="[value]*8/100"
+                           metric="volts" desc=""/>
+                <parameter id="Throttle Motor Duty" offset="#00FA" storagetype="uint8" decimals="2" bit="6" byte="31" expr="([value]-128)*100/128"
+                           metric="%" desc=""/>
+                <parameter id="Exhaust Gas Temperature" offset="#0106" storagetype="uint8" decimals="2" type="temp" bit="2" byte="33"
+                           expr="([value]+40)*5" metric="B C"
+                           desc="Exhaust gas temperature on vehicles equipped with this sensor located|in the uppipe before the turbocharger."/>
+                <parameter id="Fuel Pressure (High)" offset="#0105" storagetype="uint8" decimals="3" bit="3" byte="33" expr="[value]*4/100"
+                           metric="MPa" desc=""/>
+                <parameter id="Brake Booster Pressure" offset="#0104" storagetype="uint8" decimals="3" type="press" bit="4" byte="33"
+                           expr="[value]*37/255" metric="PSI" desc=""/>
+                <parameter id="Main Accelerator Sensor" offset="#0103" storagetype="uint8" decimals="3" bit="5" byte="33" expr="[value]*2/100"
+                           metric="volts" desc=""/>
+                <parameter id="Sub Accelerator Sensor" offset="#0102" storagetype="uint8" decimals="3" bit="6" byte="33" expr="[value]*2/100"
+                           metric="volts" desc=""/>
+                <parameter id="Main Throttle Sensor" offset="#0101" storagetype="uint8" decimals="3" bit="7" byte="33" expr="[value]*2/100"
+                           metric="volts" desc=""/>
+                <parameter id="Sub Throttle Sensor" offset="#0100" storagetype="uint8" decimals="3" bit="8" byte="33" expr="[value]*2/100"
+                           metric="volts" desc=""/>
+                <parameter id="Memorized Cruise Speed" offset="#010A" storagetype="uint8" decimals="0" type="speed" bit="6" byte="34" expr="[value]"
+                           metric="KPH" desc=""/>
+                <parameter id="SCV Step" offset="#0109" storagetype="uint8" decimals="0" bit="7" byte="34" expr="[value]" metric="steps" desc=""/>
+                <parameter id="Cold Start Injector" offset="#0108" storagetype="uint8" decimals="0" type="inj" bit="8" byte="34"
+                           expr="[value]*256/1000" metric="ms" desc=""/>
+                <parameter id="Exhaust OCV Current Left" offset="#011D" storagetype="uint8" decimals="3" bit="3" byte="36" expr="[value]*32"
+                           metric="mA" desc="Current generated by the Oil Control Valve solenoid."/>
+                <parameter id="Exhaust OCV Current Right" offset="#011C" storagetype="uint8" decimals="3" bit="4" byte="36" expr="[value]*32"
+                           metric="mA" desc="Current generated by the Oil Control Valve solenoid."/>
+                <parameter id="Exhaust OCV Duty Left" offset="#011B" storagetype="uint8" decimals="2" bit="5" byte="36" expr="[value]*100/255"
+                           metric="%"
+                           desc="The Oil Control Valve controls the exhaust VVT advance angles.  The|values are a duty %, indicating the proportion of time that the valves|are energised."/>
+                <parameter id="Exhaust OCV Duty Right" offset="#011A" storagetype="uint8" decimals="2" bit="6" byte="36" expr="[value]*100/255"
+                           metric="%"
+                           desc="The Oil Control Valve controls the exhaust VVT advance angles.  The|values are a duty %, indicating the proportion of time that the valves|are energised."/>
+                <parameter id="Exhaust VVT Advance Angle Left" offset="#0119" storagetype="uint8" decimals="2" bit="7" byte="36" expr="([value]-50)"
+                           metric="B "
+                           desc="Degrees of intake camshaft advance applied.  The higher the advance|angle, the earlier the exhaust valves open; this causes more exhaust|valve overlap which can help the engine to breathe more efficiently at|a particular RPM and load.  It is normal to see small differences|between left and right sides of the engine, however, large continuous|differences may indicate a fault."/>
+                <parameter id="Exhaust VVT Advance Angle Right" offset="#0118" storagetype="uint8" decimals="2" bit="8" byte="36" expr="([value]-50)"
+                           metric="B "
+                           desc="Degrees of intake camshaft advance applied.  The higher the advance|angle, the earlier the exhaust valves open; this causes more exhaust|valve overlap which can help the engine to breathe more efficiently at|a particular RPM and load.  It is normal to see small differences|between left and right sides of the engine, however, large continuous|differences may indicate a fault."/>
+                <parameter id="ETC Motor Relay" offset="#0120" storagetype="uint8" decimals="0" type="bool" bit="7" byte="37" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Accelerator Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="2" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Brake Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="4" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Resume/Accelerate Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="5" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Set/Coast Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="6" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Stop Light Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="7" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Clutch Switch" offset="#0121" storagetype="uint8" decimals="0" type="bool" bit="8" byte="38" expr="[value]"
+                           metric="On/Off" desc=""/>
+                <parameter id="Roughness Monitor Cylinder #4" offset="#00D9" storagetype="uint8" decimals="0" bit="5" byte="48" expr="[value]"
+                           metric="?" desc=""/>
+                <parameter id="Roughness Monitor Cylinder #3" offset="#00D8" storagetype="uint8" decimals="0" bit="6" byte="48" expr="[value]"
+                           metric="?" desc=""/>
+                <parameter id="Roughness Monitor Cylinder #2" offset="#00CF" storagetype="uint8" decimals="0" bit="7" byte="48" expr="[value]"
+                           metric="?" desc=""/>
+                <parameter id="Roughness Monitor Cylinder #1" offset="#00CE" storagetype="uint8" decimals="0" bit="8" byte="48" expr="[value]"
+                           metric="?" desc=""/>
+            </ecu>
+            <ecu id="base" name="SSM 16 base" type="ssmbase16" include="ssmbase">
+                <parameter id="Advance Multiplier" offset="#20124" storagetype="uint8" decimals="0" expr="[value]" metric=""
+                           desc="Value used to represent the knock tendency of the engine. A higher|value represents better performance for the given mapping and|conditions.  This value ranges between 0 (worst) and 16 (best).  This|value is used in determining the about of Knock Correction ignition|advance/retard applied to the base ignition timing map.">
+                    <alt id="Advance Multiplier (20118)" offset="#20118"/>
+                    <alt id="Advance Multiplier (20120)" offset="#20120"/>
+                    <alt id="Advance Multiplier (20124)" offset="#20124"/>
+                    <alt id="Advance Multiplier (20128)" offset="#20128"/>
+                    <alt id="Advance Multiplier (20168)" offset="#20168"/>
+                </parameter>
+                <parameter id="Engine Load (RAM)" offset="#21975" storagetype="uint8" decimals="2" expr="[value]/32" metric="g"
+                           desc="Calculated engine load based on a number of conditions such as MAF|sensor reading, engine coolant temp, etc.  This represents how hard|the engine is being asked to work.  Load does not simply mean boost.|This value is used as an axis reference point on many of the ECU maps.">
+                    <alt id="Engine Load (2009A)" offset="#2009A"/>
+                    <alt id="Engine Load (200B4)" offset="#200B4"/>
+                    <alt id="Engine Load (200BE)" offset="#200BE"/>
+                    <alt id="Engine Load (200D8)" offset="#200D8"/>
+                    <alt id="Engine Load (200EE)" offset="#200EE"/>
+                    <alt id="Engine Load (200F2)" offset="#200F2"/>
+                    <alt id="Engine Load (200F4)" offset="#200F4"/>
+                    <alt id="Engine Load (21847)" offset="#21847"/>
+                    <alt id="Engine Load (218BF)" offset="#218BF"/>
+                    <alt id="Engine Load (218C1)" offset="#218C1"/>
+                    <alt id="Engine Load (21975)" offset="#21975"/>
+                    <alt id="Engine Load (219BD)" offset="#219BD"/>
+                </parameter>
+            </ecu>
+            <ecu id="base" name="SSM 32 base" type="ssmbase32" include="ssmbase">
+                <parameter id="Advance Multiplier" offset="#802244" storagetype="uint8" decimals="0" expr="[value]" metric=""
+                           desc="Value used to represent the knock tendency of the engine. A higher|value represents better performance for the given mapping and|conditions.  This value ranges between 0 (worst) and 16 (best).  This|value is used in determining the about of Knock Correction ignition|advance/retard applied to the base ignition timing map.">
+                    <alt id="Advance Multiplier (802244)" offset="#802244" storagetype="uint8"/>
+                    <alt id="Advance Multiplier (80224A)" offset="#80224A" storagetype="uint8"/>
+                    <alt id="Advance Multiplier (80224E)" offset="#80224E" storagetype="uint8"/>
+                    <alt id="Advance Multiplier (80225E)" offset="#80225E" storagetype="uint8"/>
+                    <alt id="Advance Multiplier (FF83CC)" offset="#FF83CC" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF8550)" offset="#FF8550" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF8228)" offset="#FF8228" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF822C)" offset="#FF822C" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF8260)" offset="#FF8260" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF850C)" offset="#FF850C" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2664)" offset="#FF2664" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2688)" offset="#FF2688" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF267C)" offset="#FF267C" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2588)" offset="#FF2588" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF824C)" offset="#FF824C" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF83AC)" offset="#FF83AC" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2914)" offset="#FF2914" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2B3C)" offset="#FF2B3C" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2674)" offset="#FF2674" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF2570)" offset="#FF2570" storagetype="float"/>
+                    <alt id="Advance Multiplier (FF854C)" offset="#FF854C" storagetype="float"/>
+                </parameter>
+                <parameter id="Engine Load (RAM)" offset="#801308" storagetype="uint16" decimals="2" expr="[value]/256" metric=""
+                           desc="Calculated engine load based on a number of conditions such as MAF|sensor reading, engine coolant temp, etc.  This represents how hard|the engine is being asked to work.  Load does not simply mean boost.|This value is used as an axis reference point on many of the ECU maps.">
+                    <alt id="Engine Load (801308)" offset="#801308" storagetype="uint16"/>
+                    <alt id="Engine Load (801014)" offset="#801014" storagetype="uint16"/>
+                    <alt id="Engine Load (8010F6)" offset="#8010F6" storagetype="uint16"/>
+                    <alt id="Engine Load (80101A)" offset="#80101A" storagetype="uint16"/>
+                    <alt id="Engine Load (FFA41C)" offset="#FFA41C" storagetype="float"/>
+                    <alt id="Engine Load (FFA6AC)" offset="#FFA6AC" storagetype="float"/>
+                    <alt id="Engine Load (FFA6FC)" offset="#FFA6FC" storagetype="float"/>
+                    <alt id="Engine Load (FFB0E0)" offset="#FFB0E0" storagetype="float"/>
+                    <alt id="Engine Load (FFA750)" offset="#FFA750" storagetype="float"/>
+                    <alt id="Engine Load (FFA770)" offset="#FFA770" storagetype="float"/>
+                    <alt id="Engine Load (FFB358)" offset="#FFB358" storagetype="float"/>
+                    <alt id="Engine Load (FFB2C4)" offset="#FFB2C4" storagetype="float"/>
+                    <alt id="Engine Load (FF5030)" offset="#FF5030" storagetype="float"/>
+                    <alt id="Engine Load (FF50B0)" offset="#FF50B0" storagetype="float"/>
+                    <alt id="Engine Load (FFA648)" offset="#FFA648" storagetype="float"/>
+                    <alt id="Engine Load (FFA664)" offset="#FFA664" storagetype="float"/>
+                    <alt id="Engine Load (FF4F48)" offset="#FF4F48" storagetype="float"/>
+                    <alt id="Engine Load (FFB3D0)" offset="#FFB3D0" storagetype="float"/>
+                    <alt id="Engine Load (FFA818)" offset="#FFA818" storagetype="float"/>
+                    <alt id="Engine Load (FF554C)" offset="#FF554C" storagetype="float"/>
+                    <alt id="Engine Load (FF543C)" offset="#FF543C" storagetype="float"/>
+                    <alt id="Engine Load (FFB438)" offset="#FFB438" storagetype="float"/>
+                    <alt id="Engine Load (FF6694)" offset="#FF6694" storagetype="float"/>
+                    <alt id="Engine Load (FF689C)" offset="#FF689C" storagetype="float"/>
+                    <alt id="Engine Load (FF684C)" offset="#FF684C" storagetype="float"/>
+                    <alt id="Engine Load (FF6848)" offset="#FF6848" storagetype="float"/>
+                    <alt id="Engine Load (FF5034)" offset="#FF5034" storagetype="float"/>
+                    <alt id="Engine Load (FF4F58)" offset="#FF4F58" storagetype="float"/>
+                    <alt id="Engine Load (FF508C)" offset="#FF508C" storagetype="float"/>
+                </parameter>
+            </ecu>
+            <ecu id="1644500305" name="MY99/00 Impreza 2.0 Turbo/WRX/GT (EURO)" type="AE800" include="ssmbase16"/>
+            <ecu id="1644500405" name="MY99/00 Impreza 2.0 Turbo/WRX/GT (EURO)" type="AE801" include="ssmbase16"/>
+            <ecu id="1644500505" name="MY99/00 Impreza 2.0 Turbo/WRX/GT (EURO)" type="AE802" include="ssmbase16"/>
+            <ecu id="16445005FF" name="MY99/00 Impreza 2.0 Turbo/WRX/GT (EURO)" type="AE802b" include="ssmbase16"/>
+            <ecu id="1604690405" name="MY99/00 Impreza 2.0 STI (JDM)" type="AF040" include="ssmbase16"/>
+            <ecu id="1604690505" name="MY99/00 Impreza 2.0 STI (JDM)" type="AF041" include="ssmbase16"/>
+            <ecu id="1604690605" name="Impreza 2.0 P1 (JDM)" type="AG340" include="ssmbase"/>
+            <ecu id="1B44580405" name="MY01/02 Impreza 2.0 WRX (EURO)" type="AF530-7554" include="ssmbase16"/>
+            <ecu id="1B44580505" name="MY01/02 Impreza 2.0 WRX (EURO)" type="AF531" include="ssmbase16"/>
+            <ecu id="2944594105" name="MY01/02 Impreza 2.0 STI Type UK (EURO)" type="AG820-2591" include="ssmbase16"/>
+            <ecu id="1842100705" name="MY02 Legacy 2.5 GX (EURO)" type="" include="ssmbase"/>
+            <ecu id="1844100805" name="MY02 Legacy 2.0 GL (EURO)" type="" include="ssmbase"/>
+            <ecu id="0D04680805" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="AD983" include="ssmbase16"/>
+            <ecu id="1944580505" name="MY00 Forester 2.0 Turbo S/GT (EURO)" type="AG050" include="ssmbase16"/>
+            <ecu id="2344100805" name="MY02 Forester 2.0 GLS (EURO)" type="" include="ssmbase16"/>
+            <ecu id="1B14400505" name="MY01/02 Impreza 2.0 WRX (US)" type="AF423" include="ssmbase16"/>
+            <ecu id="1B14400305" name="MY01/02 Impreza 2.0 WRX (US)" type="AF411" include="ssmbase16"/>
+            <ecu id="1B14400405" name="MY01/02 Impreza 2.0 WRX" type="AF422" include="ssmbase16"/>
+            <ecu id="1B04490605" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF481" include="ssmbase16"/>
+            <ecu id="1B04490205" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF480-7542" include="ssmbase16"/>
+            <ecu id="2344500405" name="MY02 Forester 2.0 Turbo S/GT Auto (EURO)" type="AG200" include="ssmbase16"/>
+            <ecu id="1E12" name="Impreza 2.5 RS (US)" type="AF581" include="ssmbase"/>
+            <ecu id="1B04490405" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF480-7541" include="ssmbase16"/>
+            <ecu id="2954594105" name="MY02 Impreza 2.0 STI (AUS)" type="AH180-2581" include="ssmbase16"/>
+            <ecu id="1B54500505" name="MY01 Impreza 2.0 WRX (AUS)" type="AH570" include="ssmbase16"/>
+            <ecu id="1B44580305" name="MY01/02 Impreza 2.0 WRX (EURO)" type="AF530-7552" include="ssmbase16"/>
+            <ecu id="1B44100705" name="MY01/02 Impreza 2.0 GX (EURO)" type="AF633" include="ssmbase"/>
+            <ecu id="1B54500405" name="MY01 Impreza 2.0 WRX (AUS)" type="AF730-7574" include="ssmbase16"/>
+            <ecu id="1944540505" name="MY00 Forester 2.0 Turbo S/GT Auto (EURO)" type="AE901-921" include="ssmbase16"/>
+            <ecu id="2654786105" name="MY02 Legacy 2.0 B4 Twin-Turbo (AUS)" type="AG850-3382" include="ssmbase16"/>
+            <ecu id="1844100605" name="MY01 Legacy 2.0 Auto (EURO)" type="AG180" include="ssmbase"/>
+            <ecu id="1644100505" name="Impreza 2.0 (EURO)" type="AF671" include="ssmbase"/>
+            <ecu id="1954540505" name="MY00 Forester 2.0 Turbo S/GT Auto (EURO)" type="AF261" include="ssmbase16"/>
+            <ecu id="1604680405" name="Impreza 2.0 WRX Type RA (JDM)" type="AE481-2000" include="ssmbase16"/>
+            <ecu id="2A44506005" name="MY03 Forester 2.0 Turbo S/GT (EURO)" type="AG580-1361" include="ssmbase16"/>
+            <ecu id="2A44104305" name="MY03 Forester 2.0 NA (EURO)" type="AG600-2000" include="ssmbase16"/>
+            <ecu id="1844100805" name="MY03 Legacy 2.0 GX (EURO)" type="" include="ssmbase"/>
+            <ecu id="264A354005" name="MY03 Legacy 3.0 Outback (EURO)" type="" include="ssmbase"/>
+            <ecu id="29044A4105" name="MY01/02 Impreza 2.0 STI Type RA (JDM)" type="AG970" include="ssmbase16"/>
+            <ecu id="1954580505" name="MY00 Forester 2.0 Turbo S/GT (AUS)" type="AG060" include="ssmbase16"/>
+            <ecu id="2354500405" name="MY01 Forester 2.0 Turbo S/GT Auto (AUS)" type="AG540" include="ssmbase16"/>
+            <ecu id="2944593105" name="MY01/02 Impreza 2.0 STI Type UK (EURO)" type="AG820-090" include="ssmbase16"/>
+            <ecu id="2954593105" name="Impreza 2.0 STI (AUS)" type="AH180-2580" include="ssmbase16"/>
+            <ecu id="1B04400505" name="MY01/02 Impreza 2.0 WRX (JDM)" type="AF471-7085" include="ssmbase16"/>
+            <ecu id="3614486105" name="MY03 Impreza 2.0 WRX (US)" type="AJ030-5692" include="ssmbase16"/>
+            <ecu id="1B14400605" name="MY01/02 Impreza 2.0 WRX (US)" type="AF424-7066" include="ssmbase16"/>
+            <ecu id="1604400305" name="MY99/00 Impreza 2.0 WRX (JDM)" type="AE490" include="ssmbase16"/>
+            <ecu id="1604400405" name="MY99/00 Impreza 2.0 WRX (JDM)" type="AE491" include="ssmbase16"/>
+            <ecu id="1612040605" name="Impreza 2.5 RS (US)" type="AF581b" include="ssmbase"/>
+            <ecu id="29044A7105" name="MY01/02 Impreza 2.0 STI Type RA (JDM)" type="AG971" include="ssmbase16"/>
+            <ecu id="3614446105" name="MY03 Impreza 2.0 WRX Auto (US)" type="AJ040-5702" include="ssmbase16"/>
+            <ecu id="2E44584005" name="MY03 Impreza 2.0 WRX (EURO)" type="AH750-5140" include="ssmbase16"/>
+            <ecu id="2E44594005" name="MY03 Impreza 2.0 STI Type UK (EURO)" type="AH990-5511" include="ssmbase16"/>
+            <ecu id="1B14400105" name="MY01 Impreza 2.0 WRX (US)" type="AF420" include="ssmbase16"/>
+            <ecu id="1E12080805" name="MY01 Impreza 2.5 RS (US)" type="" include="ssmbase"/>
+            <ecu id="1B04400405" name="MY01/02 Impreza 2.0 WRX (JDM)" type="AF470-7084" include="ssmbase16"/>
+            <ecu id="2904495005" name="MY03 Impreza 2.0 STI (JDM)" type="AH190-3771" include="ssmbase16"/>
+            <ecu id="2E54504105" name="MY03 Impreza 2.0 WRX (AUS)" type="AF770" include="ssmbase16"/>
+            <ecu id="2944596105" name="MY01/02 Impreza 2.0 STI Type UK (EURO)" type="AG820-821" include="ssmbase16"/>
+            <ecu id="2E04494005" name="MY03 Impreza 2.0 STI (JDM)" type="AH580-5121" include="ssmbase16"/>
+            <ecu id="2E44594105" name="MY03 Impreza 2.0 STI Type UK (EURO)" type="AH990-5512" include="ssmbase16"/>
+            <ecu id="2E54594105" name="MY03 Impreza 2.0 STI (AUS)" type="AJ000-5521" include="ssmbase16"/>
+            <ecu id="184A350205" name="MY00 Legacy 3.0 H6 (EURO)" type="AF992" include="ssmbase"/>
+            <ecu id="2952100705" name="MY01 Impreza 2.5 (AUS)" type="AG710" include="ssmbase"/>
+            <ecu id="0D42100405" name="MY00 Legacy 2.5 RX (EURO)" type="AG130" include="ssmbase"/>
+            <ecu id="1904400505" name="MY01 Forester 2.0 STB (JDM)" type="AG380" include="ssmbase"/>
+            <ecu id="0D04440805" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="AD971" include="ssmbase16"/>
+            <ecu id="2604686305" name="MY02 Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG441" include="ssmbase16"/>
+            <ecu id="29046B6005" name="Impreza 2.0 STI S202 (JDM)" type="S202" include="ssmbase16"/>
+            <ecu id="3614486205" name="MY03 Impreza 2.0 WRX (US)" type="AJ031" include="ssmbase16"/>
+            <ecu id="2E44584105" name="MY03 Impreza 2.0 WRX (EURO)" type="AH750-5141" include="ssmbase16"/>
+            <ecu id="1B04490505" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF481-7545" include="ssmbase16"/>
+            <ecu id="2604686505" name="MY03 Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG443" include="ssmbase16"/>
+            <ecu id="1954500405" name="MY99 Forester 2.0 Turbo S/GT (AUS)" type="AF260-8721" include="ssmbase16"/>
+            <ecu id="2A52186005" name="MY02 Forester 2.5 (AUS)" type="AF621-2523" include="ssmbase"/>
+            <ecu id="2354500405" name="MY02 Forester 2.0 (AUS)" type="AG540-0243" include="ssmbase"/>
+            <ecu id="1B04490805" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF482-7548" include="ssmbase16"/>
+            <ecu id="2E044A6005" name="MY03 Impreza 2.0 STI Spec C (JDM)" type="AH591-5132" include="ssmbase16"/>
+            <ecu id="2954546005" name="MY02 Impreza 2.0 WRX (AUS)" type="AF720-7566" include="ssmbase16"/>
+            <ecu id="2E04496005" name="MY03 Impreza 2.0 STI (JDM)" type="AH581-5122" include="ssmbase16"/>
+            <ecu id="0D04680905" name="MY99 Legacy 2.0 Twin-Turbo (JDM)" type="AD984" include="ssmbase16"/>
+            <ecu id="0D04460305" name="MY99 Legacy 2.0 B4 RSK (JDM)" type="AF181" include="ssmbase16"/>
+            <ecu id="2E12495106" name="MY04 Impreza 2.5 STI (US)" type="AJ241" include="ssmbase32"/>
+            <ecu id="1804680205" name="MY99 Legacy 2.0 Twin-Turbo (JDM)" type="AG302" include="ssmbase16"/>
+            <ecu id="1644500205" name="MY99/00 Impreza 2.0 Turbo/WRX/GT (EURO)" type="AE800b" include="ssmbase16"/>
+            <ecu id="2E14486006" name="MY04 Impreza 2.0 WRX (US)" type="AH791" include="ssmbase16"/>
+            <ecu id="3152504006" name="MY04 Forester 2.5 XT (AUS)" type="AH710-5401" include="ssmbase16"/>
+            <ecu id="3614446205" name="MY03 Impreza 2.0 WRX Auto (US)" type="AJ041" include="ssmbase16"/>
+            <ecu id="1B04400605" name="MY01/02 Impreza 2.0 WRX (JDM)" type="AF471-7086" include="ssmbase16"/>
+            <ecu id="2A44506105" name="MY03 Forester 2.0 Turbo S/GT Turbo (EURO)" type="AG580-1362" include="ssmbase16"/>
+            <ecu id="2E14446006" name="MY04 Impreza 2.0 WRX Auto (US)" type="AH801" include="ssmbase16"/>
+            <ecu id="2944596005" name="MY01/02 Impreza 2.0 STI Type UK (EURO)" type="AG820" include="ssmbase16"/>
+            <ecu id="1604680305" name="Impreza 2.0 WRX Type RA (JDM)" type="AE481" include="ssmbase16"/>
+            <ecu id="2F54504006" name="MY04 Legacy 2.0 GT (AUS)" type="AH130" include="ssmbase"/>
+            <ecu id="2F5A354106" name="MY04 Legacy 3.0 H6 VDC (AUS)" type="AJ230-7430" include="ssmbase"/>
+            <ecu id="2F421A4106" name="MY03 Legacy 2.5 (EURO)" type="AH850" include="ssmbase"/>
+            <ecu id="2F4A344106" name="MY03 Legacy 3.0 H6 (EURO)" type="AH620" include="ssmbase"/>
+            <ecu id="2F44104206" name="MY03 Legacy 2.0 (EURO)" type="AH840" include="ssmbase"/>
+            <ecu id="0D42100305" name="MY99 Legacy 2.5 (EURO)" type="AE151" include="ssmbase"/>
+            <ecu id="2604686205" name="MY02 Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG440-0983" include="ssmbase16"/>
+            <ecu id="3144504006" name="MY03 Forester 2.0 XT Turbo (EURO)" type="AH690-5380" include="ssmbase16"/>
+            <ecu id="1B46100705" name="MY01/02 Impreza 1.6 (EURO)" type="AG180" include="ssmbase"/>
+            <ecu id="1844100B05" name="MY02 Legacy 2.0 (EURO)" type="AG660" include="ssmbase"/>
+            <ecu id="2E44586005" name="MY03 Impreza 2.0 WRX (EURO)" type="AH751-5142" include="ssmbase16"/>
+            <ecu id="2E14486106" name="MY04 Impreza 2.0 WRX (US)" type="AH792-5183" include="ssmbase16"/>
+            <ecu id="1B14400705" name="MY01/02 Impreza 2.0 WRX (US)" type="AF425" include="ssmbase16"/>
+            <ecu id="2E44596105" name="MY03 Impreza 2.0 STI Type UK (EURO)" type="AH992-5513" include="ssmbase16"/>
+            <ecu id="2E14446106" name="MY04 Impreza 2.0 WRX Auto (US)" type="AH802" include="ssmbase16"/>
+            <ecu id="2E12495206" name="MY04 Impreza 2.5 STI (US)" type="AJ242" include="ssmbase32"/>
+            <ecu id="1944500405" name="MY00 Forester 2.0 Turbo S/GT Auto (EURO)" type="AE900-920" include="ssmbase16"/>
+            <ecu id="2604446305" name="MY02 Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG451-0995" include="ssmbase16"/>
+            <ecu id="29044B6005" name="MY01/02 Impreza 2.0 STI Type RA (JDM)" type="AH970-5340" include="ssmbase16"/>
+            <ecu id="2EA4584004" name="MY04 Impreza 2.0 WRX (US)" type="AH760-5150" include="ssmbase16"/>
+            <ecu id="3112485106" name="MY03 Forester 2.5 XT Turbo (US)" type="AJ470-7312" include="ssmbase32"/>
+            <ecu id="2F4A356006" name="MY04 Legacy 3.0 Auto (EURO)" type="AJ220-7423" include="ssmbase"/>
+            <ecu id="2F42166106" name="MY04 Legacy 2.5 Auto (EURO)" type="AJ670-8332" include="ssmbase"/>
+            <ecu id="2E044A3005" name="MY03 Impreza 2.0 STI Spec C (JDM)" type="AH590-5130" include="ssmbase16"/>
+            <ecu id="1B04400205" name="MY01/02 Impreza 2.0 WRX (JDM)" type="AF460-7072" include="ssmbase16"/>
+            <ecu id="1E12" name="Impreza 2.5 RS (US)" type="AF584" include="ssmbase"/>
+            <ecu id="2F54505106" name="MY04 Legacy 2.0 GT (AUS)" type="AH131-5894" include="ssmbase16"/>
+            <ecu id="3112405106" name="MY03 Forester 2.5 XT Turbo (US)" type="AH700-5392" include="ssmbase32"/>
+            <ecu id="0D04680705" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="AD981" include="ssmbase16"/>
+            <ecu id="2E445961EC" name="Impreza 2.0 Prodrive WR1 (EURO)" type="WR1" include="ssmbase16"/>
+            <ecu id="3A54584005" name="MY04 Impreza 2.0 WRX (AUS)" type="AJ420-7550" include="ssmbase16"/>
+            <ecu id="2904485005" name="MY03 Impreza 2.0 WRX (JDM)" type="AH200" include="ssmbase16"/>
+            <ecu id="3614486305" name="MY03 Impreza 2.0 WRX (US)" type="AJ052-5694" include="ssmbase16"/>
+            <ecu id="2654784005" name="MY02 Legacy 2.0 B4 Twin-Turbo (AUS)" type="AG850-3380" include="ssmbase16"/>
+            <ecu id="2E044A6005" name="MY03 Impreza 2.0 STI Spec C (JDM)" type="AH590-5132" include="ssmbase16"/>
+            <ecu id="2A04446305" name="MY03 Forester 2.0 Turbo (JDM)" type="AG572-1355" include="ssmbase16"/>
+            <ecu id="2F5A356006" name="MY04 Legacy 3.0 H6 VDC (AUS)" type="AJ230-7431" include="ssmbase"/>
+            <ecu id="2E044A4005" name="MY03 Impreza 2.0 STI Spec C (JDM)" type="AH590-076" include="ssmbase16"/>
+            <ecu id="2E14486206" name="MY04 Impreza 2.0 WRX (US)" type="AH793-5184" include="ssmbase16"/>
+            <ecu id="1904400405" name="MY01 Forester 2.0 STB (JDM)" type="AG830-8713" include="ssmbase16"/>
+            <ecu id="2F04785006" name="MY04 Legacy 2.0 GTB (JDM)" type="AH110-5644" include="ssmbase16"/>
+            <ecu id="2F04785206" name="MY04 Legacy 2.0 GTB (JDM)" type="AH110-5646" include="ssmbase16"/>
+            <ecu id="3D12594006" name="MY05 Impreza 2.5 STI (US)" type="AJ930-8791" include="ssmbase32"/>
+            <ecu id="2E12493006" name="MY04 Impreza 2.5 STI (US)" type="AJ241" include="ssmbase32"/>
+            <ecu id="2F04505106" name="MY04 Legacy 2.0 GT (JDM)" type="AH121-5885" include="ssmbase16"/>
+            <ecu id="2E12495306" name="MY04 Impreza 2.5 STI (US)" type="AJ243" include="ssmbase32"/>
+            <ecu id="2F1A355006" name="MY05 Legacy 3.0 Auto (US)" type="AH63B-7273" include="ssmbase"/>
+            <ecu id="2F12505106" name="MY05 Legacy 2.5 GT (US)" type="AJ18A-6824" include="ssmbase32"/>
+            <ecu id="2F12795106" name="MY05 Legacy 2.5 Outback XT (US)" type="AJ65A-7904" include="ssmbase32"/>
+            <ecu id="2904445205" name="MY01 Impreza 2.0 WRX (JDM)" type="AH000-3573" include="ssmbase16"/>
+            <ecu id="3E14484006" name="MY05 Impreza 2.0 WRX (US)" type="AJ890-8851" include="ssmbase16"/>
+            <ecu id="2F12785106" name="MY05 Legacy 2.5 GT (US)" type="AJ17A-6814" include="ssmbase32"/>
+            <ecu id="3152584006" name="MY04 Forester 2.5 XT (AUS)" type="AJ530-7671" include="ssmbase32"/>
+            <ecu id="3D04594005" name="MY05 Impreza 2.0 STI (JDM)" type="AJ810-8801" include="ssmbase16"/>
+            <ecu id="3D044A4005" name="MY05 Impreza 2.0 STI Spec C (JDM)" type="AJ820-8810" include="ssmbase16"/>
+            <ecu id="3712405006" name="Baja 2.5 Turbo (US)" type="AJ460-7371" include="ssmbase32"/>
+            <ecu id="3E14444006" name="MY05 Impreza 2.0 WRX (US)" type="AJ900-8861" include="ssmbase16"/>
+            <ecu id="2E14446206" name="MY04 Impreza 2.0 WRX Auto (US)" type="AH803" include="ssmbase16"/>
+            <ecu id="2904497105" name="MY03 Impreza 2.0 STI (JDM)" type="AH191" include="ssmbase16"/>
+            <ecu id="3D44593005" name="MY05 Impreza 2.0 STI Type UK (EURO)" type="AJ840-8830" include="ssmbase16"/>
+            <ecu id="3614486405" name="MY03 Impreza 2.0 WRX (US)" type="AJ053" include="ssmbase16"/>
+            <ecu id="3A54504005" name="MY04 Impreza 2.0 WRX Auto (AUS)" type="AJ410-7540" include="ssmbase16"/>
+            <ecu id="3C54784106" name="MY04 Legacy 2.0 GT (AUS)" type="AK311-0271" include="ssmbase16"/>
+            <ecu id="1B14400805" name="MY01/02 Impreza 2.0 WRX (US)" type="AF426" include="ssmbase16"/>
+            <ecu id="2F54505206" name="MY04 Legacy 2.0 GT (AUS)" type="AH132-5895" include="ssmbase16"/>
+            <ecu id="3B42584006" name="MY04 Forester 2.5 XT (EURO)" type="AJ590-8481" include="ssmbase32"/>
+            <ecu id="3712485006" name="Baja 2.5 Turbo (US)" type="AJ450" include="ssmbase32"/>
+            <ecu id="2EA4584005" name="MY04 Impreza 2.0 WRX (US)" type="AH760-5150" include="ssmbase16"/>
+            <ecu id="3D54593005" name="MY04 Impreza 2.0 STI (AUS)" type="AJ870-8840" include="ssmbase16"/>
+            <ecu id="1804440205" name="MY99 Legacy 2.0 Auto (JDM)" type="AG292" include="ssmbase"/>
+            <ecu id="3D54583005" name="MY05 Impreza 2.0 WRX (AUS)" type="AJ850-8930" include="ssmbase"/>
+            <ecu id="3B02594006" name="MY04 Forester 2.5 XT (JDM)" type="AJ540-8431" include="ssmbase32"/>
+            <ecu id="3D44583005" name="MY05 Impreza 2.0 WRX (EURO)" type="AJ830-8820" include="ssmbase16"/>
+            <ecu id="2F04785306" name="MY04 Legacy 2.0 GTB (JDM)" type="AH112" include="ssmbase16"/>
+            <ecu id="2904444005" name="MY03 Impreza 2.0 WRX (JDM)" type="AH730-0730" include="ssmbase16"/>
+            <ecu id="3E14483006" name="MY05 Impreza 2.0 WRX (US)" type="AJ890-861" include="ssmbase16"/>
+            <ecu id="3B52583006" name="MY04 Forester 2.5 XT (AUS)" type="AK030-8900" include="ssmbase32"/>
+            <ecu id="2D54544005" name="MY03 Legacy 2.0 B4 Twin-Turbo (AUS)" type="AH650-4430" include="ssmbase16"/>
+            <ecu id="3C5A384106" name="Legacy 3.0 B4 H6 (AUS)" type="AK170-0471" include="ssmbase"/>
+            <ecu id="0D42100705" name="MY01 Legacy 2.5 RX (EURO)" type="AG980-1516" include="ssmbase"/>
+            <ecu id="2E46104005" name="MY03 Impreza 1.6 (EURO)" type="AH300-3525" include="ssmbase"/>
+            <ecu id="1B46100905" name="MY02 Impreza 1.6 (EURO)" type="AF494" include="ssmbase"/>
+            <ecu id="2D045B6005" name="MY03 Legacy 2.0 B4 Twin-Turbo S401 (JDM)" type="S401-7160" include="ssmbase16"/>
+            <ecu id="2604686605" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="" include="ssmbase16"/>
+            <ecu id="3C04504106" name="MY04 Legacy 2.0 GT Auto (JDM)" type="AK231-0262" include="ssmbase16"/>
+            <ecu id="3C04784106" name="MY04 Legacy 2.0 GT (JDM)" type="AK221-0251" include="ssmbase16"/>
+            <ecu id="3C54504106" name="MY04 Legacy 2.0 GT (AUS)" type="AK321-0281" include="ssmbase16"/>
+            <ecu id="3F12484006" name="MY05 Baja 2.5 Turbo (US)" type="AJ960-8960" include="ssmbase32"/>
+            <ecu id="2F12505206" name="MY05 Legacy 2.5 GT (US)" type="AJ18B-6825" include="ssmbase32"/>
+            <ecu id="2F12785206" name="MY05 Legacy 2.5 GT (US)" type="AJ17B-6815" include="ssmbase32"/>
+            <ecu id="2F04785406" name="MY04 Legacy 2.0 GTB (JDM)" type="AH113-5647" include="ssmbase16"/>
+            <ecu id="2F12515106" name="MY05 Legacy 2.5 Outback XT (US)" type="AJ66A-7914" include="ssmbase32"/>
+            <ecu id="2E04404005" name="MY05 Impreza 2.0 WRX (JDM)" type="AH740-5110" include="ssmbase16"/>
+            <ecu id="3C4A384106" name="Legacy 3.0 R Spec B (EURO)" type="AK150-0442" include="ssmbase"/>
+            <ecu id="3B44503006" name="MY05 Forester 2.0 (EURO)" type="AK010-8880" include="ssmbase16"/>
+            <ecu id="3C04504216" name="MY04 Legacy 2.0 GT Auto (JDM)" type="AK232-0263" include="ssmbase16"/>
+            <ecu id="3B52503006" name="MY04 Forester 2.5 XT (AUS)" type="AK040-8900" include="ssmbase32"/>
+            <ecu id="3C54784216" name="MY04 Legacy 2.0 GT (AUS)" type="AK312-0272" include="ssmbase16"/>
+            <ecu id="3B12584006" name="MY05 Forester 2.5 XT (US)" type="AJ570-8462" include="ssmbase32"/>
+            <ecu id="3D12594106" name="MY05 Impreza 2.5 STI (US)" type="AJ931-8792" include="ssmbase32"/>
+            <ecu id="3F12484106" name="MY05 Baja 2.5 Turbo (US)" type="AJ960-896" include="ssmbase32"/>
+            <ecu id="3C54504216" name="MY04 Legacy 2.0 GT Auto (AUS)" type="AK322-0282" include="ssmbase16"/>
+            <ecu id="3D045B4005" name="Impreza 2.0 S203 (JDM)" type="S203" include="ssmbase16"/>
+            <ecu id="3B12504006" name="MY05 Forester 2.5 XT (US)" type="AJ580" include="ssmbase32"/>
+            <ecu id="3B52583116" name="MY05 Forester 2.5 XT (AUS)" type="AK031-8901" include="ssmbase32"/>
+            <ecu id="3B44503116" name="MY05 Forester 2.0 (EURO)" type="AK011-8881" include="ssmbase16"/>
+            <ecu id="2604446605" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG454-0998" include="ssmbase16"/>
+            <ecu id="3B12504106" name="Forester 2.5 Auto (US)" type="" include="ssmbase32"/>
+            <ecu id="18441008FF" name="MY03 Legacy 2.0 GX (EURO)" type="" include="ssmbase"/>
+            <ecu id="23545004FF" name="MY02 Forester 2.0 (AUS)" type="AG540-0243" include="ssmbase"/>
+            <ecu id="" name="MY03 Impreza WRX 2.0 (JDM)" type="AJ051" include="ssmbase16"/>
+            <ecu id="2E044A60FF" name="MY03 Impreza 2.0 STI Spec C (JDM)" type="AH591-5132" include="ssmbase16"/>
+            <ecu id="4242584106" name="MY06 Forester 2.5 XT (EURO)" type="AK710-1520" include="ssmbase32"/>
+            <ecu id="3C54784316" name="MY05 Legacy 2.0 GT (AUS)" type="AK313-0273" include="ssmbase16"/>
+            <ecu id="2F12785306" name="MY05 Legacy 2.5 GT (US)" type="AJ17C-6816" include="ssmbase32"/>
+            <ecu id="3B42584116" name="MY05 Forester 2.5 XT (EURO)" type="AJ591-8482" include="ssmbase32"/>
+            <ecu id="2F12515206" name="MY05 Legacy Outback 2.5 XT (US)" type="AJ66B-7915" include="ssmbase32"/>
+            <ecu id="2F04505306" name="MY04 Legacy 2.0 GT (JDM)" type="AH123-5887" include="ssmbase16"/>
+            <ecu id="4344304006" name="MY06 Impreza 2.0 (EURO)" type="AL240-5607" include="ssmbase"/>
+            <ecu id="43045A4005" name="MY06 Impreza 2.0 (JDM)" type="AL380-2270" include="ssmbase"/>
+            <ecu id="3B12584106" name="MY05 Forester 2.5 (US)" type="AJ571-8463" include="ssmbase32"/>
+            <ecu id="4312594006" name="MY06 Impreza 2.5 (US)" type="AL370-2221" include="ssmbase32"/>
+            <ecu id="4312584006" name="MY06 Impreza 2.5 (US)" type="AL350-2201" include="ssmbase32"/>
+            <ecu id="2F12505306" name="MY05 Legacy 2.5 GT (US)" type="AJ18C-6826" include="ssmbase32"/>
+            <ecu id="4212585106" name="MY05 Forester 2.5 (US)" type="AK752-1564" include="ssmbase32"/>
+            <ecu id="1B04490305" name="MY01/02 Impreza 2.0 STI (JDM)" type="AF480-7540" include="ssmbase16"/>
+            <ecu id="401A344206" name="Tribeca 3.0 (US)" type="AK12A-0343" include="ssmbase"/>
+            <ecu id="454A384006" name="Legacy 3.0 (EURO)" type="AL010-1680" include="ssmbase"/>
+            <ecu id="2F0A367216" name="Legacy 3.0 (JDM)" type="AH612-7255" include="ssmbase"/>
+            <ecu id="2F0A367106" name="Legacy 3.0 (JDM)" type="AH611-7254" include="ssmbase"/>
+            <ecu id="3B12504206" name="Forester 2.5 Auto (US)" type="AJ582-8474" include="ssmbase"/>
+            <ecu id="2F12784006" name="MY05 Legacy 2.5 GT (US)" type="AJ17A-6812" include="ssmbase32"/>
+            <ecu id="4212505106" name="MY05 Forester 2.5 Auto (US)" type="AK762-1574" include="ssmbase32"/>
+            <ecu id="4252504106" name="MY06 Forester 2.5 (AUS)" type="AL120-1610" include="ssmbase32"/>
+            <ecu id="2604686405" name="Legacy 2.0 B4 Twin-Turbo (JDM)" type="AG442-0986" include="ssmbase16"/>
+            <ecu id="4352584006" name="MY06 Impreza 2.5 WRX (AUS)" type="AL330-2180" include="ssmbase32"/>
+            <ecu id="4252584106" name="MY06 Forester 2.5 (AUS)" type="AL110-1600" include="ssmbase32"/>
+            <ecu id="4512783106" name="MY06 Legacy 2.5 GT (US)" type="AK45B-0991" include="ssmbase32"/>
+            <ecu id="3112485206" name="MY03 Forester 2.5 XT (US)" type="AJ471-7313" include="ssmbase32"/>
+            <ecu id="3D545B6005" name="MY05 Impreza 2.0 WRX WRP10 (AUS)" type="WRP10" include="ssmbase16"/>
+            <ecu id="4352594006" name="MY06 Impreza 2.5 STI (AUS)" type="AL390-2230" include="ssmbase32"/>
+            <ecu id="2F04505206" name="MY04 Legacy 2.0 GT (JDM)" type="AH122-5886" include="ssmbase16"/>
+            <ecu id="4304594005" name="MY06 Impreza 2.0 STI (JDM)" type="AL300-2261" include="ssmbase16"/>
+            <ecu id="3B02594216" name="MY06 Forester 2.5 XT (JDM)" type="AJ542-8433" include="ssmbase32"/>
+            <ecu id="4342594006" name="MY06 Impreza 2.5 STI (EURO)" type="AL340-2190" include="ssmbase32"/>
+            <ecu id="4342584006" name="MY06 Impreza 2.5 WRX (EURO)" type="AL310-2161" include="ssmbase32"/>
+            <ecu id="4242504106" name="MY06 Forester 2.5 XT Auto (EURO)" type="AK720-1531" include="ssmbase32"/>
+            <ecu id="3C04504316" name="MY04 Legacy 2.0 GT Auto (JDM)" type="AK233-0264" include="ssmbase16"/>
+            <ecu id="2F54505306" name="MY04 Legacy 2.0 GT (AUS)" type="AH133-5896" include="ssmbase16"/>
+            <ecu id="3C54504206" name="MY04 Legacy 2.0 GT (AUS)" type="AK321-0281" include="ssmbase16"/>
+            <ecu id="2F12785506" name="MY05 Legacy 2.5 GT (US)" type="AJ17D-6817" include="ssmbase32"/>
+            <ecu id="4512793106" name="MY06 Legacy Outback 2.5 (US)" type="AK478-1011" include="ssmbase32"/>
+            <ecu id="0D04680B05" name="MY99 Legacy 2.0 B4 Twin-Turbo (JDM)" type="AD985" include="ssmbase16"/>
+            <ecu id="3C04504006" name="MY04 Legacy 2.0 GT Auto (JDM)" type="AK230-0261" include="ssmbase16"/>
+            <ecu id="2D4A354005" name="MY03 Legacy 3.0 (EURO)" type="AH080-3941" include="ssmbase"/>
+            <ecu id="3B12584206" name="MY05 Forester 2.5 (US)" type="AJ572-8464" include="ssmbase32"/>
+        </logprotocol>
+    </logprotocols>
+</ecus>

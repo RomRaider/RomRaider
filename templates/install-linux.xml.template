@@ -43,16 +43,12 @@
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
             <file src="release_notes.txt" targetdir="$INSTALL_PATH"/>
 
-            <file src="log4j.properties" targetdir="$INSTALL_PATH"/>
-
-            <file src="cars_def.dtd" targetdir="$INSTALL_PATH"/>
-            <file src="ecu_defs.dtd" targetdir="$INSTALL_PATH"/>
-            <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
-            <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="lib/log4j.properties" targetdir="$INSTALL_PATH/lib"/>         
             <file src="src/main/resources/graphics/romraider-ico.ico" targetdir="$INSTALL_PATH"/>
             <file src="src/main/resources/graphics/icon-close.png" targetdir="$INSTALL_PATH"/>
 
-            <file src="post-install-tasks.sh" targetdir="$INSTALL_PATH"/>
+            <file src="scripts/post-install-tasks.sh" targetdir="$INSTALL_PATH"/>
+            <file src="scripts/run.sh" targetdir="$INSTALL_PATH"/>
 
             <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
@@ -102,7 +98,7 @@
 
         </pack>
 
-        <pack name="Source Files" required="no">
+        <pack name="Source Files" required="no" preselected="no">
             <description>@name.package@ Source Files</description>
             <file src="src" targetdir="$INSTALL_PATH"/>
         </pack>
