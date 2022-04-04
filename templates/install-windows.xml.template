@@ -49,10 +49,8 @@
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
             <file src="release_notes.txt" targetdir="$INSTALL_PATH"/>
 
-            <file src="lib/log4j.properties" targetdir="$INSTALL_PATH/lib"/>
-            
+            <file src="lib/log4j.properties" targetdir="$INSTALL_PATH/lib"/>            
             <file src="scripts/post-install-tasks.bat" targetdir="$INSTALL_PATH"/>
-            <file src="scripts/run.bat" targetdir="$INSTALL_PATH"/>
 
             <fileset dir="plugins" targetdir="$INSTALL_PATH/plugins"/>
             <fileset dir="customize" targetdir="$INSTALL_PATH/customize"/>
@@ -92,7 +90,6 @@
 
         <pack name="Source Files" required="no" preselected="no">
             <description>@name.package@ Source Files</description>
-            <preselected>no</preselected>
             <file src="src" targetdir="$INSTALL_PATH"/>
         </pack>
     </packs>

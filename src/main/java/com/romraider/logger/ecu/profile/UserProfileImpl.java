@@ -121,7 +121,7 @@ public final class UserProfileImpl implements UserProfile {
         final Settings settings = SettingsManager.getSettings();
         StringBuilder builder = new StringBuilder();
         builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>").append(NEW_LINE);
-        builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">").append(NEW_LINE).append(NEW_LINE);
+        //builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">").append(NEW_LINE).append(NEW_LINE);
         builder.append("<profile protocol=\"").append(settings.getLoggerProtocol().toUpperCase()).append("\">").append(NEW_LINE);
         if (!params.isEmpty()) {
             builder.append("    <parameters>").append(NEW_LINE);

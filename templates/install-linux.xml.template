@@ -48,7 +48,6 @@
             <file src="src/main/resources/graphics/icon-close.png" targetdir="$INSTALL_PATH"/>
 
             <file src="scripts/post-install-tasks.sh" targetdir="$INSTALL_PATH"/>
-            <file src="scripts/run.sh" targetdir="$INSTALL_PATH"/>
 
             <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
