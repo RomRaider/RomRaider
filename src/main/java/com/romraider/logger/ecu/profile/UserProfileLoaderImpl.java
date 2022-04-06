@@ -25,14 +25,14 @@ import static com.romraider.util.SaxParserFactory.getSaxParser;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXParseException;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,14 +75,21 @@ public final class UserProfileLoaderImpl implements UserProfileLoader {
     //This removes the line from the profile.xml
     private void patchUserProfile(String userProfileFilePath) {   	
     	try {
-    		List<String> lines = Files.readAllLines(Paths.get(userProfileFilePath), StandardCharsets.ISO_8859_1);
+    		BufferedReader br = new BufferedReader(new FileReader(userProfileFilePath));
     		List<String> newLines = new LinkedList<String>();
-    		for(String line: lines) {
-    			if (!line.equals("<!DOCTYPE profile SYSTEM \"profile.dtd\">")) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+    			if (!line.contains("profile.dtd")) {
     				newLines.add(line);
-    			} 			
-    		}        	     	
-        	Files.write(Paths.get(userProfileFilePath), newLines);        	
+    			} 
+		    }      	     	
+		    br.close();	   
+		    
+		    FileWriter writer = new FileWriter(userProfileFilePath); 
+		    for(String str: newLines) {
+		      writer.write(str + "\n");
+		    }
+		    writer.close();      	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
