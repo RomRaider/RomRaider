@@ -308,7 +308,7 @@ public class XDFConversionLayer extends ConversionLayer {
 					scaling.setAttribute("format", format);
 				} else if (!hasEmbedInfo && n.getNodeName().equalsIgnoreCase("math")) {
 					String formula = n.getAttributes().getNamedItem("equation").getNodeValue();
-					formula = formula.replace("X", "x");
+					formula = formula.replace("X", "x").replace(",", ".");
 					scaling.setAttribute("expression", formula);
 				}
 
@@ -434,10 +434,14 @@ public class XDFConversionLayer extends ConversionLayer {
 			} else if (n.getNodeName().equalsIgnoreCase("description")) {
 				// TODO
 			} else if (n.getNodeName().equalsIgnoreCase("BASEOFFSET")) {
-				offset = Integer.parseInt(n.getAttributes().getNamedItem("offset").getNodeValue());
-
-				if (!n.getAttributes().getNamedItem("subtract").getNodeValue().equals("0")) {
-					offset *= -1;
+				Node offsetNode = n.getAttributes().getNamedItem("offset");
+				
+				if(offsetNode != null) {
+					offset = Integer.parseInt(offsetNode.getNodeValue());
+	
+					if (!n.getAttributes().getNamedItem("subtract").getNodeValue().equals("0")) {
+						offset *= -1;
+					}
 				}
 			} else if (n.getNodeName().equalsIgnoreCase("DEFAULTS")) {
 				if (!n.getAttributes().getNamedItem("float").getNodeValue().equalsIgnoreCase("0")) {
