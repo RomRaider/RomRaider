@@ -24,11 +24,9 @@ import static com.romraider.io.connection.ConnectionManagerFactory.getManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.elm327.ElmConnectionManager;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
-import com.romraider.logger.ecu.comms.io.connection.ELMOBDLoggerConnection;
 
 public final class LoggerConnectionFactory {
-    private LoggerConnectionFactory() {
-    }
+    private LoggerConnectionFactory() {}
 
     public static LoggerConnection getConnection(
             final String protocolName,

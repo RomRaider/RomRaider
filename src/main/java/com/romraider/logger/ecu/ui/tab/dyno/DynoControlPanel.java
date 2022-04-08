@@ -1107,13 +1107,13 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JButton buildOpenReferenceButton() {
-        final JFileChooser openFile = new JFileChooser();
-        if (path != null) openFile.setCurrentDirectory(new File(path));
         final JButton openButton = new JButton(rb.getString("OPEN"));
 
         openButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                final JFileChooser openFile = new JFileChooser();
+                if (path != null) openFile.setCurrentDirectory(new File(path));
                 int returnVal = openFile.showOpenDialog(openButton);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1168,13 +1168,14 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JButton buildSaveReferenceButton() {
-        final JFileChooser openFile = new JFileChooser();
-        if (path != null) openFile.setCurrentDirectory(new File(path));
         final JButton saveButton = new JButton(rb.getString("SAVE"));
 
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                final JFileChooser openFile = new JFileChooser();
+                if (path != null) openFile.setCurrentDirectory(new File(path));
+                
                 int returnVal = openFile.showSaveDialog(saveButton);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {

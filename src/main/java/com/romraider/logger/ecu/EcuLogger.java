@@ -373,7 +373,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             progressBar.setValue(100);
             initDataUpdateHandlers();
             startPortRefresherThread();
-            if (!isLogging()) startLogging();
             startStatus.dispose();
         }
         else {
@@ -390,7 +389,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             ecuEditor.getStatusPanel().update(rb.getString("COMPLETE"), 100);
             initDataUpdateHandlers();
             startPortRefresherThread();
-            if (!isLogging()) startLogging();
             ecuEditor.getStatusPanel().update(rb.getString("READY"),0);
         }
         this.toFront();
@@ -517,7 +515,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         long start = currentTimeMillis();
         while (!refresher.isStarted()) {
             checkSerialPortRefresherTimeout(start);
-            sleep(100);
+            sleep(5);
         }
     }
 
@@ -2110,6 +2108,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         boolean fullscreen = containsFullScreenArg(args);
         EcuLogger ecuLogger = getEcuLogger(ecuEditor);
         createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
+        if (!ecuLogger.isLogging()) ecuLogger.startLogging();
     }
 
     private static boolean containsFullScreenArg(String... args) {

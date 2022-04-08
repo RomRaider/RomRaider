@@ -31,6 +31,7 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -71,6 +72,8 @@ import javax.swing.tree.TreePath;
 import com.romraider.ECUExec;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
@@ -100,6 +103,7 @@ import com.romraider.swing.TableToolBar;
 import com.romraider.swing.TableTreeNode;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+import com.romraider.util.ThreadUtil;
 import com.romraider.xml.ConversionLayer.ConversionLayer;
 
 public class ECUEditor extends AbstractFrame {
@@ -613,9 +617,12 @@ public class ECUEditor extends AbstractFrame {
         	return;
         }
         else {
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			ECUExec.openLogger(DISPOSE_ON_CLOSE, new String[] {"-logger"});	   
-			setCursor(null);
+        	ThreadUtil.runAsDaemon(new Runnable() {
+                @Override
+                public void run() {
+                	ECUExec.openLogger(DISPOSE_ON_CLOSE, new String[] {"-logger"});
+                }
+            }); 
         }
     }
 
