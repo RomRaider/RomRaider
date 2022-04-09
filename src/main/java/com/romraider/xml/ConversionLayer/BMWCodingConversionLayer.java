@@ -438,7 +438,8 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		pswMap.clear();
 		aswMap.clear();
 		csvMap.clear();
-		transMap.clear();
+		if(transMap != null)
+			transMap.clear();
 		dataBuffer.clear();		
 		romManagers = null;
 				
