@@ -2073,6 +2073,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         getSettings().setRefreshMode(refreshMode);
         refresher.setRefreshMode(refreshMode);
     }
+    
+    public void setAutoConnect(boolean connect) {
+        getSettings().setAutoConnectOnStartup(connect);
+    }
 
 	public void setElmEnabled(Boolean value) {
         getSettings().setElm327Enabled(value);
@@ -2102,13 +2106,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     //**********************************************************************
 
-
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor, String[] args) {
         touchEnabled = setTouchEnabled(args);
         boolean fullscreen = containsFullScreenArg(args);
         EcuLogger ecuLogger = getEcuLogger(ecuEditor);
         createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
-        if (!ecuLogger.isLogging()) ecuLogger.startLogging();
+        if (ecuLogger.getSettings().getAutoConnectOnStartup() && !ecuLogger.isLogging()) ecuLogger.startLogging();
     }
 
     private static boolean containsFullScreenArg(String... args) {

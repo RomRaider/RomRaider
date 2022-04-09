@@ -217,6 +217,7 @@ public class Settings implements Serializable {
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
     private boolean logExternalsOnly;
+    private boolean autoConnectOnStartup = true;
     private static String userLocale = SYSTEM_NUMFORMAT;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
@@ -567,6 +568,14 @@ public class Settings implements Serializable {
         this.loggerPortDefault = loggerPortDefault;
     }
 
+    public void setAutoConnectOnStartup(boolean value) {
+    	autoConnectOnStartup = value;
+    }
+    
+    public boolean getAutoConnectOnStartup() {
+    	return autoConnectOnStartup;
+    }
+    
     public void setLoggerProtocol(String protocol) {
         Settings.loggerProtocol = protocol;
     }

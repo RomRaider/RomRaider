@@ -260,7 +260,8 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("autoConnectOnStartup")) {
+            	settings.setAutoConnectOnStartup(unmarshallAttribute(n, "value", true));
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {
                 settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
                 settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));

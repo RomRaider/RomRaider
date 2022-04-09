@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ import javax.swing.JSeparator;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.ui.swing.menubar.action.AutoConnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ComPortAutoRefreshAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ElmEnabledAction;
@@ -121,6 +122,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         fileLoggingControl.setSelected(false);
         settingsMenu.add(fileLoggingControl);
         logger.getComponentList().put("fileLoggingControl", fileLoggingControl);
+        RadioButtonMenuItem autoConnect = new RadioButtonMenuItem(rb.getString("AUTOCONNECT"), VK_A, getKeyStroke(VK_A, CTRL_MASK), new AutoConnectAction(logger), logger.getSettings().getAutoConnectOnStartup());
+        autoConnect.setToolTipText(rb.getString("AUTOCONNECT"));
+        settingsMenu.add(autoConnect);
         RadioButtonMenuItem autoRefresh = new RadioButtonMenuItem(rb.getString("COMREFRESH"), VK_E, getKeyStroke(VK_E, CTRL_MASK), new ComPortAutoRefreshAction(logger), logger.getSettings().getRefreshMode());
         autoRefresh.setToolTipText(rb.getString("COMREFRESHTT"));
         settingsMenu.add(autoRefresh);

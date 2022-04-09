@@ -322,6 +322,11 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode loggerSettings = new IIOMetadataNode("logger");
         loggerSettings.setAttribute("locale", settings.getLocale());
 
+        // Automatically connect the logger on startup
+        IIOMetadataNode autoConnect = new IIOMetadataNode("autoConnectOnStartup");
+        autoConnect.setAttribute("value", "" + settings.getAutoConnectOnStartup());
+        loggerSettings.appendChild(autoConnect);
+        
         // serial connection
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", validateAttr(settings.getLoggerPortDefault()));
