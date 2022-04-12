@@ -98,8 +98,10 @@ public class PresetManager {
 	
 		data =  data.trim();
 		
-		for (String s : data.split(data.contains(",") ? "," : " ")) {				
-			entry.data.add(parseStringToInt(s));
+		for (String s : data.split(data.contains(",") ? "," : " ")) {
+			if(!s.isEmpty()){
+				entry.data.add(parseStringToInt(s));
+			}
 		}
 		
 		presets.add(entry);
