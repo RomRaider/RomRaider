@@ -575,7 +575,6 @@ public abstract class TableView extends JPanel implements Serializable {
     	}
     }
     
-
     protected void addPresetPanel(PresetManager m) {
     	 presetPanel = new PresetPanel(this, m);
     }

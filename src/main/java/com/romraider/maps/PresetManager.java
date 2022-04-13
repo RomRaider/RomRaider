@@ -35,6 +35,7 @@ public class PresetManager {
 	public class PresetEntry {
 		int dataCellOffset = 0;
 		String name;
+		boolean isBitMask;
 		LinkedList<Integer> data;
 	}
 	
@@ -90,11 +91,12 @@ public class PresetManager {
 		}	
 	}
 	
-	public void setPresetValues(String name, String data, int dataCellOffset) {
+	public void setPresetValues(String name, String data, int dataCellOffset, boolean isBitMask) {
 		PresetEntry entry = new PresetEntry();
 		entry.name = name;
 		entry.data = new LinkedList<Integer>();
 		entry.dataCellOffset = dataCellOffset;
+		entry.isBitMask = isBitMask;
 	
 		data =  data.trim();
 		

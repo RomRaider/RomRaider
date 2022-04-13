@@ -89,7 +89,7 @@ public class PresetPanel extends JPanel {
 				button.setFont(x.deriveFont(x.getStyle(), 15));
 			}
 				
-			button.addActionListener(new PresetListener(entry));
+			button.addActionListener(new PresetListener(entry, table));
 			buttonGroup.add(button);
 			radioPanel.add(button);
 		}
@@ -144,7 +144,7 @@ public class PresetPanel extends JPanel {
 		PresetEntry entry;
 		
 		public PresetButton(PresetEntry entry) {
-			this.entry = entry;
+			this.entry = entry;			
 		}
 			
 		public void checkIfActive() {	
@@ -154,9 +154,11 @@ public class PresetPanel extends JPanel {
 	
 	class PresetListener implements ActionListener{
 		PresetEntry entry;
+		TableView view;
 		
-		public PresetListener(PresetEntry entry) {
+		public PresetListener(PresetEntry entry, TableView view) {
 			this.entry = entry;
+			this.view = view;
 		}
 		
 		@Override
@@ -164,9 +166,12 @@ public class PresetPanel extends JPanel {
 			if (((PresetButton) (event.getSource())).isSelected()) {
 				manager.applyPreset(entry);
 			}
-			else {
+			else if(entry.isBitMask){
 				manager.clearPreset(entry);
 			}
-		}
+			
+			//Make sure we update all other checkboxes
+			view.updatePresetPanel();
+		}	
 	}
 }

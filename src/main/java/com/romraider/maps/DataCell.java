@@ -366,6 +366,10 @@ public class DataCell implements Serializable  {
     }
     
     public void updateBinValueFromMemory() {
+    	//We do this here because once we start populating all settings should be set
+    	if(minAllowedBin == 0 && maxAllowedBin == 0)
+            calcValueRange();
+    	
         this.binValue = getValueFromMemory();
         updateView();
     }
@@ -379,8 +383,9 @@ public class DataCell implements Serializable  {
     }
 
     private void updateView() {
-        if(view != null)
+        if(view != null) {
             view.drawCell();
+        }
     }
 
     public Table getTable() {

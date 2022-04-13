@@ -500,12 +500,13 @@ public abstract class Table implements Serializable {
     abstract public byte[] saveFile(byte[] binData);
 
     public void setPresetValues(String name, String value) {
-    	setPresetValues(name, value, 0);
+    	if(presetManager == null) presetManager = new PresetManager(this);
+    	presetManager.setPresetValues(name, value, 0, false);
     }
     
     public void setPresetValues(String name, String value, int dataCellOffset) {
     	if(presetManager == null) presetManager = new PresetManager(this);
-    	presetManager.setPresetValues(name, value, dataCellOffset);
+    	presetManager.setPresetValues(name, value, dataCellOffset, true);
     }
 
     public boolean isBeforeRam() {

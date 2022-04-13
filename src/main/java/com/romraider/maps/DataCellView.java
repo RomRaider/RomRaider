@@ -82,10 +82,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         
         cell.setDataView(this);
         this.y = cell.getIndexInTable();
-        this.setPreferredSize(getSettings().getCellSize());
-        
-        //Once we create a view of the datacell, it should be safe to calculate the value range
-        cell.calcValueRange();
+        this.setPreferredSize(getSettings().getCellSize());      
     }
     
     public DataCellView(DataCell cell, TableView view, int x, int y) {
@@ -107,13 +104,17 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         return SettingsManager.getSettings();
     }
     
+    public void updatePresetPanel() {
+        tableView.updatePresetPanel();
+    }
+    
     public void drawCell() {
         if(tableView == null || tableView.isHidden()) {
             // Table will be null in the static case.
             return;
         }
 
-        tableView.updatePresetPanel();
+        updatePresetPanel();
         this.invalidate();
         setFont(getSettings().getTableFont());
         setText(getCellText());
