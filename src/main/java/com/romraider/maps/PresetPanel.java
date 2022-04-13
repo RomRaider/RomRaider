@@ -171,7 +171,10 @@ public class PresetPanel extends JPanel {
 			}
 			
 			//Make sure we update all other checkboxes
-			view.updatePresetPanel();
+			//DataCellView usually calls this, but we dont have any DataCell 
+			//if we are hidden
+			if(view.isHidden())
+				view.updatePresetPanel();
 		}	
 	}
 }

@@ -104,17 +104,13 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         return SettingsManager.getSettings();
     }
     
-    public void updatePresetPanel() {
-        tableView.updatePresetPanel();
-    }
-    
     public void drawCell() {
         if(tableView == null || tableView.isHidden()) {
             // Table will be null in the static case.
             return;
         }
 
-        updatePresetPanel();
+        tableView.updatePresetPanel();
         this.invalidate();
         setFont(getSettings().getTableFont());
         setText(getCellText());
