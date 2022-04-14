@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,10 +223,12 @@ public final class DOMRomUnmarshaller {
 
                 } else if (nodeName.equalsIgnoreCase("internalidstring")) {
                     romID.setInternalIdString(unmarshallText(n));
-                    
-                    if (romID.getInternalIdString() == null) {
-                        romID.setInternalIdString("");
-                    }
+                
+                } else if (nodeName.equalsIgnoreCase("author")) {
+                    romID.setAuthor(unmarshallText(n));
+    
+                } else if (nodeName.equalsIgnoreCase("version")) {
+                    romID.setVersion(unmarshallText(n));
 
                 } else if (nodeName.equalsIgnoreCase("caseid")) {
                     romID.setCaseId(unmarshallText(n));
@@ -265,8 +267,7 @@ public final class DOMRomUnmarshaller {
                     romID.setMemModel(unmarshallText(n));   
                     
                     tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));                    
-                } else if (nodeName.equalsIgnoreCase("filesize")) {
-                	
+                } else if (nodeName.equalsIgnoreCase("filesize")) {               	
                     romID.setFileSize(RomAttributeParser
                             .parseFileSize(unmarshallText(n)));
                     

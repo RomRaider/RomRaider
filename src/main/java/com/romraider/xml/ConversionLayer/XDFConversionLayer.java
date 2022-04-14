@@ -426,9 +426,21 @@ public class XDFConversionLayer extends ConversionLayer {
 						n.getAttributes().getNamedItem("name").getNodeValue());
 			} else if (n.getNodeName().equalsIgnoreCase("flags")) {
 				// TODO
+			}
+			else if (n.getNodeName().equalsIgnoreCase("author")) {
+				String author = n.getTextContent();
+				Node ecuID = doc.createElement("author");
+				ecuID.setTextContent(author);
+				romIDNode.appendChild(ecuID);			
+			}
+			else if (n.getNodeName().equalsIgnoreCase("fileversion")) {
+				String version = n.getTextContent();
+				Node ecuID = doc.createElement("version");
+				ecuID.setTextContent(version);
+				romIDNode.appendChild(ecuID);				
 			} else if (n.getNodeName().equalsIgnoreCase("deftitle")) {
 				String title = n.getTextContent();
-				Node ecuID = doc.createElement("ecuid");
+				Node ecuID = doc.createElement("xmlid");
 				ecuID.setTextContent(title);
 				romIDNode.appendChild(ecuID);
 			} else if (n.getNodeName().equalsIgnoreCase("description")) {

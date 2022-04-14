@@ -31,26 +31,29 @@ import org.apache.log4j.Logger;
 public class RomID implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(RomID.class);
     private static final long serialVersionUID = 7272741253665400643L;
-    private String xmlid;               //ID stored in XML
-    private int    internalIdAddress;   //address of ECU version in image
-    private String internalIdString;    //ID stored in image
-    private String caseId;              //ECU hardware version
-    private String ecuId;
-    private String make;                //manufacturer
+	private String version;					//Version e.g. V0.45
+	private String author;					//Author name
+    private String xmlid;               	//ID stored in XML
+    private int    internalIdAddress;   	//address of ECU version in image
+    private String internalIdString = "";    //ID stored in image
+    private String caseId;              	//ECU hardware version
+    private String ecuId = "";
+    private String make;                	//manufacturer
     private String market;
     private String model;
-    private String subModel;            //trim, ie WRX
+    private String subModel;            	//trim, ie WRX
     private String transmission;
-    private String year = "Unknown";
-    private String flashMethod;         //flash method string used for ecuflash
-    private String memModel;            //model used for reflashing with ecuflash
-    private String editStamp;           //YYYY-MM-DD and v, the save count for this ROM
+    private String year;
+    private String flashMethod;         	//flash method string used for ecuflash
+    private String memModel;            	//model used for reflashing with ecuflash
+    private String editStamp;           	//YYYY-MM-DD and v, the save count for this ROM
     private int fileSize;
     private int ramOffset;
 
     private boolean noRamOffset;
-    private boolean obsolete;           // whether a more recent revision exists
-    private String checksum;            // checksum method used to validate ROM contents
+    private boolean obsolete;           	// whether a more recent revision exists
+    private String checksum;            	// checksum method used to validate ROM contents
+
 
     public boolean checkMatch(byte[] file) {
         try {
@@ -95,6 +98,7 @@ public class RomID implements Serializable {
     public String toString() {
         return String.format(
                 "%n   ---- RomID %s ----" +
+                "%n   Version: %s" +
                 "%n   Internal ID Address: %s" +
                 "%n   Internal ID String: %s" +
                 "%n   Case ID: %s" +
@@ -109,6 +113,7 @@ public class RomID implements Serializable {
                 "%n   Memory Model: %s" +
                 "%n   ---- End RomID %s ----",
                 xmlid,
+                version,
                 internalIdAddress,
                 internalIdString,
                 caseId,
@@ -122,11 +127,6 @@ public class RomID implements Serializable {
                 flashMethod,
                 memModel,
                 xmlid);
-    }
-
-    public RomID() {
-        this.internalIdString = "";
-        this.caseId = "";
     }
 
     public String getXmlid() {
@@ -284,4 +284,20 @@ public class RomID implements Serializable {
     public String getChecksum() {
         return checksum;
     }
+
+	public void setVersion(String version) {
+		this.version = version;	
+	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 }

@@ -417,11 +417,12 @@ public class ECUEditor extends AbstractFrame {
                 }
             }
 
-            if(frame == null) {
-            	TableView v;
-            	Table t = node.getTable();
-            	
-            	if (t!=null) {
+
+        if(frame == null) {
+        	TableView v;
+        	Table t = node.getTable();
+            try {
+            	if (t != null) {
 		        	if(t instanceof TableSwitch)
 		        		v = new TableSwitchView((TableSwitch)t);
 		        	else if(t instanceof TableBitwiseSwitch)
@@ -438,7 +439,12 @@ public class ECUEditor extends AbstractFrame {
 		        	 Rom rom = RomTree.getRomNode(node);	        	 
 		        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);		        	
 	            }
-            }            
+            }
+            catch(Exception e) {
+            	System.err.println("Failed to visually populate table " + t.getName());
+            	e.printStackTrace();
+            }
+        }
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.
         }
@@ -446,9 +452,8 @@ public class ECUEditor extends AbstractFrame {
         // frame not added.  Draw table and add the frame.
         TableView v = frame.getTableView();
         
-        if(v!=null) {
+        if(v != null) 
         	v.drawTable();
-        }
         
         rightPanel.add(frame);
         rightPanel.repaint();

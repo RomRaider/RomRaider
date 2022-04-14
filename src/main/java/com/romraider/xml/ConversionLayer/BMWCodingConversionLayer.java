@@ -51,7 +51,6 @@ import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.ByteUtil;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
-import com.romraider.xml.ConversionLayer.ConversionLayer;;
 
 public class BMWCodingConversionLayer extends ConversionLayer {
 	protected static final ResourceBundle rb = new ResourceUtil().getBundle(BMWCodingConversionLayer.class.getName());

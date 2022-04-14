@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import com.romraider.maps.Rom;
+import com.romraider.maps.RomID;
 import com.romraider.maps.Table;
 
 public class RomCellRenderer implements TreeCellRenderer {
@@ -87,13 +88,49 @@ public class RomCellRenderer implements TreeCellRenderer {
                 fileName.setText("+ " + rom.getFileName());
             }
             
+            String carInfoText = "<html>";
+            RomID id = rom.getRomID();
+            
+            if(id.getVersion() != null)
+            	carInfoText+= "<B><font color=blue>" + id.getVersion() + " </font></B>";
+            	
+            if(rom.getRomIDString() != null)
+            	carInfoText+=rom.getRomIDString() + ", ";
+            
+            if(id.getCaseId() != null)
+            	carInfoText+=id.getCaseId() + "; ";
+            
+            if(id.getYear() != null)
+            	carInfoText+=id.getYear() + " ";
+            
+            if(id.getMake() != null)
+            	carInfoText+=id.getMake() + " ";
+            
+            if(id.getModel() != null)
+            	carInfoText+=id.getModel() + " "; 
+            
+            if(id.getSubModel() != null)
+            	carInfoText+=id.getSubModel(); 
+            
+            if(id.getTransmission() != null)
+            	carInfoText+=", " + id.getTransmission();
+            
+            if(carInfoText.endsWith(", ") || carInfoText.endsWith("; ")) 
+            	carInfoText = carInfoText.substring(0, carInfoText.length() - 2);          
+            
+            if(id.getAuthor() != null)
+            	carInfoText+=" by " + id.getAuthor();
+            
+            carInfoText+= "</html>";
+
+            /*
             String carInfoText = rom.getRomIDString() + ", " +
                     rom.getRomID().getCaseId() + "; " +
                     rom.getRomID().getYear() + " " +
                     rom.getRomID().getMake() + " " +
                     rom.getRomID().getModel() + " " +
                     rom.getRomID().getSubModel() + ", " +
-                    rom.getRomID().getTransmission();
+                    rom.getRomID().getTransmission();*/
                      
             //TODO: Bit of a hack to not show the string when most fields arent set
             carInfoText = carInfoText.replace("null, ; Unknown null null null, null", "");

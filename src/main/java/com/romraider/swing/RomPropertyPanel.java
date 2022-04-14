@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         
         make.setText(rom.getRomID().getMake());
         market.setText(rom.getRomID().getMarket());
-        year.setText(rom.getRomID().getYear() + "");
+        year.setText(rom.getRomID().getYear());
         model.setText(rom.getRomID().getModel());
         submodel.setText(rom.getRomID().getSubModel());
         transmission.setText(rom.getRomID().getTransmission());
@@ -98,60 +98,19 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         checksum = new javax.swing.JLabel();
 
         lblChecksum.setText(rb.getString("LBLCHKSUM"));
-
-        checksum.setText("subaru");
-
-        lblEditStamp.setText(rb.getString("LBLEDIT"));
-        
-        editStamp.setText("stamp");
-        
+        lblEditStamp.setText(rb.getString("LBLEDIT"));     
         lblFilename.setText(rb.getString("LBLFN"));
-
-        fileName.setText("Filename");
-
         lblECURevision.setText(rb.getString("LBLECU"));
-
-        xmlID.setText("XMLID");
-
         lblFilesize.setText(rb.getString("LBLFS"));
-
-        fileSize.setText("999kb");
-
         lblEcuVersion.setText(rb.getString("LBLVER"));
-
-        ecuVersion.setText("ECUVER");
-
         lblInternalId.setText(rb.getString("LBLID"));
-
-        internalID.setText("INTERNAL");
-
         lblStorageAddress.setText(rb.getString("LBLADDR"));
-
-        storageAddress.setText("0x00");
-
         lblMake.setText(rb.getString("LBLMAKE"));
-
         lblMarket.setText(rb.getString("LBLMRKT"));
-
         lblTransmission.setText(rb.getString("LBLTRANS"));
-
         lblModel.setText(rb.getString("LBLMDL"));
-
         lblSubmodel.setText(rb.getString("LBLSMDL"));
-
         lblYear.setText(rb.getString("LBLYR"));
-
-        make.setText("Make");
-
-        market.setText("Market");
-
-        year.setText("Year");
-
-        model.setText("Model");
-
-        submodel.setText("Submodel");
-
-        transmission.setText("Transmission");
 
         tableList.setModel(new javax.swing.AbstractListModel() {
             /**
