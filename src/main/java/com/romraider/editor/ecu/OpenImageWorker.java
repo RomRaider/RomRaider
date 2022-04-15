@@ -325,10 +325,8 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
         	rom = null; 
       
 		    editor.getStatusPanel().update(finalStatus, 0);  
-	        editor.refreshTableCompareMenus();
 	        editor.setCursor(null);
-	        editor.refreshUI();               
-	        System.gc();
+	        editor.refreshAfterNewRom();               
         }
         else {
         	editor.getStatusPanel().update(ECUEditor.rb.getString("STATUSREADY"), 0);

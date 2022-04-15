@@ -66,7 +66,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
             rootNode.add(romNode);
 
-            for (TableTreeNode tableTreeNode : rom.getTableNodes()) {
+            for (TableTreeNode tableTreeNode : rom.getTableNodes().values()) {
                 Table table = tableTreeNode.getTable();
                 // use the length of the table name to set the width of the displayTree
                 // so the entire name can be read without being cut off on the right

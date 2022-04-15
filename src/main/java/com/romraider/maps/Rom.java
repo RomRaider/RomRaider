@@ -66,6 +66,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             Rom.class.getName());
+    
     private RomID romID;
     private File definitionPath;
     private String fileName = "";
@@ -81,11 +82,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     
     private final HashMap<String, TableTreeNode> tableNodes = new HashMap<String, TableTreeNode>();
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
-
+    
     public Rom(RomID romID) {
     	this.romID = romID;
     }
 
+    //This makes sure we automatically sort the tables by name
     public void sortedAdd(DefaultMutableTreeNode currentParent, DefaultMutableTreeNode newNode) {
         boolean found = false;	                    
         for(int k = 0; k < currentParent.getChildCount(); k++){
@@ -153,44 +155,24 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             }
         }
     }
-
-    /*
-    public void addTable(Table table) {
-        boolean found = false;
-        table.setRom(this);
-        
-        for (int i = 0; i < tableNodes.size(); i++) {
-            if (tableNodes.values()[i].getTable().equalsWithoutData(table)) {
-            	tableNodes.get(i).setUserObject(null);
-                tableNodes.remove(i);
-                tableNodes.put(table.getName(), new TableTreeNode(table));
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            tableNodes.put(table.getName(), new TableTreeNode(table));
-        }
-    }
-*/
-    
+  
     public void addTableByName(Table table) {
         table.setRom(this);
-        tableNodes.put(table.getName(), new TableTreeNode(table));
+        tableNodes.put(table.getName().toLowerCase(), new TableTreeNode(table));
     }
     
     public void removeTableByName(Table table) {
-    	if(tableNodes.containsKey(table.getName())) {
-    		tableNodes.remove(table.getName());
+    	if(tableNodes.containsKey(table.getName().toLowerCase())) {
+    		tableNodes.remove(table.getName().toLowerCase());
     	}
     }
 
     public Table getTableByName(String tableName) {
-        if(!tableNodes.containsKey(tableName)) {
+        if(!tableNodes.containsKey(tableName.toLowerCase())) {
             return null;
         }
         else {
-        	return tableNodes.get(tableName).getTable();
+        	return tableNodes.get(tableName.toLowerCase()).getTable();
         }
     }
 
@@ -232,7 +214,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             int currProgress = (int) (i / (double) size * 100);
             progress.update(rb.getString("POPTABLES"), currProgress);
             
-            Table table = tableNodes.get(name).getTable();
+            Table table = tableNodes.get(name.toLowerCase()).getTable();
             
             try {
                 if (table.getStorageAddress() >= 0) {
@@ -255,7 +237,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                     	size--;
                     }                  
                 } else {
-                	tableNodes.remove(table.getName());
+                	tableNodes.remove(table.getName().toLowerCase());
                 	size--;
                 }
 
@@ -267,10 +249,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         }
         
         for(String s: badKeys) {
-        	tableNodes.remove(s);
+        	tableNodes.remove(s.toLowerCase());
         }
     }
 
+    //TODO: Move to Subaru checksum 
     private void setEditStamp(byte[] binData, int address) {
         byte[] stampData = new byte[4];
         System.arraycopy(binData, address+204, stampData, 0, stampData.length);
@@ -344,8 +327,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         return tables;
     }
 
-    public Collection<TableTreeNode> getTableNodes() {
-        return this.tableNodes.values();
+    public HashMap<String, TableTreeNode> getTableNodes() {
+        return this.tableNodes;
     }
 
     public void setFileName(String fileName) {
@@ -379,10 +362,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public byte[] saveFile() {
 
         final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
-        for (TableTreeNode tableNode : tableNodes.values()) {       	
-            if (tableNode.getTable().getName().contains("Checksum Fix")) {
-                checksumTables.add(tableNode);
-            }
+        if(tableNodes.containsKey("checksum fix")) {
+        	checksumTables.add(tableNodes.get("checksum fix"));
         }
 
         if (checksumTables.size() == 1) {
@@ -494,32 +475,16 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
-
-    public void refreshTableCompareMenus() {
-        for(TableTreeNode tableNode : getTableNodes()) {
-        	TableFrame f = tableNode.getFrame();
-        	if(f != null) f.refreshSimilarOpenTables();
-        }
-    }
-
+    
     @Override
     public DefaultMutableTreeNode getChildAt(int i) {
         return (DefaultMutableTreeNode) super.getChildAt(i);
     }
 
-    @Override
-    public DefaultMutableTreeNode getLastChild() {
-        return (DefaultMutableTreeNode) super.getLastChild();
-    }
-
     public void addChecksumManager(ChecksumManager checksumManager) {
     	this.checksumManagers.add(checksumManager);
     }
-
-    public ChecksumManager getChecksumType(int index) {
-        return checksumManagers.get(index);
-    }
-    
+  
     public int getNumChecksumsManagers() {
     	return checksumManagers.size();
     }

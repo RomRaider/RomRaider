@@ -587,7 +587,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         String separator = System.getProperty("file.separator");
 
         if(null != selectedDir) {
-            for(TableTreeNode treeNode : ECUEditorManager.getECUEditor().getLastSelectedRom().getTableNodes())
+            for(TableTreeNode treeNode : ECUEditorManager.getECUEditor().getLastSelectedRom().getTableNodes().values())
             {
                 Table table = treeNode.getTable();
                 String category = table.getCategory();

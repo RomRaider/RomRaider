@@ -241,19 +241,17 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         
         if(images.size() > 1) {      
 	        for(Rom rom : images) {
-	            for(TableTreeNode tableNode : rom.getTableNodes()) {
-	            	if(tableNode.getTable().getRom() == getTable().getRom()) break;
-	            	
-	                if(tableNode.getTable().getName().equalsIgnoreCase(getTable().getName())) {
-	                    JRadioButtonMenuItem similarTable = new TableMenuItem(tableNode.getTable());
-	                    similarTable.setToolTipText(tableNode.getTable().getName());
-	                    similarTable.addActionListener(this);
-	                    similarTables.add(similarTable);
-	                    addedTable = true;
-	                    break;
+	        	if (rom == getTable().getRom()) continue;
+	        	if(rom.getTableNodes().containsKey(getTable().getName().toLowerCase())) {
+	        		TableTreeNode tableNode = rom.getTableNodes().get(getTable().getName().toLowerCase());
+                    JRadioButtonMenuItem similarTable = new TableMenuItem(tableNode.getTable());
+                    similarTable.setToolTipText(tableNode.getTable().getName());
+                    similarTable.addActionListener(this);
+                    similarTables.add(similarTable);
+                    addedTable = true;
+                    break;
 	                }
 	            }
-	        }
         }
         
         if(addedTable)

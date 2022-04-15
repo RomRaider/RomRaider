@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -43,13 +44,13 @@ public class TableScaleUnmarshallerTest {
     public void testScalingBase() {
         final List<Scale> expectedScales = buildExpectedScales();
         tableScaleHandler.unmarshallBaseScales(document.getDocumentElement());
-        final List<Scale> scales = tableScaleHandler.getScales();
-        for (final Scale scale : scales) {
+        final Map<String, Scale> scales = tableScaleHandler.getScales();
+        for (final Scale scale : scales.values()) {
             System.out.println(scale);
         }
         assertEquals(expectedScales.size(), scales.size());
         for (Scale expectedScale : expectedScales) {
-            assertEquals(true, scales.contains(expectedScale));
+            assertEquals(true, scales.values().contains(expectedScale));
         }
     }
 

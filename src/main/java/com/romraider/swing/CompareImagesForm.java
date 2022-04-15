@@ -155,13 +155,11 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     }
 
     private TableTreeNode findAndShowTable(Rom rom, String tableName) {
-        for(TableTreeNode node : rom.getTableNodes()) {
-            if(node != null && node.getTable().getName().equals(tableName)){
-                ECUEditorManager.getECUEditor().displayTable(node);
-                return node;
-            }
-        }
-        return null;
+    	if(rom.getTableNodes().containsKey(tableName.toLowerCase())) {
+    		return rom.getTableNodes().get(tableName.toLowerCase());
+    	}
+    	
+    	return null;
     }
 
     public void populateComboBoxes()
@@ -184,11 +182,12 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         int different = 0;
         int missing = 0;
 
-        for(TableTreeNode leftNode : left.getTableNodes())
+        //TODO: Utilize map correctly!
+        for(TableTreeNode leftNode : left.getTableNodes().values())
         {
             Boolean found = false;
             Table leftTable = leftNode.getTable();
-            for(TableTreeNode rightNode : right.getTableNodes())
+            for(TableTreeNode rightNode : right.getTableNodes().values())
             {
                 Table rightTable = rightNode.getTable();
 
@@ -214,9 +213,9 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         }
 
         // Check if rightTables has tables that do not exist in left table.
-        for(TableTreeNode rightFrame : right.getTableNodes()) {
+        for(TableTreeNode rightFrame : right.getTableNodes().values()) {
             Boolean found = false;
-            for(TableTreeNode leftFrame : left.getTableNodes()) {
+            for(TableTreeNode leftFrame : left.getTableNodes().values()) {
                 if(leftFrame.getTable().getName().equalsIgnoreCase(rightFrame.getTable().getName()))
                 {
                     found = true;

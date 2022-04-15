@@ -480,13 +480,11 @@ public class ECUEditor extends AbstractFrame {
             editor.setLastSelectedRom(null);
         }
 
-        editor.refreshTableCompareMenus();
         editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         editor.setCursor(null);
-        editor.refreshUI();
+        editor.refreshAfterNewRom();
         
-        rom.clearData();
-        System.gc(); 	
+        rom.clearData();	
     }
 
     public void closeAllImages() {
@@ -553,23 +551,17 @@ public class ECUEditor extends AbstractFrame {
         }
         return images;
     }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        imageList.updateUI();
-        imageList.repaint();
-        rightPanel.updateUI();
-        rightPanel.repaint();
-    }
-
+    
     public void refreshUI()
     {
         getToolBar().updateButtons();
         getEditorMenuBar().updateMenu();
+    }
+    
+    public void refreshAfterNewRom() {
+        refreshTableCompareMenus();
         imageList.updateUI();
-        imageList.repaint();
-        rightPanel.updateUI();
-        rightPanel.repaint();
+        refreshUI();
     }
 
     public void refreshTableCompareMenus() {
@@ -580,8 +572,7 @@ public class ECUEditor extends AbstractFrame {
     }
     
     public void openImage(String filePath){
-        File file = new File(filePath);
-        openImage(file);
+        openImage(new File(filePath));
     }
     
     public void openImage(File inputFile){

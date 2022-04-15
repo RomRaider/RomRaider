@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@ import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static com.romraider.xml.DOMHelper.unmarshallText;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.management.modelmbean.XMLParseException;
@@ -53,7 +51,7 @@ import com.romraider.util.SettingsManager;
 public class TableScaleUnmarshaller {
     private static final Logger LOGGER = Logger.getLogger(TableScaleUnmarshaller.class);
     private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
-    private final List<Scale> scales = new ArrayList<Scale>();
+    private final Map<String, Scale> scales = new HashMap<String, Scale>();
     private String memModelEndian = null;
 
     public void setMemModelEndian(String endian) {
@@ -354,20 +352,13 @@ public class TableScaleUnmarshaller {
         if (!base.equalsIgnoreCase("none")) {
             // check whether base value matches the name of a an existing
             // scalingbase, if so, inherit from scalingbase
-            for (Scale scaleItem : scales) {
-                if (scaleItem.getName().equalsIgnoreCase(base)) {
-                    try {
-                        scale = (Scale) ObjectCloner.deepCopy(scaleItem);
-
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(
-                                ECUEditorManager.getECUEditor(),
-                                new DebugPanel(ex, SettingsManager.getSettings()
-                                        .getSupportURL()), "Exception",
-                                        JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
+        	if(scales.containsKey(base.toLowerCase())) {
+        		try {
+					scale = (Scale) ObjectCloner.deepCopy(scales.get(base.toLowerCase()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        	}
         }
 
         // Set Category to Default if missing or not inherited from scalingbase
@@ -380,7 +371,7 @@ public class TableScaleUnmarshaller {
         // name, otherwise use none
         if (!scale.getCategory().equalsIgnoreCase("Raw Value") &&
                 scale.getName().equalsIgnoreCase("Raw Value")) {
-            scale.setName(unmarshallAttribute(scaleNode, "name",
+            	scale.setName(unmarshallAttribute(scaleNode, "name",
                     unmarshallAttribute(scaleNode, "units", "none")));
         }
         
@@ -392,7 +383,7 @@ public class TableScaleUnmarshaller {
             String name = attr.getNodeName();
             String value = attr.getNodeValue();
 
-            if(name.equalsIgnoreCase("units"))scale.setUnit(value);
+            if(name.equalsIgnoreCase("units")) scale.setUnit(value);
             else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
             else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
             else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
@@ -402,18 +393,13 @@ public class TableScaleUnmarshaller {
             else if(name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
         }
 
-        for (Scale s : scales) {
-            if (s.equals(scale)) {
-                return s;
-            }
-        }
-
-        scales.add(scale);
+        //Keep track of the scales if the base attribute it used later
+        scales.put(scale.getName().toLowerCase(), scale);       
         return scale;
     }
 
     // for unit testing
-    public List<Scale> getScales() {
+    public Map<String, Scale> getScales() {
         return scales;
     }
 }

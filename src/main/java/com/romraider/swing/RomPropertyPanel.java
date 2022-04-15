@@ -22,13 +22,19 @@ package com.romraider.swing;
 import java.util.ResourceBundle;
 
 import com.romraider.maps.Rom;
+import com.romraider.maps.RomID;
 import com.romraider.util.ResourceUtil;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.AbstractListModel;
+import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class RomPropertyPanel extends javax.swing.JPanel {
+public class RomPropertyPanel extends JPanel {
 
     private static final long serialVersionUID = 5583360728106071942L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
@@ -37,65 +43,72 @@ public class RomPropertyPanel extends javax.swing.JPanel {
 
     public RomPropertyPanel(Rom rom) {
         initComponents();
-
+        RomID romID = rom.getRomID();
+        
         // populate fields
         fileName.setText(rom.getFileName());
-        xmlID.setText(rom.getRomID().getXmlid());
-        ecuVersion.setText(rom.getRomID().getCaseId());
+        xmlID.setText(romID.getXmlid());
+        ecuVersion.setText(romID.getCaseId());
         if (rom.getRealFileSize() > 1024) {
             fileSize.setText((rom.getRealFileSize() / 1024) + "kB");
         }
         else {
             fileSize.setText(rom.getRealFileSize() + "B");
         }
-        internalID.setText(rom.getRomID().getInternalIdString());
-        storageAddress.setText("0x" + Integer.toHexString(rom.getRomID().getInternalIdAddress()));
+        internalID.setText(romID.getInternalIdString());
+        storageAddress.setText("0x" + Integer.toHexString(romID.getInternalIdAddress()));
         
-        make.setText(rom.getRomID().getMake());
-        market.setText(rom.getRomID().getMarket());
-        year.setText(rom.getRomID().getYear());
-        model.setText(rom.getRomID().getModel());
-        submodel.setText(rom.getRomID().getSubModel());
-        transmission.setText(rom.getRomID().getTransmission());
-        editStamp.setText(rom.getRomID().getEditStamp());
-        checksum.setText(rom.getRomID().getChecksum());
-
+        make.setText(romID.getMake());
+        market.setText(romID.getMarket());
+        year.setText(romID.getYear());
+        model.setText(romID.getModel());
+        submodel.setText(romID.getSubModel());
+        transmission.setText(romID.getTransmission());
+        editStamp.setText(romID.getEditStamp());
+        checksum.setText(romID.getChecksum());
+        version.setText(romID.getVersion());
+        author.setText(romID.getAuthor());
+        lblTables.setText(String.format(rb.getString("LBLTBLS"), rom.getTables().size()));  
         tableList.setListData(rom.getTables());
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        lblFilename = new javax.swing.JLabel();
-        fileName = new javax.swing.JLabel();
-        lblECURevision = new javax.swing.JLabel();
-        xmlID = new javax.swing.JLabel();
-        lblFilesize = new javax.swing.JLabel();
-        fileSize = new javax.swing.JLabel();
-        lblEcuVersion = new javax.swing.JLabel();
-        ecuVersion = new javax.swing.JLabel();
-        lblInternalId = new javax.swing.JLabel();
-        internalID = new javax.swing.JLabel();
-        lblStorageAddress = new javax.swing.JLabel();
-        storageAddress = new javax.swing.JLabel();
-        lblMake = new javax.swing.JLabel();
-        lblMarket = new javax.swing.JLabel();
-        lblTransmission = new javax.swing.JLabel();
-        lblModel = new javax.swing.JLabel();
-        lblSubmodel = new javax.swing.JLabel();
-        lblYear = new javax.swing.JLabel();
-        make = new javax.swing.JLabel();
-        market = new javax.swing.JLabel();
-        year = new javax.swing.JLabel();
-        model = new javax.swing.JLabel();
-        submodel = new javax.swing.JLabel();
-        transmission = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableList = new javax.swing.JList();
-        lblTables = new javax.swing.JLabel();
-        lblEditStamp = new javax.swing.JLabel();
-        editStamp = new javax.swing.JLabel();
-        lblChecksum = new javax.swing.JLabel();
-        checksum = new javax.swing.JLabel();
+        lblFilename = new JLabel();
+        fileName = new JLabel();
+        lblECURevision = new JLabel();
+        xmlID = new JLabel();
+        lblFilesize = new JLabel();
+        fileSize = new JLabel();
+        lblEcuVersion = new JLabel();
+        ecuVersion = new JLabel();
+        lblInternalId = new JLabel();
+        internalID = new JLabel();
+        lblStorageAddress = new JLabel();
+        storageAddress = new JLabel();
+        lblMake = new JLabel();
+        lblMarket = new JLabel();
+        lblTransmission = new JLabel();
+        lblModel = new JLabel();
+        lblSubmodel = new JLabel();
+        lblYear = new JLabel();
+        lblVersion = new JLabel();
+        lblAuthor = new JLabel();
+        version = new JLabel();
+        author = new JLabel();
+        make = new JLabel();
+        market = new JLabel();
+        year = new JLabel();
+        model = new JLabel();
+        submodel = new JLabel();
+        transmission = new JLabel();
+        jScrollPane1 = new JScrollPane();
+        tableList = new JList();
+        lblTables = new JLabel();
+        lblEditStamp = new JLabel();
+        editStamp = new JLabel();
+        lblChecksum = new JLabel();
+        checksum = new JLabel();
 
         lblChecksum.setText(rb.getString("LBLCHKSUM"));
         lblEditStamp.setText(rb.getString("LBLEDIT"));     
@@ -111,26 +124,10 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         lblModel.setText(rb.getString("LBLMDL"));
         lblSubmodel.setText(rb.getString("LBLSMDL"));
         lblYear.setText(rb.getString("LBLYR"));
-
-        tableList.setModel(new javax.swing.AbstractListModel() {
-            /**
-             *
-             */
-            private static final long serialVersionUID = -8498656966410761726L;
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
-
-            public int getSize() {
-                return strings.length;
-            }
-
-            public Object getElementAt(int i) {
-                return strings[i];
-            }
-        });
+        lblAuthor.setText(rb.getString("LBLAUT"));
+        lblVersion.setText(rb.getString("LBLDEFVER"));    
         jScrollPane1.setViewportView(tableList);
-
-        lblTables.setText(rb.getString("LBLTBLS"));
-
+        
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
             layout.createParallelGroup(Alignment.LEADING)
@@ -141,6 +138,14 @@ public class RomPropertyPanel extends javax.swing.JPanel {
                             .addComponent(lblFilename)
                             .addPreferredGap(ComponentPlacement.RELATED)
                             .addComponent(fileName, GroupLayout.PREFERRED_SIZE, 302, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblAuthor)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(author, GroupLayout.PREFERRED_SIZE, 302, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblVersion)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(version, GroupLayout.PREFERRED_SIZE, 302, GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(Alignment.LEADING)
                                 .addComponent(lblECURevision)
@@ -188,6 +193,14 @@ public class RomPropertyPanel extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(Alignment.LEADING)
                         .addComponent(lblFilename)
                         .addComponent(fileName))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                        .addComponent(lblAuthor)
+                        .addComponent(author))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                        .addComponent(lblVersion)
+                        .addComponent(version))
                     .addGap(26)
                     .addGroup(layout.createParallelGroup(Alignment.LEADING)
                         .addComponent(lblECURevision)
@@ -244,37 +257,41 @@ public class RomPropertyPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel ecuVersion;
-    private javax.swing.JLabel fileName;
-    private javax.swing.JLabel fileSize;
-    private javax.swing.JLabel internalID;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblECURevision;
-    private javax.swing.JLabel lblEcuVersion;
-    private javax.swing.JLabel lblFilename;
-    private javax.swing.JLabel lblFilesize;
-    private javax.swing.JLabel lblInternalId;
-    private javax.swing.JLabel lblMake;
-    private javax.swing.JLabel lblMarket;
-    private javax.swing.JLabel lblModel;
-    private javax.swing.JLabel lblStorageAddress;
-    private javax.swing.JLabel lblSubmodel;
-    private javax.swing.JLabel lblTables;
-    private javax.swing.JLabel lblTransmission;
-    private javax.swing.JLabel lblYear;
-    private javax.swing.JLabel make;
-    private javax.swing.JLabel market;
-    private javax.swing.JLabel model;
-    private javax.swing.JLabel storageAddress;
-    private javax.swing.JLabel submodel;
-    private javax.swing.JList tableList;
-    private javax.swing.JLabel transmission;
-    private javax.swing.JLabel xmlID;
-    private javax.swing.JLabel year;
-    private javax.swing.JLabel lblEditStamp;
-    private javax.swing.JLabel editStamp;
-    private javax.swing.JLabel lblChecksum;
-    private javax.swing.JLabel checksum;
+    private JLabel ecuVersion;
+    private JLabel fileName;
+    private JLabel fileSize;
+    private JLabel internalID;
+    private JScrollPane jScrollPane1;
+    private JLabel lblECURevision;
+    private JLabel lblEcuVersion;
+    private JLabel lblFilename;
+    private JLabel lblFilesize;
+    private JLabel lblInternalId;
+    private JLabel lblMake;
+    private JLabel lblMarket;
+    private JLabel lblModel;
+    private JLabel lblStorageAddress;
+    private JLabel lblSubmodel;
+    private JLabel lblTables;
+    private JLabel lblTransmission;
+    private JLabel lblYear;
+    private JLabel make;
+    private JLabel market;
+    private JLabel model;
+    private JLabel storageAddress;
+    private JLabel submodel;
+    private JList tableList;
+    private JLabel transmission;
+    private JLabel xmlID;
+    private JLabel year;
+    private JLabel lblEditStamp;
+    private JLabel editStamp;
+    private JLabel lblChecksum;
+    private JLabel checksum;
+    private JLabel lblVersion;
+    private JLabel version;
+    private JLabel author;
+    private JLabel lblAuthor;
     // End of variables declaration//GEN-END:variables
 
 }

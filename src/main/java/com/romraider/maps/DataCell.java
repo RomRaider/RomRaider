@@ -56,7 +56,7 @@ public class DataCell implements Serializable  {
     private String liveValue = Settings.BLANK;
     private String staticText = null;
     private Rom rom;
-
+  
     //Index within table
     private int index;
 
