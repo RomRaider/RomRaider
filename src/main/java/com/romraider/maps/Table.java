@@ -497,8 +497,6 @@ public abstract class Table implements Serializable {
         }
     }
 
-    abstract public byte[] saveFile(byte[] binData);
-
     public void setPresetValues(String name, String value) {
     	if(presetManager == null) presetManager = new PresetManager(this);
     	presetManager.setPresetValues(name, value, 0, false);

@@ -36,12 +36,7 @@ public class Table1D extends Table {
     public Table getAxisParent() {
         return axisParent;
     }
-    
-	@Override
-	public byte[] saveFile(byte[] binData) {
-		return binData;
-	}
- 
+
     @Override
     public StringBuffer getTableAsString() {
         if(isStaticDataTable()) {

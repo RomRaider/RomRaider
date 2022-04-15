@@ -82,7 +82,6 @@ public class Table2D extends Table {
             super.populateTable(rom);
     }
 
-
     @Override
     public void setRevertPoint() {
         super.setRevertPoint();
@@ -93,12 +92,6 @@ public class Table2D extends Table {
     public void undoAll() throws UserLevelException {
         super.undoAll();
         axis.undoAll();
-    }
-
-
-    @Override
-    public byte[] saveFile(byte[] binData) {
-        return binData;
     }
 
     @Override

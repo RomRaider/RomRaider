@@ -379,10 +379,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public byte[] saveFile() {
 
         final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
-        for (TableTreeNode tableNode : tableNodes.values()) {
-        	
-        	//Only used in BitwiseSwitch Table...
-            tableNode.getTable().saveFile(binData);
+        for (TableTreeNode tableNode : tableNodes.values()) {       	
             if (tableNode.getTable().getName().contains("Checksum Fix")) {
                 checksumTables.add(tableNode);
             }

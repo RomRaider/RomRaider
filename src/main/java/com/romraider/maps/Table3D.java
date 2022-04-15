@@ -300,11 +300,6 @@ public class Table3D extends Table {
     }
 
     @Override
-    public byte[] saveFile(byte[] binData) {
-        return binData;
-    }
-
-    @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
     }
