@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
-public abstract class Table implements Serializable {
+public abstract class Table implements Serializable, Comparable<Table> {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
     protected static final String ST_DELIMITER = "\t\n\r\f";
@@ -126,7 +126,7 @@ public abstract class Table implements Serializable {
             }
 
             data = null;
-        }      
+        }
         rom = null;
     }
 
@@ -137,17 +137,17 @@ public abstract class Table implements Serializable {
     public int getRamOffset() {
         return this.ramOffset;
     }
-    
+
     public Rom getRom() {
     	return rom;
     }
-    
+
     public void setRom(Rom rom) {
     	this.rom = rom;
     }
 
-    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {      
-    	if(isStaticDataTable()) return;       
+    public void populateTable(Rom rom) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    	if(isStaticDataTable()) return;
         validateScaling();
 
         // temporarily remove lock;
@@ -501,7 +501,7 @@ public abstract class Table implements Serializable {
     	if(presetManager == null) presetManager = new PresetManager(this);
     	presetManager.setPresetValues(name, value, 0, false);
     }
-    
+
     public void setPresetValues(String name, String value, int dataCellOffset) {
     	if(presetManager == null) presetManager = new PresetManager(this);
     	presetManager.setPresetValues(name, value, dataCellOffset, true);
@@ -542,9 +542,9 @@ public abstract class Table implements Serializable {
     public void setBitMask(int mask) {
     	//We dont update the DataCells here!
     	//Clamp to max size
-    	tableBitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1); 
+    	tableBitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
     }
-    
+
     public int getBitMask() {
     	return tableBitMask;
     }
@@ -599,7 +599,7 @@ public abstract class Table implements Serializable {
     public void selectCellAtWithoutClear(int y) {
         if(y >= 0 && y < data.length) {
             data[y].setSelected(true);
-            if(tableView!=null)tableView.highlightBeginY = y;
+            if(tableView!=null) tableView.highlightBeginY = y;
         }
     }
 
@@ -722,13 +722,13 @@ public abstract class Table implements Serializable {
     public void setCompareTable(Table compareTable) {
         this.compareTable = compareTable;
 
-        if(tableView!= null)tableView.drawTable();
+        if(tableView!= null) tableView.drawTable();
     }
 
     public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
 
-        if(tableView!= null)tableView.drawTable();
+        if(tableView!= null) tableView.drawTable();
     }
 
     public Settings.DataType getCompareValueType() {
@@ -738,7 +738,7 @@ public abstract class Table implements Serializable {
     public void colorCells() {
         calcCellRanges();
 
-        if(tableView!=null)tableView.drawTable();
+        if(tableView!=null) tableView.drawTable();
     }
 
     public void refreshCompare() {
@@ -791,5 +791,10 @@ public abstract class Table implements Serializable {
         public String getMarshallingString() {
             return String.valueOf(marshallingCode);
         }
+    }
+
+    @Override
+    public int compareTo(Table otherTable) {
+        return this.getName().compareTo(otherTable.getName());
     }
 }

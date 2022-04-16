@@ -20,7 +20,6 @@
 package com.romraider.swing;
 
 import java.util.ResourceBundle;
-
 import com.romraider.maps.Rom;
 import com.romraider.maps.RomID;
 import com.romraider.util.ResourceUtil;
@@ -29,7 +28,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -44,7 +42,7 @@ public class RomPropertyPanel extends JPanel {
     public RomPropertyPanel(Rom rom) {
         initComponents();
         RomID romID = rom.getRomID();
-        
+
         // populate fields
         fileName.setText(rom.getFileName());
         xmlID.setText(romID.getXmlid());
@@ -57,7 +55,7 @@ public class RomPropertyPanel extends JPanel {
         }
         internalID.setText(romID.getInternalIdString());
         storageAddress.setText("0x" + Integer.toHexString(romID.getInternalIdAddress()));
-        
+
         make.setText(romID.getMake());
         market.setText(romID.getMarket());
         year.setText(romID.getYear());
@@ -68,7 +66,7 @@ public class RomPropertyPanel extends JPanel {
         checksum.setText(romID.getChecksum());
         version.setText(romID.getVersion());
         author.setText(romID.getAuthor());
-        lblTables.setText(String.format(rb.getString("LBLTBLS"), rom.getTables().size()));  
+        lblTables.setText(String.format(rb.getString("LBLTBLS"), rom.getTables().size()));
         tableList.setListData(rom.getTables());
     }
 
@@ -111,7 +109,7 @@ public class RomPropertyPanel extends JPanel {
         checksum = new JLabel();
 
         lblChecksum.setText(rb.getString("LBLCHKSUM"));
-        lblEditStamp.setText(rb.getString("LBLEDIT"));     
+        lblEditStamp.setText(rb.getString("LBLEDIT"));
         lblFilename.setText(rb.getString("LBLFN"));
         lblECURevision.setText(rb.getString("LBLECU"));
         lblFilesize.setText(rb.getString("LBLFS"));
@@ -125,9 +123,9 @@ public class RomPropertyPanel extends JPanel {
         lblSubmodel.setText(rb.getString("LBLSMDL"));
         lblYear.setText(rb.getString("LBLYR"));
         lblAuthor.setText(rb.getString("LBLAUT"));
-        lblVersion.setText(rb.getString("LBLDEFVER"));    
+        lblVersion.setText(rb.getString("LBLDEFVER"));
         jScrollPane1.setViewportView(tableList);
-        
+
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
             layout.createParallelGroup(Alignment.LEADING)

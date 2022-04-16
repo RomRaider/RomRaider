@@ -34,7 +34,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,33 +66,33 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             Rom.class.getName());
-    
+
     private RomID romID;
     private File definitionPath;
     private String fileName = "";
     private File fullFileName = new File(".");
     private byte[] binData;
     private Document doc;
-    
+
     //This keeps track of DataCells on a byte level
     //This might also be possible to achieve by using the same Data Tables
     protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
-    
+
     private boolean isAbstract = false;
-    
+
     private final HashMap<String, TableTreeNode> tableNodes = new HashMap<String, TableTreeNode>();
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
-    
+
     public Rom(RomID romID) {
     	this.romID = romID;
     }
 
     //This makes sure we automatically sort the tables by name
     public void sortedAdd(DefaultMutableTreeNode currentParent, DefaultMutableTreeNode newNode) {
-        boolean found = false;	                    
+        boolean found = false;
         for(int k = 0; k < currentParent.getChildCount(); k++){
         	TreeNode n = currentParent.getChildAt(k);
-        	
+
         	//Category nodes should be placed at the top
         	if(newNode instanceof CategoryTreeNode && !(n instanceof CategoryTreeNode)) {
         		found = true;
@@ -100,21 +100,21 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         	else if(!(newNode instanceof CategoryTreeNode) && n instanceof CategoryTreeNode) {
         		continue;
         	}
-        	else if(n.toString().compareToIgnoreCase(newNode.toString()) >= 0) {        		
-        		found = true;        		
+        	else if(n.toString().compareToIgnoreCase(newNode.toString()) >= 0) {
+        		found = true;
         	}
-        	
+
         	if(found) {
         		currentParent.insert(newNode, k);
         		break;
         	}
         }
-        
+
         if(!found) {
         	currentParent.add(newNode);
         }
     }
-    
+
     public void refreshDisplayedTables() {
         // Remove all nodes from the ROM tree node.
         super.removeAllChildren();
@@ -124,30 +124,30 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Add nodes to ROM tree.
         for (TableTreeNode tableTreeNode : tableNodes.values()) {
             Table table = tableTreeNode.getTable();
-                                  
+
             String[] categories = table.getCategory().split("//");
-                      
+
             if (settings.isDisplayHighTables() || settings.getUserLevel() >= table.getUserLevel()) {
-                
+
                 DefaultMutableTreeNode currentParent = this;
-                
+
                 for(int i=0; i < categories.length; i++) {
                     boolean categoryExists = false;
-                    
+
 	                for (int j = 0; j < currentParent.getChildCount(); j++) {
-	                    if (currentParent.getChildAt(j).toString().equalsIgnoreCase(categories[i])) {	  
-	                    	categoryExists = true;	                    		                    	
+	                    if (currentParent.getChildAt(j).toString().equalsIgnoreCase(categories[i])) {
+	                    	categoryExists = true;
 	                    	currentParent = (DefaultMutableTreeNode) currentParent.getChildAt(j);
 	                        break;
 	                    }
 	                }
-	                
+
 	                if(!categoryExists) {
 	                    CategoryTreeNode categoryNode = new CategoryTreeNode(categories[i]);
-	                    sortedAdd(currentParent,categoryNode);  
+	                    sortedAdd(currentParent,categoryNode);
 	                    currentParent = categoryNode;
 	                }
-	                
+
                 	if(i == categories.length - 1){
                 		sortedAdd(currentParent, tableTreeNode);
                 	}
@@ -155,12 +155,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             }
         }
     }
-  
+
     public void addTableByName(Table table) {
         table.setRom(this);
         tableNodes.put(table.getName().toLowerCase(), new TableTreeNode(table));
     }
-    
+
     public void removeTableByName(Table table) {
     	if(tableNodes.containsKey(table.getName().toLowerCase())) {
     		tableNodes.remove(table.getName().toLowerCase());
@@ -184,7 +184,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         }
         return result;
     }
-    
+
     // Table storage address extends beyond end of file
     private void showBadTablePopup(Table table, Exception ex) {
         LOGGER.error(table.getName() +
@@ -195,27 +195,27 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
     }
-    
+
     private void showNullExceptionPopup(Table table, Exception ex) {
         LOGGER.error("Error Populating Table", ex);
         JOptionPane.showMessageDialog(null,
                 MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void populateTables(byte[] binData, JProgressPane progress) {
         this.binData = binData;
         int size = tableNodes.size();
         int i = 0;
         Vector <String> badKeys = new Vector<String>();
-        
-        for(String name: tableNodes.keySet()) {         	
+
+        for(String name: tableNodes.keySet()) {
             // update progress
             int currProgress = (int) (i / (double) size * 100);
             progress.update(rb.getString("POPTABLES"), currProgress);
-            
+
             Table table = tableNodes.get(name.toLowerCase()).getTable();
-            
+
             try {
                 if (table.getStorageAddress() >= 0) {
                     try {
@@ -225,8 +225,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                         if (null != table.getName() && table.getName().equalsIgnoreCase("Checksum Fix")){
                             setEditStamp(binData, table.getStorageAddress());
                         }
-                        
-                        i++;                     
+
+                        i++;
                     } catch (ArrayIndexOutOfBoundsException ex) {
                     	showBadTablePopup(table, ex);
                     	badKeys.add(table.getName());
@@ -235,7 +235,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                     	showBadTablePopup(table, iex);
                     	badKeys.add(table.getName());
                     	size--;
-                    }                  
+                    }
                 } else {
                 	tableNodes.remove(table.getName().toLowerCase());
                 	size--;
@@ -247,13 +247,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             	size--;
             }
         }
-        
+
         for(String s: badKeys) {
         	tableNodes.remove(s.toLowerCase());
         }
     }
 
-    //TODO: Move to Subaru checksum 
     private void setEditStamp(byte[] binData, int address) {
         byte[] stampData = new byte[4];
         System.arraycopy(binData, address+204, stampData, 0, stampData.length);
@@ -283,26 +282,26 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public String getRomIDString() {
         return romID.getXmlid();
     }
-    
+
     public byte[] getBinary() {
     	return binData;
     }
-    
+
     public void setDocument(Document d) {
     	this.doc = d;
     }
     public Document getDocument() {
     	return this.doc;
     }
-    
+
     public void setDefinitionPath(File s) {
     	definitionPath = s;
     }
-    
+
     public File getDefinitionPath() {
     	return definitionPath;
     }
-    
+
     @Override
     public String toString() {
         String output = "";
@@ -324,6 +323,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for(TableTreeNode tableNode : tableNodes.values()) {
             tables.add(tableNode.getTable());
         }
+        Collections.sort(tables);
         return tables;
     }
 
@@ -334,11 +334,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-    
+
     private void showChecksumFixPopup(TableTreeNode checksum) {
     	 Object[] options = {rb.getString("YES"), rb.getString("NO")};
          final String message = rb.getString("CHKSUMINVALID");
-         
+
          int answer = showOptionDialog(
                  SwingUtilities.windowForComponent(checksum.getTable().getTableView()),
                  message,
@@ -349,6 +349,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                  options,
                  options[0]);
          if (answer == 0) {
+             //TODO: Move to Subaru checksum
              calculateRomChecksum(
                      binData,
                      checksum.getTable().getStorageAddress(),
@@ -356,7 +357,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
              );
          }
     }
-    
+
     //Most of this function is useless now, since each Datacell is now responsible for each memory region
     //It is only used to correct the Subaru Checksum. Should be moved somewhere else TODO
     public byte[] saveFile() {
@@ -389,6 +390,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
         for (TableTreeNode checksum : checksumTables) {
             if (!checksum.getTable().isLocked()) {
+                //TODO: Move to Subaru checksum
                 calculateRomChecksum(
                         binData,
                         checksum.getTable().getStorageAddress(),
@@ -397,11 +399,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             }
             else if (checksum.getTable().isLocked() &&
                     !checksum.getTable().isButtonSelected()) {
-                	showChecksumFixPopup(checksum);            
+                	showChecksumFixPopup(checksum);
             }
         }
-    	
-        updateChecksum();           
+
+        updateChecksum();
         return binData;
     }
 
@@ -411,50 +413,50 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Hide and dispose all frames.
         for(TableTreeNode tableTreeNode : tableNodes.values()) {
             TableFrame frame = tableTreeNode.getFrame();
-            
+
             TableUpdateHandler.getInstance().deregisterTable(tableTreeNode.getTable());
-            
+
             // Quite slow and doesn't seem to be necessary after testing,
             // uncomment if you disagree
-            
+
             //tableTreeNode.getTable().clearData();
-            
-            if(frame != null) {           	
-        
+
+            if(frame != null) {
+
 	            frame.setVisible(false);
-	            
+
 	            try {
 	                frame.setClosed(true);
 	            } catch (PropertyVetoException e) {
-	                ; // Do nothing.
+	                 // Do nothing.
 	            }
 	            frame.dispose();
-	            
+
 	            if(frame.getTableView() != null) {
-	            	frame.getTableView().setVisible(false);    
+	            	frame.getTableView().setVisible(false);
 		            frame.getTableView().setData(null);
 	                frame.getTableView().setTable(null);
 	                frame.setTableView(null);
 	            }
             }
-            
+
             tableTreeNode.setUserObject(null);
         }
-        
+
         clearByteMapping();
         checksumManagers.clear();
         tableNodes.clear();
         binData = null;
         doc = null;
     }
-    
+
     public void clearByteMapping() {
     	for(List<?> l: byteCellMapping.values())l.clear();
-    	
+
     	byteCellMapping.clear();
     	byteCellMapping = null;
     }
-    
+
     public int getRealFileSize() {
         return binData.length;
     }
@@ -475,7 +477,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
-    
+
     @Override
     public DefaultMutableTreeNode getChildAt(int i) {
         return (DefaultMutableTreeNode) super.getChildAt(i);
@@ -484,58 +486,58 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void addChecksumManager(ChecksumManager checksumManager) {
     	this.checksumManagers.add(checksumManager);
     }
-  
+
     public int getNumChecksumsManagers() {
     	return checksumManagers.size();
     }
-    
+
     public int validateChecksum() {
         int correctChecksums = 0;
-        boolean valid = true; 
-        
-        if (!checksumManagers.isEmpty()) {            
+        boolean valid = true;
+
+        if (!checksumManagers.isEmpty()) {
             for(ChecksumManager cm: checksumManagers) {
             	int localCorrectCs = cm.validate(binData);
-            	
+
             	if (cm == null || cm.getNumberOfChecksums() != localCorrectCs) {
             		valid = false;
             	}
             	else {
             		correctChecksums+=localCorrectCs;
             	}
-            }                                
+            }
         }
-        
+
         if(!valid) {
         	showMessageDialog(null,
         			rb.getString("INVLAIDCHKSUM"),
                     rb.getString("CHKSUMFAIL"),
                     WARNING_MESSAGE);
         }
-        
+
         return correctChecksums;
     }
 
     public int updateChecksum() {
     	int updatedCs = 0;
-    	
+
 	    for(ChecksumManager cm: checksumManagers) {
 	    	updatedCs+=cm.update(binData);
 	    }
-	    
+
 	    ECUEditorManager.getECUEditor().getStatusPanel().setStatus(
 	    		String.format(rb.getString("CHECKSUMFIXED"), updatedCs, getTotalAmountOfChecksums()));
-	    
+
 	    return updatedCs;
     }
-    
+
     public int getTotalAmountOfChecksums() {
     	int cs = 0;
-    	
+
 	    for(ChecksumManager cm: checksumManagers) {
 	    	cs+=cm.getNumberOfChecksums();
 	    }
-	    
+
 	    return cs;
     }
 }
