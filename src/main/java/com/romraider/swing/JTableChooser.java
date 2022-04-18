@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,33 +47,34 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     private static final long serialVersionUID = 5611729002131147882L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             JTableChooser.class.getName());
-    
-    JPanel displayPanel = new JPanel();
+
+    final JPanel displayPanel = new JPanel();
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
-    JTree displayTree = new JTree(rootNode);
-    JButton compareButton = new JButton(rb.getString("COMPARE"));
+    final JTree displayTree = new JTree(rootNode);
+    final JButton compareButton = new JButton(rb.getString("COMPARE"));
     JScrollPane displayScrollPane;
 
     public JTableChooser() {
     }
 
     public Table showChooser(Table targetTable) {
-        Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
+        final Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
         int nameLength = 0;
 
         for (int i = 0; i < roms.size(); i++) {
-            Rom rom = roms.get(i);
-            DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
+            final Rom rom = roms.get(i);
+            rom.getTableNodes().values();
+            final DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
             rootNode.add(romNode);
 
             for (TableTreeNode tableTreeNode : rom.getTableNodes().values()) {
-                Table table = tableTreeNode.getTable();
+                final Table table = tableTreeNode.getTable();
                 // use the length of the table name to set the width of the displayTree
                 // so the entire name can be read without being cut off on the right
                 if (table.getName().length() > nameLength) {
                     nameLength = table.getName().length();
                 }
-                TableChooserTreeNode tableNode = new TableChooserTreeNode(table.getName(), table);
+                final TableChooserTreeNode tableNode = new TableChooserTreeNode(table.getName(), table);
 
                 // categories
                 boolean categoryExists = false;
@@ -86,23 +87,25 @@ public class JTableChooser extends JOptionPane implements MouseListener {
                 }
 
                 if (!categoryExists) {
-                    DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(table.getCategory());
+                    final DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(table.getCategory());
                     romNode.add(categoryNode);
                     categoryNode.add(tableNode);
                 }
             }
         }
 
+        rootNode = sortTableChooser(rootNode);
+
         displayTree.setPreferredSize(new Dimension(nameLength*9, 400));
         displayTree.setMinimumSize(new Dimension(nameLength*9, 400));
-        
+
         displayTree.expandPath(new TreePath(rootNode.getPath()));
 
         displayTree.addMouseListener(this);
         displayScrollPane = new JScrollPane(displayTree);
         displayScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         displayPanel.add(displayScrollPane);
-     
+
         Object[] values = {compareButton, rb.getString("CANCEL")};
         compareButton.setEnabled(false);
         compareButton.addActionListener(new ActionListener()
@@ -110,16 +113,16 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                JOptionPane pane = (JOptionPane)((JButton) (e.getSource())).getParent().getParent();
+                final JOptionPane pane = (JOptionPane)((JButton) (e.getSource())).getParent().getParent();
                 pane.setValue(compareButton);
             }
         });
-        
+
         int result = showOptionDialog(SwingUtilities.windowForComponent(targetTable.getTableView()),
                 displayPanel,
                 rb.getString("SELECT"), JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, values, values[0]);
-        
+
         if (result == 0 && displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode) {
             return ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable();
         } else {
@@ -132,7 +135,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
         displayTree.setPreferredSize(new Dimension(displayTree.getWidth(),
                 (displayTree.getRowCount()*displayTree.getRowHeight())));
         displayTree.revalidate();
-        
+
         if(displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode) {
         	compareButton.setEnabled(true);
         }
@@ -149,4 +152,27 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e){}
 
+    /**
+     * Sort the ROMs, categories and tables in the Compare table chooser JTree.
+     * @param root - the current root node
+     * @return - the sorted node tree
+     */
+    public DefaultMutableTreeNode sortTableChooser(DefaultMutableTreeNode root) {
+        for (int i = 0; i < root.getChildCount(); i++) {
+            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) root.getChildAt(i);
+            final String nodeString = childNode.getUserObject().toString();
+            for (int j = 0; j < i; j++) {
+                final DefaultMutableTreeNode prevNode = (DefaultMutableTreeNode) root.getChildAt(j);
+                final String prevNodeString = prevNode.getUserObject().toString();
+                if (nodeString.compareToIgnoreCase(prevNodeString) < 0) {
+                    root.insert(childNode, j);
+                    break;
+                }
+            }
+            if (childNode.getChildCount() > 0) {
+                childNode = sortTableChooser(childNode);
+            }
+        }
+        return root;
+    }
 }
