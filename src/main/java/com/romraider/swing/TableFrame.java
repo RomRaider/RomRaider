@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,13 +58,13 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         this.tableView = tableView;
         Table t = tableView.getTable();
 
-        Icon icon = RomCellRenderer.getIconForTable(t);  
-        setFrameIcon(icon);   
-        
+        Icon icon = RomCellRenderer.getIconForTable(t);
+        setFrameIcon(icon);
+
         t.setTableFrame(this);
         add(tableView);
         tableView.repaint();
-        
+
         setBorder(createBevelBorder(0));
         if (System.getProperty("os.name").startsWith("Mac OS"))
             putClientProperty("JInternalFrame.isPalette", true);
@@ -72,24 +72,24 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         tableMenuBar = new TableMenuBar(this);
         setJMenuBar(tableMenuBar);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        addInternalFrameListener(this);       
+        addInternalFrameListener(this);
     }
-    
+
     public void RegisterTable() {
         TableUpdateHandler.getInstance().registerTable(this.getTable());
     }
-    
+
     public void DeregisterTable() {
         TableUpdateHandler.getInstance().deregisterTable(this.getTable());
     }
-    
+
     private void updateToolbar(Table t) {
         ECUEditor parent = getEditor();
         parent.getTableToolBar().updateTableToolBar(t);
         parent.getToolBar().updateButtons();
         parent.getEditorMenuBar().updateMenu();
     }
-    
+
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
     	updateToolbar(getTable());
@@ -99,13 +99,13 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     public void internalFrameDeactivated(InternalFrameEvent e) {
     	updateToolbar(null);
     }
-    
+
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {}
-    
+
     @Override
     public void internalFrameOpened(InternalFrameEvent e) {}
-    
+
     @Override
     public void internalFrameClosed(InternalFrameEvent e) {}
     @Override
@@ -115,7 +115,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
     public Table getTable() {
     	if(tableView == null) return null;
-    	
+
         return tableView.getTable();
     }
     public TableView getTableView() {
@@ -125,7 +125,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     public void setTableView(TableView v) {
     	tableView = v;
     }
-    
+
     public ECUEditor getEditor() {
         return ECUEditorManager.getECUEditor();
     }
@@ -138,7 +138,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     public void actionPerformed(ActionEvent e) {
         TableMenuBar menu = getTableMenuBar();
         Table t = getTable();
-        
+
         try {
         if (e.getSource() == menu.getUndoAll()) {
             t.undoAll();
@@ -190,6 +190,10 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             if(null != selectedTable) {
                 compareByTable(selectedTable);
             }
+            else {
+                // User closed/cancelled Chooser window
+                menu.getCompareOff().setSelected(true);
+            }
 
         } else if (e.getSource() instanceof TableMenuItem) {
             Table selectedTable = ((TableMenuItem) e.getSource()).getTable();
@@ -222,11 +226,11 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
     public void compareByTable(Table selectedTable) {
     	Table t = getTable();
-    	
+
         if(null == selectedTable) {
             return;
         }
-        
+
         t.setCompareTable(selectedTable);
         ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(t);
         t.populateCompareValues(selectedTable);
@@ -235,11 +239,11 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     public void refreshSimilarOpenTables() {
         JMenu similarTables =  getTableMenuBar().getSimilarOpenTables();
         similarTables.removeAll();
-        
-        Vector<Rom> images = ECUEditorManager.getECUEditor().getImages();  
+
+        Vector<Rom> images = ECUEditorManager.getECUEditor().getImages();
         boolean addedTable = false;
-        
-        if(images.size() > 1) {      
+
+        if(images.size() > 1) {
 	        for(Rom rom : images) {
 	        	if (rom == getTable().getRom()) continue;
 	        	if(rom.getTableNodes().containsKey(getTable().getName().toLowerCase())) {
@@ -249,16 +253,16 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
                     similarTable.addActionListener(this);
                     similarTables.add(similarTable);
                     addedTable = true;
-                    break;
+                    continue;
 	                }
 	            }
         }
-        
+
         if(addedTable)
         	similarTables.setEnabled(true);
         else
         	similarTables.setEnabled(false);
-        
+
         getTableMenuBar().initCompareGroup(this);
         getTableMenuBar().repaint();
     }

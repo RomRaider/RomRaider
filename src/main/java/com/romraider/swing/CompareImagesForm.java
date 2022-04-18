@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.util.ResourceUtil;
@@ -158,7 +157,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     	if(rom.getTableNodes().containsKey(tableName.toLowerCase())) {
     		return rom.getTableNodes().get(tableName.toLowerCase());
     	}
-    	
+
     	return null;
     }
 
