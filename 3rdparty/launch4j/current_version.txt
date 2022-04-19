@@ -1,1 +1,0 @@
-The current version is 3.0.1
