@@ -39,8 +39,9 @@
         <echo message="build       [Compile the Java source files          ]" />
         <echo message="rebuild     [Call the clean and build targets       ]" />
         <echo message="javadoc     [Generate the API documentation of the  ]" />
-        <echo message="            [Java source code                       ]" />
-        <echo message="dist        [Create the distribution packages       ]" />
+        <echo message="            [  Java source code                     ]" />
+        <echo message="installer   [Create the installation packages       ]" />
+        <echo message="standalone  [Create the ZIP packages                ]" />
         <echo message="all         [Complete rebuild and packaging         ]" />
         <echo message="unittest    [Run all unit tests                     ]" />
     </target>
@@ -48,7 +49,7 @@
     <!-- =================================================================== -->
     <!-- Initialization target - only callable internally                    -->
     <!-- =================================================================== -->
-    <target name="-init" unless="initialized">
+    <target name="-init" unless="initialized" description="Initialize the build environment">
         <property name="initialized" value="true" />
         <!-- set the various timestamp properties we may need -->
         <tstamp>
@@ -62,7 +63,7 @@
                     project.getProperty("mnth.day").toUpperCase());
         </scriptdef>
         <toUpper/>
-        
+
         <!-- set os specific properties -->
         <property name="os.windows" value="windows" />
         <property name="ext.windows" value="bat" />
@@ -72,13 +73,10 @@
         <condition property="os" value="${os.windows}" else="${os.linux}">
             <os family="windows" />
         </condition>
-    	
+
         <condition property="is.windows">
             <equals arg1="${os}" arg2="${os.windows}" />
         </condition>
-       	
-        <property name="izpack.compile.${os.windows}" value="compile.bat" />
-        <property name="izpack.compile.${os.linux}" value="compile" />
 
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
@@ -86,9 +84,8 @@
         <condition property="bootclasspath.dir" value="${env.JRE_DIR}/lib"
                            else="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib">
                     <isset property="env.JRE_DIR" />
-       	</condition>
-        
-    	<property name="debug" value="off" />
+        </condition>
+        <property name="debug" value="off" />
         <property name="deprecation" value="on" />
         <property name="javac.verbose" value="off" />
 
@@ -122,9 +119,16 @@
         <property name="launch4j.dir" location="${3rdparty.dir}/launch4j" />
         <!-- installer packager -->
         <property name="izpack.dir" value="${3rdparty.dir}/IzPack" />
+        <condition property="have.3rdparty">
+            <and>
+                <available file="${izpack.dir}/izpack-standalone-compiler.jar" />
+                <available file="${launch4j.dir}/launch4j.jar" />
+            </and>
+        </condition>
+        <property name="izpack.compile" value="${izpack.dir}/izpack-standalone-compiler.jar" />
 
         <!-- define custom tasks -->
-        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" onerror="report"
                  classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 
         <!-- windows classpath -->
@@ -184,14 +188,14 @@
     <!-- =================================================================== -->
     <!-- cleans all generated files                                          -->
     <!-- =================================================================== -->
-    <target name="clean" depends="-init">
+    <target name="clean" depends="-init" description="Clean all generated files">
         <delete dir="${build.dir}" failonerror="false" />
     </target>
 
     <!-- =================================================================== -->
     <!-- pre-build preparation                                               -->
     <!-- =================================================================== -->
-    <target name="prepare" depends="-init">
+    <target name="prepare" depends="-init" description="Pre-build preparation">
         <!-- generate the Version class -->
         <copy overwrite="true" tofile="${src.java.dir}/com/romraider/Version.java"
               file="src/main/java/com/romraider/Version.java.template">
@@ -202,38 +206,38 @@
     <!-- =================================================================== -->
     <!-- complete rebuild                                                    -->
     <!-- =================================================================== -->
-    <target name="rebuild" depends="clean, build" />
+    <target name="rebuild" depends="clean, build" description="Rebuild"/>
 
     <!-- =================================================================== -->
     <!-- Compiles the source directory                                       -->
     <!-- =================================================================== -->
-    <target name="compile-windows" depends="prepare">
+    <target name="compile-windows" depends="prepare" description="Compile the source directory for Windows">
         <macro_compile os="${os.windows}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
     </target>
-    <target name="compile-linux" depends="prepare">
+    <target name="compile-linux" depends="prepare" description="Compile the source directory for Linux">
         <macro_compile os="${os.linux}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
     </target>
 
     <!-- =================================================================== -->
     <!-- Build jar files                                                     -->
     <!-- =================================================================== -->
-    <target name="build-linux" depends="compile-linux">
+    <target name="build-linux" depends="compile-linux" description="Build the Jar file for Linux">
         <macro_jar os="${os.linux}" basedir="${classes.dir}"/>
     </target>
-    <target name="build-windows" depends="compile-windows">
+    <target name="build-windows" depends="compile-windows" description="Build the Jar file for Windows">
         <macro_jar os="${os.windows}" basedir="${classes.dir}"/>
     </target>
-    <target name="build" depends="build-windows, build-linux" />
+    <target name="build" depends="build-windows, build-linux" description="Build the Jar files for Linux and Windows"/>
 
     <!-- =================================================================== -->
     <!-- Compile and run all unit tests                                      -->
     <!-- =================================================================== -->
-    <target name="compile-for-unittests-linux" depends="prepare">
+    <target name="compile-for-unittests-linux" depends="prepare" description="Compile and run Linux unit tests">
         <mkdir dir="${testclasses.dir}" />
         <macro_compile os="${os.linux}" srcdir="${src.dir}" destdir="${testclasses.dir}" />
         <macro_jar os="${os.linux}" basedir="${testclasses.dir}"/>
     </target>
-    <target name="unittest" depends="compile-for-unittests-linux">
+    <target name="unittest" depends="compile-for-unittests-linux" description="Perform unit tests on Linux">
         <junit printsummary="withOutAndErr" showoutput="true" haltonfailure="true">
             <classpath refid="junit.classpath" />
             <batchtest skipNonTests="true">
@@ -249,7 +253,7 @@
     <!-- ================================================================== -->
     <!-- generate javadoc                                                   -->
     <!-- ================================================================== -->
-    <target name="javadoc" depends="-init">
+    <target name="javadoc" depends="-init" description="Generate javadocs">
         <delete quiet="true" dir="${javadoc.dir}" />
         <mkdir dir="${javadoc.dir}" />
         <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.java.dir}" author="yes"
@@ -264,9 +268,10 @@
     </target>
 
     <!-- =================================================================== -->
-    <!-- create distribution                                                 -->
+    <!-- create installation                                                 -->
     <!-- =================================================================== -->
-    <target name="dist" depends="-init">
+    <target name="installer" depends="-init" if="have.3rdparty"
+        description="Create installation distribution packages">
         <delete dir="${dist.dir}" failonerror="false" />
         <mkdir dir="${dist.dir}/windows" />
         <mkdir dir="${dist.dir}/linux" />
@@ -295,7 +300,13 @@
         </copy>
 
         <macro_generate_executables/>
+    </target>
 
+    <!-- =================================================================== -->
+    <!-- create standalone ZIP                                               -->
+    <!-- =================================================================== -->
+    <target name="standalone" depends="rebuild"
+        description="Create standalone ZIP packages">
         <macro_standalone os="${os.windows}" />
         <macro_standalone os="${os.linux}" />
     </target>
@@ -303,7 +314,8 @@
     <!-- =================================================================== -->
     <!-- all                                                                 -->
     <!-- =================================================================== -->
-    <target name="all" depends="rebuild, dist" />
+    <target name="all" depends="rebuild, installer, standalone"
+        description="Compile and create distribution packages" />
 
     <!-- =================================================================== -->
     <!-- Macros                                                              -->
@@ -326,7 +338,8 @@
         </sequential>
     </macrodef>
 
-    <target name="-launch4j" if="is.windows">
+    <target name="-launch4j" if="is.windows"
+        description="Create the exe launcher of the installer or package for Windows">
         <launch4j configFile="${dist.dir}/l4j-${type}.xml" />
     </target>
 
@@ -334,10 +347,9 @@
         <attribute name="os" />
         <attribute name="target.os" />
         <sequential>
-            <chmod file="${izpack.dir}/bin/${izpack.compile.@{os}}" perm="+x" osfamily="unix" />
-            <exec executable="${izpack.dir}/bin/${izpack.compile.@{os}}">
+            <java jar="${izpack.compile}" fork="true">
                 <arg line="${dist.dir}/install-@{target.os}.xml -b . -o ${dist.dir}/@{target.os}/${jar.installer-prefix}-@{target.os}.jar -k standard" />
-            </exec>
+            </java>
         </sequential>
     </macrodef>
 
@@ -353,7 +365,7 @@
                 </classpath>
             </manifestclasspath>
             <manifest file="${build.dir}/@{os}/MANIFEST.MF">
-                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Built-By" value="${name.maintainer}" />
                 <attribute name="Main-Class" value="${class.start}" />
                 <attribute name="Class-Path" value="${@{os}.jar.classpath}" />
             </manifest>
@@ -388,14 +400,14 @@
                 compiler="javac${javac.target}"
                 bootclasspath="${toString:bootpath.ref}"
                 encoding="UTF-8" >
-                <!-- 
+                <!--
                 <compilerarg value="-Xlint" />
                 -->
                 <classpath refid="@{os}.classpath" />
             </javac>
         </sequential>
     </macrodef>
-	
+
     <macrodef name="macro_standalone">
         <attribute name="os" />
         <sequential>
