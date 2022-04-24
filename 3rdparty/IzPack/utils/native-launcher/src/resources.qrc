@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/img" >
-        <file>img/kpackage_16.png</file>
-        <file>img/kpackage_32.png</file>
-        <file>img/kpackage_48.png</file>
-    </qresource>
-</RCC>
