@@ -1,4 +1,4 @@
-                - RomRaider 0.9.0 APR18 2022 -
+                - RomRaider 0.9.1 APR26 2022 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.9.0 APR18 2022 Notes (04/12/2022) -
+- 0.9.1 APR26 2022 Notes (04/26/2022) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.9.0 APR18 2022 Known Issues -
+- 0.9.1 APR26 2022 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,24 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.9.1 APR26 2022 Notes (04/26/2022)
+----------------------------------
+
+Prepare to support Java 6 thru 11
+Remove unneeded libraries
+Prepare for limited 64bit Java support
+
+- Editor
+  - More performance improvements
+  - XDF definition support
+  - Improve Bitwise Switch map support
+  - Fix compare images
+
+- Logger
+  - J2534 library cleanup, better support for Linux J2534
+  - Replace RXTXcomm with JSerialComm
+
 
 0.9.0 APR18 2022 Notes (04/12/2022)
 ----------------------------------
