@@ -46,6 +46,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.util.ResourceUtil;
@@ -131,11 +132,14 @@ public class CompareImagesForm extends JFrame implements ActionListener {
                     Rom rightRom = (Rom) comboBoxImageRight.getSelectedItem();
 
                     // Display Tables
-                    TableTreeNode leftNode = findAndShowTable(leftRom, tableName);
-                    TableTreeNode rightNode = findAndShowTable(rightRom, tableName);
-
+                    TableTreeNode leftNode = leftRom.getTableNodeByName(tableName);
+                    TableTreeNode rightNode = rightRom.getTableNodeByName(tableName);
+                    
                     // Set Comparison
                     if(leftNode != null && rightNode != null) {
+                        ECUEditorManager.getECUEditor().displayTable(leftNode);
+                        ECUEditorManager.getECUEditor().displayTable(rightNode);
+                        
                         leftNode.getFrame().compareByTable(rightNode.getTable());
                         // Update menu bar
                         for(int i = 0; i< leftNode.getFrame().getTableMenuBar().getSimilarOpenTables().getItemCount(); i++) {
@@ -152,15 +156,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         });
         populateComboBoxes();
     }
-
-    private TableTreeNode findAndShowTable(Rom rom, String tableName) {
-    	if(rom.getTableNodes().containsKey(tableName.toLowerCase())) {
-    		return rom.getTableNodes().get(tableName.toLowerCase());
-    	}
-
-    	return null;
-    }
-
+    
     public void populateComboBoxes()
     {
         for(int i=0; i<roms.size(); i++) {

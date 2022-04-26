@@ -168,11 +168,19 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     }
 
     public Table getTableByName(String tableName) {
+    	TableTreeNode node = getTableNodeByName(tableName);
+    	
+    	if(node != null)
+    		return node.getTable();
+    	return null;
+    }
+    
+    public TableTreeNode getTableNodeByName(String tableName) {
         if(!tableNodes.containsKey(tableName.toLowerCase())) {
             return null;
         }
         else {
-        	return tableNodes.get(tableName.toLowerCase()).getTable();
+        	return tableNodes.get(tableName.toLowerCase());
         }
     }
 
