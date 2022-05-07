@@ -169,12 +169,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public Table getTableByName(String tableName) {
     	TableTreeNode node = getTableNodeByName(tableName);
-    	
+
     	if(node != null)
     		return node.getTable();
     	return null;
     }
-    
+
     public TableTreeNode getTableNodeByName(String tableName) {
         if(!tableNodes.containsKey(tableName.toLowerCase())) {
             return null;
@@ -511,7 +511,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             		valid = false;
             	}
             	else {
-            		correctChecksums+=localCorrectCs;
+            		correctChecksums += localCorrectCs;
             	}
             }
         }
@@ -530,7 +530,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     	int updatedCs = 0;
 
 	    for(ChecksumManager cm: checksumManagers) {
-	    	updatedCs+=cm.update(binData);
+	    	updatedCs += cm.update(binData);
 	    }
 
 	    ECUEditorManager.getECUEditor().getStatusPanel().setStatus(
@@ -543,7 +543,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     	int cs = 0;
 
 	    for(ChecksumManager cm: checksumManagers) {
-	    	cs+=cm.getNumberOfChecksums();
+	    	cs += cm.getNumberOfChecksums();
 	    }
 
 	    return cs;

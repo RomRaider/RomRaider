@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ public final class ChecksumALT2 extends NissanChecksum {
         calculator = new CalculateALT2();
     }
 
+    @Override
     public void configure(Map<String, String> vars) {
         super.configure(vars);
         if (vars.containsKey(SKIPLOC)) {
@@ -48,36 +49,41 @@ public final class ChecksumALT2 extends NissanChecksum {
         }
     }
 
+    @Override
+    public int getNumberOfChecksums() {
+        return 4;
+    }
+
+    @Override
     public int validate(byte[] binData) {
         calculator.calculate(range, binData, results);
         int valid = 0;
-        
+
         if(results.get(SUMT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(SUMLOC), 4, true)) {
         	valid++;
         }
-        
+
         if(results.get(XORT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(XORLOC), 4, true)) {
         	valid++;
         }
-        
+
         if(results.get(START) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(START), 2, false)) {
         	valid++;
         }
-        
+
         if(results.get(SKIPLOC) == (short)parseByteValue(binData, Settings.Endian.BIG, range.get(SKIPLOC), 2, false)) {
         	valid++;
         }
-        
+
         return valid;
     }
 
+    @Override
     public int update(byte[] binData) {
+        // SUMT & XORT are updated in super before START and SKIPLOC
         super.update(binData);
-        int updateNeeded = getNumberOfChecksums();
-        
         System.arraycopy(parseIntegerValue(results.get(START), Settings.Endian.BIG, 2), 0, binData, range.get(START), 2);
         System.arraycopy(parseIntegerValue(results.get(SKIPLOC), Settings.Endian.BIG, 2), 0, binData, range.get(SKIPLOC), 2);
-        
-        return updateNeeded;
+        return getNumberOfChecksums();
     }
 }

@@ -22,7 +22,6 @@ package com.romraider.maps.checksum;
 import static com.romraider.xml.RomAttributeParser.parseByteValue;
 import static com.romraider.xml.RomAttributeParser.parseIntegerValue;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ import com.romraider.Settings;
 import com.romraider.util.HexUtil;
 
 /**
- * This class provides common methods implemented by different 
+ * This class provides common methods implemented by different
  * checksum calculation type classes.
  */
     abstract class NissanChecksum implements ChecksumManager {
@@ -43,7 +42,7 @@ import com.romraider.util.HexUtil;
         protected final Map<String, Integer> range = new HashMap<String, Integer>();
         protected final Map<String, Integer> results = new HashMap<String, Integer>();
         protected Calculator calculator;
-    
+
     @Override
     public void configure(Map<String, String> vars) {
         range.put(START, HexUtil.hexToInt(vars.get(START)));
@@ -51,47 +50,33 @@ import com.romraider.util.HexUtil;
         range.put(SUMLOC, HexUtil.hexToInt(vars.get(SUMLOC)));
         range.put(XORLOC, HexUtil.hexToInt(vars.get(XORLOC)));
     }
-    
+
     @Override
     public int getNumberOfChecksums() {
     	return 2;
     }
-    
+
     @Override
     public int validate(byte[] binData) {
         calculator.calculate(range, binData, results);
         int valid = 0;
-        
+
         if(results.get(SUMT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(SUMLOC), 4, true)) {
         	valid++;
         }
-        
+
         if((results.get(XORT) == (int)parseByteValue(binData, Settings.Endian.BIG, range.get(XORLOC), 4, true))) {
         	valid++;
         }
-        
+
         return valid;
     }
-    
+
     @Override
     public int update(byte[] binData) {
         calculator.calculate(range, binData, results);
-        int updateNeeded = getNumberOfChecksums();      
-        
-        if(!Arrays.equals(parseIntegerValue(results.get(SUMT), Settings.Endian.BIG, 4),
-        		Arrays.copyOfRange(binData, range.get(SUMLOC), 4))){
-        	updateNeeded++;
-        }
-        
-        if(!Arrays.equals(parseIntegerValue(results.get(XORT), Settings.Endian.BIG, 4),
-        		Arrays.copyOfRange(binData, range.get(XORLOC), 4))){
-        	updateNeeded++;
-        }
-        
-        //TODO: Dont copy if arrays dont need updating
         System.arraycopy(parseIntegerValue(results.get(SUMT), Settings.Endian.BIG, 4), 0, binData, range.get(SUMLOC), 4);
         System.arraycopy(parseIntegerValue(results.get(XORT), Settings.Endian.BIG, 4), 0, binData, range.get(XORLOC), 4);
-        
-        return updateNeeded;
+        return getNumberOfChecksums();
     }
 }
