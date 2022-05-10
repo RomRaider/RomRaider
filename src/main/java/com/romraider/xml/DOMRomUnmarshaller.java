@@ -24,8 +24,10 @@ import static com.romraider.xml.DOMHelper.unmarshallText;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.management.modelmbean.XMLParseException;
 
@@ -40,32 +42,35 @@ import com.romraider.maps.checksum.ChecksumFactory;
 import com.romraider.maps.checksum.ChecksumManager;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.HexUtil;
+import com.romraider.util.ResourceUtil;
 
 public final class DOMRomUnmarshaller {
     private static final Logger LOGGER = Logger
             .getLogger(DOMRomUnmarshaller.class);
-    private JProgressPane progress = null; 
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DOMRomUnmarshaller.class.getName());
+    private JProgressPane progress = null;
     private ChecksumManager checksumManager = null;
     private TableScaleUnmarshaller tableScaleHandler = new TableScaleUnmarshaller();
 
-    public Node checkDefinitionMatch(Node rootNode, byte[] input){    	  
-        Node n = findRomNodeMatch(rootNode, null, input);      
+    public Node checkDefinitionMatch(Node rootNode, byte[] input){
+        Node n = findRomNodeMatch(rootNode, null, input);
         return n;
     }
-    
+
     public Rom unmarshallXMLDefinition(File definition, Node rootNode, Node romNode, byte[] input,
-            JProgressPane progress) throws 
+            JProgressPane progress) throws
             XMLParseException, StackOverflowError, Exception {
 
         this.progress = progress;
-       
+
         // Unmarshall scales first
-        tableScaleHandler.unmarshallBaseScales(rootNode);            
-      
+        tableScaleHandler.unmarshallBaseScales(rootNode);
+
     	Rom rom = new Rom(new RomID());
     	rom.setDefinitionPath(definition);
         Rom output = unmarshallRom(romNode, rom);
-        
+
         //Set ram offset
         output.getRomID().setRamOffset(
                 output.getRomID().getFileSize()
@@ -73,30 +78,30 @@ public final class DOMRomUnmarshaller {
 
         return output;
     }
-    
+
     public static Node findFirstRomNode(Node rootNode) {
     	Node n;
         NodeList nodes = rootNode.getChildNodes();
-        
+
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
             if (n.getNodeType() == ELEMENT_NODE
                     && n.getNodeName().equalsIgnoreCase("rom")) return n;
         }
-        
+
         return null;
     }
-    
+
     //Find the correct Rom Node either by xmlID or by input bytes
     //Supplying both will return null
     private Node findRomNodeMatch(Node rootNode, String xmlID, byte[] input) {
         if(xmlID == null && input == null) return null;
         if(xmlID != null && input != null) return null;
-        
+
     	Node n;
         NodeList nodes = rootNode.getChildNodes();
-        
+
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
@@ -107,10 +112,10 @@ public final class DOMRomUnmarshaller {
 
                 for (int z = 0; z < nodes2.getLength(); z++) {
                     n2 = nodes2.item(z);
-                    
+
                     if (n2.getNodeType() == ELEMENT_NODE
                             && n2.getNodeName().equalsIgnoreCase("romid")) {
-                    	
+
                     	RomID romId = new RomID();
                     	romId = unmarshallRomID(n2, romId);
 
@@ -118,28 +123,29 @@ public final class DOMRomUnmarshaller {
                         if(input != null && romId.checkMatch(input)) {
                         	return n;
                         }
-                        
+
                         //Check if the ID matches
                         else if(xmlID != null && romId.getXmlid().equalsIgnoreCase(xmlID)) {
                         	return n;
                         }
-                        
+
                         break;
                     }
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     public Rom unmarshallRom(Node rootNode, Rom rom) throws XMLParseException,
     RomNotFoundException, StackOverflowError, Exception {
         Node n;
         NodeList nodes = rootNode.getChildNodes();
         tableScaleHandler.filterFoundRomTables(nodes);
 
-        progress.update("Creating " + rom.getRomID().getXmlid() + " tables...", 0);
+        progress.update(MessageFormat.format(rb.getString("CREATETABLES"),
+                rom.getRomID().getXmlid()), 0);
 
         if (!unmarshallAttribute(rootNode, "base", "none").equalsIgnoreCase(
                 "none")) {
@@ -153,7 +159,8 @@ public final class DOMRomUnmarshaller {
 
             // update progress
             int currProgress = (int) (i / (double) nodes.getLength() * 100);
-            progress.update("Creating " + rom.getRomID().getXmlid() + " tables...", currProgress);
+            progress.update(MessageFormat.format(rb.getString("CREATETABLES"),
+                    rom.getRomID().getXmlid()), currProgress);
 
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("romid")) {
@@ -162,7 +169,7 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("table")) {
                     Table table = null;
                     table = rom.getTableByName(unmarshallAttribute(n, "name", null));
-                    
+
                     try {
                         table = tableScaleHandler.unmarshallTable(n, table, rom);
                         if (table != null) {
@@ -192,9 +199,9 @@ public final class DOMRomUnmarshaller {
     public Rom getBaseRom(Node rootNode, String xmlID, Rom rom)
             throws XMLParseException, RomNotFoundException, StackOverflowError,
             Exception {
-    		
+
     		Node n = findRomNodeMatch(rootNode, xmlID, null);
-    		
+
     		if(n != null) {
 	            Rom returnrom = unmarshallRom(n, rom);
 	            returnrom.getRomID().setObsolete(false);
@@ -213,7 +220,7 @@ public final class DOMRomUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE) {
             	String nodeName = n.getNodeName();
-            	
+
                 if (nodeName.equalsIgnoreCase("xmlid")) {
                     romID.setXmlid(unmarshallText(n));
 
@@ -223,10 +230,10 @@ public final class DOMRomUnmarshaller {
 
                 } else if (nodeName.equalsIgnoreCase("internalidstring")) {
                     romID.setInternalIdString(unmarshallText(n));
-                
+
                 } else if (nodeName.equalsIgnoreCase("author")) {
                     romID.setAuthor(unmarshallText(n));
-    
+
                 } else if (nodeName.equalsIgnoreCase("version")) {
                     romID.setVersion(unmarshallText(n));
 
@@ -253,24 +260,24 @@ public final class DOMRomUnmarshaller {
 
                 } else if (nodeName.equalsIgnoreCase("year")) {
                     romID.setYear(unmarshallText(n));
-                    
+
                 } else if (nodeName.equalsIgnoreCase("noramoffset")) {
                     romID.disableRamOffset();
-                    
+
                 } else if (nodeName.equalsIgnoreCase("offset")) {
                     romID.setOffset(HexUtil.hexToInt(unmarshallText(n)));
-                    
+
                 } else if (nodeName.equalsIgnoreCase("flashmethod")) {
                     romID.setFlashMethod(unmarshallText(n));
-                    
+
                 } else if (nodeName.equalsIgnoreCase("memmodel")) {
-                    romID.setMemModel(unmarshallText(n));   
-                    
-                    tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));                    
-                } else if (nodeName.equalsIgnoreCase("filesize")) {               	
+                    romID.setMemModel(unmarshallText(n));
+
+                    tableScaleHandler.setMemModelEndian(unmarshallAttribute(n, "endian", null));
+                } else if (nodeName.equalsIgnoreCase("filesize")) {
                     romID.setFileSize(RomAttributeParser
                             .parseFileSize(unmarshallText(n)));
-                    
+
                 } else if (nodeName.equalsIgnoreCase("obsolete")) {
                     romID.setObsolete(Boolean.parseBoolean(unmarshallText(n)));
 
@@ -297,5 +304,5 @@ public final class DOMRomUnmarshaller {
         }
            return ChecksumFactory.getManager(rom, attrs);
     }
-   
+
 }
