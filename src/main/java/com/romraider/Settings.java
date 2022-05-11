@@ -204,6 +204,7 @@ public class Settings implements Serializable {
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
     private int tableClickBehavior = 0; // TableTreeNode click behavior. 0=open/close frame, 1=open/focus frame
+    private boolean sortTableTree = false; // false - Table Tree is in definition order, true - alphabetical
     private boolean colorAxis = false;
 
     private String loggerPort;
@@ -571,11 +572,11 @@ public class Settings implements Serializable {
     public void setAutoConnectOnStartup(boolean value) {
     	autoConnectOnStartup = value;
     }
-    
+
     public boolean getAutoConnectOnStartup() {
     	return autoConnectOnStartup;
     }
-    
+
     public void setLoggerProtocol(String protocol) {
         Settings.loggerProtocol = protocol;
     }
@@ -991,5 +992,11 @@ public class Settings implements Serializable {
 		this.searchElm327 = value;
 	}
 
+    public void setTableTreeSorted(Boolean value) {
+        this.sortTableTree = value;
+    }
 
+    public boolean isTableTreeSorted() {
+        return this.sortTableTree;
+    }
 }

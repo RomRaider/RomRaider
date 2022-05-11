@@ -67,8 +67,8 @@ public final class DOMRomUnmarshaller {
         // Unmarshall scales first
         tableScaleHandler.unmarshallBaseScales(rootNode);
 
-    	Rom rom = new Rom(new RomID());
-    	rom.setDefinitionPath(definition);
+        Rom rom = new Rom(new RomID());
+        rom.setDefinitionPath(definition);
         Rom output = unmarshallRom(romNode, rom);
 
         //Set ram offset
@@ -80,7 +80,7 @@ public final class DOMRomUnmarshaller {
     }
 
     public static Node findFirstRomNode(Node rootNode) {
-    	Node n;
+        Node n;
         NodeList nodes = rootNode.getChildNodes();
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -99,7 +99,7 @@ public final class DOMRomUnmarshaller {
         if(xmlID == null && input == null) return null;
         if(xmlID != null && input != null) return null;
 
-    	Node n;
+        Node n;
         NodeList nodes = rootNode.getChildNodes();
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -116,17 +116,17 @@ public final class DOMRomUnmarshaller {
                     if (n2.getNodeType() == ELEMENT_NODE
                             && n2.getNodeName().equalsIgnoreCase("romid")) {
 
-                    	RomID romId = new RomID();
-                    	romId = unmarshallRomID(n2, romId);
+                        RomID romId = new RomID();
+                        romId = unmarshallRomID(n2, romId);
 
                         //Check if bytes match in file
                         if(input != null && romId.checkMatch(input)) {
-                        	return n;
+                            return n;
                         }
 
                         //Check if the ID matches
                         else if(xmlID != null && romId.getXmlid().equalsIgnoreCase(xmlID)) {
-                        	return n;
+                            return n;
                         }
 
                         break;
@@ -200,13 +200,13 @@ public final class DOMRomUnmarshaller {
             throws XMLParseException, RomNotFoundException, StackOverflowError,
             Exception {
 
-    		Node n = findRomNodeMatch(rootNode, xmlID, null);
+            Node n = findRomNodeMatch(rootNode, xmlID, null);
 
-    		if(n != null) {
-	            Rom returnrom = unmarshallRom(n, rom);
-	            returnrom.getRomID().setObsolete(false);
-	            return returnrom;
-    		}
+            if(n != null) {
+                Rom returnrom = unmarshallRom(n, rom);
+                returnrom.getRomID().setObsolete(false);
+                return returnrom;
+            }
 
         throw new RomNotFoundException();
     }
@@ -219,7 +219,7 @@ public final class DOMRomUnmarshaller {
             n = nodes.item(i);
 
             if (n.getNodeType() == ELEMENT_NODE) {
-            	String nodeName = n.getNodeName();
+                String nodeName = n.getNodeName();
 
                 if (nodeName.equalsIgnoreCase("xmlid")) {
                     romID.setXmlid(unmarshallText(n));

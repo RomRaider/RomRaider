@@ -125,6 +125,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else { // open/close
             tableClickBehavior.setSelectedIndex(0);
         }
+        chckbxSortTree.setSelected(settings.isTableTreeSorted());
 
         valueLimitWarning.setSelected(settings.isValueLimitWarning());
         warningColor.setBackground(settings.getWarningColor());
@@ -213,6 +214,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         tableClickBehavior = new javax.swing.JComboBox();
         labelTableClick = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
+        chckbxSortTree = new javax.swing.JCheckBox();
         defaultScale = new javax.swing.JTextField();
         comboBoxDefaultScale = new javax.swing.JComboBox();
         cbScaleHeaderAndData = new javax.swing.JCheckBox();
@@ -559,7 +561,7 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(debug)
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(panelUISettings, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelUISettings, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(267, Short.MAX_VALUE))
                 );
         chckbxOpenRomNode = new JCheckBox(rb.getString("ORNE"));
@@ -593,7 +595,7 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(chckbxOpenTablesAt)
                         .addPreferredGap(ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                        .addComponent(panelTreeSettings, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(panelTreeSettings, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
                 );
 
         labelTableClick.setText(rb.getString("CTOT"));
@@ -601,6 +603,8 @@ public class SettingsForm extends JFrame implements MouseListener {
                 new String[]{rb.getString("SINGLE"), rb.getString("DOUBLE")}));
         tableClickBehavior.setModel(new DefaultComboBoxModel(
                 new String[] {rb.getString("OPENCLOSE"), rb.getString("OPENFOCUS")}));
+        chckbxSortTree.setText(rb.getString("STLABEL"));
+        chckbxSortTree.setToolTipText(rb.getString("STLABELTT"));
 
         lblClickBehavior = new JLabel(rb.getString("TCB"));
         GroupLayout gl_panelTreeSettings = new GroupLayout(panelTreeSettings);
@@ -609,24 +613,32 @@ public class SettingsForm extends JFrame implements MouseListener {
                 .addGroup(gl_panelTreeSettings.createSequentialGroup()
                         .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
                                 .addComponent(tableClickCount, 0, 72, Short.MAX_VALUE)
-                                .addComponent(tableClickBehavior, 0, 86, Short.MAX_VALUE))
+                                .addComponent(tableClickBehavior, 0, 86, Short.MAX_VALUE)
+
+                                )
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
                                         .addComponent(labelTableClick)
-                                        .addComponent(lblClickBehavior))
-                                        .addGap(200))
-                );
+                                        .addComponent(lblClickBehavior)
+                                        .addGap(200)
+                                        )
+                        ).addComponent(chckbxSortTree, 0, 100, Short.MAX_VALUE)
+        );
         gl_panelTreeSettings.setVerticalGroup(
                 gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_panelTreeSettings.createSequentialGroup()
                         .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.BASELINE)
                                 .addComponent(labelTableClick)
-                                .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+                                )
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(lblClickBehavior)
-                                        .addComponent(tableClickBehavior, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap(23, Short.MAX_VALUE))
+                                        .addComponent(tableClickBehavior, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        )
+                                        .addContainerGap(23, Short.MAX_VALUE)
+                                        .addComponent(chckbxSortTree, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+                          )
                 );
         panelTreeSettings.setLayout(gl_panelTreeSettings);
         panelUISettings.setLayout(gl_panelUISettings);
@@ -988,6 +1000,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else { // open/focus frame
             getSettings().setTableClickBehavior(0);
         }
+        getSettings().setTableTreeSorted(chckbxSortTree.isSelected());
 
         getSettings().setValueLimitWarning(valueLimitWarning.isSelected());
         getSettings().setWarningColor(warningColor.getBackground());
@@ -1136,4 +1149,5 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox cbScaleHeaderAndData;
     private javax.swing.JCheckBox localeFormatCheckBox;
     private String oldLocale;
+    private javax.swing.JCheckBox chckbxSortTree;
 }

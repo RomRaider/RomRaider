@@ -37,10 +37,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.util.ResourceUtil;
+import com.romraider.util.SettingsManager;
 
 public class JTableChooser extends JOptionPane implements MouseListener {
 
@@ -53,6 +55,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     final JTree displayTree = new JTree(rootNode);
     final JButton compareButton = new JButton(rb.getString("COMPARE"));
     JScrollPane displayScrollPane;
+    private final Settings settings = SettingsManager.getSettings();
 
     public JTableChooser() {
     }
@@ -94,10 +97,11 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             }
         }
 
-        rootNode = sortTableChooser(rootNode);
+        if (settings.isTableTreeSorted())
+            rootNode = sortTableChooser(rootNode);
 
-        displayTree.setPreferredSize(new Dimension(nameLength*9, 400));
-        displayTree.setMinimumSize(new Dimension(nameLength*9, 400));
+        displayTree.setPreferredSize(new Dimension(nameLength * 9, 400));
+        displayTree.setMinimumSize(new Dimension(nameLength * 9, 400));
 
         displayTree.expandPath(new TreePath(rootNode.getPath()));
 

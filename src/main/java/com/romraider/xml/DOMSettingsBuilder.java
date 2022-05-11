@@ -181,6 +181,11 @@ public final class DOMSettingsBuilder {
         tableClickBehavior.setAttribute("value", String.valueOf(settings.getTableClickBehavior()));
         options.appendChild(tableClickBehavior);
 
+        // table tree sorting
+        IIOMetadataNode tableTreeSorted = new IIOMetadataNode("tabletreesorted");
+        tableTreeSorted.setAttribute("value", String.valueOf(settings.isTableTreeSorted()));
+        options.appendChild(tableTreeSorted);
+
         // last version used
         IIOMetadataNode version = new IIOMetadataNode("version");
         version.setAttribute("value", versionNumber);
@@ -326,7 +331,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode autoConnect = new IIOMetadataNode("autoConnectOnStartup");
         autoConnect.setAttribute("value", "" + settings.getAutoConnectOnStartup());
         loggerSettings.appendChild(autoConnect);
-        
+
         // serial connection
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", validateAttr(settings.getLoggerPortDefault()));
