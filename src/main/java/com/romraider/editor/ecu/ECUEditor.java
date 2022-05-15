@@ -552,15 +552,26 @@ public class ECUEditor extends AbstractFrame {
         return images;
     }
     
-    public void refreshUI()
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+    	refreshUI();
+    }
+    
+	public void refreshUI()
     {
-        getToolBar().updateButtons();
-        getEditorMenuBar().updateMenu();
+        imageList.updateUI();
+        imageList.repaint();
+        rightPanel.updateUI();
+        rightPanel.repaint();
+        
+        if(getToolBar() != null)
+        	getToolBar().updateButtons();
+        if(getEditorMenuBar() != null)
+        	getEditorMenuBar().updateMenu();
     }
     
     public void refreshAfterNewRom() {
         refreshTableCompareMenus();
-        imageList.updateUI();
         refreshUI();
     }
 
