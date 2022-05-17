@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -31,6 +32,7 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -51,6 +53,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -88,6 +91,7 @@ import com.romraider.net.BrowserControl;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.CustomToolbarLayout;
+import com.romraider.swing.DebugPanel;
 import com.romraider.swing.ECUEditorMenuBar;
 import com.romraider.swing.ECUEditorToolBar;
 import com.romraider.swing.JProgressPane;
@@ -107,8 +111,8 @@ public class ECUEditor extends AbstractFrame {
     protected static final ResourceBundle rb = new ResourceUtil().getBundle(
             ECUEditor.class.getName());
 
-    private final String titleText = PRODUCT_NAME + " v" + VERSION + " | " +
-            rb.getString("TITLE");
+    private final String titleText = MessageFormat.format(
+            rb.getString("TITLE"), PRODUCT_NAME, VERSION);
 
     private final RomTreeRootNode imageRoot = new RomTreeRootNode(
             rb.getString("OPENIMAGES"));
@@ -127,9 +131,9 @@ public class ECUEditor extends AbstractFrame {
     private SetUserLevelWorker setUserLevelWorker;
     private final ImageIcon editorIcon = new ImageIcon(getClass().getResource(
             "/graphics/romraider-ico.gif"), rb.getString("RRECUED"));
+    private final Settings settings = SettingsManager.getSettings();
 
     public ECUEditor() {
-        Settings settings = SettingsManager.getSettings();
         if (!settings.getRecentVersion().equalsIgnoreCase(VERSION)) {
             showReleaseNotes();
         }
@@ -170,8 +174,8 @@ public class ECUEditor extends AbstractFrame {
 
     public void initializeEditorUI() {
         //create menubar
-    	if(menuBar != null && toolBar != null) return;
-    	
+        if(menuBar != null && toolBar != null) return;
+
         menuBar = new ECUEditorMenuBar();
         this.setJMenuBar(menuBar);
 
@@ -193,7 +197,7 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void checkDefinitions() {
-        if (SettingsManager.getSettings().getEcuDefinitionFiles().size() <= 0) {
+        if (settings.getEcuDefinitionFiles().size() <= 0) {
             // no ECU definitions configured - let user choose to get latest or configure later
             Object[] options = {rb.getString("YES"), rb.getString("NO")};
             int answer = showOptionDialog(null,
@@ -218,7 +222,7 @@ public class ECUEditor extends AbstractFrame {
     private void showReleaseNotes() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(
-                    SettingsManager.getSettings().getReleaseNotes()));
+                    settings.getReleaseNotes()));
             try {
                 // new version being used, display release notes
                 JTextArea releaseNotes = new JTextArea();
@@ -251,7 +255,6 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void handleExit() {
-        Settings settings = SettingsManager.getSettings();
         settings.setSplitPaneLocation(splitPane.getDividerLocation());
         settings.setWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         settings.setWindowSize(getSize());
@@ -261,43 +264,42 @@ public class ECUEditor extends AbstractFrame {
         SettingsManager.save(settings, statusPanel);
         statusPanel.update(rb.getString("STATUSREADY"), 0);
         repaint();
-        
+
         if(EcuLogger.getEcuLoggerWithoutCreation()== null) {
-        	System.exit(0);
-        }       
+            System.exit(0);
+        }
         else{
-        	ECUEditorManager.clearECUEditor();
-        	EcuLogger.getEcuLoggerWithoutCreation().setEcuEditor(null);
+            ECUEditorManager.clearECUEditor();
+            EcuLogger.getEcuLoggerWithoutCreation().setEcuEditor(null);
         }
     }
-    
-	public void handleExportDefinition() {
-		Rom r = getLastSelectedRom();
-		Settings settings = SettingsManager.getSettings();
-		
-        if(null != r) {    	 
-        	JFileChooser fileChooser = new JFileChooser(settings.getLastDefinitionDir());   
-        	fileChooser.setFileFilter(new FileNameExtensionFilter("Editor Definition (.xml)","xml"));
-        	int userSelection = fileChooser.showSaveDialog(this);
-        	 
-        	if (userSelection == JFileChooser.APPROVE_OPTION) {
-        	    File fileToSave = fileChooser.getSelectedFile();
-        	    
-        	    if(!fileToSave.getName().endsWith(".xml") ||!fileToSave.getName().endsWith(".XML"))
-        	    		fileToSave = new File(fileToSave.getAbsoluteFile() + ".xml");
-        	    
-            	String s = ConversionLayer.convertDocumentToString(r.getDocument());
-            	             
+
+    public void handleExportDefinition() {
+        Rom r = getLastSelectedRom();
+
+        if(null != r) {
+            JFileChooser fileChooser = new JFileChooser(settings.getLastDefinitionDir());
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Editor Definition (.xml)","xml"));
+            int userSelection = fileChooser.showSaveDialog(this);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+
+                if(!fileToSave.getName().endsWith(".xml") ||!fileToSave.getName().endsWith(".XML"))
+                        fileToSave = new File(fileToSave.getAbsoluteFile() + ".xml");
+
+                String s = ConversionLayer.convertDocumentToString(r.getDocument());
+
                 try {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave));
-					writer.write(s);
-	                writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
+                    writer.write(s);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-	}
+    }
 
     @Override
     public void windowClosing(WindowEvent e) {
@@ -333,7 +335,6 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void addRom(Rom input) {
-        Settings settings = SettingsManager.getSettings();
         input.refreshDisplayedTables();
 
         // add to ecu image list pane
@@ -367,7 +368,7 @@ public class ECUEditor extends AbstractFrame {
             check.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    SettingsManager.getSettings().setObsoleteWarning(
+                    settings.setObsoleteWarning(
                             ((JCheckBox) e.getSource()).isSelected());
                 }
             });
@@ -380,14 +381,14 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void displayTable(TableTreeNode node) {
-    	TableFrame frame = node.getFrame();
-    	
-        try {	
+        TableFrame frame = node.getFrame();
+
+        try {
             // check if frame has been added.
             for(JInternalFrame curFrame : getRightPanel().getAllFrames()) {
                 if(curFrame.equals(frame)) {
                     // table is already open.
-                    if(1 == SettingsManager.getSettings().getTableClickBehavior()) { // open/focus frame
+                    if(1 == settings.getTableClickBehavior()) { // open/focus frame
                         // table is already open, so set focus on the frame.
                         boolean selected = true;
                         frame.toFront();
@@ -407,7 +408,7 @@ public class ECUEditor extends AbstractFrame {
                         try {
                             frame.setClosed(true);
                         } catch (PropertyVetoException e) {
-                            ; // Do nothing.
+                             // Do nothing.
                         }
                         frame.dispose();
                     }
@@ -419,42 +420,48 @@ public class ECUEditor extends AbstractFrame {
 
 
         if(frame == null) {
-        	TableView v;
-        	Table t = node.getTable();
+            TableView v;
+            Table t = node.getTable();
             try {
-            	if (t != null) {
-		        	if(t instanceof TableSwitch)
-		        		v = new TableSwitchView((TableSwitch)t);
-		        	else if(t instanceof TableBitwiseSwitch)
-		        		v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
-		        	else if(t instanceof Table1D)
-		        		v = new Table1DView((Table1D)node.getTable(), Table1DType.NO_AXIS);
-		        	else if(t instanceof Table2D)
-		        		v = new Table2DView((Table2D)t);
-		        	else if(t instanceof Table3D)
-		        		v = new Table3DView((Table3D)t);
-		        	else
-		        		return;
-		        	
-		        	 Rom rom = RomTree.getRomNode(node);	        	 
-		        	 frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);		        	
-	            }
+                if (t != null) {
+                    if(t instanceof TableSwitch)
+                        v = new TableSwitchView((TableSwitch)t);
+                    else if(t instanceof TableBitwiseSwitch)
+                        v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
+                    else if(t instanceof Table1D)
+                        v = new Table1DView((Table1D)node.getTable(), Table1DType.NO_AXIS);
+                    else if(t instanceof Table2D)
+                        v = new Table2DView((Table2D)t);
+                    else if(t instanceof Table3D)
+                        v = new Table3DView((Table3D)t);
+                    else
+                        return;
+
+                     Rom rom = RomTree.getRomNode(node);
+                     frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
+                }
             }
             catch(Exception e) {
-            	System.err.println("Failed to visually populate table " + t.getName());
-            	e.printStackTrace();
+                final String msg = MessageFormat.format(
+                        rb.getString("POPULATEFAIL"), t.getName(),
+                        e.toString());
+                final Exception ex = new Exception(msg);
+                showMessageDialog(this,
+                        new DebugPanel(ex, settings.getSupportURL()),
+                        rb.getString("EXCEPTION"),
+                        ERROR_MESSAGE);
             }
         }
         } catch (IllegalArgumentException ex) {
-            ;// Do nothing.
+            // Do nothing.
         }
-        
+
         // frame not added.  Draw table and add the frame.
         TableView v = frame.getTableView();
-        
-        if(v != null) 
-        	v.drawTable();
-        
+
+        if(v != null)
+            v.drawTable();
+
         rightPanel.add(frame);
         rightPanel.repaint();
         refreshTableCompareMenus();
@@ -467,8 +474,8 @@ public class ECUEditor extends AbstractFrame {
         refreshUI();
     }
 
-    public void closeImage() {    	
-    	Rom rom = getLastSelectedRom();
+    public void closeImage() {
+        Rom rom = getLastSelectedRom();
         ECUEditor editor = ECUEditorManager.getECUEditor();
         RomTreeRootNode imageRoot = editor.getImageRoot();
 
@@ -483,8 +490,8 @@ public class ECUEditor extends AbstractFrame {
         editor.getStatusPanel().setStatus(ECUEditor.rb.getString("STATUSREADY"));
         editor.setCursor(null);
         editor.refreshAfterNewRom();
-        
-        rom.clearData();	
+
+        rom.clearData();
     }
 
     public void closeAllImages() {
@@ -533,7 +540,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void setUserLevel(int userLevel) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SettingsManager.getSettings().setUserLevel(userLevel);
+        settings.setUserLevel(userLevel);
         setUserLevelWorker = new SetUserLevelWorker();
         setUserLevelWorker.addPropertyChangeListener(getStatusPanel());
         setUserLevelWorker.execute();
@@ -551,25 +558,25 @@ public class ECUEditor extends AbstractFrame {
         }
         return images;
     }
-    
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-    	refreshUI();
+        refreshUI();
     }
-    
-	public void refreshUI()
+
+    public void refreshUI()
     {
         imageList.updateUI();
         imageList.repaint();
         rightPanel.updateUI();
         rightPanel.repaint();
-        
+
         if(getToolBar() != null)
-        	getToolBar().updateButtons();
+            getToolBar().updateButtons();
         if(getEditorMenuBar() != null)
-        	getEditorMenuBar().updateMenu();
+            getEditorMenuBar().updateMenu();
     }
-    
+
     public void refreshAfterNewRom() {
         refreshTableCompareMenus();
         refreshUI();
@@ -577,15 +584,15 @@ public class ECUEditor extends AbstractFrame {
 
     public void refreshTableCompareMenus() {
         for(JInternalFrame curFrame : getRightPanel().getAllFrames()) {
-        	TableFrame frame = (TableFrame) curFrame;
-        	frame.refreshSimilarOpenTables();
+            TableFrame frame = (TableFrame) curFrame;
+            frame.refreshSimilarOpenTables();
         }
     }
-    
+
     public void openImage(String filePath){
         openImage(new File(filePath));
     }
-    
+
     public void openImage(File inputFile){
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         openImageWorker = new OpenImageWorker(inputFile);
@@ -593,7 +600,7 @@ public class ECUEditor extends AbstractFrame {
         openImageWorker.execute();
     }
 
-    public void openImages(File[] inputFiles){   
+    public void openImages(File[] inputFiles){
         for(int j = 0; j < inputFiles.length; j++) {
             openImage(inputFiles[j]);
         }
@@ -616,16 +623,16 @@ public class ECUEditor extends AbstractFrame {
 
     public void launchLogger() {
         if(EcuLogger.getEcuLoggerWithoutCreation() != null) {
-        	ECUExec.showAlreadyRunningMessage();
-        	return;
+            ECUExec.showAlreadyRunningMessage();
+            return;
         }
         else {
-        	ThreadUtil.runAsDaemon(new Runnable() {
+            ThreadUtil.runAsDaemon(new Runnable() {
                 @Override
                 public void run() {
-                	ECUExec.openLogger(DISPOSE_ON_CLOSE, new String[] {"-logger"});
+                    ECUExec.openLogger(DISPOSE_ON_CLOSE, new String[] {"-logger"});
                 }
-            }); 
+            });
         }
     }
 

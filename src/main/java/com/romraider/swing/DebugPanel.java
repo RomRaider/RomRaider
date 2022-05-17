@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2020 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class DebugPanel extends JPanel {
         top.add(new JLabel(rb.getString("LABEL4")));
         add(top, BorderLayout.NORTH);
 
-        JTextArea output = new JTextArea(ex.getMessage());
+        JTextArea output = new JTextArea(ex.toString());
         add(output, BorderLayout.CENTER);
         output.setAutoscrolls(true);
         output.setRows(10);
