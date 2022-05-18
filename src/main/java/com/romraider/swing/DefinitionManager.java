@@ -48,6 +48,7 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
             DefinitionManager.class.getName());
     public static int MOVE_UP = 0;
     public static int MOVE_DOWN = 1;
+    private final Properties props = loadSequences();
 
     Vector<String> fileNames;
 
@@ -249,13 +250,12 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
                     }
                 }
                 else {
-                    continue;
+                    continue;   // selected file(s) for loop
                 }
 
                 // Try to determine if the selected file is valid, refuse to
                 // add invalid types.
                 // File types and search sequences are loaded from a properties file.
-                final Properties props = loadSequences();
                 if (props.size() > 0) {
                     String fileType = "RomRaider";
                     boolean breakSearch = false;
@@ -270,10 +270,10 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
                                 if (line.contains(props.getProperty((String) key))) {
                                     fileType = (String) key;
                                     breakSearch = true;
-                                    break;
+                                    break;  // for loop
                                 }
                             }
-                            if (breakSearch) break;
+                            if (breakSearch) break; // while loop
                         }
                         scan.close();
 
