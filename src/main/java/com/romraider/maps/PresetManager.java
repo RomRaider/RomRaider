@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,33 +27,33 @@ import com.romraider.util.ByteUtil;
 public class PresetManager {
 	private LinkedList<PresetEntry> presets = new LinkedList<PresetEntry>();
 	private Table table;
-	
+
 	public PresetManager(Table t){
 		table = t;
 	}
-	
+
 	public class PresetEntry {
 		int dataCellOffset = 0;
 		String name;
 		boolean isBitMask;
 		LinkedList<Integer> data;
 	}
-	
+
 	private int parseStringToInt(String s) {
 		Integer i = ByteUtil.parseUnsignedInt(s, 16);
-		
+
 		if (table.getStorageType() > 1 && table.getEndian() == Endian.LITTLE)
 		{
 			if(table.getStorageType() == 2) {
 				i = Short.reverseBytes((short)(i&0xFFFF))&0xFFFF;
-			}				
-			else if(table.getStorageType() == 4) {
-				i = Integer.reverseBytes(i);	
 			}
-		}	
+			else if(table.getStorageType() == 4) {
+				i = Integer.reverseBytes(i);
+			}
+		}
 		return i;
 	}
-	
+
 	public boolean isPresetActive(PresetEntry entry) {
 		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
 			for (int i = 0; i < entry.data.size(); i++) {
@@ -63,52 +63,52 @@ public class PresetManager {
 					}
 			}
 			return true;
-		}		
+		}
 		return false;
 	}
-	
+
 	public void applyPreset(PresetEntry entry) {
 		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
 			for (int i = 0; i < entry.data.size(); i++) {
 				try {
 					table.data[i + entry.dataCellOffset].setBinValue(entry.data.get(i));
 				} catch (UserLevelException e) {
-					e.printStackTrace();
+					TableView.showInvalidUserLevelPopup(e);
 				}
 			}
 		}
 	}
-	
+
 	public void clearPreset(PresetEntry entry) {
 		if (entry.data != null && table.getDataSize() >= entry.data.size() + entry.dataCellOffset) {
 			for (int i = 0; i < entry.data.size(); i++) {
 				try {
 					table.data[i+ entry.dataCellOffset].setBinValue(0);
 				} catch (UserLevelException e) {
-					e.printStackTrace();
+					TableView.showInvalidUserLevelPopup(e);
 				}
 			}
-		}	
+		}
 	}
-	
+
 	public void setPresetValues(String name, String data, int dataCellOffset, boolean isBitMask) {
 		PresetEntry entry = new PresetEntry();
 		entry.name = name;
 		entry.data = new LinkedList<Integer>();
 		entry.dataCellOffset = dataCellOffset;
 		entry.isBitMask = isBitMask;
-	
+
 		data =  data.trim();
-		
+
 		for (String s : data.split(data.contains(",") ? "," : " ")) {
 			if(!s.isEmpty()){
 				entry.data.add(parseStringToInt(s));
 			}
 		}
-		
+
 		presets.add(entry);
 	}
-	
+
 	public LinkedList<PresetEntry> getPresets(){
 		return this.presets;
 	}
