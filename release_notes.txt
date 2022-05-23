@@ -1,4 +1,4 @@
-                - RomRaider 0.9.3 MAY20 2022 -
+                - RomRaider 0.9.4 MAY23 2022 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.9.3 MAY20 2022 Notes (05/20/2022) -
+- 0.9.4 MAY23 2022 Notes (05/23/2022) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.9.3 MAY20 2022 Known Issues -
+- 0.9.4 MAY23 2022 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,13 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.9.4 MAY23 2022 Notes (05/23/2022)
+----------------------------------
+
+- Editor
+  - Fix issue #192, table display with modified axis length
+
 
 0.9.3 MAY20 2022 Notes (05/20/2022)
 ----------------------------------
