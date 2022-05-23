@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2021 RomRaider.com
+ * Copyright (C) 2006-2022 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,29 +30,29 @@ import com.romraider.Settings;
 import com.romraider.maps.Table1DView.Table1DType;
 
 public class Table2DView extends TableView {
-	private static final long serialVersionUID = -7684570967109324784L;
+    private static final long serialVersionUID = -7684570967109324784L;
     private JLabel axisLabel;
     private Table1DView axis;
-   
+
     public Table2DView(Table2D table) {
-		super(table);
-		axis = new Table1DView(table.getAxis(), Table1DType.X_AXIS);
+        super(table);
+        axis = new Table1DView(table.getAxis(), Table1DType.X_AXIS);
         verticalOverhead += 18;
         populateTableVisual();
-	}
-      
-	public Table1DView getAxis() {
-    	return axis;
     }
-    
+
+    public Table1DView getAxis() {
+        return axis;
+    }
+
     public JLabel getAxisLabel() {
-    	return axisLabel;
+        return axisLabel;
     }
-    
+
     public void setAxisLabel(JLabel label) {
-    	axisLabel = label;
+        axisLabel = label;
     }
-    
+
     @Override
     public String toString() {
         return super.toString() + " (2D)";// + axis;
@@ -75,15 +75,15 @@ public class Table2DView extends TableView {
     @Override
     public void populateTableVisual(){
         super.populateTableVisual();
-        
-    	centerLayout.setRows(2);
+
+        centerLayout.setRows(2);
         centerLayout.setColumns(table.getDataSize());
 
         // add to table
-        for (int i = 0; i < axis.getTable().getDataSize(); i++) {
-        	centerPanel.add(axis.getDataCell(i));
+        for (int i = 0; i < table.getDataSize(); i++) {
+            centerPanel.add(axis.getDataCell(i));
         }
-        
+
         if (table.flip) {
             for (int i = table.getDataSize() - 1; i >= 0; i--) {
                 centerPanel.add(this.getDataCell(i));
@@ -94,9 +94,9 @@ public class Table2DView extends TableView {
             }
         }
 
-        if(null == axis.getName() || axis.getName().isEmpty() || Settings.BLANK == axis.getName()) {
-            ;// Do not add label.
-        } else if(null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
+        if (null == axis.getName() || axis.getName().isEmpty() || Settings.BLANK == axis.getName()) {
+            // Do not add label.
+        } else if (null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             axisLabel = new JLabel(axis.getName(), JLabel.CENTER);
             add(axisLabel, BorderLayout.NORTH);
@@ -107,19 +107,19 @@ public class Table2DView extends TableView {
 
         tableLabel = new JLabel(table.getCurrentScale().getUnit(), JLabel.CENTER);
         add(tableLabel, BorderLayout.SOUTH);
-        
-        if(axisLabel != null)
-        	axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));   
-        
-        if(presetPanel != null) presetPanel.populatePanel();
+
+        if (axisLabel != null)
+            axisLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
+
+        if (presetPanel != null) presetPanel.populatePanel();
         repaint();
     }
 
     @Override
     public void updateTableLabel() {
-        if(null == axis.getName() || axis.getName().length() < 1 || Settings.BLANK == axis.getName()) {
-            ;// Do not update label.
-        } else if(null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
+        if (null == axis.getName() || axis.getName().length() < 1 || Settings.BLANK == axis.getName()) {
+            // Do not update label.
+        } else if (null == axis.getTable().getCurrentScale() || "0x" == axis.getTable().getCurrentScale().getUnit()) {
             // static or no scale exists.
             axisLabel.setText(axis.getName());
         } else {
@@ -128,7 +128,7 @@ public class Table2DView extends TableView {
 
         tableLabel.setText(table.getCurrentScale().getUnit());
     }
-  
+
     @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
@@ -145,9 +145,9 @@ public class Table2DView extends TableView {
     @Override
     public void drawTable() {
         super.drawTable();
-        
-        if(axis !=null)
-        	axis.drawTable();
+
+        if (axis != null)
+            axis.drawTable();
     }
 
     @Override
@@ -173,36 +173,36 @@ public class Table2DView extends TableView {
         }
     }
 
-	@Override
-	public void shiftCursorUp() {
+    @Override
+    public void shiftCursorUp() {
         if (data[highlightBeginY].isSelected()) {
-        	data[highlightBeginY].getDataCell().setSelected(false);
+            data[highlightBeginY].getDataCell().setSelected(false);
         }
         axis.getTable().selectCellAt(highlightBeginY);
-	}
+    }
 
-	@Override
-	public void shiftCursorDown() {
+    @Override
+    public void shiftCursorDown() {
         axis.cursorDown();
-	}
+    }
 
-	@Override
-	public void shiftCursorLeft() {
+    @Override
+    public void shiftCursorLeft() {
         if (highlightBeginY > 0 && data[highlightBeginY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightBeginY - 1);
+            table.selectCellAtWithoutClear(highlightBeginY - 1);
         } else {
-        	axis.shiftCursorLeft();
+            axis.shiftCursorLeft();
         }
-	}
+    }
 
-	@Override
-	public void shiftCursorRight() {
+    @Override
+    public void shiftCursorRight() {
         if (highlightBeginY < data.length - 1 && data[highlightBeginY].isSelected()) {
-        	table.selectCellAtWithoutClear(highlightBeginY + 1);
+            table.selectCellAtWithoutClear(highlightBeginY + 1);
         } else {
-        	axis.shiftCursorRight();
+            axis.shiftCursorRight();
         }
-	}
+    }
 
     @Override
     public void startHighlight(int x, int y) {
@@ -226,8 +226,8 @@ public class Table2DView extends TableView {
     }
 
     @Override
-    public void paste(String s) throws UserLevelException {        
-    	StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
+    public void paste(String s) throws UserLevelException {
+        StringTokenizer st = new StringTokenizer(s, Table.ST_DELIMITER);
         String pasteType = st.nextToken();
 
         if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table
@@ -239,7 +239,7 @@ public class Table2DView extends TableView {
             String axisValues = "[Table1D]" + Settings.NEW_LINE + currentToken;
             String dataValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
 
-            axis.paste(axisValues);           
+            axis.paste(axisValues);
             super.paste(dataValues);
         } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection
             if (data[highlightBeginY].isSelected()) {
@@ -285,8 +285,8 @@ public class Table2DView extends TableView {
     @Override
     public void repaint() {
         super.repaint();
-        if(null != axis) {
+        if (null != axis) {
             axis.repaint();
         }
-    } 
+    }
 }

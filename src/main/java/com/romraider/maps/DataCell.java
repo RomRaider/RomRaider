@@ -56,7 +56,7 @@ public class DataCell implements Serializable  {
     private String liveValue = Settings.BLANK;
     private String staticText = null;
     private Rom rom;
-  
+
     //Index within table
     private int index;
 
@@ -96,12 +96,12 @@ public class DataCell implements Serializable  {
     }
 
     public void setBitMask(int mask) {
-        if(mask == 0) return;
+        if (mask == 0) return;
 
         //Clamp mask to max size
         bitMask = (int) Math.min(mask, Math.pow(2,table.getStorageType()*8)-1);
     }
-    
+
     protected void calcValueRange() {
         if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (table.isSignedData()) {
@@ -129,7 +129,7 @@ public class DataCell implements Serializable  {
                 }
             }
             else {
-                if(bitMask == 0) {
+                if (bitMask == 0) {
                     maxAllowedBin = (Math.pow(256, table.getStorageType()) - 1);
                 }
                 else {
@@ -140,14 +140,14 @@ public class DataCell implements Serializable  {
         } else {
             maxAllowedBin = Float.MAX_VALUE;
 
-            if(table.isSignedData()) {
+            if (table.isSignedData()) {
                 minAllowedBin = 0.0;
             } else {
                 minAllowedBin = -Float.MAX_VALUE;
             }
         }
     }
-    
+
     private double getValueFromMemory(int index) {
         double dataValue = 0.0;
         byte[] input = getBinary();
@@ -175,7 +175,7 @@ public class DataCell implements Serializable  {
                     signed);
 
         } else { // integer storage type
-            if(bitMask == 0) {
+            if (bitMask == 0) {
                 dataValue = RomAttributeParser.parseByteValue(input,
                         endian, storageAddress + index * storageType - ramOffset,
                         storageType, signed);
@@ -221,11 +221,11 @@ public class DataCell implements Serializable  {
         double crossedValue = 0;
 
         //Do reverse cross referencing in for Bosch Subtract Axis array
-        if(isBoschSubtract) {
+        if (isBoschSubtract) {
             for (int i = table.data.length - 1; i >=index ; i--) {
-                if(i == index)
+                if (i == index)
                     crossedValue -= table.data[i].getBinValue();
-                else if(i == table.data.length - 1)
+                else if (i == table.data.length - 1)
                     crossedValue = Math.pow(2, 8 * storageType) - getValueFromMemory(i);
                 else {
                     crossedValue -= getValueFromMemory(i);
@@ -242,7 +242,7 @@ public class DataCell implements Serializable  {
                     int finalValue = 0;
 
                     // convert byte values
-                    if(table.isStaticDataTable() && storageType > 0) {
+                    if (table.isStaticDataTable() && storageType > 0) {
                         LOGGER.warn("Static data table: " + table.toString() + ", storageType: "+storageType);
 
                         try {
@@ -252,7 +252,7 @@ public class DataCell implements Serializable  {
                             LOGGER.error("Validate the table definition storageType and data value.");
                             return;
                         }
-                    } else if(table.isStaticDataTable() && storageType < 1) {
+                    } else if (table.isStaticDataTable() && storageType < 1) {
                         // Do not save the value.
                         //if (LOGGER.isDebugEnabled())
                         //    LOGGER.debug("The static data table value will not be saved.");
@@ -261,7 +261,7 @@ public class DataCell implements Serializable  {
                         finalValue = (int) (isBoschSubtract ? crossedValue : getBinValue());
                     }
 
-                    if(mask != 0) {
+                    if (mask != 0) {
                         // Shift left again
                         finalValue = finalValue << ByteUtil.firstOneOfMask(mask);
                     }
@@ -275,7 +275,7 @@ public class DataCell implements Serializable  {
                     }
 
                     //If mask enabled, only change bits within the mask
-                    if(mask != 0) {
+                    if (mask != 0) {
                         int tempBitMask = 0;
 
                         for (int z = 0; z < byteLength; z++) { // insert into file
@@ -310,7 +310,7 @@ public class DataCell implements Serializable  {
         }
 
         //On the Bosch substract model, we need to update all previous cells, because they depend on our value
-        if(isBoschSubtract && index > 0) table.data[index-1].saveBinValueInFile();
+        if (isBoschSubtract && index > 0) table.data[index-1].saveBinValueInFile();
 
         checkForDataUpdates();
     }
@@ -351,10 +351,10 @@ public class DataCell implements Serializable  {
     }
 
     public void setSelected(boolean selected) {
-        if(!table.isStaticDataTable() && this.isSelected != selected) {
+        if (!table.isStaticDataTable() && this.isSelected != selected) {
             this.isSelected = selected;
 
-            if(view!=null) {
+            if (view!=null) {
                 ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
                 view.drawCell();
             }
@@ -364,12 +364,12 @@ public class DataCell implements Serializable  {
     public boolean isSelected() {
         return isSelected;
     }
-    
+
     public void updateBinValueFromMemory() {
-    	//We do this here because once we start populating all settings should be set
-    	if(minAllowedBin == 0 && maxAllowedBin == 0)
+        //We do this here because once we start populating all settings should be set
+        if (minAllowedBin == 0 && maxAllowedBin == 0)
             calcValueRange();
-    	
+
         this.binValue = getValueFromMemory();
         updateView();
     }
@@ -383,7 +383,7 @@ public class DataCell implements Serializable  {
     }
 
     private void updateView() {
-        if(view != null) {
+        if (view != null) {
             view.drawCell();
         }
     }
@@ -401,7 +401,7 @@ public class DataCell implements Serializable  {
     }
 
     public void setLiveDataTraceValue(String liveValue) {
-        if(this.liveValue != liveValue) {
+        if (this.liveValue != liveValue) {
             this.liveValue = liveValue;
             updateView();
         }
@@ -420,7 +420,7 @@ public class DataCell implements Serializable  {
     }
 
     public double getRealValue() {
-        if(table.getCurrentScale() == null) return binValue;
+        if (table.getCurrentScale() == null) return binValue;
 
         return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
     }
@@ -432,18 +432,18 @@ public class DataCell implements Serializable  {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
 
-                if(table.getCurrentScale().getByteExpression() == null) {
-                	result = table.getCurrentScale().approximateToByteFunction(NumberUtil.doubleValue(input), table.getStorageType(), table.isSignedData());
+                if (table.getCurrentScale().getByteExpression() == null) {
+                    result = table.getCurrentScale().approximateToByteFunction(NumberUtil.doubleValue(input), table.getStorageType(), table.isSignedData());
                 }
                 else {
-                	result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
+                    result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
                 }
 
                 if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
                 }
 
-                if(binValue != result) {
+                if (binValue != result) {
                     this.setBinValue(result);
                 }
             }
@@ -464,7 +464,7 @@ public class DataCell implements Serializable  {
         double realBinValue = JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
         double realCompareValue = JEPUtil.evaluate(table.getCurrentScale().getExpression(), compareToValue);
 
-        if(realCompareValue != 0.0) {
+        if (realCompareValue != 0.0) {
             // Compare change formula ((V2 - V1) / |V1|).
             return ((realBinValue - realCompareValue) / Math.abs(realCompareValue));
         } else {
@@ -474,7 +474,7 @@ public class DataCell implements Serializable  {
     }
 
     public void setBinValue(double newBinValue) throws UserLevelException {
-        if(binValue == newBinValue || table.locked || table.getName().contains("Checksum Fix")) {
+        if (binValue == newBinValue || table.locked || table.getName().contains("Checksum Fix")) {
             return;
         }
 
@@ -484,15 +484,15 @@ public class DataCell implements Serializable  {
         double checkedValue = newBinValue;
 
         // make sure it's in range
-        if(checkedValue < minAllowedBin) {
+        if (checkedValue < minAllowedBin) {
             checkedValue = minAllowedBin;
         }
 
-        if(checkedValue > maxAllowedBin) {
+        if (checkedValue > maxAllowedBin) {
             checkedValue = maxAllowedBin;
         }
 
-        if(binValue == checkedValue) {
+        if (binValue == checkedValue) {
             return;
         }
 
@@ -510,24 +510,24 @@ public class DataCell implements Serializable  {
         }
 
         double incResult = 0;
-        if(table.getCurrentScale().getByteExpression() == null) {
-        	incResult = table.getCurrentScale().approximateToByteFunction(oldValue + increment, table.getStorageType(), table.isSignedData());
+        if (table.getCurrentScale().getByteExpression() == null) {
+            incResult = table.getCurrentScale().approximateToByteFunction(oldValue + increment, table.getStorageType(), table.isSignedData());
         }
         else {
-        	incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
+            incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
         }
 
         if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
-            if(binValue != incResult) {
+            if (binValue != incResult) {
                 this.setBinValue(incResult);
             }
         } else {
             int roundResult = (int) Math.round(incResult);
-            if(binValue != roundResult) {
+            if (binValue != roundResult) {
                 this.setBinValue(roundResult);
             }
         }
-        
+
         //Make sure we always change something. If the defined increment is too small this triggers
         //TODO: This should use real values
         if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT &&
@@ -551,21 +551,21 @@ public class DataCell implements Serializable  {
     public void setOriginalValue(double originalValue) {
         this.originalValue = originalValue;
     }
-    
+
     public int getBitMask() {
-    	return this.bitMask;
+        return this.bitMask;
     }
 
     public void setCompareValue(DataCell compareCell) {
-        if(Settings.DataType.BIN == table.getCompareValueType())
+        if (Settings.DataType.BIN == table.getCompareValueType())
         {
-            if(this.compareToValue == compareCell.binValue) {
+            if (this.compareToValue == compareCell.binValue) {
                 return;
             }
 
             this.compareToValue = compareCell.binValue;
         } else {
-            if(this.compareToValue == compareCell.originalValue) {
+            if (this.compareToValue == compareCell.originalValue) {
                 return;
             }
 
@@ -578,39 +578,47 @@ public class DataCell implements Serializable  {
 
         //We need to convert from dot to comma, in the case of EU Format.
         // This is because getRealValue to String has dot notation.
-        if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
+        if (NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
 
-        setRealValue(newValue);    
+        setRealValue(newValue);
     }
 
     @Override
     public boolean equals(Object other) {
-        if(other == null) {
+        if (other == null) {
             return false;
         }
 
-        if(!(other instanceof DataCell)) {
+        if (!(other instanceof DataCell)) {
             return false;
         }
 
         DataCell otherCell = (DataCell) other;
 
-        if(this.table.isStaticDataTable() != otherCell.table.isStaticDataTable()) {
+        if (this.table.isStaticDataTable() != otherCell.table.isStaticDataTable()) {
             return false;
         }
-        
-        if(this.getBitMask() != otherCell.getBitMask()) {
-        	return false;
+
+        if (this.getBitMask() != otherCell.getBitMask()) {
+            return false;
         }
-        
+
         return binValue == otherCell.binValue;
     }
 
-	public double getMaxAllowedBin() {
-		return maxAllowedBin;
-	}
+    public double getMaxAllowedBin() {
+        return maxAllowedBin;
+    }
 
-	public double getMinAllowedBin() {
-		return minAllowedBin;
-	}
+    public double getMinAllowedBin() {
+        return minAllowedBin;
+    }
+
+    @Override
+    public String toString() {
+        if (null == staticText || staticText.isEmpty()) {
+            return String.valueOf(getRealValue());
+        }
+        return staticText;
+    }
 }

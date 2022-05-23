@@ -121,7 +121,7 @@ public class TableScaleUnmarshaller {
                 } else if (type.equalsIgnoreCase("BitwiseSwitch")) {
                     table = new TableBitwiseSwitch();
                 }
-                else if(type.equalsIgnoreCase("none")){
+                else if (type.equalsIgnoreCase("none")){
                     throw new XMLParseException("Table type unspecified for "
                             + tableNode.getAttributes().getNamedItem("name"));
                 }
@@ -176,7 +176,10 @@ public class TableScaleUnmarshaller {
 
         table.setDescription(unmarshallAttribute(tableNode, "description",
                 table.getDescription()));
-        
+        // Set axis size, if sizex is specified use it, if sizey is specified use it,
+        // if neither are specified use the base definition size
+        table.setDataSize(unmarshallAttribute(tableNode, "sizey",
+                unmarshallAttribute(tableNode, "sizex", table.getDataSize())));
         table.setFlip(unmarshallAttribute(tableNode, "flipy",
                 unmarshallAttribute(tableNode, "flipx", table.getFlip())));
         table.setUserLevel(unmarshallAttribute(tableNode, "userlevel",
@@ -200,17 +203,6 @@ public class TableScaleUnmarshaller {
             ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
                     ((Table3D) table).getSizeY()));
         }
-        else {
-            int sizeX = unmarshallAttribute(tableNode, "sizex", table.getDataSize());
-            int sizeY = unmarshallAttribute(tableNode, "sizey", table.getDataSize());
-            
-            if(sizeX > sizeY) {
-            	table.setDataSize(sizeX);
-            }
-            else {
-            	table.setDataSize(sizeY);
-            }
-        }
 
         Node n;
         NodeList nodes = tableNode.getChildNodes();
@@ -220,8 +212,8 @@ public class TableScaleUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
-                	Table tempTable = null; 
-                	
+                    Table tempTable = null;
+
                     if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
                         if (RomAttributeParser
@@ -230,45 +222,45 @@ public class TableScaleUnmarshaller {
                                         || RomAttributeParser
                                         .parseTableAxis(unmarshallAttribute(n,
                                                 "type", "unknown")) == Table1DType.X_AXIS) {
-                        	                      	                   	
-                        	
-                            tempTable = (Table1D) unmarshallTable(n, ((Table2D) table).getAxis(), rom);
-                            
+
+
+                            tempTable = unmarshallTable(n, ((Table2D) table).getAxis(), rom);
+
                             if (tempTable.getDataSize() != table.getDataSize()) {
                                 tempTable.setDataSize(table.getDataSize());
                             }
-                            
-                            tempTable.setData(((Table2D) table).getAxis().getData());                        	
-                            ((Table2D) table).setAxis((Table1D)tempTable);                            
+
+                            tempTable.setData(((Table2D) table).getAxis().getData());
+                            ((Table2D) table).setAxis((Table1D)tempTable);
                         }
                     } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
                         // is 3D, populate xAxis
                         if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.X_AXIS) {
-                        	                    		
-                            tempTable = (Table1D) unmarshallTable(n, ((Table3D) table).getXAxis(), rom);
-                            
+
+                            tempTable = unmarshallTable(n, ((Table3D) table).getXAxis(), rom);
+
                             if (tempTable.getDataSize() != ((Table3D) table).getSizeX()) {
-                                tempTable.setDataSize(((Table3D) table).getSizeX());                               
+                                tempTable.setDataSize(((Table3D) table).getSizeX());
                             }
-                            
+
                             tempTable.setData(((Table3D) table).getXAxis().getData());
 
                             ((Table3D) table).setXAxis((Table1D)tempTable);
-                        } 
+                        }
                         else if (RomAttributeParser
                                 .parseTableAxis(unmarshallAttribute(n, "type",
                                         "unknown")) == Table1DType.Y_AXIS) {
-                      		
-                            tempTable = (Table1D) unmarshallTable(n,((Table3D) table).getYAxis(), rom);
-                            
+
+                            tempTable = unmarshallTable(n,((Table3D) table).getYAxis(), rom);
+
                             if (tempTable.getDataSize() != ((Table3D) table).getSizeY()) {
                                 tempTable.setDataSize(((Table3D) table).getSizeY());
                             }
-                            
-                            tempTable.setData(((Table3D) table).getYAxis().getData());	                        	
-                            ((Table3D) table).setYAxis((Table1D)tempTable);                                                      
+
+                            tempTable.setData(((Table3D) table).getYAxis().getData());
+                            ((Table3D) table).setYAxis((Table1D)tempTable);
                         }
                     }
 
@@ -280,7 +272,7 @@ public class TableScaleUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
-                    if(table instanceof Table1D) {
+                    if (table instanceof Table1D) {
                         ((Table1D)table).addStaticDataCell(unmarshallText(n));
                     } else {
                         // Why would this happen.  Static should only be for axis.
@@ -352,13 +344,13 @@ public class TableScaleUnmarshaller {
         if (!base.equalsIgnoreCase("none")) {
             // check whether base value matches the name of a an existing
             // scalingbase, if so, inherit from scalingbase
-        	if(scales.containsKey(base.toLowerCase())) {
-        		try {
-					scale = (Scale) ObjectCloner.deepCopy(scales.get(base.toLowerCase()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-        	}
+            if (scales.containsKey(base.toLowerCase())) {
+                try {
+                    scale = (Scale) ObjectCloner.deepCopy(scales.get(base.toLowerCase()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         // Set Category to Default if missing or not inherited from scalingbase
@@ -371,30 +363,30 @@ public class TableScaleUnmarshaller {
         // name, otherwise use none
         if (!scale.getCategory().equalsIgnoreCase("Raw Value") &&
                 scale.getName().equalsIgnoreCase("Raw Value")) {
-            	scale.setName(unmarshallAttribute(scaleNode, "name",
+                scale.setName(unmarshallAttribute(scaleNode, "name",
                     unmarshallAttribute(scaleNode, "units", "none")));
         }
-        
+
         scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", ""));
-        
+
         // Iterate over other available attributes
         for(int i=0; i < scaleNode.getAttributes().getLength(); i++) {
             Node attr = scaleNode.getAttributes().item(i);
             String name = attr.getNodeName();
             String value = attr.getNodeValue();
 
-            if(name.equalsIgnoreCase("units")) scale.setUnit(value);
-            else if(name.equalsIgnoreCase("expression")) scale.setExpression(value);
-            else if(name.equalsIgnoreCase("format")) scale.setFormat(value);
-            else if(name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
-            else if(name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));
-            else if(name.equalsIgnoreCase("coarseincrement") || name.equalsIgnoreCase("increment"))
+            if (name.equalsIgnoreCase("units")) scale.setUnit(value);
+            else if (name.equalsIgnoreCase("expression")) scale.setExpression(value);
+            else if (name.equalsIgnoreCase("format")) scale.setFormat(value);
+            else if (name.equalsIgnoreCase("max")) scale.setMax(Double.parseDouble(value));
+            else if (name.equalsIgnoreCase("min")) scale.setMin(Double.parseDouble(value));
+            else if (name.equalsIgnoreCase("coarseincrement") || name.equalsIgnoreCase("increment"))
                 scale.setCoarseIncrement(Double.parseDouble(value));
-            else if(name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
+            else if (name.equalsIgnoreCase("fineincrement")) scale.setFineIncrement(Double.parseDouble(value));
         }
 
-        //Keep track of the scales if the base attribute it used later
-        scales.put(scale.getName().toLowerCase(), scale);       
+        //Keep track of the scales if the base attribute is used later
+        scales.put(scale.getName().toLowerCase(), scale);
         return scale;
     }
 
