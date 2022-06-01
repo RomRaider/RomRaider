@@ -95,11 +95,12 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         boolean valid = true;
         
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
+            //InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
+            File loggerConfigFile = new File(loggerConfigFilePath);
             try {
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
                         protocol, fileLoggingControllerSwitchId, ecuInit);
-                getSaxParser().parse(inputStream, handler, loggerConfigFilePath);
+                getSaxParser().parse(loggerConfigFile, handler);
                               
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
@@ -117,7 +118,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 			keySet().iterator().next().getId());               	               	
                 }                              
             } finally {
-                inputStream.close();
+                //inputStream.close();
             }
         }/* catch (FileNotFoundException fnfe) {
             throw new ConfigurationException(MessageFormat.format(
