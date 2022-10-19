@@ -752,6 +752,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             // scale changed
             try {
                 curTable.setScaleByCategory((String)scaleSelection.getSelectedItem());
+                if(curTable instanceof Table1D) {
+                    Table parentTable = ((Table1D)curTable).getAxisParent();
+                    parentTable.getTableView().updateTableLabel();
+                }
                 updateToolbarIncrementDecrementValues();
             } catch (NameNotFoundException e1) {
                 e1.printStackTrace();
