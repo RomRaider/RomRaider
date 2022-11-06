@@ -103,8 +103,15 @@ public class XDFConversionLayerTest{
                 	   assertEquals(r.getFaultyTables().size(), 0); 
                    }
                    catch(AssertionError e)
-                   {
-                	   System.out.println(f + ": Faulty Tables " + r.getFaultyTables().size());
+                   {	
+                	   if(r == null)
+                	   {
+                    	   System.out.println(f + " failed to load completely");
+                	   }
+                	   else
+                	   {
+                		   System.out.println(f + ": Faulty Tables " + r.getFaultyTables().size());
+                	   }
                 	   continue;
                    }                   
                    // Populate tables visually
