@@ -215,6 +215,8 @@ public class XDFConversionLayer extends ConversionLayer {
         int staticCells = 0;
         int indexCount = -1;
         String lastStaticValue = "";
+        int numDigitsStatic = -1;
+        int localNumDigits = -1;
 
         if (!hasEmbedInfo) {
             for (int i = 0; i < nodeCountAxis; i++) {
@@ -278,17 +280,11 @@ public class XDFConversionLayer extends ConversionLayer {
                 } else if (n.getNodeName().equalsIgnoreCase("units")) {
                     scaling.setAttribute("units", n.getTextContent());
                 } else if (n.getNodeName().equalsIgnoreCase("decimalpl")) {
-                    String format = "0";
-
-                    if (!n.getTextContent().equals("0")) {
-                        try {
-                            int count = Math.abs(Integer.parseInt(n.getTextContent()));
-                            format = "0." + new String(new char[count]).replace("\0", "0");
-                        } catch (NumberFormatException e) {
-                            //Do nothing
-                        }
+                    try {
+                    	localNumDigits = Math.abs(Integer.parseInt(n.getTextContent()));
+                    } catch (NumberFormatException e) {
+                        //Do nothing
                     }
-                    scaling.setAttribute("format", format);
                 } else if (!hasEmbedInfo && n.getNodeName().equalsIgnoreCase("math")) {
                     String formula = n.getAttributes().getNamedItem("equation").getNodeValue();
                     formula = formula.replace("X", "x").replace(",", ".");
@@ -300,20 +296,42 @@ public class XDFConversionLayer extends ConversionLayer {
                     targetTable.appendChild(data);
                     lastStaticValue = label;
                     staticCells++;
+                    
+                    if(numDigitsStatic == -1)
+                    {
+	                    // Assume the format from the static data
+	                    String split[] = label.split("\\.");
+	                    if(split.length > 1)
+	                    {
+	                    	numDigitsStatic = split[1].length();
+	                    }
+	                    else
+	                    {
+	                    	numDigitsStatic = 0;
+	                    }
+                    }
                 }
             }
         }
-        if (staticCells == indexCount && indexCount > 1 && !lastStaticValue.equalsIgnoreCase("0.00")) {
+        
+        boolean isStatic = staticCells == indexCount && indexCount > 1 && !lastStaticValue.equalsIgnoreCase("0.00");
+        if (isStatic) 
+        {
             staticTable = "Static ";
             targetTable.setAttribute("size" + id, "" + staticCells);
             targetTable.removeAttribute("endian");
             targetTable.removeAttribute("storagetype");
-        }
+        }     
+        
+    	// Case 1: Static table and no num digits set == Deduce from text
+    	// Case 2: Non static table and digits are set
+    	// Case 3: Non static table and digits arent sent --> use defaults
+    	int digits = isStatic && localNumDigits == -1 ? numDigitsStatic : (localNumDigits == -1 ? numDigits : localNumDigits);
+    	if (digits == 0)
+            scaling.setAttribute("format", "0");
+    	else
+    		scaling.setAttribute("format", "0." + new String(new char[digits]).replace("\0", "0"));
 
-        if (!scaling.hasAttribute("format")) {
-            String format = "0." + new String(new char[numDigits]).replace("\0", "0");
-            scaling.setAttribute("format", format);
-        }
 
         if (!targetTable.hasAttribute("storageaddress") && staticTable.isEmpty())
             return null;
@@ -575,59 +593,5 @@ public class XDFConversionLayer extends ConversionLayer {
         embedsToSolve.clear();
 
         return doc;
-    }
-
-    /*
-	private static LinkedList<File> listFileTree(File dir) {
-		LinkedList<File> fileTree = new LinkedList<File>();
-		if (dir == null || dir.listFiles() == null) {
-			return fileTree;
-		}
-		for (File entry : dir.listFiles()) {
-			if (entry.isFile())
-				fileTree.add(entry);
-			else if (entry.isDirectory())
-				fileTree.addAll(listFileTree(entry));
-		}
-		return fileTree;
-	}
-*/
-    // Test Code
-    public static void main(String args[]) {
-        initDebugLogging();
-        initLookAndFeel();
-        ECUEditor editor = getECUEditor();
-        editor.initializeEditorUI();
-        editor.checkDefinitions();
-
-        // Make sure we dont override any settings
-        SettingsManager.setTesting(true);
-        Settings settings = SettingsManager.getSettings();
-
-        List < File > listOfFiles = new LinkedList < File > ();
-        // File folder = new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\");
-
-        listOfFiles.add(new File("E:\\Downloads\\MS430069_64K.xdf"));
-        // listOfFiles.add(new File("C:\\Users\\User\\Downloads\\BMW-XDFs-master\\F G
-        // series B58\\00003076501103.xdf"));
-        // Collection<File> listOfFiles = listFileTree(folder);
-        // Collections.shuffle((List<?>) listOfFiles);
-
-        for (File f: listOfFiles) {
-            ConversionLayer l = new XDFConversionLayer();
-            if (l.isFileSupported(f)) {
-                settings.getEcuDefinitionFiles().clear();
-                settings.getEcuDefinitionFiles().add(f);
-                // File bin = new File(f.getAbsolutePath().replace(".xdf", "_original.bin"));
-                File bin = new File("E:\\google_drive\\ECU_Tuning\\maps\\MS43_430069_64KB_.bin");
-
-                if (bin.exists()) {
-                    System.out.println(f);
-                    OpenImageWorker w = new OpenImageWorker(bin);
-                    w.execute();
-                    break;
-                }
-            }
-        }
     }
 }

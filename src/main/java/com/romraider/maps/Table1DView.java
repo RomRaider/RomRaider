@@ -46,8 +46,6 @@ public class Table1DView extends TableView {
     	this.table = table;
     	this.hide = hide;
     	this.type = axisType;
-    	
-    	populateTableVisual();
 	}
     
     public Table1DType getType() {

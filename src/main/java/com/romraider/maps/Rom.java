@@ -74,13 +74,16 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private File fullFileName = new File(".");
     private byte[] binData;
     private Document doc;
+    
+    // This is currently only used for unit testing
+    // It could however be used to create a list of faulty tables instead
+    // of an endless loop or error messages with a bad definition or bin
+    private List<String> faultyTables = new LinkedList<String>();
 
     //This keeps track of DataCells on a byte level
     //This might also be possible to achieve by using the same Data Tables
     protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
-
-    private boolean isAbstract = false;
-
+    
     private final LinkedHashMap<String, TableTreeNode> tableNodes = new LinkedHashMap<String, TableTreeNode>();
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
@@ -89,7 +92,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public Rom(RomID romID) {
         this.romID = romID;
     }
-
+    
+    public List<String> getFaultyTables()
+    {
+    	return faultyTables;
+    }
+    
     //This makes sure we automatically sort the tables by name
     public void sortedAdd(DefaultMutableTreeNode currentParent, DefaultMutableTreeNode newNode) {
         boolean found = false;
@@ -215,11 +223,29 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
     }
 
+    private void handleException(Table table, Exception e, boolean isOutOfBounds)
+    {
+        boolean isTesting = SettingsManager.getTesting();
+        
+    	if(!isTesting)
+    	{
+    		if(isOutOfBounds)
+    			showBadTablePopup(table, e);
+    		else
+        		showNullExceptionPopup(table, e);
+    	}
+    	else
+    	{
+    		e.printStackTrace();
+    	}
+        faultyTables.add(table.getName());
+    }
+    
     public void populateTables(byte[] binData, JProgressPane progress) {
         this.binData = binData;
         int size = tableNodes.size();
         int i = 0;
-        Vector <String> badKeys = new Vector<String>();
+        faultyTables.clear();
 
         for(String name: tableNodes.keySet()) {
             // update progress
@@ -227,7 +253,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             progress.update(rb.getString("POPTABLES"), currProgress);
 
             Table table = tableNodes.get(name.toLowerCase()).getTable();
-
             try {
                 if (table.getStorageAddress() >= 0) {
                     try {
@@ -237,15 +262,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                         if (null != table.getName() && table.getName().equalsIgnoreCase("Checksum Fix")){
                             setEditStamp(binData, table.getStorageAddress());
                         }
-
                         i++;
                     } catch (ArrayIndexOutOfBoundsException ex) {
-                        showBadTablePopup(table, ex);
-                        badKeys.add(table.getName());
+                    	handleException(table, ex, true);
                         size--;
                     } catch (IndexOutOfBoundsException iex) {
-                        showBadTablePopup(table, iex);
-                        badKeys.add(table.getName());
+                    	handleException(table, iex, true);
                         size--;
                     }
                 } else {
@@ -254,13 +276,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 }
 
             } catch (NullPointerException ex) {
-                showNullExceptionPopup(table, ex);
-                badKeys.add(table.getName());
+            	handleException(table, ex, false);
                 size--;
             }
         }
 
-        for(String s: badKeys) {
+        for(String s: faultyTables) {
             tableNodes.remove(s.toLowerCase());
         }
     }
@@ -480,14 +501,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public void setFullFileName(File fullFileName) {
         this.fullFileName = fullFileName;
         this.setFileName(fullFileName.getName());
-    }
-
-    public boolean isAbstract() {
-        return isAbstract;
-    }
-
-    public void setAbstract(boolean isAbstract) {
-        this.isAbstract = isAbstract;
     }
 
     @Override

@@ -38,7 +38,6 @@ public class Table2DView extends TableView {
         super(table);
         axis = new Table1DView(table.getAxis(), Table1DType.X_AXIS);
         verticalOverhead += 18;
-        populateTableVisual();
     }
 
     public Table1DView getAxis() {
@@ -78,7 +77,8 @@ public class Table2DView extends TableView {
 
         centerLayout.setRows(2);
         centerLayout.setColumns(table.getDataSize());
-
+        
+        axis.populateTableVisual();
         // add to table
         for (int i = 0; i < table.getDataSize(); i++) {
             centerPanel.add(axis.getDataCell(i));

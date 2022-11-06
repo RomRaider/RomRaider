@@ -22,6 +22,7 @@
 package com.romraider.maps;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.romraider.util.JEPUtil;
 
@@ -40,8 +41,8 @@ public class Scale implements Serializable {
     private double min = 0.0;
     private double max = 0.0;
     
-    private double lastApproximatedInput;
-    private double lastApproximatedOutput;
+    HashMap<Double, Double> cachedValues = new HashMap<Double,Double>();
+    int maxCacheSize = 100;
 
     @Override
     public String toString() {
@@ -77,9 +78,11 @@ public class Scale implements Serializable {
     
     public double approximateToByteFunction(double input, int storageType, boolean signed) {
     	
-    	//If we just calculated this, return the last output
-    	if(lastApproximatedInput == input)
-    		return lastApproximatedOutput;
+    	// Check if we already calculated this
+    	if(cachedValues.containsKey(input))
+    	{
+    		return cachedValues.get(input);
+    	}
     	
     	long maxValue = (int) Math.pow(2, 8 * storageType);
     	long minValue = 0;
@@ -127,8 +130,10 @@ public class Scale implements Serializable {
 			lastError = error;
     	}
     	
-    	lastApproximatedInput = input;
-    	lastApproximatedOutput = output;
+    	if(cachedValues.size() < maxCacheSize)
+    	{
+    		cachedValues.put(input, output);
+    	}
     	
     	//System.out.println("Input: " + input + " from approx: " + JEPUtil.evaluate(getExpression(), output));
     	return currentStep;

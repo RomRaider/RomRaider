@@ -65,6 +65,10 @@ public class SettingsManager {
     	testing = b;
     }
 
+    public static boolean getTesting() {
+    	return testing;
+    }
+    
     private static Settings load() {
         Settings loadedSettings;
         try {
