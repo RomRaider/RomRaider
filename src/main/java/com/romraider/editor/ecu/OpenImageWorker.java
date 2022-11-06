@@ -60,7 +60,12 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     public OpenImageWorker(File inputFile) {
         this.inputFile = inputFile;
     }
-
+    
+    public Rom getRom()
+    {
+    	return rom;
+    }
+    
     private void loadRom(Rom rom, byte[] input) {
           ECUEditor editor = ECUEditorManager.getECUEditor();
     	  editor.getStatusPanel().setStatus(

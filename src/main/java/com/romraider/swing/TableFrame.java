@@ -63,7 +63,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
         t.setTableFrame(this);
         add(tableView);
-        tableView.repaint();
 
         setBorder(createBevelBorder(0));
         if (System.getProperty("os.name").startsWith("Mac OS"))

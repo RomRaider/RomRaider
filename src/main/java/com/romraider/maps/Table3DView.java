@@ -56,8 +56,6 @@ public class Table3DView extends TableView {
     	
         verticalOverhead += 39;
         horizontalOverhead += 10;
-        
-        populateTableVisual();
     }
     
     @Override
@@ -96,7 +94,9 @@ public class Table3DView extends TableView {
         // temporarily remove lock
         boolean tempLock = table.locked;
         table.locked = false;
-            
+        
+        xAxis.populateTableVisual();
+        yAxis.populateTableVisual();
         for (int x = 0; x < xAxis.getTable().getDataSize(); x++) {
             centerPanel.add(xAxis.getDataCell(x));
         }
@@ -174,7 +174,6 @@ public class Table3DView extends TableView {
         	xAxisLabel.setBorder(new EmptyBorder(2, 4, 2, 4)); 
         
         if(presetPanel != null) presetPanel.populatePanel();
-        drawTable();
     }
 
     @Override

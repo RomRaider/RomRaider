@@ -379,7 +379,37 @@ public class ECUEditor extends AbstractFrame {
                     INFORMATION_MESSAGE);
         }
     }
-
+      
+    public TableView createTableView(Table t)
+    {
+        TableView v = null;
+        try {
+            if (t != null) {
+                if(t instanceof TableSwitch)
+                    v = new TableSwitchView((TableSwitch)t);
+                else if(t instanceof TableBitwiseSwitch)
+                    v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
+                else if(t instanceof Table1D)
+                    v = new Table1DView((Table1D)t, Table1DType.NO_AXIS);
+                else if(t instanceof Table2D)
+                    v = new Table2DView((Table2D)t);
+                else if(t instanceof Table3D)
+                    v = new Table3DView((Table3D)t);
+            }
+        }
+        catch(Exception e) {
+            final String msg = MessageFormat.format(
+                    rb.getString("POPULATEFAIL"), t.getName(),
+                    e.toString());
+            final Exception ex = new Exception(msg);
+            showMessageDialog(this,
+                    new DebugPanel(ex, settings.getSupportURL()),
+                    rb.getString("EXCEPTION"),
+                    ERROR_MESSAGE);
+        }       
+        return v;
+    }
+    
     public void displayTable(TableTreeNode node) {
         TableFrame frame = node.getFrame();
 
@@ -418,53 +448,21 @@ public class ECUEditor extends AbstractFrame {
                 }
             }
 
-
-        if(frame == null) {
-            TableView v;
-            Table t = node.getTable();
-            try {
-                if (t != null) {
-                    if(t instanceof TableSwitch)
-                        v = new TableSwitchView((TableSwitch)t);
-                    else if(t instanceof TableBitwiseSwitch)
-                        v = new TableBitwiseSwitchView((TableBitwiseSwitch)t);
-                    else if(t instanceof Table1D)
-                        v = new Table1DView((Table1D)node.getTable(), Table1DType.NO_AXIS);
-                    else if(t instanceof Table2D)
-                        v = new Table2DView((Table2D)t);
-                    else if(t instanceof Table3D)
-                        v = new Table3DView((Table3D)t);
-                    else
-                        return;
-
-                     Rom rom = RomTree.getRomNode(node);
-                     frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
-                }
-            }
-            catch(Exception e) {
-                final String msg = MessageFormat.format(
-                        rb.getString("POPULATEFAIL"), t.getName(),
-                        e.toString());
-                final Exception ex = new Exception(msg);
-                showMessageDialog(this,
-                        new DebugPanel(ex, settings.getSupportURL()),
-                        rb.getString("EXCEPTION"),
-                        ERROR_MESSAGE);
-            }
-        }
+	        if(frame == null) {
+	            Rom rom = RomTree.getRomNode(node);
+	        	TableView v = createTableView(node.getTable());
+	            frame = new TableFrame(node.getTable().getName() + " | " + rom.getFileName(), v);
+	            
+	        	v.populateTableVisual();
+	        	v.drawTable();
+	            
+	            rightPanel.add(frame);
+	            rightPanel.repaint();
+	            refreshTableCompareMenus();
+	        }
         } catch (IllegalArgumentException ex) {
             // Do nothing.
         }
-
-        // frame not added.  Draw table and add the frame.
-        TableView v = frame.getTableView();
-
-        if(v != null)
-            v.drawTable();
-
-        rightPanel.add(frame);
-        rightPanel.repaint();
-        refreshTableCompareMenus();
     }
 
     public void removeDisplayTable(TableFrame frame) {

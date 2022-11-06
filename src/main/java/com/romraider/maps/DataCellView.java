@@ -385,7 +385,7 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         String displayString = null;
         try {
             FORMATTER.applyPattern(tableView.getTable().getCurrentScale().getFormat());
-            double staticDouble = NumberUtil.doubleValue(dataCell.getStaticText());
+            double staticDouble = Double.parseDouble(dataCell.getStaticText());
             displayString = FORMATTER.format(JEPUtil.evaluate(tableView.getTable().getCurrentScale().getExpression(), staticDouble));
         } catch (Exception ex) {
             displayString = dataCell.getStaticText();
