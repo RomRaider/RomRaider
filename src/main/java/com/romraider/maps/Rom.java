@@ -455,9 +455,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             //tableTreeNode.getTable().clearData();
 
             if(frame != null) {
-
-                frame.setVisible(false);
-
                 try {
                     frame.setClosed(true);
                 } catch (PropertyVetoException e) {
