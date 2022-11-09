@@ -443,13 +443,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                      // Do nothing.
                 }
                 frame.dispose();
-
-                if(frame.getTableView() != null) {
-                    frame.getTableView().setVisible(false);
-                    frame.getTableView().setData(null);
-                    frame.getTableView().setTable(null);
-                    frame.setTableView(null);
-                }
             }
 
             tableTreeNode.setUserObject(null);

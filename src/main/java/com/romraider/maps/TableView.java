@@ -515,21 +515,13 @@ public abstract class TableView extends JPanel implements Serializable {
     public TableFrame getFrame() {
     	return table.getTableFrame();
     }
-    
-    public void setTable(Table t) {
-    	 this.table = t;
-    }
-    
+
     public Table getTable() {
     	return this.table;
     }
     
     public DataCellView[] getData() {
         return data;
-    }
-
-    public void setData(DataCellView[] data) {
-        this.data = data;
     }
 
     public DataCellView getDataCell(int location) {
