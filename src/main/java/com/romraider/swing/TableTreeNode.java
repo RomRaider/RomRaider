@@ -25,7 +25,7 @@ import com.romraider.maps.Table;
 
 public class TableTreeNode extends DefaultMutableTreeNode {
 
-	Table table;
+	private final Table table;
     private static final long serialVersionUID = 2824050968863990871L;
     private String toolTip;
 
