@@ -51,7 +51,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableFrame.class.getName());
     private TableView tableView;
-    private TableMenuBar tableMenuBar = null;
+    private final TableMenuBar tableMenuBar;
 
     public TableFrame(String title, TableView tableView) {
         super(title, true, true);
