@@ -148,11 +148,14 @@
             <fileset dir="${testclasses.dir}" includes="**/*.jar" />
         </path>
 
-        <!-- JUnit classpath. -->
-        <path id="junit.classpath">
+        <path id="junit_compile.classpath">
             <path refid="linux.classpath" />
-            <pathelement location="${bootclasspath.dir}/junit.jar" />
-            <pathelement location="${bootclasspath.dir}/hamcrest-core.jar" />
+            <pathelement location="lib/testing/junit.jar" />
+            <pathelement location="lib/testing/hamcrest.jar" />
+        </path>
+
+        <path id="junit_runtime.classpath">
+            <path refid="junit_compile.classpath" />
             <pathelement location="${build.dir}/linux/lib/RomRaider.jar" />
             <path refid="test.classpath" />
         </path>
@@ -212,10 +215,10 @@
     <!-- Compiles the source directory                                       -->
     <!-- =================================================================== -->
     <target name="compile-windows" depends="prepare" description="Compile the source directory for Windows">
-        <macro_compile os="${os.windows}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
+        <macro_compile os="${os.windows}" srcdir="${src.java.dir}" destdir="${classes.dir}" classpathref="windows.classpath"/>
     </target>
     <target name="compile-linux" depends="prepare" description="Compile the source directory for Linux">
-        <macro_compile os="${os.linux}" srcdir="${src.java.dir}" destdir="${classes.dir}" />
+        <macro_compile os="${os.linux}" srcdir="${src.java.dir}" destdir="${classes.dir}"  classpathref="linux.classpath"/>
     </target>
 
     <!-- =================================================================== -->
@@ -232,14 +235,15 @@
     <!-- =================================================================== -->
     <!-- Compile and run all unit tests                                      -->
     <!-- =================================================================== -->
-    <target name="compile-for-unittests-linux" depends="prepare" description="Compile and run Linux unit tests">
+    <target name="compile-for-unittests" depends="prepare" description="Compile and run Linux unit tests">
         <mkdir dir="${testclasses.dir}" />
-        <macro_compile os="${os.linux}" srcdir="${src.dir}" destdir="${testclasses.dir}" />
+        <macro_compile os="${os.linux}" srcdir="${src.dir}" destdir="${testclasses.dir}" classpathref="junit_compile.classpath" />
         <macro_jar os="${os.linux}" basedir="${testclasses.dir}"/>
     </target>
-    <target name="unittest" depends="compile-for-unittests-linux" description="Perform unit tests on Linux">
+    <target name="unittest" depends="compile-for-unittests" description="Perform unit tests">
+        <!-- We execute same coverage on both Windows and Linux-->
         <junit printsummary="withOutAndErr" showoutput="true" haltonfailure="true">
-            <classpath refid="junit.classpath" />
+            <classpath refid="junit_runtime.classpath" />
             <batchtest skipNonTests="true">
                 <fileset dir="${testclasses.dir}">
                     <include name="**/*Test*" />
@@ -382,6 +386,7 @@
         <attribute name="os" />
         <attribute name="srcdir" />
         <attribute name="destdir" />
+        <attribute name="classpathref" />
         <sequential>
             <mkdir dir="${classes.dir}" />
             <path id="bootpath.ref">
@@ -403,7 +408,7 @@
                 <!--
                 <compilerarg value="-Xlint" />
                 -->
-                <classpath refid="@{os}.classpath" />
+                <classpath refid="@{classpathref}" />
             </javac>
         </sequential>
     </macrodef>
