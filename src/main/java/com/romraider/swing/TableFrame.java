@@ -50,7 +50,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     private static final long serialVersionUID = -2651279694660392351L;
     private static final ResourceBundle rb = new ResourceUtil().getBundle(
             TableFrame.class.getName());
-    private TableView tableView;
+    private final TableView tableView;
     private TableMenuBar tableMenuBar = null;
 
     public TableFrame(String title, TableView tableView) {
@@ -120,10 +120,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
     public TableView getTableView() {
         return tableView;
-    }
-
-    public void setTableView(TableView v) {
-    	tableView = v;
     }
 
     public ECUEditor getEditor() {
