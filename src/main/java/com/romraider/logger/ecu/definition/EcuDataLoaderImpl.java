@@ -60,15 +60,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     public void loadEcuDefsFromXml(File ecuDefsFile) {
         checkNotNull(ecuDefsFile, "ecuDefsFile");
         try {
-            InputStream inputStream = new BufferedInputStream(
-                    new FileInputStream(ecuDefsFile));
-            try {
                 EcuDefinitionHandler handler = new EcuDefinitionHandler(ecuDefsFile);
-                getSaxParser().parse(inputStream, handler, ecuDefsFile.getAbsolutePath());
+                getSaxParser().parse(ecuDefsFile, handler);
                 ecuDefinitionMap = handler.getEcuDefinitionMap();
-            } finally {
-                inputStream.close();
-            }
         } catch (SAXParseException spe) {
             // catch general parsing exception - enough people don't
             // unzip the defs that a better error message is in order
@@ -95,9 +89,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         boolean valid = true;
         
         try {
-            //InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
-            File loggerConfigFile = new File(loggerConfigFilePath);
-            try {
+                File loggerConfigFile = new File(loggerConfigFilePath);
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
                         protocol, fileLoggingControllerSwitchId, ecuInit);
                 getSaxParser().parse(loggerConfigFile, handler);
@@ -116,10 +108,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 	s.setLoggerProtocol(protocolList.keySet().iterator().next());
                 	s.setTransportProtocol(protocolList.values().iterator().next().
                 			keySet().iterator().next().getId());               	               	
-                }                              
-            } finally {
-                //inputStream.close();
-            }
+                }
         }/* catch (FileNotFoundException fnfe) {
             throw new ConfigurationException(MessageFormat.format(
                     rb.getString("LOGFNF"), loggerConfigFilePath));
