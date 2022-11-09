@@ -43,14 +43,10 @@ public final class UserProfileLoaderImpl implements UserProfileLoader {
         checkNotNullOrEmpty(userProfileFilePath, "userProfileFilePath");
         LOGGER.info("Loading profile: " + userProfileFilePath);
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(userProfileFilePath)));
-            try {
+                File userProfileFile = new File(userProfileFilePath);
                 UserProfileHandler handler = new UserProfileHandler();
-                getSaxParser().parse(inputStream, handler);
+                getSaxParser().parse(userProfileFile, handler);
                 return handler.getUserProfile();
-            } finally {
-                inputStream.close();
-            }
         } catch (FileNotFoundException fileException) {
         	if(fileException.getMessage().contains("profile.dtd")) {
         		LOGGER.info("Profile.dtd missing, applying patch: " + userProfileFilePath);
