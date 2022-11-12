@@ -131,19 +131,16 @@
         <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" onerror="report"
                  classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 
-        <!-- windows classpath -->
         <path id="windows.classpath">
             <fileset dir="lib/common" includes="*.jar" />
             <fileset dir="lib/windows" includes="*.jar" />
         </path>
 
-        <!-- linux classpath -->
         <path id="linux.classpath">
             <fileset dir="lib/common" includes="*.jar" />
             <fileset dir="lib/linux" includes="*.jar" />
         </path>
 
-        <!-- test classpath -->
         <path id="test.classpath">
             <fileset dir="${testclasses.dir}" includes="**/*.jar" />
         </path>
