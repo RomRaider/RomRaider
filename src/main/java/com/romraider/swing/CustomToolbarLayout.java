@@ -10,14 +10,6 @@ public class CustomToolbarLayout extends FlowLayout {
 
     private static final long serialVersionUID = 1L;
 
-    public CustomToolbarLayout() {
-        super();
-    }
-
-    public CustomToolbarLayout(int align) {
-        super(align);
-    }
-
     public CustomToolbarLayout(int align, int hgap, int vgap) {
         super(align, hgap, vgap);
     }
