@@ -68,7 +68,6 @@ public final class DOMRomUnmarshaller {
         tableScaleHandler.unmarshallBaseScales(rootNode);
 
         Rom rom = new Rom(new RomID());
-        rom.setDefinitionPath(definition);
         Rom output = unmarshallRom(romNode, rom);
 
         //Set ram offset

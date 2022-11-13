@@ -19,10 +19,6 @@
 
 package com.romraider.xml.ConversionLayer;
 
-import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
-import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
-import static com.romraider.util.LogManager.initDebugLogging;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,12 +40,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.editor.ecu.OpenImageWorker;
 import com.romraider.util.HexUtil;
 import com.romraider.util.ResourceUtil;
-import com.romraider.util.SettingsManager;;
 
 public class XDFConversionLayer extends ConversionLayer {
     protected static final ResourceBundle rb = new ResourceUtil().getBundle(
@@ -70,6 +62,12 @@ public class XDFConversionLayer extends ConversionLayer {
     // Defaults
     String defaultDataType;
 
+    private class EmbedInfoData {
+        Element tableNodeRR;
+        Node axisNode;
+        Node flagsNodeTable;
+    }
+    
     @Override
     public String getDefinitionPickerInfo() {
         return rb.getString("LOADINGWARNING");
@@ -131,12 +129,6 @@ public class XDFConversionLayer extends ConversionLayer {
         }
     }
 
-    private class EmbedInfoData {
-        Element tableNodeRR;
-        Node axisNode;
-        Node flagsNodeTable;
-    }
-
     private Element parseAxis(Document doc, Element tableNodeRR, Node axisNode, Node flagsNodeTable) {
         Node idNode = axisNode.getAttributes().getNamedItem("id");
         String id = "";
@@ -172,18 +164,19 @@ public class XDFConversionLayer extends ConversionLayer {
                     targetTable.removeAttribute("category");
 
                     // Find scaling child and delete child tables
+                    LinkedList < Node > nodesToRemove = new LinkedList <Node> ();
                     for (int j = 0; j < nodeCountRefTable; j++) {
                         Node tN = targetTable.getChildNodes().item(j);
-                        if (tN == null)
-                            continue;
 
                         if (tN.getNodeName().equalsIgnoreCase("table") ||
                             tN.getNodeName().equalsIgnoreCase("description")) {
-                            targetTable.removeChild(tN);
+                            nodesToRemove.add(tN);
                         } else if (tN.getNodeName().equalsIgnoreCase("scaling")) {
                             scaling = (Element) tN;
                         }
                     }
+                    for (Node nodeToRemove: nodesToRemove)
+                        targetTable.removeChild(nodeToRemove);
                 }
                 // Referenced Table is not yet parsed
                 else {
@@ -193,8 +186,7 @@ public class XDFConversionLayer extends ConversionLayer {
                     e.tableNodeRR = tableNodeRR;
                     embedsToSolve.add(e);
 
-                    // Return an empty table so we count as an axis...
-                    return doc.createElement("table");
+                    return null;
                 }
 
                 hasEmbedInfo = true;
@@ -212,20 +204,23 @@ public class XDFConversionLayer extends ConversionLayer {
         }
 
         Node addressNode = null;
-        int staticCells = 0;
+        LinkedList<String> staticCells = new LinkedList<String>();
         int indexCount = -1;
-        String lastStaticValue = "";
         int numDigitsStatic = -1;
         int localNumDigits = -1;
 
-        if (!hasEmbedInfo) {
-            for (int i = 0; i < nodeCountAxis; i++) {
-                n = axisNode.getChildNodes().item(i);
+        for (int i = 0; i < nodeCountAxis; i++) {
+            n = axisNode.getChildNodes().item(i);
 
-                if (n.getNodeName().equalsIgnoreCase("indexcount")) {
-                    indexCount = Integer.parseInt(n.getTextContent());
-                    targetTable.setAttribute("size" + id.toLowerCase(), "" + indexCount);
-                } else if (n.getNodeName().equalsIgnoreCase("embeddeddata")) {
+            if (n.getNodeName().equalsIgnoreCase("units")) {
+                scaling.setAttribute("units", n.getTextContent());
+            } else if (n.getNodeName().equalsIgnoreCase("indexcount")) {
+                indexCount = Integer.parseInt(n.getTextContent());
+                targetTable.setAttribute("size" + id.toLowerCase(), "" + indexCount);
+            }
+
+            if (!hasEmbedInfo) {
+                if (n.getNodeName().equalsIgnoreCase("embeddeddata")) {
 
                     addressNode = n.getAttributes().getNamedItem("mmedaddress");
                     if (addressNode != null) {
@@ -277,64 +272,57 @@ public class XDFConversionLayer extends ConversionLayer {
 
                     targetTable.setAttribute("storagetype", (signedLocal ? "" : "u") + "int" + sizeBits);
                     targetTable.setAttribute("endian", lsbFirstLocal ? "big" : "little");
-                } else if (n.getNodeName().equalsIgnoreCase("units")) {
-                    scaling.setAttribute("units", n.getTextContent());
-                } else if (n.getNodeName().equalsIgnoreCase("decimalpl")) {
-                    try {
-                    	localNumDigits = Math.abs(Integer.parseInt(n.getTextContent()));
-                    } catch (NumberFormatException e) {
-                        //Do nothing
-                    }
                 } else if (!hasEmbedInfo && n.getNodeName().equalsIgnoreCase("math")) {
                     String formula = n.getAttributes().getNamedItem("equation").getNodeValue();
                     formula = formula.replace("X", "x").replace(",", ".");
                     scaling.setAttribute("expression", formula);
+                } else if (n.getNodeName().equalsIgnoreCase("decimalpl")) {
+                    try {
+                        localNumDigits = Math.abs(Integer.parseInt(n.getTextContent()));
+                    } catch (NumberFormatException e) {
+                        //Do nothing
+                    }
                 } else if (n.getNodeName().equalsIgnoreCase("label")) {
                     String label = n.getAttributes().getNamedItem("value").getNodeValue();
-                    Element data = doc.createElement("data");
-                    data.setTextContent(label);
-                    targetTable.appendChild(data);
-                    lastStaticValue = label;
-                    staticCells++;
-                    
-                    if(numDigitsStatic == -1)
-                    {
-	                    // Assume the format from the static data
-	                    String split[] = label.split("\\.");
-	                    if(split.length > 1)
-	                    {
-	                    	numDigitsStatic = split[1].length();
-	                    }
-	                    else
-	                    {
-	                    	numDigitsStatic = 0;
-	                    }
-                    }
+                    staticCells.add(label);
                 }
             }
         }
-        
-        boolean isStatic = staticCells == indexCount && indexCount > 1 && !lastStaticValue.equalsIgnoreCase("0.00");
-        if (isStatic) 
-        {
+
+        boolean isStatic = staticCells.size() == indexCount && indexCount > 1 && !staticCells.peekLast().equalsIgnoreCase("0.00");
+        if (isStatic) {
             staticTable = "Static ";
-            targetTable.setAttribute("size" + id, "" + staticCells);
+            targetTable.setAttribute("size" + id, "" + staticCells.size());
             targetTable.removeAttribute("endian");
             targetTable.removeAttribute("storagetype");
-        }     
-        
-    	// Case 1: Static table and no num digits set == Deduce from text
-    	// Case 2: Non static table and digits are set
-    	// Case 3: Non static table and digits arent sent --> use defaults
-    	int digits = isStatic && localNumDigits == -1 ? numDigitsStatic : (localNumDigits == -1 ? numDigits : localNumDigits);
-    	if (digits == 0)
+            
+            for(String label : staticCells)
+            {
+                Element data = doc.createElement("data");
+                data.setTextContent(label);
+            	targetTable.appendChild(data);
+            	
+                if (numDigitsStatic == -1) {
+                    // Assume the format from the static data
+                    String split[] = label.split("\\.");
+                    if (split.length > 1) {
+                        numDigitsStatic = split[1].length();
+                    } else {
+                        numDigitsStatic = 0;
+                    }
+                }
+            }
+
+        }
+
+        // Case 1: Static table and no num digits set == Deduce from text
+        // Case 2: Non static table and digits are set
+        // Case 3: Non static table and digits arent sent --> use defaults
+        int digits = isStatic && localNumDigits == -1 ? numDigitsStatic : (localNumDigits == -1 ? numDigits : localNumDigits);
+        if (digits == 0)
             scaling.setAttribute("format", "0");
-    	else
-    		scaling.setAttribute("format", "0." + new String(new char[digits]).replace("\0", "0"));
-
-
-        if (!targetTable.hasAttribute("storageaddress") && staticTable.isEmpty())
-            return null;
+        else
+            scaling.setAttribute("format", "0." + new String(new char[digits]).replace("\0", "0"));
 
         if (id.equalsIgnoreCase("z"))
             return null;
@@ -358,7 +346,6 @@ public class XDFConversionLayer extends ConversionLayer {
         }
 
         LinkedList < String > categories = new LinkedList < String > ();
-        int numAxis = 0;
 
         for (int i = 0; i < nodeCountTable; i++) {
             n = tableNode.getChildNodes().item(i);
@@ -377,8 +364,6 @@ public class XDFConversionLayer extends ConversionLayer {
                 desc.setTextContent(n.getTextContent());
                 tableNodeRR.appendChild(desc);
             } else if (n.getNodeName().equalsIgnoreCase("categorymem")) {
-                // int index =
-                // Integer.parseInt(n.getAttributes().getNamedItem("index").getNodeValue());
                 int category = Integer.parseInt(n.getAttributes().getNamedItem("category").getNodeValue());
 
                 if (categoryMap.containsKey(category - 1)) {
@@ -388,30 +373,67 @@ public class XDFConversionLayer extends ConversionLayer {
                 Element axis = parseAxis(doc, tableNodeRR, n, flagsNode);
 
                 if (axis != null) {
-                    numAxis++;
-
-                    // This checks if we have embed info
-                    if (axis.hasAttribute("type")) {
-                        // Use the sizes of the X and Y axis
-                        // for the main table
-                        Attr sizex = axis.getAttributeNode("sizex");
-                        Attr sizey = axis.getAttributeNode("sizey");
-                        if (sizex != null)
-                            tableNodeRR.setAttributeNode((Attr) sizex.cloneNode(false));
-                        else if (sizey != null)
-                            tableNodeRR.setAttributeNode((Attr) sizey.cloneNode(false));
-
-                        tableNodeRR.appendChild(axis);
-                    }
+                    tableNodeRR.appendChild(axis);
                 }
             }
         }
 
         tableNodeRR.setAttribute("category", convertToRRCategoryString(categories));
-        tableNodeRR.setAttribute("type", (numAxis + 1) + "D");
-
         return tableNodeRR;
     }
+
+    private Element getScalingNodeForTable(Element tableNodeRR) {
+        for (int i = 0; i < tableNodeRR.getChildNodes().getLength(); i++) {
+            Element n = (Element) tableNodeRR.getChildNodes().item(i);
+
+            if (n.getNodeName().equalsIgnoreCase("scaling")) {
+                return n;
+            }
+        }
+
+        return null;
+    }
+
+    private void postProcessTable(Element tableNodeRR) {
+        int validAxis = 0;
+        int nodeCountTable = tableNodeRR.getChildNodes().getLength();
+        
+        LinkedList <Element> nodesToRemove = new LinkedList <Element> ();
+        for (int i = 0; i < nodeCountTable; i++) {
+            Element n = (Element) tableNodeRR.getChildNodes().item(i);
+            if (n.getNodeName().equalsIgnoreCase("table")) {
+                if (n.hasAttribute("storageaddress") || n.getAttributeNode("type").getValue().contains("Static")) {
+                    validAxis++;
+                    
+                    // Use the sizes of the X and Y axis
+                    // for the main table
+                    Attr sizex = n.getAttributeNode("sizex");
+                    Attr sizey = n.getAttributeNode("sizey");
+                    if (sizex != null)
+                        tableNodeRR.setAttributeNode((Attr) sizex.cloneNode(false));
+                    else if (sizey != null)
+                        tableNodeRR.setAttributeNode((Attr) sizey.cloneNode(false));
+                } else {
+                    Element scalingNode = getScalingNodeForTable(tableNodeRR);
+                    Element axisScalingNode = getScalingNodeForTable(n);
+                    
+                    // 2D Tables work different in XDFs
+                    // We have to use the unit of the "missing" axis for the main table
+                    if (scalingNode != null && axisScalingNode != null && !scalingNode.hasAttribute("units")) {
+                        scalingNode.setAttribute("units", axisScalingNode.getAttribute("units"));
+                    }
+                    nodesToRemove.add(n);
+                }
+            }
+        }
+
+        for (Element n: nodesToRemove) {
+            tableNodeRR.removeChild(n);
+        }
+
+        tableNodeRR.setAttribute("type", (validAxis + 1) + "D");
+    }
+
 
     private String convertToRRCategoryString(List < String > categories) {
         String category = "";
@@ -559,23 +581,26 @@ public class XDFConversionLayer extends ConversionLayer {
             throw new SAXException(rb.getString("NOXDFHEADER"));
         }
 
+        LinkedList <Element> tables = new LinkedList <Element> ();
+
         // Go through all tables and create RR tables
         for (int i = 0; i < nodeCount; i++) {
             Node n = baseNode.getChildNodes().item(i);
             if (n.getNodeName().equalsIgnoreCase("XDFTABLE")) {
                 Element table = parseTable(doc, romNode, n);
 
-                if (table != null)
-                    romNode.appendChild(table);
+                if (table != null) {
+                    tables.add(table);
+                }
             }
             // A constant is a mix between a table and an axis
             // So parse it as both
             else if (n.getNodeName().equalsIgnoreCase("XDFCONSTANT")) {
                 Element table = parseTable(doc, romNode, n);
                 parseAxis(doc, table, n, null);
-                table.setAttribute("type", "1D");
-                if (table != null)
-                    romNode.appendChild(table);
+                if (table != null) {
+                    tables.add(table);
+                }
             }
         }
 
@@ -588,10 +613,15 @@ public class XDFConversionLayer extends ConversionLayer {
                 e.tableNodeRR.appendChild(axis);
         }
 
+        // Final cleanup and add tables to ROM
+        for (Element t: tables) {
+            postProcessTable(t);
+            romNode.appendChild(t);
+        }
+
         categoryMap.clear();
         tableMap.clear();
         embedsToSolve.clear();
-
         return doc;
     }
 }

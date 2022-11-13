@@ -56,6 +56,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
     private final File inputFile;
     private Rom rom;
     private String finalStatus;
+   
 
     public OpenImageWorker(File inputFile) {
         this.inputFile = inputFile;
@@ -160,19 +161,18 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
         else
         	ex.printStackTrace();
     }
-
-	 private Rom openRomWithDefinition(File f, Node romNode, byte[] input) {
+    
+	 private Rom openRomWithDefinition(File f, Document doc, Node romNode, byte[] input) {
 	        ECUEditor editor = ECUEditorManager.getECUEditor();
 	        final String errorLoading = MessageFormat.format(
 	                ECUEditor.rb.getString("ERRORFILE"),
 	                inputFile.getName());
 
 	        try {
-			    Document doc = createDocument(f);
 	            Rom rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(f, doc.getDocumentElement(), romNode,
 	            		input, editor.getStatusPanel());
-
 	    	    rom.setDocument(doc);
+	    	    rom.setDefinitionPath(f);
 	    	    loadRom(rom, input);
 
         } catch (StackOverflowError ex) {
@@ -233,9 +233,10 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
             }
 
             Node romNode = null;
+            Document doc = null;
 
             try {
-            	Document doc = createDocument(f);
+            	doc = createDocument(f);
 				romNode = new DOMRomUnmarshaller().checkDefinitionMatch(doc.getDocumentElement(), input);
             }
             catch(Exception e) {
@@ -243,7 +244,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
             }
 
             if(romNode != null) {
-            	openRomWithDefinition(f, romNode, input);
+            	openRomWithDefinition(f, doc, romNode, input);
             	found = true;
             	break;
             }
@@ -300,11 +301,11 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 
 	                if(answerForceLoad == 0) {
 	                	Node n = DOMRomUnmarshaller.findFirstRomNode(doc.getDocumentElement());
-	                	openRomWithDefinition(file, n, input);
+	                	openRomWithDefinition(file, doc, n, input);
 	                }
             	}
             	else {
-                	openRomWithDefinition(file, romNode, input);
+                	openRomWithDefinition(file, doc, romNode, input);
             	}
             }
         }

@@ -118,7 +118,7 @@ public class XDFConversionLayerTest{
                    Vector<Table> tables = r.getTables();                 
                    for (Table table:tables)
                    {
-                	   editor.createTableView(table);
+                	  // editor.createTableView(table);
                    }               
                 }       	
             }

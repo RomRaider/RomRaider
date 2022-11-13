@@ -824,6 +824,11 @@ public abstract class TableView extends JPanel implements Serializable {
 
     public void setOverlayLog(boolean overlayLog) {
         this.overlayLog = overlayLog;
+        
+        if(!overlayLog)
+        {
+        	clearLiveDataTrace();
+        }
     }
 
     public boolean getOverlayLog()

@@ -329,8 +329,18 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar(Table selectedTable) {
-        //Select the parent Table always instead?
-        //if(selectedTable instanceof Table1D)selectedTable = ((Table1D)selectedTable).getAxisParent();
+        
+    	// If the table is a 1D table, we might select an axis
+    	// but we want to change the scales of the entire table
+        if(selectedTable instanceof Table1D)
+        	{
+        		Table t = ((Table1D)selectedTable).getAxisParent();
+        		// Table will not have a parent if its a standalone 1D table
+        		if(t != null)
+        		{
+        			selectedTable = t;
+        		}
+       }
 
         if(selectedTable == null  && this.selectedTable == null) {
             // Skip if the table is the same to avoid multiple updates
@@ -752,10 +762,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             // scale changed
             try {
                 curTable.setScaleByCategory((String)scaleSelection.getSelectedItem());
-                if(curTable instanceof Table1D) {
-                    Table parentTable = ((Table1D)curTable).getAxisParent();
-                    parentTable.getTableView().updateTableLabel();
-                }
                 updateToolbarIncrementDecrementValues();
             } catch (NameNotFoundException e1) {
                 e1.printStackTrace();
@@ -763,9 +769,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         } else if (e.getSource() == overlayLog) {
             // enable/disable log overlay and live data display
             curTable.getTableView().setOverlayLog(overlayLog.isSelected());
-
-            if(!overlayLog.isSelected())
-            	curTable.getTableView().clearLiveDataTrace();
         }
     }
 
