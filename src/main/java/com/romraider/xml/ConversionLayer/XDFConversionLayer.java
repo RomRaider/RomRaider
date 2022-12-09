@@ -289,7 +289,7 @@ public class XDFConversionLayer extends ConversionLayer {
             }
         }
 
-        boolean isStatic = staticCells.size() == indexCount && indexCount > 1 && !staticCells.peekLast().equalsIgnoreCase("0.00");
+        boolean isStatic = staticCells.size() == indexCount && indexCount > 1;
         if (isStatic) {
             staticTable = "Static ";
             targetTable.setAttribute("size" + id, "" + staticCells.size());
