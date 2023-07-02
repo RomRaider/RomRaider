@@ -524,9 +524,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 if (cm == null || cm.getNumberOfChecksums() != localCorrectCs) {
                     valid = false;
                 }
-                else {
-                    correctChecksums += localCorrectCs;
-                }
+                correctChecksums += localCorrectCs;
             }
         }
 

@@ -92,7 +92,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 			             ECUEditor.rb.getString("CHECKSUM"));
 
 	    	  finalStatus = String.format(ECUEditor.rb.getString("CHECKSUMSTATE"),
-	    			  rom.validateChecksum());
+	    			  rom.validateChecksum(), rom.getTotalAmountOfChecksums());
 	      }
 
 	      this.rom = rom;

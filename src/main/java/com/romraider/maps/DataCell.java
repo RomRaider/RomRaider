@@ -431,8 +431,13 @@ public class DataCell implements Serializable  {
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-
-                if (table.getCurrentScale().getByteExpression() == null) {
+            	
+            	// Optimization: If it has no scaling use the value directly
+            	if(table.getCurrentScale().getExpression().trim().equalsIgnoreCase("x"))
+				{
+					result = NumberUtil.doubleValue(input);
+				}       	
+            	else if (table.getCurrentScale().getByteExpression() == null) {
                     result = table.getCurrentScale().approximateToByteFunction(NumberUtil.doubleValue(input), table.getStorageType(), table.isSignedData());
                 }
                 else {

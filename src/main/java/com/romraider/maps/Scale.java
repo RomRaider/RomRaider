@@ -75,7 +75,7 @@ public class Scale implements Serializable {
         if (Math.abs(endValue - startValue) > .001) return false;
         else return true;
     }
-    
+   
     public double approximateToByteFunction(double input, int storageType, boolean signed) {
     	
     	// Check if we already calculated this
