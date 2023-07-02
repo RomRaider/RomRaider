@@ -209,20 +209,28 @@ public class VDFConversionLayer extends ConversionLayer {
 
 	}
 
-	private Node parseScalar(Document doc, byte[] data) {
-		long adr = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 81, 0x4, false);
-		// float exponential = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data,
-		// 69, 73), Endian.LITTLE, Endian.LITTLE);
-		float scalar = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 73, 77), Endian.LITTLE, Endian.LITTLE);
-		float offset = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 77, 81), Endian.LITTLE, Endian.LITTLE);
+	private String constructExpression(float scalar, float offset) {
+		String scalarString = (scalar > 0.99 && scalar < 1.01) ? "" : (" * " + scalar);
+		String offsetString = offset == 0.0 ? "" : (" + " + offset);
 
-		int type = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 2, 1, false);
-		String expression = "x" + ((scalar > 0.99 && scalar < 1.01) ? "" : (" * " + scalar)) + " + " + offset;
+		return "x" + scalarString + offsetString;
+	}
+
+	private Node parseScalar(Document doc, byte[] data) {
 		String name = new String(data, 4, 0x32).trim();
 		String unit = new String(data, 52, 0xF).trim();
 
 		if (name.isEmpty())
 			return null;
+
+		long adr = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 81, 0x4, false);
+		// float exponential = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data,
+		// 69, 73), Endian.LITTLE, Endian.LITTLE);
+		float scalar = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 73, 77), Endian.LITTLE, Endian.LITTLE);
+		float offset = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 77, 81), Endian.LITTLE, Endian.LITTLE);
+		String expression = constructExpression(scalar, offset);
+
+		int type = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 2, 1, false);
 
 		String datatype = "";
 		switch (type) {
@@ -257,7 +265,7 @@ public class VDFConversionLayer extends ConversionLayer {
 
 		Element scaling = doc.createElement("scaling");
 		scaling.setAttribute("name", "Default");
-		scaling.setAttribute("expression", expression); // TODO: When to use offset?
+		scaling.setAttribute("expression", expression);
 		scaling.setAttribute("units", unit);
 		scaling.setAttribute("format", "0.##");
 		table.appendChild(scaling);
@@ -290,6 +298,17 @@ public class VDFConversionLayer extends ConversionLayer {
 	}
 
 	private Node parse3DTable(Document doc, byte[] data, int type) {
+		String name = new String(data, 0x40, 0x3C);
+		name = name.trim();
+
+		if (name.isEmpty())
+			return null;
+
+		String nameAxis1 = new String(data, 0x7C, 0x28);
+		nameAxis1 = nameAxis1.trim();
+		String nameAxis2 = new String(data, 0xA4, 0x12);
+		nameAxis2 = nameAxis2.trim();
+
 		String datatype = "";
 
 		switch (type) {
@@ -309,24 +328,17 @@ public class VDFConversionLayer extends ConversionLayer {
 		long adr = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 6, 0x4, false);
 		long sizeX = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 10, 0x1, false);
 		long sizeY = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 12, 0x1, false);
-		// float exponential = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data,
-		// 14, 18), Endian.LITTLE, Endian.LITTLE);
+
+		// float exponential =
+		// RomAttributeParser.byteToFloat(Arrays.copyOfRange(data,14, 18),
+		// Endian.LITTLE, Endian.LITTLE);
 		float scalar = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 18, 22), Endian.LITTLE, Endian.LITTLE);
 		float offset = RomAttributeParser.byteToFloat(Arrays.copyOfRange(data, 22, 26), Endian.LITTLE, Endian.LITTLE);
+		String expression = constructExpression(scalar, offset);
+
 		boolean swapXY = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 62, 0x1, false) > 0;
 		int axisRefX = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0xB8, 0x2, false);
 		int axisRefY = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0xBA, 0x2, false);
-
-		String expression = "x" + ((scalar > 0.99 && scalar < 1.01) ? "" : (" * " + scalar)) + " + " + offset;
-		String name = new String(data, 0x40, 0x3C);
-		name = name.trim();
-		String nameAxis1 = new String(data, 0x7C, 0x28);
-		nameAxis1 = nameAxis1.trim();
-		String nameAxis2 = new String(data, 0xA4, 0x12);
-		nameAxis2 = nameAxis2.trim();
-
-		if (name.isEmpty())
-			return null;
 
 		Element table = doc.createElement("table");
 
