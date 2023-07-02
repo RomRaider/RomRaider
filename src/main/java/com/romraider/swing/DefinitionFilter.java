@@ -24,6 +24,7 @@ import javax.swing.filechooser.FileFilter;
 import com.romraider.util.ResourceUtil;
 import com.romraider.xml.ConversionLayer.BMWCodingConversionLayer;
 import com.romraider.xml.ConversionLayer.ConversionLayer;
+import com.romraider.xml.ConversionLayer.VDFConversionLayer;
 import com.romraider.xml.ConversionLayer.XDFConversionLayer;
 
 import java.io.File;
@@ -38,10 +39,11 @@ public class DefinitionFilter extends FileFilter {
     private String[] regexFilters = {
     		ConversionLayer.xmlRegexFileNameFilter,
     		new BMWCodingConversionLayer().getRegexFileNameFilter(),
-    		new XDFConversionLayer().getRegexFileNameFilter()
+    		new XDFConversionLayer().getRegexFileNameFilter(),
+    		new VDFConversionLayer().getRegexFileNameFilter()
     		};
     
-    private String[] filterDescr = {".xml", ".Cxx (NCS Expert)", ".xdf (Tuner Pro)"};
+    private String[] filterDescr = {".xml", ".Cxx (NCS Expert)", ".xdf (Tuner Pro)", ".vdf (Jet Tuner)"};
     private String startDescription;
 
     public DefinitionFilter() {

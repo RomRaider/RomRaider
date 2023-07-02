@@ -28,6 +28,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public abstract class ConversionLayer {	
 	
@@ -71,4 +73,5 @@ public abstract class ConversionLayer {
         
         return sw.toString();
     }
+
 }
