@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -77,6 +79,7 @@ public class VDFConversionLayer extends ConversionLayer {
 
 	int countSwitches = 0;
 	int countScalars = 0;
+	int countDTCs = 0;
 	int lastTableAddress = 0;
 
 	private LinkedList<Element> createdTables = new LinkedList<Element>();
@@ -137,14 +140,13 @@ public class VDFConversionLayer extends ConversionLayer {
 				(int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, START_FILE_OFFSET, 2, false)));
 
 		Node filesize = doc.createElement("filesize");
-		filesize.setTextContent("2048kb"); // TODO
+		filesize.setTextContent("2048kb"); // TODO: How is this encoded?
 
 		// Read the definition name
 		byte[] nameArray = Arrays.copyOfRange(data, 0x8, 0x8 + 0xF);
 		String definitionName = new String(nameArray).trim();
 		Node xmlID = doc.createElement("xmlid");
 		xmlID.setTextContent(definitionName);
-		System.out.println(definitionName);
 
 		romIDNode.appendChild(idAddress);
 		romIDNode.appendChild(idString);
@@ -274,8 +276,77 @@ public class VDFConversionLayer extends ConversionLayer {
 		return table;
 	}
 
-	private void parseDTC(byte[] data) {
-		// System.out.println("Parsing DTC...");
+	private Node parseDTC(Document doc, byte[] data) {
+		long adr = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0x36, 0x4, false);
+		String name = new String(data, 4, 0x32).trim();
+
+		if (name.isEmpty())
+			return null;
+
+		// For easy of life: Cut out the P-Code and put it in the front so its sorted
+		// correctly
+		Pattern pattern = Pattern.compile("(\\(\\w?.*\\))");
+		Matcher matcher = pattern.matcher(name);
+		if (matcher.find()) {
+			name = matcher.group(1) + " " + name.replace(matcher.group(1), "");
+			name = name.trim();
+		}
+
+		Element table = doc.createElement("table");
+
+		table.setAttribute("name", name);
+		table.setAttribute("category",
+				"DTC//" + getCurrentCategory(diagnosticCategories, diagnosticCategoriesCount, countDTCs));
+		table.setAttribute("storageaddress", "0x" + Long.toHexString(adr));
+		table.setAttribute("endian", "big");
+		table.setAttribute("storagetype", "uint8");
+		table.setAttribute("sizey", "1");
+		table.setAttribute("type", "Switch");
+
+		// How is the following encoded in the file? Is it?
+		Element state0 = doc.createElement("state");
+		state0.setAttribute("name", "Not reported / No MIL");
+		state0.setAttribute("data", "0");
+
+		Element state1 = doc.createElement("state");
+		state1.setAttribute("name", "Type A / No MIL");
+		state1.setAttribute("data", "1");
+
+		Element state2 = doc.createElement("state");
+		state2.setAttribute("name", "Type B / No MIL");
+		state2.setAttribute("data", "2");
+
+		Element state3 = doc.createElement("state");
+		state3.setAttribute("name", "Type C / No MIL");
+		state3.setAttribute("data", "3");
+
+		Element state4 = doc.createElement("state");
+		state4.setAttribute("name", "Not reported / MIL");
+		state4.setAttribute("data", "4");
+
+		Element state5 = doc.createElement("state");
+		state5.setAttribute("name", "Type A / MIL");
+		state5.setAttribute("data", "5");
+
+		Element state6 = doc.createElement("state");
+		state6.setAttribute("name", "Type B / MIL");
+		state6.setAttribute("data", "6");
+
+		Element state7 = doc.createElement("state");
+		state7.setAttribute("name", "Type C / MIL");
+		state7.setAttribute("data", "7");
+
+		table.appendChild(state0);
+		table.appendChild(state1);
+		table.appendChild(state2);
+		table.appendChild(state3);
+		table.appendChild(state4);
+		table.appendChild(state5);
+		table.appendChild(state6);
+		table.appendChild(state7);
+
+		countDTCs++;
+		return table;
 	}
 
 	private void fillAxisData(Document doc, Node parentTable, long size, int axisRef) {
@@ -413,7 +484,7 @@ public class VDFConversionLayer extends ConversionLayer {
 				currentAdr += 0x2BC;
 				break;
 			case TYPE_DTC:
-				parseDTC(Arrays.copyOfRange(data, currentAdr, currentAdr + 0x234));
+				newTable = parseDTC(doc, Arrays.copyOfRange(data, currentAdr, currentAdr + 0x234));
 				currentAdr += 0x234;
 				break;
 			default:
@@ -521,12 +592,15 @@ public class VDFConversionLayer extends ConversionLayer {
 
 		countSwitches = 0;
 		countScalars = 0;
+		countDTCs = 0;
 	}
 
 	private void loadAxisData(File f, byte[] data) {
 		String ttfName = new String(data, START_OFFSET_TTFNAME, 0x14).trim() + ".tff";
 		File ttfFile = new File(f.getParent(), ttfName);
-
+		
+		LOGGER.info("Trying to load TTF file " + f.getAbsolutePath());
+		
 		byte[] fileData = new byte[(int) ttfFile.length()];
 		DataInputStream dis = null;
 
@@ -546,7 +620,7 @@ public class VDFConversionLayer extends ConversionLayer {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warn("Failed to load TTF file!");
 		}
 	}
 
