@@ -37,6 +37,9 @@ public class Table3D extends Table {
     private boolean swapXY = false;
     private boolean flipX = false;
     private boolean flipY = false;
+    
+    // Skip cells after row/column ends before next row/column starts
+    private int skipCells = 0;
 
     @Override
     public TableType getType() {
@@ -104,7 +107,16 @@ public class Table3D extends Table {
     public int getSizeY() {
         return data[0].length;
     }
+    
+    public int getSkipCells() {
+        return this.skipCells;
+    }
 
+    public void setSkipCells(int skipCells) {
+    	this.skipCells = skipCells;
+    }
+
+   
     @Override
     public void clearData() {
         for(DataCell[] column : data) {
@@ -187,7 +199,16 @@ public class Table3D extends Table {
                 }
                 DataCell c = new DataCell(this, offset, rom);
                 data[x][y] = c;
-                offset++;
+                
+                // If on last cell on row/column
+                if(j == jMax - 1)
+                {
+                	offset+= 1 + this.skipCells;
+                }
+                else
+                {
+                	offset++;
+                }
             }
         }
 

@@ -432,15 +432,6 @@ public class BMWCodingConversionLayer extends ConversionLayer {
 		for (BMWConversionRomNodeManager man : romManagers) {
 			man.calculateRomID(f, "BMW");
 		}
-		
-		fswMap.clear();;
-		pswMap.clear();
-		aswMap.clear();
-		csvMap.clear();
-		if(transMap != null)
-			transMap.clear();
-		dataBuffer.clear();		
-		romManagers = null;
 				
 		return doc;
 	}

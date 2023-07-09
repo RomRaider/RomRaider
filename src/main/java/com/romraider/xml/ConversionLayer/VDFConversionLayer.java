@@ -50,9 +50,9 @@ public class VDFConversionLayer extends ConversionLayer {
 
 	final private static byte TYPE_SWITCH = 0x1; // 0x230 Size
 	final private static byte TYPE_SCALAR = 0x2; // 0x279 Size
-	final private static byte TYPE_3D_TABLE = 0x4; // 0x2BC Size
+	final private static byte TYPE_3D_TABLE = 0x4; // 0x2BC Size, Short Unsigned?
 	final private static byte TYPE_3D_TABLE_BYTE_SIGNED = 0x6; // 0x2BC Size
-	final private static byte TYPE_3D_TABLE_UNKNOWN = 0x7; // 0x2BC Size
+	final private static byte TYPE_3D_TABLE_SHORT_SIGNED = 0x7; // 0x2BC Size
 	final private static byte TYPE_3D_TABLE_FLOAT = 0xE; // 0x2BC Size
 	final private static byte TYPE_3D_TABLE_BYTE_UNSIGNED = 0x3; // 0x2BC Size
 	final private static byte TYPE_DTC = 0x9; // 0x234
@@ -139,9 +139,6 @@ public class VDFConversionLayer extends ConversionLayer {
 		offset.setTextContent("0x" + Integer.toHexString(
 				(int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, START_FILE_OFFSET, 2, false)));
 
-		Node filesize = doc.createElement("filesize");
-		filesize.setTextContent("2048kb"); // TODO: How is this encoded?
-
 		// Read the definition name
 		byte[] nameArray = Arrays.copyOfRange(data, 0x8, 0x8 + 0xF);
 		String definitionName = new String(nameArray).trim();
@@ -151,7 +148,6 @@ public class VDFConversionLayer extends ConversionLayer {
 		romIDNode.appendChild(idAddress);
 		romIDNode.appendChild(idString);
 		romIDNode.appendChild(offset);
-		romIDNode.appendChild(filesize);
 		romIDNode.appendChild(xmlID);
 
 		romNode.appendChild(romIDNode);
@@ -382,6 +378,7 @@ public class VDFConversionLayer extends ConversionLayer {
 
 		String datatype = "";
 
+		// Whats uint32_t?
 		switch (type) {
 		case TYPE_3D_TABLE_BYTE_SIGNED:
 			datatype = "int8";
@@ -392,10 +389,13 @@ public class VDFConversionLayer extends ConversionLayer {
 		case TYPE_3D_TABLE_BYTE_UNSIGNED:
 			datatype = "uint8";
 			break;
+		case TYPE_3D_TABLE_SHORT_SIGNED:
+			datatype = "int16";
+			break;
 		default:
 			datatype = "uint16";
 		}
-
+		
 		long adr = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 6, 0x4, false);
 		long sizeX = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 10, 0x1, false);
 		long sizeY = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 12, 0x1, false);
@@ -410,7 +410,9 @@ public class VDFConversionLayer extends ConversionLayer {
 		boolean swapXY = RomAttributeParser.parseByteValue(data, Endian.LITTLE, 62, 0x1, false) > 0;
 		int axisRefX = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0xB8, 0x2, false);
 		int axisRefY = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0xBA, 0x2, false);
-
+		int skipCells = (int) RomAttributeParser.parseByteValue(data, Endian.LITTLE, 0xC8, 0x2, false);
+		skipCells = skipCells / (datatype.contains("int8") ? 1 : 2); // I assume the offset is in bytes?
+		
 		Element table = doc.createElement("table");
 
 		table.setAttribute("name", name);
@@ -418,29 +420,50 @@ public class VDFConversionLayer extends ConversionLayer {
 		table.setAttribute("storageaddress", "0x" + Long.toHexString(adr));
 		table.setAttribute("endian", "big");
 		table.setAttribute("swapxy", swapXY ? "true" : "false");
-		table.setAttribute("sizey", Long.toString(sizeY));
-		table.setAttribute("sizex", Long.toString(sizeX));
-		table.setAttribute("type", "3D");
+		
+		boolean is2DTable = sizeY == 1 || sizeX == 1;
+		long table2DSize = sizeY > sizeX ? sizeY : sizeX;
+		
+		if(is2DTable)
+		{
+			table.setAttribute("sizey", Long.toString(table2DSize));
+			table.setAttribute("type", "2D");
+		}
+		else
+		{
+			table.setAttribute("sizey", Long.toString(sizeY));
+			table.setAttribute("sizex", Long.toString(sizeX));	
+			table.setAttribute("type", "3D");
+		}
+
+		if (skipCells > 0)
+			table.setAttribute("skipCells", Integer.toString(skipCells));
 
 		Element scaling = doc.createElement("scaling");
 		scaling.setAttribute("name", "Default");
 		scaling.setAttribute("expression", expression);
-		scaling.setAttribute("units", ""); // Skip for now
+		scaling.setAttribute("units", is2DTable ? (sizeX == 1 ? nameAxis1 : nameAxis2) : "");
 		scaling.setAttribute("format", "0.##");
 		table.appendChild(scaling);
-
-		Element tableX = doc.createElement("table");
-		tableX.setAttribute("name", nameAxis1);
-		tableX.setAttribute("sizex", Long.toString(sizeX));
-		tableX.setAttribute("type", "Static X Axis");
-		fillAxisData(doc, tableX, sizeX, axisRefX);
-		table.appendChild(tableX);
-
+		
+		if(!is2DTable)
+		{
+			Element tableX = doc.createElement("table");
+			tableX.setAttribute("name", nameAxis1);
+			tableX.setAttribute("sizex", Long.toString(sizeX));
+			tableX.setAttribute("type", "Static X Axis");
+			fillAxisData(doc, tableX, sizeX, axisRefX);
+			table.appendChild(tableX);
+		}
+		
+		// If its a 2D table pick the larger size, otherwise use the normal X
+		long YSizeToLoad =  is2DTable ? table2DSize : sizeY;
+		
 		Element tableY = doc.createElement("table");
 		tableY.setAttribute("name", nameAxis2);
-		tableY.setAttribute("sizey", Long.toString(sizeY));
+		tableY.setAttribute("sizey", Long.toString(YSizeToLoad));
 		tableY.setAttribute("type", "Static Y Axis");
-		fillAxisData(doc, tableY, sizeY, axisRefY);
+		fillAxisData(doc, tableY, YSizeToLoad, axisRefY);
 		table.appendChild(tableY);
 
 		createdTables.add(table);
@@ -471,7 +494,7 @@ public class VDFConversionLayer extends ConversionLayer {
 				newTable = parse3DTable(doc, Arrays.copyOfRange(data, currentAdr, currentAdr + 0x2BC), type);
 				currentAdr += 0x2BC;
 				break;
-			case TYPE_3D_TABLE_UNKNOWN:
+			case TYPE_3D_TABLE_SHORT_SIGNED:
 				newTable = parse3DTable(doc, Arrays.copyOfRange(data, currentAdr, currentAdr + 0x2BC), type);
 				currentAdr += 0x2BC;
 				break;
@@ -576,31 +599,12 @@ public class VDFConversionLayer extends ConversionLayer {
 
 	}
 
-	private void reset() {
-		romIDNode = null;
-		romNode = null;
-
-		switchCategories.clear();
-		constantCategories.clear();
-		tableCategories.clear();
-		diagnosticCategories.clear();
-		switchCategoriesCount.clear();
-		constantCategoriesCount.clear();
-		diagnosticCategoriesCount.clear();
-		createdTables.clear();
-		allAxis.clear();
-
-		countSwitches = 0;
-		countScalars = 0;
-		countDTCs = 0;
-	}
-
 	private void loadAxisData(File f, byte[] data) {
 		String ttfName = new String(data, START_OFFSET_TTFNAME, 0x14).trim() + ".tff";
 		File ttfFile = new File(f.getParent(), ttfName);
-		
-		LOGGER.info("Trying to load TTF file " + f.getAbsolutePath());
-		
+
+		LOGGER.info("Trying to load TTF file " + ttfFile.getAbsolutePath());
+
 		byte[] fileData = new byte[(int) ttfFile.length()];
 		DataInputStream dis = null;
 
@@ -609,13 +613,8 @@ public class VDFConversionLayer extends ConversionLayer {
 			dis.readFully(fileData);
 			dis.close();
 
-			// Normal length is 0x200
-			// For whatever reason the first text is 4 bytes short and the second one is 4
-			// bytes longer?
-			allAxis.add(new String(fileData, 0, 0x1FE).trim());
-			allAxis.add(new String(fileData, 0x1FC, 0x3FF).trim());
-
-			for (int i = 0x400; i < fileData.length; i += 0x200) {
+			// Length is 0x200
+			for (int i = 0; i < fileData.length; i += 0x200) {
 				allAxis.add(new String(fileData, i, 0x200).trim());
 			}
 
@@ -631,7 +630,6 @@ public class VDFConversionLayer extends ConversionLayer {
 		createTables(data, doc, romNode);
 		updateTableCategories(data);
 
-		reset();
 		return doc;
 	}
 }

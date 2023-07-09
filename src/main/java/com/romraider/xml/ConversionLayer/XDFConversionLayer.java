@@ -619,9 +619,6 @@ public class XDFConversionLayer extends ConversionLayer {
             romNode.appendChild(t);
         }
 
-        categoryMap.clear();
-        tableMap.clear();
-        embedsToSolve.clear();
         return doc;
     }
 }

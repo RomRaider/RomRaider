@@ -202,6 +202,8 @@ public class TableScaleUnmarshaller {
                     ((Table3D) table).getSizeX()));
             ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
                     ((Table3D) table).getSizeY()));
+            ((Table3D) table).setSkipCells(unmarshallAttribute(tableNode, "skipCells",
+                    ((Table3D) table).getSkipCells()));
         }
 
         Node n;
