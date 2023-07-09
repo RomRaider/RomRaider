@@ -43,7 +43,7 @@ public class DefinitionFilter extends FileFilter {
     		new VDFConversionLayer().getRegexFileNameFilter()
     		};
     
-    private String[] filterDescr = {".xml", ".Cxx (NCS Expert)", ".xdf (Tuner Pro)", ".vdf (Jet Tuner)"};
+    private String[] filterDescr = {".xml", ".Cxx (NCS Expert)", ".xdf (Tuner Pro)", ".vdf|.jdf (Jet Tuner)"};
     private String startDescription;
 
     public DefinitionFilter() {

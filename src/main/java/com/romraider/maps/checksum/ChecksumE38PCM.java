@@ -119,47 +119,36 @@ public final class ChecksumE38PCM implements ChecksumManager {
 		for (int a = 1; a <= 6; a++) {
 			if (seg[a].start > 0x200000) {
 				// log.AppendText("Segment " + a + " start is out of range" +
-				// System.Environment.NewLine);
 				return;
 			}
 
 			if (seg[a].end > 0x200000) {
 				// log.AppendText("Segment " + a + " end is out of range" +
-				// System.Environment.NewLine);
 				return;
 			}
 
 			if (seg[a].start % 2 != 0) {
 				// log.AppendText("Segment " + a + " does not start on a word boundry" +
-				// System.Environment.NewLine);
 				return;
 			}
 			if (seg[a].end % 2 == 0) {
 				// log.AppendText("Segment " + a + " does not end on a word boundry" +
-				// System.Environment.NewLine);
 				return;
 			}
 			if (seg[a].end - seg[a].start < 0x24) {
 				// log.AppendText("Segment " + a + " is impossibly short" +
-				// System.Environment.NewLine);
 				return;
 			}
 		}
 
 		// load data, log
 		for (int i = 1; i <= 6; i++) {
-			// seg[i].lsum = getushort(bin, seg[i].start);
 			seg[i].lsum = (short) RomAttributeParser.parseByteValue(bin, Endian.BIG, seg[i].start, 2, false);
-			// logushort("loaded sum: ", seg[i].lsum);
-			// seg[i].lcvn = getushort(bin, seg[i].start + 0x1E);
 			seg[i].lcvn = (short) RomAttributeParser.parseByteValue(bin, Endian.BIG, seg[i].start + 0x1E, 2, false);
-			/// logushort("loaded cvn: ", seg[i].lcvn);
 			seg[i].csum = segmentsum(bin, seg[i].start, seg[i].end);
 			seg[i].ccvn = segmentcvn(bin, seg[i].start, seg[i].end);
 			seg[i].calculated = true;
 		}
-
-		// testall();
 	}
 
 	private int gmcrc16(byte[] bin, long init, int s, int e) {
