@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2023 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,24 @@ import java.security.MessageDigest;
 public class MD5Checksum {
 
     public static byte[] createChecksum(String filename) throws Exception {
-        InputStream fis = new FileInputStream(filename);
+        InputStream fis = null;
+        MessageDigest complete = null;
+        try {
+            fis = new FileInputStream(filename);
 
-        byte[] buffer = new byte[1024];
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        int numRead;
-        do {
-            numRead = fis.read(buffer);
-            if (numRead > 0) {
-                complete.update(buffer, 0, numRead);
-            }
-        } while (numRead != -1);
-        fis.close();
+            byte[] buffer = new byte[1024];
+            complete = MessageDigest.getInstance("MD5");
+            int numRead;
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    complete.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+        }
+        finally {
+            if (fis != null) fis.close();
+        }
         return complete.digest();
     }
 
