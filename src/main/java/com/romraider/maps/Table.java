@@ -497,14 +497,28 @@ public abstract class Table implements Serializable, Comparable<Table> {
         }
     }
 
+    //Don't check for duplicate names, just add
     public void setPresetValues(String name, String value) {
     	if(presetManager == null) presetManager = new PresetManager(this);
     	presetManager.setPresetValues(name, value, 0, false);
     }
 
+    //Don't check for duplicate names, just add
     public void setPresetValues(String name, String value, int dataCellOffset) {
     	if(presetManager == null) presetManager = new PresetManager(this);
     	presetManager.setPresetValues(name, value, dataCellOffset, true);
+    }
+
+    //Check for duplicate names, then replace if exist or add otherwise
+    public void addPresetValue(String name, String value) {
+    	if(presetManager == null) presetManager = new PresetManager(this);
+    	presetManager.addPresetValue(name, value, 0, false);
+    }
+
+    //Check for duplicate names, then replace if exist or add otherwise
+    public void addPresetValue(String name, String value, int dataCellOffset) {
+    	if(presetManager == null) presetManager = new PresetManager(this);
+    	presetManager.addPresetValue(name, value, dataCellOffset, true);
     }
 
     public boolean isBeforeRam() {

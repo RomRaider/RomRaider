@@ -91,7 +91,7 @@ public class PresetManager {
 		}
 	}
 
-	public void setPresetValues(String name, String data, int dataCellOffset, boolean isBitMask) {
+	private PresetEntry createPresetEntryValue(String name, String data, int dataCellOffset, boolean isBitMask) {
 		PresetEntry entry = new PresetEntry();
 		entry.name = name;
 		entry.data = new LinkedList<Integer>();
@@ -106,7 +106,31 @@ public class PresetManager {
 			}
 		}
 
+		return entry;
+	}
+
+	//Don't check for duplicate names, just add
+	public void setPresetValues(String name, String data, int dataCellOffset, boolean isBitMask) {
+		PresetEntry entry = createPresetEntryValue(name, data, dataCellOffset, isBitMask);
+
 		presets.add(entry);
+	}
+
+	//Check for duplicate names, then replace if exist or add otherwise
+	public void addPresetValue(String name, String data, int dataCellOffset, boolean isBitMask) {
+		PresetEntry oldEntry = null;
+		PresetEntry newEntry = createPresetEntryValue(name, data, dataCellOffset, isBitMask);
+
+		for (int i = 0; i < presets.size(); i++) {
+			if (presets.get(i).name.equalsIgnoreCase(newEntry.name)){
+				oldEntry = presets.set(i, newEntry);
+				break;
+			}
+		}
+
+		if (oldEntry == null) {
+			presets.add(newEntry);
+		}
 	}
 
 	public LinkedList<PresetEntry> getPresets(){

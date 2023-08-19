@@ -285,7 +285,8 @@ public class TableScaleUnmarshaller {
                     table.setDescription(unmarshallText(n));
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
-                    table.setPresetValues(
+                    //Check for duplicate names, then replace if exist or add otherwise
+                    table.addPresetValue(
                                 unmarshallAttribute(n, "name", ""),
                                 unmarshallAttribute(n, "data", "0"));
                 } else if (n.getNodeName().equalsIgnoreCase("bit")) {
