@@ -285,7 +285,7 @@ public class ECUEditor extends AbstractFrame {
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File fileToSave = fileChooser.getSelectedFile();
 
-                if(!fileToSave.getName().endsWith(".xml") ||!fileToSave.getName().endsWith(".XML"))
+                if(!fileToSave.getName().toLowerCase().endsWith(".xml"))
                         fileToSave = new File(fileToSave.getAbsoluteFile() + ".xml");
 
                 String s = ConversionLayer.convertDocumentToString(r.getDocument());

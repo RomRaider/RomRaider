@@ -262,7 +262,6 @@ public class VDFConversionLayer extends ConversionLayer {
 		table.setAttribute("type", "1D");
 
 		Element scaling = doc.createElement("scaling");
-		scaling.setAttribute("name", "Default");
 		scaling.setAttribute("expression", expression);
 		scaling.setAttribute("units", unit);
 		scaling.setAttribute("format", "0.##");
@@ -440,7 +439,6 @@ public class VDFConversionLayer extends ConversionLayer {
 			table.setAttribute("skipCells", Integer.toString(skipCells));
 
 		Element scaling = doc.createElement("scaling");
-		scaling.setAttribute("name", "Default");
 		scaling.setAttribute("expression", expression);
 		scaling.setAttribute("units", is2DTable ? (sizeX == 1 ? nameAxis1 : nameAxis2) : "");
 		scaling.setAttribute("format", "0.##");
