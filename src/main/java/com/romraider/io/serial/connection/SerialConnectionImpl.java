@@ -204,7 +204,7 @@ public class SerialConnectionImpl implements SerialConnection {
             	throw new ConfigurationException("Connection properties");
             if (!serialPort.setComPortTimeouts(TIMEOUT_READ_SEMI_BLOCKING, 0, 0))
             	throw new ConfigurationException("Timeout values");
-            if (!serialPort.setRTS())
+            if (!serialPort.clearRTS())
             	throw new ConfigurationException("RTS value");
         } catch (ConfigurationException e) {
             throw new UnsupportedOperationException(e);
