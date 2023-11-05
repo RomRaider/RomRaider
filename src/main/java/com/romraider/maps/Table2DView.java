@@ -37,6 +37,7 @@ public class Table2DView extends TableView {
     public Table2DView(Table2D table) {
         super(table);
         axis = new Table1DView(table.getAxis(), Table1DType.X_AXIS);
+        axis.setAxisParent(this);
         verticalOverhead += 18;
     }
 

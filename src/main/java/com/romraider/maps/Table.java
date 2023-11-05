@@ -617,6 +617,10 @@ public abstract class Table implements Serializable, Comparable<Table> {
         }
     }
 
+    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
+        return (x1 == x2) ? y1 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
+    }
+    
     public void verticalInterpolate() throws UserLevelException{
         horizontalInterpolate();
     }
@@ -644,13 +648,11 @@ public abstract class Table implements Serializable, Comparable<Table> {
             }
         }
     }
+    
+    public abstract double queryTable(Double input_x, Double input_y);
 
     public void interpolate() throws UserLevelException {
         horizontalInterpolate();
-    }
-
-    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
-        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
 
     public void increment(double increment) throws UserLevelException {
@@ -678,7 +680,8 @@ public abstract class Table implements Serializable, Comparable<Table> {
     }
 
     public abstract boolean isLiveDataSupported();
-
+   
+    
     public int getUserLevel() {
         return userLevel;
     }

@@ -52,6 +52,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.romraider.Settings;
+import com.romraider.dataflowSimulation.DataflowSimulation;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.checksum.ChecksumManager;
@@ -85,6 +86,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     protected HashMap<Integer, LinkedList<DataCell>> byteCellMapping = new HashMap<Integer, LinkedList<DataCell>>();
     
     private final LinkedHashMap<String, TableTreeNode> tableNodes = new LinkedHashMap<String, TableTreeNode>();
+    private final LinkedList<DataflowSimulation> simulations = new LinkedList<DataflowSimulation>();
     private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
     private final Settings settings = SettingsManager.getSettings();
@@ -172,7 +174,16 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         table.setRom(this);
         tableNodes.put(table.getName().toLowerCase(), new TableTreeNode(table));
     }
-
+    
+    public void addSimulation(DataflowSimulation sim) {
+        simulations.add(sim);
+    }
+    
+    public LinkedList<DataflowSimulation> getSimulations()
+    {
+    	return this.simulations;
+    }
+    
     public void removeTableByName(Table table) {
         if(tableNodes.containsKey(table.getName().toLowerCase())) {
             tableNodes.remove(table.getName().toLowerCase());

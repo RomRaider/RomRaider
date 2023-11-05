@@ -367,8 +367,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
 
         updateToolbarIncrementDecrementValues();
-
-        this.overlayLog.setSelected(selectedTable.getTableView().getOverlayLog());
+        
+        if(selectedTable.getTableView() != null)
+        	this.overlayLog.setSelected(selectedTable.getTableView().getOverlayLog());
         this.enable3d.setEnabled(selectedTable.getType() == Table.TableType.TABLE_3D);
 
         setScales(selectedTable.getScales());

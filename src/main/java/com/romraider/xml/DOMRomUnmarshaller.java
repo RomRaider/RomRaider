@@ -74,7 +74,7 @@ public final class DOMRomUnmarshaller {
         output.getRomID().setRamOffset(
                 output.getRomID().getFileSize()
                 - input.length);
-
+        
         return output;
     }
 
@@ -186,7 +186,10 @@ public final class DOMRomUnmarshaller {
                     rom.getRomID().setChecksum(unmarshallAttribute(n, "type", ""));
                     checksumManager = unmarshallChecksum(rom, n);
                     rom.addChecksumManager(checksumManager);
-
+                }
+                else if (n.getNodeType() == ELEMENT_NODE
+                            && n.getNodeName().equalsIgnoreCase("Simulation")) {
+                    	tableScaleHandler.unmarshallSimulation(rom, n);
                 } else { /* unexpected element in Rom (skip) */
                 }
             } else { /* unexpected node-type in Rom (skip) */

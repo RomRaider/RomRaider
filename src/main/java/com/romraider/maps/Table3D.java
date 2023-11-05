@@ -477,15 +477,15 @@ public class Table3D extends Table {
             }
         }
         if (coords[3] - coords[1] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[1]].getBinValue();
-            x2 = axisData[coords[3]].getBinValue();
+            double x, startX, endX, startY, endY;
+            startX = axisData[coords[1]].getBinValue();
+            endX = axisData[coords[3]].getBinValue();
             for (i = coords[0]; i <= coords[2]; ++i) {
-                y1 = tableData[i][coords[1]].getBinValue();
-                y2 = tableData[i][coords[3]].getBinValue();
+                startY = tableData[i][coords[1]].getBinValue();
+                endY = tableData[i][coords[3]].getBinValue();
                 for (j = coords[1] + 1; j < coords[3]; ++j) {
                     x = axisData[j].getBinValue();
-                    tableData[i][j].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                    tableData[i][j].setBinValue(linearInterpolation(x, startX, endX, startY, endY));
                 }
             }
         }
@@ -514,15 +514,15 @@ public class Table3D extends Table {
             }
         }
         if (coords[2] - coords[0] > 1) {
-            double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getBinValue();
-            x2 = axisData[coords[2]].getBinValue();
+            double x, startX, endX, startY, endY;
+            startX = axisData[coords[0]].getBinValue();
+            endX = axisData[coords[2]].getBinValue();
             for (i = coords[1]; i <= coords[3]; ++i) {
-                y1 = tableData[coords[0]][i].getBinValue();
-                y2 = tableData[coords[2]][i].getBinValue();
+                startY = tableData[coords[0]][i].getBinValue();
+                endY = tableData[coords[2]][i].getBinValue();
                 for (j = coords[0] + 1; j < coords[2]; ++j) {
                     x = axisData[j].getBinValue();
-                    tableData[j][i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                    tableData[j][i].setBinValue(linearInterpolation(x, startX, endX, startY, endY));
                 }
             }
         }
@@ -535,6 +535,54 @@ public class Table3D extends Table {
         verticalInterpolate();
         horizontalInterpolate();
     }
+
+	@Override
+	public double queryTable(Double input_x, Double input_y) {
+		DataCell[][] tableData = get3dData();
+		DataCell[] axisXData = getXAxis().getData();
+		DataCell[] axisYData = getYAxis().getData();
+
+		int startX = 0;
+		int endX = axisXData.length - 1;
+		boolean foundEnd = false;
+
+		for (int i = 0; i < axisXData.length; i++) {
+			DataCell c = axisXData[i];
+			if (c.getRealValue() <= input_x) {
+				startX = i;
+			}
+			if (c.getRealValue() >= input_x && !foundEnd) {
+				foundEnd = true;
+				endX = i;
+			}
+		}
+
+		int startY = 0;
+		int endY = axisYData.length - 1;
+		foundEnd = false;
+
+		for (int i = 0; i < axisYData.length; i++) {
+			DataCell c = axisYData[i];
+			if (c.getRealValue() <= input_y) {
+				startY = i;
+			}
+			if (c.getRealValue() >= input_y && !foundEnd) {
+				endY = i;
+				foundEnd = true;
+			}
+		}
+
+		double valueX1 = linearInterpolation(input_x, axisXData[startX].getRealValue(),
+				axisXData[endX].getRealValue(), tableData[startX][startY].getRealValue(),
+				tableData[endX][startY].getRealValue());
+
+		double valueX2 = linearInterpolation(input_x, axisXData[startX].getRealValue(),
+				axisXData[endX].getRealValue(), tableData[endX][startY].getRealValue(),
+				tableData[endX][startY].getRealValue());
+
+		return linearInterpolation(input_y, axisYData[startY].getRealValue(), axisYData[endY].getRealValue(),
+				valueX1, valueX2);
+	}
 
     @Override
     public String getLogParamString() {

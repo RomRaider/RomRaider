@@ -63,7 +63,7 @@ public class Table1DView extends TableView {
     }
     
     @Override
-    public void populateTableVisual() {
+    public void populateTableVisual() {	
         super.populateTableVisual();
         
         //Only populate the rest if we aren't an axis
@@ -88,7 +88,7 @@ public class Table1DView extends TableView {
 	        }
 	        
 	        if(tableLabel != null)
-	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));	       
+	        	tableLabel.setBorder(new EmptyBorder(2, 4, 2, 4));	 	        
     	}
     	
     	if(!isAxis() && presetPanel != null)
@@ -310,7 +310,7 @@ public class Table1DView extends TableView {
             getToolbar().setLiveDataValue(liveVal);
         }
         
-        table.getAxisParent().getTableView().updateLiveDataHighlight();
+        getAxisParent().updateLiveDataHighlight();
     }
 
     public boolean isAxis() {
@@ -366,7 +366,7 @@ public class Table1DView extends TableView {
    
     @Override
     public void updateTableLabel() {
-    	if(this.table.getAxisParent() == null) {
+    	if(getAxisParent() == null) {
     		super.updateTableLabel();
     	}   	
     }

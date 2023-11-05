@@ -60,6 +60,7 @@ public abstract class TableView extends JPanel implements Serializable {
     private static final ResourceBundle rb = new ResourceUtil().getBundle(TableView.class.getName());
 
     protected Table table;
+    protected TableView parent;
     protected PresetPanel presetPanel;   
     protected DataCellView[] data;
     
@@ -89,7 +90,6 @@ public abstract class TableView extends JPanel implements Serializable {
 
     protected TableView(Table table) {    	
     	this.table = table;
-    	table.setTableView(this);
     	   	
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
@@ -516,6 +516,14 @@ public abstract class TableView extends JPanel implements Serializable {
     	return table.getTableFrame();
     }
     
+    public TableView getAxisParent() {
+    	return parent;
+    }
+    
+    public void setAxisParent(TableView v) {
+    	this.parent = v;
+    }
+    
     public void setTable(Table t) {
     	 this.table = t;
     }
@@ -863,7 +871,7 @@ public abstract class TableView extends JPanel implements Serializable {
         }
     }
     
-    
+
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {
             double liveValue = 0.0;

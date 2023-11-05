@@ -53,6 +53,8 @@ public class Table3DView extends TableView {
     	this.table = table;
     	xAxis = new Table1DView(table.getXAxis(), Table1DType.X_AXIS);
     	yAxis = new Table1DView(table.getYAxis(), Table1DType.Y_AXIS);
+    	xAxis.setAxisParent(this);
+    	yAxis.setAxisParent(this);
     	
         verticalOverhead += 39;
         horizontalOverhead += 10;
@@ -63,6 +65,14 @@ public class Table3DView extends TableView {
     	return table;
     }
 
+    public Table1DView getXAxis() {
+    	return xAxis;
+    }
+    
+    public Table1DView getYAxis() {
+    	return yAxis;
+    }
+    
     @Override
     public void drawTable() {
     	if(data!=null) {
@@ -85,7 +95,7 @@ public class Table3DView extends TableView {
     }
 
     @Override
-    public void populateTableVisual() {
+    public void populateTableVisual() {	
     	// fill first empty cell
         centerPanel.add(new JLabel());
         centerLayout.setColumns(table.getSizeX()+1);

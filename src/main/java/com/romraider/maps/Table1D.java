@@ -55,6 +55,12 @@ public class Table1D extends Table {
     }
     
     @Override
+    public double queryTable(Double input_x, Double input_y)  {
+    	// No axis, so nothing to query
+    	return 0;
+    }
+    
+    @Override
     public void clearData() {
     	super.clearData();
     	axisParent = null;

@@ -36,7 +36,6 @@ import javax.swing.border.Border;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.JEPUtil;
-import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public class DataCellView extends JLabel implements MouseListener, Serializable {

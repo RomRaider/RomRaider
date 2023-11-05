@@ -206,6 +206,31 @@ public class Table2D extends Table {
         // Interpolate x axis in case the x axis in selected.
         this.getAxis().horizontalInterpolate();
     }
+    
+    @Override
+	public double queryTable(Double input_x, Double input_y) {
+		double input = input_x == null ? input_y : input_x;
+		DataCell[] tableData = getData();
+		DataCell[] axisData = getAxis().getData();
+
+		int start = 0;
+		int end = tableData.length - 1;
+		boolean foundEnd = false;
+
+		for (int i = 0; i < tableData.length && i < axisData.length; i++) {
+			DataCell c = axisData[i];
+			if (c.getRealValue() <= input) {
+				start = i;
+			}
+			if (c.getRealValue() >= input && !foundEnd) {
+				end = i;
+				foundEnd = true;
+			}
+		}
+		
+		return linearInterpolation(input, axisData[start].getRealValue(), axisData[end].getRealValue(),
+				tableData[start].getRealValue(), tableData[end].getRealValue());
+	}
 
     @Override
     public StringBuffer getTableAsString() {

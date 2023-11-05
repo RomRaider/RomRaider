@@ -95,7 +95,7 @@ public class OpenImageWorker extends SwingWorker<Void, Void> {
 	    			  rom.validateChecksum(), rom.getTotalAmountOfChecksums());
 	      }
 
-	      this.rom = rom;
+	      this.rom = rom;     
     }
 
     private Document createDocument(File f) throws Exception {

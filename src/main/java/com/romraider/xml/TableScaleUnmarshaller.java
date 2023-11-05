@@ -35,6 +35,10 @@ import org.w3c.dom.NodeList;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.logger.ecu.ui.handler.dataflow.DataflowSimulationHandler;
+import com.romraider.dataflowSimulation.DataflowSimulation;
+import com.romraider.dataflowSimulation.TableAction;
+import com.romraider.dataflowSimulation.CalculationAction;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
@@ -71,7 +75,7 @@ public class TableScaleUnmarshaller {
             }
         }
     }
-
+ 
     public Table unmarshallTable(Node tableNode, Table table, Rom rom)
                 throws XMLParseException, TableIsOmittedException, Exception {
 
@@ -340,6 +344,71 @@ public class TableScaleUnmarshaller {
         }
     }
 
+    void unmarshallSimulation(Rom rom, Node simulationNode) {
+
+        // look for base scaling attribute first
+        String name = unmarshallAttribute(simulationNode, "name", "Unnamed");
+        DataflowSimulation sim = new DataflowSimulation(rom, name);
+    
+        Node n;
+        NodeList nodes = simulationNode.getChildNodes();
+        
+        for (int i = 0; i < nodes.getLength(); i++) {
+            n = nodes.item(i);
+
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("inputs"))
+                {
+                    Node nodeInput;
+                    NodeList inputNodes = n.getChildNodes();
+                    
+                    for (int j = 0; j < inputNodes.getLength(); j++) {
+                    	nodeInput = inputNodes.item(j);
+                    	
+                    	if (nodeInput.getNodeType() == ELEMENT_NODE && nodeInput.getNodeName().equalsIgnoreCase("input"))
+                    	{
+                    		String inputName =  unmarshallAttribute(nodeInput, "name", "");
+                    		String logParam = unmarshallAttribute(nodeInput, "logparam", "");
+                    		sim.addInput(inputName, !logParam.isEmpty());
+                    		
+                    		DataflowSimulationHandler.getInstance().registerInput(logParam, inputName, sim);                   				
+                    	} 
+                }                    
+            }    
+            else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("dataflow"))
+                {
+                	 Node nodeAction;
+                     NodeList dataflowNodes = n.getChildNodes();
+                     
+                     for (int j = 0; j < dataflowNodes.getLength(); j++) {
+                     	nodeAction = dataflowNodes.item(j);
+                     	
+                     	if (nodeAction.getNodeType() == ELEMENT_NODE && nodeAction.getNodeName().equalsIgnoreCase("table"))
+                     		{
+                     			String referenceName = unmarshallAttribute(nodeAction, "reference", "");                			
+                     			String input_x = unmarshallAttribute(nodeAction, "input_x", "");
+                     			String input_y = unmarshallAttribute(nodeAction, "input_y", "");
+                     			String output = unmarshallAttribute(nodeAction, "output", "");
+                     			TableAction action = new TableAction(output, referenceName, input_x, input_y);
+	                     		sim.addAction(action);	
+                     	}     
+                     	else if (nodeAction.getNodeType() == ELEMENT_NODE && nodeAction.getNodeName().equalsIgnoreCase("action"))
+                 		{
+                 			String expression = unmarshallAttribute(nodeAction, "expression", "");                			
+                 			String output = unmarshallAttribute(nodeAction, "output", "");
+                 			CalculationAction action = new CalculationAction(output, expression);
+                     		sim.addAction(action);	
+                 	}
+                }
+            }
+            else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("description"))
+            {
+            	sim.setDescription(n.getTextContent());
+            }
+        }
+
+        rom.addSimulation(sim);
+    }
+    
     public Scale unmarshallScale(Node scaleNode, Scale scale) {
 
         // look for base scaling attribute first
