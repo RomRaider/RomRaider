@@ -24,7 +24,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
+import static java.util.Collections.synchronizedMap;
 
 import com.romraider.maps.Rom;
 import com.romraider.swing.DataflowFrame;
@@ -37,7 +40,7 @@ public class DataflowSimulation {
 	private String description = "";
 	private HashSet<String> inputsWithLogParams = new HashSet<String>();
 	private LinkedList<String> inputs = new LinkedList<String>();
-	private HashMap<String, Double> variables = new HashMap<String, Double>();
+	private Map<String, Double> variables = synchronizedMap(new HashMap<String, Double>());
 	private LinkedList<GenericAction> dataflow = new LinkedList<GenericAction>();
 	private boolean updateFromLogger = false;
 	private DataflowFrame frame = null;
@@ -72,8 +75,7 @@ public class DataflowSimulation {
 			if (!inputs.contains(name)) {
 				inputs.add(name);
 				variables.put(name, 0.0);
-				if(hasLogParam)
-				{
+				if (hasLogParam) {
 					inputsWithLogParams.add(name);
 				}
 			} else {
@@ -93,7 +95,7 @@ public class DataflowSimulation {
 		}
 	}
 
-	public int getDoubleOfActions() {
+	public int getNumberOfActions() {
 		return dataflow.size();
 	}
 
@@ -104,7 +106,7 @@ public class DataflowSimulation {
 	public HashSet<String> getInputsWithLogParam() {
 		return inputsWithLogParams;
 	}
-	
+
 	public Double getVariableValue(String varName) {
 		return variables.get(varName);
 	}
@@ -122,20 +124,6 @@ public class DataflowSimulation {
 	}
 
 	public Double simulate(int index) {
-		// Reset simulation
-		if (index == 0) {
-			LinkedList<String> toRemove = new LinkedList<String>();
-			for (Map.Entry<String, Double> entry : variables.entrySet()) {
-				// Dont remove inputs
-				if (!inputs.contains(entry.getKey())) {
-					toRemove.add(entry.getKey());
-				}
-			}
-			for (String entry : toRemove) {
-				variables.remove(entry);
-			}
-		}
-
 		Double result = 0.0;
 		GenericAction a = dataflow.get(index);
 		if (a.isCurrentlyValid(variables)) {
@@ -152,7 +140,12 @@ public class DataflowSimulation {
 		if (updateFromLogger) {
 			setVariableValue(key, dataValue);
 			if (frame != null) {
-				frame.updateContentPanel();
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						frame.updateContentPanel();
+					}
+				});
 			}
 		}
 	}

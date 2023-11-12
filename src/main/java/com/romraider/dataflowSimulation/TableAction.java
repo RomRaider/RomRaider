@@ -20,8 +20,8 @@
 package com.romraider.dataflowSimulation;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
@@ -49,7 +49,7 @@ public class TableAction extends GenericAction {
 		return super.isSetupValid() && !refTable.isEmpty() && (!input_x.isEmpty() || !input_y.isEmpty());
 	}
 
-	public boolean isCurrentlyValid(HashMap<String, Double> variables) {
+	public boolean isCurrentlyValid(Map<String, Double> variables) {
 		return (input_x.isEmpty() ? true : variables.containsKey(input_x))
 				&& (input_y.isEmpty() ? true : variables.containsKey(input_y));
 	}
@@ -70,7 +70,7 @@ public class TableAction extends GenericAction {
 		return currentInputText;
 	}
 
-	public Double calculate(HashMap<String, Double> variables) {
+	public Double calculate(Map<String, Double> variables) {
 		if (resolvedTable != null) {
 			Double inputXValue = variables.get(input_x);
 			Double inputYValue = variables.get(input_y);
@@ -81,7 +81,7 @@ public class TableAction extends GenericAction {
 			if (!input_y.isEmpty() && inputYValue != null)
 				currentInputs.add(inputYValue);
 
-			Double output = resolvedTable.queryTable((Double)inputXValue, (Double)inputYValue);
+			Double output = resolvedTable.queryTable((Double) inputXValue, (Double) inputYValue);
 			currentInputText = updateInputText(inputXValue, inputYValue);
 			currentOutputText = super.getOutputName() + ": " + TABLE_FORMATTER.format(output);
 			return output;

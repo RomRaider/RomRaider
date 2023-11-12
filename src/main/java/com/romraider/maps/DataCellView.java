@@ -110,15 +110,15 @@ public class DataCellView extends JLabel implements MouseListener, Serializable 
         }
 
         tableView.updatePresetPanel();
-        this.invalidate();
+        //this.invalidate();
         setFont(getSettings().getTableFont());
         setText(getCellText());
         setToolTipText(getCellToolTip());
         setBackground(getCellBackgroundColor());
         setForeground(getCellTextColor());
         setBorder(getCellBorder());
-        this.validate();   
-        super.repaint();
+        //this.validate();   
+        //super.repaint();
     }
 
     private Color getCellBackgroundColor() {

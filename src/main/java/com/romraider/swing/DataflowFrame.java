@@ -32,6 +32,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -77,10 +79,12 @@ public final class DataflowFrame extends AbstractFrame {
 		// setup main panel
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JPanel contentPanel = buildContentPanel();
-		mainPanel.add(new JScrollPane(contentPanel), BorderLayout.SOUTH);
-		mainPanel.add(buildInputPanel(), BorderLayout.CENTER);
-		if (!sim.getDescription().isEmpty())
-			mainPanel.add(buildDescriptionPanel(), BorderLayout.NORTH);
+		mainPanel.add(new JScrollPane(contentPanel), BorderLayout.CENTER);
+		mainPanel.add(buildInputPanel(), BorderLayout.NORTH);
+
+		// Causes scrolling issues...
+		// if (!sim.getDescription().isEmpty())
+		// mainPanel.add(buildDescriptionPanel(), BorderLayout.NORTH);
 		updateContentPanel();
 
 		// add to container
@@ -88,7 +92,7 @@ public final class DataflowFrame extends AbstractFrame {
 	}
 
 	private JPanel buildDescriptionPanel() {
-		JPanel descPanel = new JPanel(new GridLayout(sim.getDoubleOfActions(), 3));
+		JPanel descPanel = new JPanel(new GridLayout(sim.getNumberOfActions(), 3));
 		descPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Description"));
 		JLabel desc = new JLabel(sim.getDescription());
 		descPanel.add(desc);
@@ -97,37 +101,40 @@ public final class DataflowFrame extends AbstractFrame {
 	}
 
 	private JPanel buildContentPanel() {
-		JPanel contentPanel = new JPanel(new GridLayout(sim.getDoubleOfActions(), 3));
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		contentPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Simulation"));
 
-		for (int i = 0; i < sim.getDoubleOfActions(); i++) {
+		for (int i = 0; i < sim.getNumberOfActions(); i++) {
 			GenericAction a = sim.getAction(i);
 			a.init(sim.getRom());
+
+			JPanel line = new JPanel(new GridLayout(1, 3));
 
 			JLabel input = new JLabel("");
 			input.setHorizontalAlignment(JLabel.CENTER);
 			input.setFont(boldFont);
 			inputs.add(input);
-			contentPanel.add(input);
+			line.add(input);
 
 			if (a.getType() == GenericActionType.CALCULATION) {
 				JLabel center = new JLabel("");
 				center.setHorizontalAlignment(JLabel.CENTER);
 				center.setFont(boldFont);
 				centerDisplay.add(center);
-				contentPanel.add(center);
+				line.add(center);
 			} else if (a.getType() == GenericActionType.TABLE) {
 				TableView v = ECUEditor.getTableViewForTable(a.getTable());
 				if (v != null) {
 					centerDisplay.add(v);
-					contentPanel.add(v);
+					line.add(v);
 					v.populateTableVisual();
 				} else {
 					JLabel error = new JLabel("Failed to find table!");
 					error.setFont(boldFont);
 					error.setHorizontalAlignment(JLabel.CENTER);
 					centerDisplay.add(error);
-					contentPanel.add(error);
+					line.add(error);
 				}
 			}
 
@@ -135,7 +142,9 @@ public final class DataflowFrame extends AbstractFrame {
 			output.setHorizontalAlignment(JLabel.CENTER);
 			output.setFont(boldFont);
 			outputs.add(output);
-			contentPanel.add(output);
+			line.add(output);
+			contentPanel.add(line);
+			contentPanel.add(Box.createVerticalStrut(20));
 		}
 
 		return contentPanel;
@@ -157,7 +166,7 @@ public final class DataflowFrame extends AbstractFrame {
 			});
 		}
 
-		for (int i = 0; i < sim.getDoubleOfActions(); i++) {
+		for (int i = 0; i < sim.getNumberOfActions(); i++) {
 			GenericAction a = sim.getAction(i);
 			sim.simulate(i);
 
@@ -169,7 +178,7 @@ public final class DataflowFrame extends AbstractFrame {
 
 			if (centerText != null) {
 				// Add linebreak if needed
-				((JLabel) centerDisplay.get(i)).setText("<html>" + centerText.replaceAll("(.{50})", "$1<br>"));
+				((JLabel) centerDisplay.get(i)).setText("<html>" + centerText.replaceAll("(.{80})", "$1<br>"));
 			} else if (table != null) {
 				TableView v = ((TableView) centerDisplay.get(i));
 
@@ -196,7 +205,7 @@ public final class DataflowFrame extends AbstractFrame {
 		JPanel fieldPanel = new JPanel(new FlowLayout());
 
 		enableLogButton = new JCheckBox("Update from Logger");
-		enableLogButton.setEnabled(!sim.getInputsWithLogParam().isEmpty());	
+		enableLogButton.setEnabled(!sim.getInputsWithLogParam().isEmpty());
 		fieldPanel.add(enableLogButton);
 		enableLogButton.addActionListener(new ActionListener() {
 			@Override

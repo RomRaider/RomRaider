@@ -27,9 +27,9 @@ import com.romraider.maps.Table;
 import com.romraider.util.JEPUtil;
 
 public class CalculationAction extends GenericAction {
-	private String expression;
+	private final String expression;
 	private String currentOutputText;
-	private String currentInputText;
+	private String currentInputText = "";
 	private String currentCenterText;
 
 	public CalculationAction(String output, String expression) {
@@ -50,19 +50,27 @@ public class CalculationAction extends GenericAction {
 		}
 	}
 
-	private void updateCurrentCenterText(HashMap<String, Double> variables) {
+	private void updateCurrentCenterText(Map<String, Double> variables) {
 		currentCenterText = expression;
-		for (Map.Entry<String, Double> entry : variables.entrySet()) {
-			String newValue = DEFAULT_FORMATTER.format(entry.getValue());
-			currentCenterText = currentCenterText.replaceAll("(\\b)" + entry.getKey() + "(\\b)", entry.getKey() + "(" + newValue + ")");
-		}		
+		synchronized (variables) {
+			for (Map.Entry<String, Double> entry : variables.entrySet()) {
+				String newValue = DEFAULT_FORMATTER.format(entry.getValue());
+				currentCenterText = currentCenterText.replaceAll("(\\b)" + entry.getKey() + "(\\b)",
+						entry.getKey() + "(" + newValue + ")");
+			}
+		}
 	}
 
-	public Double calculate(HashMap<String, Double> variables) {
-		Double output = JEPUtil.evaluate(expression, variables);
+	public Double calculate(Map<String, Double> variables) {
+		Double output = 0.0;
+		synchronized (variables) {
+			output = JEPUtil.evaluate(expression, variables);
+		}
 		currentOutputText = super.getOutputName() + ": "
 				+ (Double.isNaN(output) || Double.isInfinite(output) ? "Error" : DEFAULT_FORMATTER.format(output));
-		updateCurrentInputText(variables);
+
+		// Not needed with replaced center value I think
+		// updateCurrentInputText(variables);
 		updateCurrentCenterText(variables);
 		return output;
 	}
@@ -71,9 +79,15 @@ public class CalculationAction extends GenericAction {
 		return super.isSetupValid() && !expression.isEmpty();
 	}
 
-	public boolean isCurrentlyValid(HashMap<String, Double> variables) {
-		Double value = JEPUtil.evaluate(expression, variables);
-		return !Double.isNaN(value) && !Double.isInfinite(value);
+	public boolean isCurrentlyValid(Map<String, Double> variables) {
+		try {
+			synchronized (variables) {
+				Double value = JEPUtil.evaluate(expression, variables);
+				return !Double.isNaN(value) && !Double.isInfinite(value);
+			}
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	@Override

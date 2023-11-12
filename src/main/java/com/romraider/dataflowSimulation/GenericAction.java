@@ -22,6 +22,7 @@ package com.romraider.dataflowSimulation;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
@@ -46,9 +47,9 @@ public abstract class GenericAction {
 
 	public abstract void init(Rom rom);
 
-	public abstract Double calculate(HashMap<String, Double> variables);
+	public abstract Double calculate(Map<String, Double> variables);
 
-	public abstract boolean isCurrentlyValid(HashMap<String, Double> variables);
+	public abstract boolean isCurrentlyValid(Map<String, Double> variables);
 
 	public boolean isSetupValid() {
 		return !outputName.isEmpty();

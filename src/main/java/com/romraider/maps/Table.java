@@ -442,23 +442,11 @@ public abstract class Table implements Serializable, Comparable<Table> {
     }
 
     public double getMaxReal() {
-        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
-        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
-        if(minReal > maxReal) {
-            return minReal;
-        } else {
-            return maxReal;
-        }
+    	return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
     }
 
     public double getMinReal() {
-        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
-        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
-        if(minReal < maxReal) {
-            return minReal;
-        } else {
-            return maxReal;
-        }
+    	return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
     }
 
     public void setMaxBin(double maxBin) {
