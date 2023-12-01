@@ -516,7 +516,7 @@ public class XDFConversionLayer extends ConversionLayer {
         idAddress.setTextContent("-1");
 
         Element offsetNode = doc.createElement("offset");
-        offsetNode.setTextContent("0x" + Integer.toHexString(offset));
+        offsetNode.setTextContent("0x" + Integer.toString(offset, 16));
 
         romIDNode.appendChild(offsetNode);
         romIDNode.appendChild(idAddress);
