@@ -23,6 +23,10 @@ Here are steps to setup Visual Studio Code to build and debug RomRaider.
 	> - For the value use the unzipped ANT path from the previous step. For Example: 'C:\Users\<USERNAME>\ANT'
 	> - If you do not know how to add a environment variable, see: https://docs.oracle.com/javase/tutorial/essential/environment/paths.html
 
+1. Add '**JRE_DIR**' as a System Environment variable excluding the quotes.
+	> - For the value use the directory from the Java install. For Example: 'C:\Program Files (x86)\Java\jre-1.8'
+	> - If you do not know how to add a environment variable, see: https://docs.oracle.com/javase/tutorial/essential/environment/paths.html
+
 1. Edit the existing '**PATH**' System Environment, add the directory you unzipped ANT to with the \bin directory appended.
 	> For Example: 'C:\Users\<USERNAME>\ANT\bin'
 		
