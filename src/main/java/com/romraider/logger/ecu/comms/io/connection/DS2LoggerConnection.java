@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2022 RomRaider.com
+ * Copyright (C) 2006-2024 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,6 +172,7 @@ public final class DS2LoggerConnection implements LoggerConnection {
             // #93h Timing Correction/Fuel Compensation
             else if (groupTest.startsWith("0x0b0x03")
                 || groupTest.startsWith("0x0b0x04")
+                || groupTest.startsWith("0x0b0x90")
                 || groupTest.startsWith("0x0b0x91")
                 || groupTest.startsWith("0x0b0x92")
                 || groupTest.startsWith("0x0b0x93")
