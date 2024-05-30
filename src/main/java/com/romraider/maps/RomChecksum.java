@@ -26,16 +26,45 @@ import com.romraider.Settings;
 
 public class RomChecksum {
 
-    public static void calculateRomChecksum(byte[] input, int storageAddress, int dataSize) {
+    public static void calculateRomChecksum(byte[] input, Table table)
+    {
+        calculateRomChecksum(
+                    input,
+                    table.getStorageAddress(),
+                    table.getDataSize(),
+                    table.getRamOffset()
+        );
+    }
+
+    public static int validateRomChecksum(byte[] input, Table table)
+    {
+        return validateRomChecksum(
+                    input,
+                    table.getStorageAddress(),
+                    table.getDataSize(),
+                    table.getRamOffset()
+        );
+    }
+
+    private static void calculateRomChecksum(byte[] input, int storageAddress, int dataSize, int offset) {
+        storageAddress = storageAddress - offset;
         for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
+            int startAddr = (int)parseByteValue(input, Settings.Endian.BIG, i  , 4, true);
+            int endAddr   = (int)parseByteValue(input, Settings.Endian.BIG, i+4, 4, true);
+            int off = offset;
+            //0 means checksum is disabled, keep it
+            if (startAddr == 0 && endAddr == 0) {
+                off = 0;
+            }
             byte[] newSum = calculateChecksum(input,
-                    (int)parseByteValue(input, Settings.Endian.BIG, i  , 4, true),
-                    (int)parseByteValue(input, Settings.Endian.BIG, i+4, 4, true));
+                    startAddr - off,
+                    endAddr   - off);
             System.arraycopy(newSum, 0, input, i + 8, 4);
         }
     }
 
-    public static int validateRomChecksum(byte[] input, int storageAddress, int dataSize) {
+    private static int validateRomChecksum(byte[] input, int storageAddress, int dataSize, int offset) {
+        storageAddress = storageAddress - offset;
         int result = 0;
         int[] results = new int[dataSize / 12];
         int j = 0;
@@ -43,6 +72,13 @@ public class RomChecksum {
             int startAddr = (int)parseByteValue(input, Settings.Endian.BIG, i  , 4, true);
             int endAddr   = (int)parseByteValue(input, Settings.Endian.BIG, i+4, 4, true);
             int diff      = (int)parseByteValue(input, Settings.Endian.BIG, i+8, 4, true);
+            int off = offset;
+            //0 means checksum is disabled, keep it
+            if (startAddr == 0 && endAddr == 0) {
+                off = 0;
+            }
+            startAddr -= off;
+            endAddr   -= off;
             if (j == 0 &&
                     startAddr == 0 &&
                     endAddr   == 0 &&

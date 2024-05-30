@@ -271,7 +271,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                         TableUpdateHandler.getInstance().registerTable(table);
 
                         if (null != table.getName() && table.getName().equalsIgnoreCase("Checksum Fix")){
-                            setEditStamp(binData, table.getStorageAddress());
+                            setEditStamp(binData, table.getStorageAddress() - table.getRamOffset());
                         }
                         i++;
                     } catch (ArrayIndexOutOfBoundsException ex) {
@@ -396,8 +396,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
              //TODO: Move to Subaru checksum
              calculateRomChecksum(
                      binData,
-                     checksum.getTable().getStorageAddress(),
-                     checksum.getTable().getDataSize()
+                     checksum.getTable()
              );
          }
     }
@@ -406,14 +405,19 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     //It is only used to correct the Subaru Checksum. Should be moved somewhere else TODO
     public byte[] saveFile() {
 
+        //There can be more than 1 Checksum Fix tables, find them all
         final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
-        if(tableNodes.containsKey("checksum fix")) {
-            checksumTables.add(tableNodes.get("checksum fix"));
+        for (String name: tableNodes.keySet()) {
+            if (name.startsWith("checksum fix")) {
+                checksumTables.add(tableNodes.get(name));
+            }
         }
 
         if (checksumTables.size() == 1) {
             final TableTreeNode checksum = checksumTables.get(0);
-            byte count = binData[checksum.getTable().getStorageAddress() + 207];
+            int binDataPos = checksum.getTable().getStorageAddress() -
+                             checksum.getTable().getRamOffset();
+            byte count = binData[binDataPos + 207];
             if (count == -1) {
                 count = 1;
             }
@@ -427,9 +431,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                     romStamp,
                     0,
                     binData,
-                    checksum.getTable().getStorageAddress() + 204,
+                    binDataPos + 204,
                     4);
-            setEditStamp(binData, checksum.getTable().getStorageAddress());
+            setEditStamp(binData, binDataPos);
         }
 
         for (TableTreeNode checksum : checksumTables) {
@@ -437,8 +441,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 //TODO: Move to Subaru checksum
                 calculateRomChecksum(
                         binData,
-                        checksum.getTable().getStorageAddress(),
-                        checksum.getTable().getDataSize()
+                        checksum.getTable()
                 );
             }
             else if (checksum.getTable().isLocked() &&
