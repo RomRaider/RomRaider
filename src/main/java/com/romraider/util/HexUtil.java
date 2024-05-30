@@ -159,11 +159,7 @@ public final class HexUtil {
      * @return integer value
      */
     public static int hexToInt(String input) {
-        if (input.length() > 2 && input.substring(0, 2).equalsIgnoreCase("0x")) {
-            return Integer.parseInt(input.substring(2), 16);
-        } else {
-            return Integer.parseInt(input, 16);
-        }
+        return Integer.parseInt(input.replace("0x",""), 16);
     }
 
     /**
