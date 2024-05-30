@@ -54,8 +54,7 @@ public class TableSwitch extends Table1D {
 	    // if the result is  0: all the checksums matched
 	    // if the result is -1: all the checksums have been previously disabled
 	    if (super.getName().contains("Checksum Fix")) {
-	        int result = validateRomChecksum(getDataCell(0).getBinary(),
-	        		getStorageAddress(), getDataSize());
+			int result = validateRomChecksum(getDataCell(0).getBinary(), this);
 	        
 	        String message = MessageFormat.format(
 	                rb.getString("CHKSUMINVALID"), result, super.getName());
