@@ -159,18 +159,7 @@ public final class HexUtil {
      * @return integer value
      */
     public static int hexToInt(String input) {
-        int sign = 1;
-        //Detect negative sign, save it and remove from input
-        if (input.startsWith("-")){
-            sign = -1;
-            input = input.substring(1);
-        }
-        
-        if (input.length() > 2 && input.substring(0, 2).equalsIgnoreCase("0x")) {
-            return sign * Integer.parseInt(input.substring(2), 16);
-        } else {
-            return sign * Integer.parseInt(input, 16);
-        }
+        return Integer.parseInt(input.replace("0x",""), 16);
     }
 
     /**
