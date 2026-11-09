@@ -25,6 +25,7 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.singleton;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 
@@ -124,6 +125,8 @@ public final class QueryManagerImpl implements QueryManager {
 
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
+        // Re-selecting a parameter cancels a pending removal (issue #145).
+        removeList.removeAll(singleton(queryId));
         if (loggerData.getDataType() == EXTERNAL) {
             addList.put(queryId, new ExternalQueryImpl((ExternalData) loggerData));
         } else {
@@ -141,7 +144,10 @@ public final class QueryManagerImpl implements QueryManager {
         queryCounter = 1;
         queryStart = currentTimeMillis();
 
-        removeList.add(buildQueryId(callerId, loggerData));
+        String queryId = buildQueryId(callerId, loggerData);
+        // Un-selecting cancels a pending add, so add-then-remove can't leave both queued.
+        addList.remove(queryId);
+        removeList.add(queryId);
         if (loggerData.getDataType() != EXTERNAL) {
             pollState.setNewQuery(true);
         }
