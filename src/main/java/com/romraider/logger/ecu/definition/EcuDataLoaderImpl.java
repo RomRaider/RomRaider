@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2026 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private ConnectionProperties connectionProperties;
     private String defVersion;
 
+    @Override
     public void loadEcuDefsFromXml(File ecuDefsFile) {
         checkNotNull(ecuDefsFile, "ecuDefsFile");
         try {
@@ -82,6 +83,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         }
     }
 
+    @Override
     public void loadConfigFromXml(String loggerConfigFilePath,
                                   String protocol,
                                   String fileLoggingControllerSwitchId,
@@ -89,35 +91,30 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
-        
+
 
         Settings s = SettingsManager.getSettings();
         boolean valid = true;
-        
-        try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
-            try {
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
-                        protocol, fileLoggingControllerSwitchId, ecuInit);
-                getSaxParser().parse(inputStream, handler, loggerConfigFilePath);
-                              
-                ecuParameters = handler.getEcuParameters();
-                ecuSwitches = handler.getEcuSwitches();
-                fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
-                connectionProperties = handler.getConnectionProperties();
-                defVersion = handler.getVersion();
-                dtcodes = handler.getEcuCodes();
-                protocolList = handler.getProtocols();
-                
-                valid = isCurrentProtocolValid();
 
-                if(!valid) {                	
-                	s.setLoggerProtocol(protocolList.keySet().iterator().next());
-                	s.setTransportProtocol(protocolList.values().iterator().next().
-                			keySet().iterator().next().getId());               	               	
-                }                              
-            } finally {
-                inputStream.close();
+        try {
+            File loggerConfigFile = new File(loggerConfigFilePath);
+            LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
+                        protocol, fileLoggingControllerSwitchId, ecuInit);
+            getSaxParser().parse(loggerConfigFile, handler);
+            ecuParameters = handler.getEcuParameters();
+            ecuSwitches = handler.getEcuSwitches();
+            fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
+            connectionProperties = handler.getConnectionProperties();
+            defVersion = handler.getVersion();
+            dtcodes = handler.getEcuCodes();
+            protocolList = handler.getProtocols();
+
+            valid = isCurrentProtocolValid();
+
+            if(!valid) {
+            	s.setLoggerProtocol(protocolList.keySet().iterator().next());
+            	s.setTransportProtocol(protocolList.values().iterator().next().
+            			keySet().iterator().next().getId());
             }
         }/* catch (FileNotFoundException fnfe) {
             throw new ConfigurationException(MessageFormat.format(
@@ -130,8 +127,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         } */catch (Exception e) {
             throw new ConfigurationException(e);
         }
-        
-        //If the new definition did not contain the desired protocol, we have to 
+
+        //If the new definition did not contain the desired protocol, we have to
         // re-call the function with the new (available) protocol
         // because only the loaded protocol gets parsed fully
         if(!valid && isCurrentProtocolValid()) {
@@ -139,17 +136,17 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         			fileLoggingControllerSwitchId, ecuInit);
         }
     }
-    
-    private boolean isCurrentProtocolValid() {    	
+
+    private boolean isCurrentProtocolValid() {
         Map<Transport, Collection<Module>> transportMap;
         Settings s = SettingsManager.getSettings();
-        
-        if(!protocolList.containsKey(s.getLoggerProtocol())){  
+
+        if(!protocolList.containsKey(s.getLoggerProtocol())){
         	return false;
         }
         else {
-            transportMap = protocolList.get(s.getLoggerProtocol());               
-            
+            transportMap = protocolList.get(s.getLoggerProtocol());
+
             if(transportMap != null) {
 	            for (Transport transport : transportMap.keySet()) {
 	                if (transport.getId().equalsIgnoreCase(s.getTransportProtocol())) {
@@ -157,39 +154,47 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
 	                }
 	            }
             }
-            
-            return false;                 
+
+            return false;
         }
     }
-    
+
+    @Override
     public Map<String, EcuDefinition> getEcuDefinitionMap() {
         return ecuDefinitionMap;
     }
 
+    @Override
     public List<EcuParameter> getEcuParameters() {
         return ecuParameters;
     }
 
+    @Override
     public List<EcuSwitch> getEcuSwitches() {
         return ecuSwitches;
     }
 
+    @Override
     public EcuSwitch getFileLoggingControllerSwitch() {
         return fileLoggingControllerSwitch;
     }
 
+    @Override
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
     }
 
+    @Override
     public String getDefVersion() {
         return defVersion;
     }
 
+    @Override
     public List<EcuSwitch> getEcuCodes() {
         return dtcodes;
     }
 
+    @Override
     public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
         return protocolList;
     }
