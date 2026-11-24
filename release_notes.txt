@@ -1,4 +1,4 @@
-                - RomRaider 1.1.0 NOV26 2025 -
+                - RomRaider 1.1.1 NOV24 2026 -
       Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 1.1.0 NOV26 2025 Notes (2025-11-26) -
+- 1.1.1 NOV24 2026 Notes (2026-11-24) -
 --------------------------------------------
 This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 1.1.0 NOV26 2025 Known Issues -
+- 1.1.1 NOV24 2026 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,18 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+1.1.1 NOV24 2026 Notes (2026-11-24)
+----------------------------------
+
+- Editor
+  - Change duplicate minus key map and add ] [ for cell fine inc/decrement
+  - Fix Custom checksum manager
+  - Fix SaxParser exception for non-ascii in file path
+
+- Logger
+  - Fix issue #145
+
 
 1.1.0 NOV26 2025 Notes (2025-11-26)
 ----------------------------------
