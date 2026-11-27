@@ -10,12 +10,33 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+
+      - uses: suisei-cn/actions-download-file@v1.3.0
+        id: downloadizpack
+        name: Download izpack
+        with:
+          url: "https://repo1.maven.org/maven2/org/codehaus/izpack/izpack-standalone-compiler/4.3.5/izpack-standalone-compiler-4.3.5.jar"
+          target: 3rdparty\IzPack
+
+      - name: Rename IzPack 
+        run: Rename-Item -Path "3rdparty\IzPack\izpack-standalone-compiler-4.3.5.jar" -NewName "izpack-standalone-compiler.jar"
+
+      - uses: suisei-cn/actions-download-file@v1.3.0
+        id: downloadlaunch4j
+        name: Download launch4j
+        with:
+          url: "https://downloads.sourceforge.net/project/launch4j/launch4j-3/3.13/launch4j-3.13-win32.zip?ts=gAAAAABjf7hYbp6B9DzC7uljh7p3gUCx655esSiIqgUNjZdpND1_kTjkEIlvxEYHQj0LXhvEOZqxWmNo7HZNWwte-59seVLfXw%3D%3D&r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Flaunch4j%2Ffiles%2Flaunch4j-3%2F3.13%2Flaunch4j-3.13-win32.zip%2Fdownload"
+          target: 3rdparty\
+
+      - name: Unzip Launch4j
+        run: Expand-Archive -Path 3rdparty\launch4j-3.13-win32.zip -DestinationPath 3rdparty\
+
       - name: Setup Java 8
         uses: actions/setup-java@v1.4.3
         with:
           java-version: '8'
           java-package: jdk
-          architecture: x64
+          architecture: x86
       - name: set JRE_DIR environment variable
         shell: bash
         env:
@@ -29,3 +50,8 @@ jobs:
         run: |
           echo JRE_DIR=$JRE_DIR
           ant all
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.head_ref || github.ref_name }}-dist
+          path: build/dist
